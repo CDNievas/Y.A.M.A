@@ -3,10 +3,10 @@
 ### [Protocolo](https://docs.google.com/document/d/1HTPwwbBRAI6GmL6H6vFxna70PN-Eu-OCSxXIjhXF5k4/edit?usp=sharing)
 
 ### Integrantes:
-- 155.9000 / Christian Dario Nievas
-- 156.6076 / Lautaro Gomez Odriozola
-- 155.4670 / Lucas Ezequiel Romano
-- ??? / ???
+- 155.900-0 / Christian Dario Nievas
+- 156.607-6 / Lautaro Gomez Odriozola
+- 155.467-0 / Lucas Ezequiel Romano
+- 155.468-2 / Gustavo Ayrton Bitocchi
 - ??? / ???
 
 
