@@ -7,7 +7,7 @@
 - 156.607-6 / Lautaro Gomez Odriozola
 - 155.467-0 / Lucas Ezequiel Romano
 - 155.468-2 / Gustavo Ayrton Bitocchi
-- ??? / ???
+- 155.553-4 / German Caceres
 
 
 ### Primer checkpoint (16/09/2017):
