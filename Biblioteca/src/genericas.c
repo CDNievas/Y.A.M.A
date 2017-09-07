@@ -1,5 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include "algunasVariables.h"
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"

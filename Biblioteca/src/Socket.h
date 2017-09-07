@@ -1,4 +1,6 @@
-#include "funcionesSocket.h"
+#include "algunasVariables.h"
+
+
 #ifndef SRC_SOCKET_H_
 #define SRC_SOCKET_H_
 //
@@ -8,13 +10,15 @@
 //	void* mensaje;
 //}paquete;
 
-int ponerseAEscuchar(int, int);
-int aceptarConexion(int);
-int conectarServer(char *, int);
+
+int ponerseAEscucharClientes(int, int);
+int aceptarConexionDeCliente(int);
+int conectarAServer(char *, int);
 int calcularSocketMaximo(int, int);
 int recvDeNotificacion(int);
 void sendDeNotificacion(int , int );
 paquete *recvRemasterizado(int);
 void sendRemasterizado(int, int, int, void*);
+void destruirPaquete(paquete*);
 
 #endif /* SRC_SOCKET_H_ */

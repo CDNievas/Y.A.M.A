@@ -1,21 +1,35 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <commons/config.h>
+#include "algunasVariables.h"
+
 
 // Imprime archivo de configuracion por pantalla
-int imprimirConfiguracion(t_config * configuracion, char * parametros[], int tamanioParametros){
-	int i = 0;
-	int tamanioDic = config_keys_amount(configuracion);
+void chequearParametros(int argc){
+    if(argc != 2){
+        perror("Error con los parametros. \n");
+        exit(-1);
+    }
+}
 
-	if(tamanioParametros != tamanioDic){
-		return -3;
-	}
-	while(i < tamanioDic){
-		if (!config_has_property(configuracion,parametros[i])){
-			return -4;
-		}
-		printf("%s: %s \n",parametros[i],config_get_string_value(configuracion,parametros[i]));
-		i++;
-	}
-	return 0;
+void chequearExistenciaArchivo(char* pathConfiguracion){
+    if(!existeArchivo(pathConfiguracion)){
+        perror("El archivo de configuracion no existe. \n");
+        exit(-1);
+    }
+}
+
+void chequearCantidadDeKeys(t_config* configuracion, int cantidadKeys){
+    if(cantidadKeys != config_keys_amount(configuracion)){
+        perror("Faltan datos en el archivo de configuracion. \n");
+        exit(-1);
+    }
+}
+
+t_config* generarTConfig(char* pathConfiguracion, int cantidadKeys){
+    t_config* configuracion;
+    chequearExistenciaArchivo(pathConfiguracion);
+    if((configuracion = config_create(pathConfiguracion))==NULL){
+        perror("Error al generar t_config. \n");
+        exit(-1);
+    }
+    chequearCantidadDeKeys(configuracion, cantidadKeys);
+    return configuracion;
 }

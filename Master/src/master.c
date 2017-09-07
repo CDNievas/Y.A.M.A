@@ -1,7 +1,39 @@
 #include "../../Biblioteca/src/genericas.c"
+#include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
 
-#define PARAMETROS{"YAMA_IP","YAMA_PUERTO"}
+#define PARAMETROS {"YAMA_IP","YAMA_PUERTO"}
+
+char* YAMA_IP;
+int YAMA_PUERTO;
+
+t_log* loggerMaster;
+
+void cargarMaster(t_config* configuracionMaster){
+    if(!config_has_property(configuracionMaster, "YAMA_IP")){
+        log_error(loggerMaster, "No se encuentra YAMA_IP");
+        exit(-1);
+    }else{
+        YAMA_IP = string_new();
+        string_append(&YAMA_IP, config_get_string_value(configuracionMaster, "YAMA_IP"));
+    }
+    if(!config_has_property(configuracionMaster, "YAMA_PUERTO")){
+        log_error(loggerMaster, "No se encuentra YAMA_PUERTO en el archivo de configuracion");
+        exit(-1);
+    }else{
+        YAMA_PUERTO = config_get_int_value(configuracionMaster, "YAMA_PUERTO");
+    }
+}
+
+void realizarHandshakeMasterYama(int socketYAMA){
+    sendDeNotificacion(socketYAMA, ES_MASTER);
+    int notificacion = recvDeNotificacion(socketYAMA);
+    if(notificacion != ES_YAMA){
+        log_error(loggerMaster, "La conexion establecida no es de YAMA");
+        exit(-1);
+    }
+}
+
 
 long int obtenerTamanioArchivo(FILE* unArchivo){
 	fseek(unArchivo, 0, SEEK_END);
@@ -30,43 +62,11 @@ char* abrirArchivo(char* unPath){
 */
 
 int main(int argc, char **argv) {
-
-	int codError; // Variable que se usa para absorber el codigo de error de una funcion
-	char * pathConfiguracion; // Guarda el path de configuracion
-	t_config * configuracion; // Estructura de configuracion
-	char * parametros[] = PARAMETROS; // Guarda los parametros definidos en un array
-
-	// Compruebo que no falten argumentos del main
-	if(argc != 2){
-		codError = -1;
-		printf("Error con los parametros. \n"
-				"Sintaxis: archivo.out 'path de archivo de configuracion' \n");
-		return codError;
-	}
-
-	// Identifico y separo los argumentos del main
-	pathConfiguracion = argv[1];
-
-	// Compruebo existencia del archivo de configuracion en el path
-	if(!existeArchivo(pathConfiguracion)){
-		codError = -2;
-		printf("El archivo de configuracion no existe. \n");
-		return codError;
-	}
-
-	// Creo un puntero a archivo de configuracion
-	configuracion = config_create(pathConfiguracion);
-
-	//Imprimo los valores de la configuracion
-	codError = imprimirConfiguracion(configuracion,parametros,sizeof(parametros)/sizeof(parametros[0]));
-	switch (codError){
-		case -3:
-			printf("Error en la cantidad de parámetros en el archivo de configuración. \n");
-			break;
-		case -4:
-			printf("Parametro definido en archivo de configuración no corresponde. \n");
-			break;
-	}
-
+	loggerMaster = log_create("Master.log", "Master", 1, 0);
+	chequearParametros(argc);
+	t_config* configuracionMaster = generarTConfig(argv[1], 2);
+	cargarMaster(configuracionMaster);
+    int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
+    realizarHandshakeMasterYama(socketYAMA);
 	return EXIT_SUCCESS;
 }

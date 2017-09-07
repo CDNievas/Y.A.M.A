@@ -1,50 +1,70 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
+#include "../../Biblioteca/src/Socket.c"
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
 
-/* Funcion main pide
-	- Path archivo de configuracion.ini
-*/
+int PUERTO_ESCUCHA;
+
+t_log* loggerFileSystem;
+
+void cargarFileSystem(t_config* configuracionFS){
+    if(!config_has_property(configuracionFS, "PUERTO_ESCUCHA")){
+    	log_error(loggerFileSystem, "No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
+    	exit(-1);
+    }else{
+        PUERTO_ESCUCHA = config_get_int_value(configuracionFS, "PUERTO_ESCUCHA");
+    }
+    config_destroy(configuracionFS);
+}
 
 int main(int argc, char **argv) {
+	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
+	chequearParametros(argc);
+	t_config* configuracionFS = generarTConfig(argv[1], 1);
+	cargarFileSystem(configuracionFS);
+	int socketMaximo, socketClienteChequeado, socketAceptado;
+	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
+	socketMaximo = socketEscuchaFS;
+	fd_set socketClientes, socketClientesAuxiliares;
+	FD_ZERO(&socketClientes);
+	FD_ZERO(&socketClientesAuxiliares);
+	FD_SET(socketEscuchaFS, &socketClientes);
+	while(1){
+		socketClientesAuxiliares = socketClientes;
+		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){
+			log_error(loggerFileSystem, "No se pudo llevar a cabo el select.");
+			exit(-1);
+		}
+		log_info(loggerFileSystem, "Se recibio nueva actividad de los clientes");
+		for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
+			if(FD_ISSET(socketClienteChequeado, &socketClientesAuxiliares)){
+				if(socketClienteChequeado == socketEscuchaFS){
+					socketAceptado = aceptarConexionDeCliente(socketEscuchaFS);
+					FD_SET(socketAceptado, &socketClientes);
+					socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
+					log_info(loggerFileSystem, "Se ha recibido una nueva conexion.");
+				}else{
+					int notificacion = recvDeNotificacion(socketClienteChequeado);
+					switch(notificacion){
+						case ES_DATANODE:
+							//Hago cosas
+						break;
+						case ES_MASTER:
+							//Hago mas cosas
+						break;
+						case ES_YAMA:
+							//Hago maaas cosas
+						break;
+						default:
+							log_error(loggerFileSystem, "La conexion recibida es erronea.");
+							FD_CLR(socketClienteChequeado, &socketClientes);
+							close(socketClienteChequeado);
+						}
 
-	int codError; // Variable que se usa para absorber el codigo de error de una funcion
-	char * pathConfiguracion; // Guarda el path de configuracion
-	t_config * configuracion; // Estructura de configuracion
-	char * parametros[] = PARAMETROS; // Guarda los parametros definidos en un array
-
-	// Compruebo que no falten argumentos del main
-	if(argc != 2){
-		codError = -1;
-		printf("Error con los parametros. \n"
-				"Sintaxis: archivo.out 'path de archivo de configuracion' \n");
-		return codError;
-	}
-
-	// Identifico y separo los argumentos del main
-	pathConfiguracion = argv[1];
-
-	// Compruebo existencia del archivo de configuracion en el path
-	if(!existeArchivo(pathConfiguracion)){
-		codError = -2;
-		printf("El archivo de configuracion no existe. \n");
-		return codError;
-	}
-
-	// Creo un puntero a archivo de configuracion
-	configuracion = config_create(pathConfiguracion);
-
-	//Imprimo los valores de la configuracion
-	codError = imprimirConfiguracion(configuracion,parametros,sizeof(parametros)/sizeof(parametros[0]));
-	switch (codError){
-		case -3:
-			printf("Error en la cantidad de parámetros en el archivo de configuración. \n");
-			break;
-		case -4:
-			printf("Parametro definido en archivo de configuración no corresponde. \n");
-			break;
-	}
-
+					}
+				}
+			}
+		}
 	return EXIT_SUCCESS;
 }

@@ -14,9 +14,24 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <netdb.h>
+#include <commons/config.h>
+#include <commons/string.h>
+#include <commons/log.h>
+
 
 #ifndef FUNCIONESGENERICAS_H_
 #define FUNCIONESGENERICAS_H_
+
+//PROTOCOLO
+
+#define BACKLOG 10
+
+#define ES_FS 1
+#define ES_WORKER 2
+#define ES_MASTER 3
+#define ES_YAMA 4
+#define ES_DATANODE 1000
+
 
 typedef struct __attribute__((__packed__)){
 	int tipoMsj;
@@ -24,14 +39,5 @@ typedef struct __attribute__((__packed__)){
 	void* mensaje;
 }paquete;
 
-#define backlog 10 //cantidad de conexiones en la cola
-
-int verificarErrorSocket(int);
-
-int verificarErrorSetsockopt(int);
-
-int verificarErrorBind(int, struct sockaddr_in);
-
-int verificarErrorListen(int);
 
 #endif /* FUNCIONESGENERICAS_H_ */
