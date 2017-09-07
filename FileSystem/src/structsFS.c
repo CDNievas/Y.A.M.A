@@ -1,4 +1,4 @@
-#include "../../Socket/src/funcionesSocket.c"
+#include "../../Biblioteca/src/funcionesSocket.c"
 
 
 typedef struct t_directory {

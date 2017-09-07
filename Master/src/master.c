@@ -2,6 +2,28 @@
 
 #define PARAMETROS{"YAMA_IP","YAMA_PUERTO"}
 
+long int obtenerTamanioArchivo(FILE* unArchivo){
+	fseek(unArchivo, 0, SEEK_END);
+	long int tamanioArchivo = ftell(unArchivo);
+	return tamanioArchivo;
+}
+
+char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
+{
+	fseek(unArchivo, 0, SEEK_SET);
+	char* contenidoArchivo = malloc(tamanioArchivo+1);
+	fread(contenidoArchivo, tamanioArchivo, 1, unArchivo);
+	contenidoArchivo[tamanioArchivo] = '\0';
+	return contenidoArchivo;
+}
+
+char* abrirArchivo(char* unPath){
+	FILE* archivoALeer = fopen(unPath, "rb");
+	long int tamanioArchivo = obtenerTamanioArchivo(archivoALeer);
+	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
+	return contenidoArchivo;
+}
+
 int main(int argc, char **argv) {
 
 	int codError; // Variable que se usa para absorber el codigo de error de una funcion
