@@ -1,6 +1,11 @@
+#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
+
+/* Funcion main pide
+	- Path archivo de configuracion.ini
+*/
 
 int main(int argc, char **argv) {
 

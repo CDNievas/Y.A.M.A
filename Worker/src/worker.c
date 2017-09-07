@@ -1,6 +1,11 @@
+#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 
 #define PARAMETROS{"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","PUERTO_DATANODE","RUTA_DATABIN"}
+
+/* Funcion main pide
+	- Path archivo de configuracion.ini
+*/
 
 int main(int argc, char **argv) {
 

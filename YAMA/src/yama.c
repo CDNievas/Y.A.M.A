@@ -1,6 +1,11 @@
+#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 
- #define PARAMETROS{"FS_IP","FS_PUERTO","RETARDO_PLANIFICACION","ALGORITMO_BALANCEO"}
+#define PARAMETROS{"FS_IP","FS_PUERTO","RETARDO_PLANIFICACION","ALGORITMO_BALANCEO"}
+
+/* Funcion main pide
+	- Path archivo de configuracion.ini
+*/
 
 int main(int argc, char **argv) {
 

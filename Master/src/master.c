@@ -1,3 +1,4 @@
+#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 
 #define PARAMETROS{"YAMA_IP","YAMA_PUERTO"}
@@ -23,6 +24,10 @@ char* abrirArchivo(char* unPath){
 	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
 	return contenidoArchivo;
 }
+
+/* Funcion main pide
+	- Path archivo de configuracion.ini
+*/
 
 int main(int argc, char **argv) {
 
