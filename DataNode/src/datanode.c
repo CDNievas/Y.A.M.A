@@ -161,6 +161,7 @@ int main(int argc, char **argv) {
 	loggerDataNode = log_create("DataNode.log", "DataNode", 1, 0);
 	chequearParametros(argc);
 	t_config* configuracionDataNode = generarTConfig(argv[1], 5);
+	//t_config* configuracionDataNode = generarTConfig("Debug/datanode.ini", 5);
 	cargarDataNode(configuracionDataNode);
 	log_info(loggerDataNode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 	int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);

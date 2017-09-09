@@ -1,4 +1,10 @@
-#include "../../Biblioteca/src/funcionesSocket.c"
+#include "../../Biblioteca/src/genericas.c"
+#include "../../Biblioteca/src/Socket.c"
+#include "../../Biblioteca/src/configParser.c"
+
+#ifndef STRUCTMASTER_H_
+#define STRUCTMASTER_H_
+
 
 #define sizeMaxMsg 128
 
@@ -27,3 +33,6 @@ typedef struct strReduccionGlobal{
 	char* temporalesReduccionLocal;
 	int encargado; // 1 si es encargado, 0 si no.
 } reduccionGlobal;
+
+
+#endif /* STRUCTMASTER_H_ */

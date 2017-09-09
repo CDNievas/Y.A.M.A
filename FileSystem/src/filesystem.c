@@ -1,12 +1,12 @@
-#include "../../Biblioteca/src/genericas.c"
-#include "../../Biblioteca/src/configParser.c"
-#include "../../Biblioteca/src/Socket.c"
+#include "structFS.h"
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
 
 int PUERTO_ESCUCHA;
 
 t_log* loggerFileSystem;
+int hayNodes = 0;
+int esEstadoSeguro = 1; //Habria que implementar la copia de los archivos
 
 void cargarFileSystem(t_config* configuracionFS){
     if(!config_has_property(configuracionFS, "PUERTO_ESCUCHA")){
@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
 	chequearParametros(argc);
 	t_config* configuracionFS = generarTConfig(argv[1], 1);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -48,13 +49,19 @@ int main(int argc, char **argv) {
 					int notificacion = recvDeNotificacion(socketClienteChequeado);
 					switch(notificacion){
 						case ES_DATANODE:
-							//Hago cosas
+							hayNodes = 1;
+							sendDeNotificacion(socketClienteChequeado, ES_FS);
 						break;
 						case ES_MASTER:
 							//Hago mas cosas
 						break;
 						case ES_YAMA:
-							//Hago maaas cosas
+							if(hayNodes && esEstadoSeguro){
+
+							}else{
+								FD_CLR(socketClienteChequeado, &socketClientes);
+								close(socketClienteChequeado);
+							}
 						break;
 						default:
 							log_error(loggerFileSystem, "La conexion recibida es erronea.");

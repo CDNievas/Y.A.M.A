@@ -1,6 +1,4 @@
-#include "../../Biblioteca/src/genericas.c"
-#include "../../Biblioteca/src/Socket.c"
-#include "../../Biblioteca/src/configParser.c"
+#include "structMaster.h"
 
 #define PARAMETROS {"YAMA_IP","YAMA_PUERTO"}
 
@@ -65,6 +63,7 @@ int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	chequearParametros(argc);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
+//	t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
 	cargarMaster(configuracionMaster);
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
     realizarHandshakeMasterYama(socketYAMA);

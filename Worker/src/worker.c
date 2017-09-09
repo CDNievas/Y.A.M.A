@@ -1,7 +1,11 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+//NO PUEDO ELIMINAR ESAS TRES BIBLIOTECAS SIN QUE ME TIRE ERROR
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
 
@@ -10,7 +14,7 @@ int PUERTO_FILESYSTEM;
 char* NOMBRE_NODO;
 int PUERTO_WORKER;
 char* RUTA_DATABIN;
-t_log* loggerWorker;
+t_log * loggerWorker;
 
 void cargarWorker(t_config* configuracionWorker){
     if(!config_has_property(configuracionWorker, "IP_FILESYSTEM")){

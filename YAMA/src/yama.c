@@ -41,6 +41,8 @@ void cargarYAMA(t_config* configuracionYAMA){
     if(!config_has_property(configuracionYAMA, "PUERTO_MASTERS")){
     	log_error(loggerYAMA, "No se encuentra el parametro PUERTO_MASTERS en el archivo de configuracion");
     	exit(-1);
+    }else{
+    	PUERTO_MASTERS = config_get_int_value(configuracionYAMA, "PUERTO_MASTERS");
     }
     config_destroy(configuracionYAMA);
 }
@@ -63,6 +65,7 @@ int main(int argc, char **argv) {
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 5);
+//	t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
 	int socketFS = conectarAServer(FS_IP, FS_PUERTO);
@@ -94,7 +97,7 @@ int main(int argc, char **argv) {
 						FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
 						close(socketClienteChequeado);
 					}else{
-						//Aca hay que agregar las funcionalidades de lo que ocurriria si es master
+						sendDeNotificacion(socketClienteChequeado, ES_YAMA);
 					}
 				}
 			}
