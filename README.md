@@ -15,7 +15,7 @@
 - [ ] Consola de FS sin funcionalidades.
 - [ ] Propagar archivo abierto por Master entre los procesos.
 - [X] Desarrollo servidor con hilos en Master.
-- [X] Desarrollo servidor con forks en Worker.
+- [] Desarrollo servidor con forks en Worker.
 
 
 ### Segundo checkpoint (07/10/2017):
