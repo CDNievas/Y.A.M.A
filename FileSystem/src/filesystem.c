@@ -1,4 +1,7 @@
 #include "structFS.h"
+#include "consolaFS.h"
+#include <pthread.h>
+
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
 
@@ -6,7 +9,9 @@ int PUERTO_ESCUCHA;
 
 t_log* loggerFileSystem;
 int hayNodes = 0;
-int esEstadoSeguro = 1; //Habria que implementar la copia de los archivos
+int esEstadoSeguro = 1;
+
+ //Habria que implementar la copia de los archivos
 
 void cargarFileSystem(t_config* configuracionFS){
     if(!config_has_property(configuracionFS, "PUERTO_ESCUCHA")){
@@ -26,11 +31,13 @@ int main(int argc, char **argv) {
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
+	pthread_t hiloConsolaFS;
 	socketMaximo = socketEscuchaFS;
 	fd_set socketClientes, socketClientesAuxiliares;
 	FD_ZERO(&socketClientes);
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketEscuchaFS, &socketClientes);
+	pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
 	while(1){
 		socketClientesAuxiliares = socketClientes;
 		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){
