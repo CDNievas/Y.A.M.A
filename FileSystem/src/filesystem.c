@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketClientes);
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketEscuchaFS, &socketClientes);
-	//pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
+	pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
 	while(1){
 		socketClientesAuxiliares = socketClientes;
 		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){

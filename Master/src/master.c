@@ -3,7 +3,9 @@
 #define PARAMETROS {"YAMA_IP","YAMA_PUERTO"}
 
 char* YAMA_IP;
+char*WORKER_IP;
 int YAMA_PUERTO;
+int WORKER_PUERTO;
 
 t_log* loggerMaster;
 
@@ -23,11 +25,11 @@ void cargarMaster(t_config* configuracionMaster){
     }
 }
 
-void realizarHandshakeMasterYama(int socketYAMA){
-    sendDeNotificacion(socketYAMA, ES_MASTER);
-    int notificacion = recvDeNotificacion(socketYAMA);
-    if(notificacion != ES_YAMA){
-        log_error(loggerMaster, "La conexion establecida no es de YAMA");
+void realizarHandshakeMaster(int unSocket, int proceso){
+    sendDeNotificacion(unSocket, ES_MASTER);
+    int notificacion = recvDeNotificacion(unSocket);
+    if(notificacion != proceso){
+        log_error(loggerMaster, "La conexion establecida no es correcta");
         exit(-1);
     }
 }
@@ -55,10 +57,6 @@ char* obtenerContenido(char* unPath){
 	return contenidoArchivo;
 }
 
-/* Funcion main pide
-	- Path archivo de configuracion.ini
-*/
-
 void propagarArchivo(char* unNombreArchivo, int socketDeYama){
 	char* contenidoArchivo = obtenerContenido(unNombreArchivo);
 	sendRemasterizado(socketDeYama,SK_FILE_SEND,string_length(contenidoArchivo),contenidoArchivo);
@@ -71,7 +69,11 @@ int main(int argc, char **argv) {
 	t_config* configuracionMaster = generarTConfig("master.ini", 2);
 	cargarMaster(configuracionMaster);
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
-    realizarHandshakeMasterYama(socketYAMA);
+    WORKER_IP = "127.0.0.1";
+    WORKER_PUERTO = 5010;
+    int socketWorker = conectarAServer(WORKER_IP, WORKER_PUERTO);
+    realizarHandshakeMaster(socketYAMA,ES_YAMA);
+    realizarHandshakeMaster(socketWorker,ES_WORKER);
     propagarArchivo(argv[3],socketYAMA);
 	return EXIT_SUCCESS;
 }

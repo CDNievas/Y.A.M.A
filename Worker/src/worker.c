@@ -1,20 +1,15 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-//NO PUEDO ELIMINAR ESAS TRES BIBLIOTECAS SIN QUE ME TIRE ERROR
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
 
+t_log* loggerWorker;
 char* IP_FILESYSTEM;
-int PUERTO_FILESYSTEM;
-char* NOMBRE_NODO;
-int PUERTO_WORKER;
 char* RUTA_DATABIN;
-t_log * loggerWorker;
+char* NOMBRE_NODO;
+int PUERTO_FILESYSTEM;
+int PUERTO_WORKER;
 
 void cargarWorker(t_config* configuracionWorker){
     if(!config_has_property(configuracionWorker, "IP_FILESYSTEM")){
@@ -47,15 +42,52 @@ void cargarWorker(t_config* configuracionWorker){
     config_destroy(configuracionWorker);
 }
 
-/* Funcion main pide
-	- Path archivo de configuracion.ini
-*/
+void crearProcesoHijo(int socketMaster){
+	int pipe_padreAHijo[2];
+	int pipe_hijoAPadre[2];
+	int status;
+
+	pipe(pipe_padreAHijo);
+	pipe(pipe_hijoAPadre);
+
+	pid_t pid = fork();
+
+	switch(pid){
+	case -1:
+		perror("No se pudo crear el proceso hijo\n");
+		exit(-1);
+	case 0:
+		close(socketMaster);
+
+		printf("Proceso hijo con pid: %d \n",pid);
+		printf("Soy el hijo y mi padre tiene el pid: %d \n",getppid());
+
+		dup2(pipe_padreAHijo[0],STDIN_FILENO);
+		dup2(pipe_hijoAPadre[1],STDOUT_FILENO);
+
+		close(pipe_padreAHijo[1]);
+		close(pipe_hijoAPadre[0]);
+		close(pipe_hijoAPadre[1]);
+		close(pipe_padreAHijo[0]);
+
+		exit(1);
+	default:
+		printf("Proceso padre con pid: %d \n",pid);
+
+		close(pipe_padreAHijo[0]);
+		close(pipe_hijoAPadre[1]);
+		close(pipe_padreAHijo[1]);
+		close(pipe_hijoAPadre[0]);
+
+		waitpid(pid,&status,0);
+	}
+}
 
 int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
-	//t_config* configuracionWorker = generarTConfig(argv[1], 5);
-	t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
+	t_config* configuracionWorker = generarTConfig(argv[1], 5);
+	//t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
 	cargarWorker(configuracionWorker);
 	log_info(loggerWorker, "Se cargo correctamente Worker.");
 	int socketMaximo, socketClienteChequeado, socketAceptado;
@@ -65,7 +97,6 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketsMasters);
 	FD_ZERO(&socketMastersAuxiliares);
 	FD_SET(socketEscuchaWorker, &socketsMasters);
-
 	while(1){
 		socketMastersAuxiliares = socketsMasters;
 		if(select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1){
@@ -87,7 +118,8 @@ int main(int argc, char **argv) {
 						FD_CLR(socketClienteChequeado, &socketsMasters);
 						close(socketClienteChequeado);
 					}else{
-						//hago cosas
+						sendDeNotificacion(socketClienteChequeado, ES_WORKER);
+						crearProcesoHijo(socketClienteChequeado);
 					}
 				}
 
@@ -96,5 +128,3 @@ int main(int argc, char **argv) {
 	}
 	return EXIT_SUCCESS;
 }
-
-
