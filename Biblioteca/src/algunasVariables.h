@@ -31,6 +31,7 @@
 #define ES_MASTER 3
 #define ES_YAMA 4
 #define ES_DATANODE 1000
+#define SK_FILE_SEND 300
 
 
 typedef struct __attribute__((__packed__)){

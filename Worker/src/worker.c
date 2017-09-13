@@ -53,7 +53,7 @@ void cargarWorker(t_config* configuracionWorker){
 
 int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
-	//chequearParametros(argc);
+	chequearParametros(argc,2);
 	//t_config* configuracionWorker = generarTConfig(argv[1], 5);
 	t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
 	cargarWorker(configuracionWorker);

@@ -48,7 +48,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 	return contenidoArchivo;
 }
 
-char* abrirArchivo(char* unPath){
+char* obtenerContenido(char* unPath){
 	FILE* archivoALeer = fopen(unPath, "rb");
 	long int tamanioArchivo = obtenerTamanioArchivo(archivoALeer);
 	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
@@ -59,13 +59,19 @@ char* abrirArchivo(char* unPath){
 	- Path archivo de configuracion.ini
 */
 
+void propagarArchivo(char* unNombreArchivo, int socketDeYama){
+	char* contenidoArchivo = obtenerContenido(unNombreArchivo);
+	sendRemasterizado(socketDeYama,SK_FILE_SEND,string_length(contenidoArchivo),contenidoArchivo);
+	free(contenidoArchivo);
+}
+
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
-	chequearParametros(argc);
-	t_config* configuracionMaster = generarTConfig(argv[1], 2);
-//	t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
+	chequearParametros(argc,5);
+	t_config* configuracionMaster = generarTConfig("master.ini", 2);
 	cargarMaster(configuracionMaster);
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
     realizarHandshakeMasterYama(socketYAMA);
+    propagarArchivo(argv[3],socketYAMA);
 	return EXIT_SUCCESS;
 }

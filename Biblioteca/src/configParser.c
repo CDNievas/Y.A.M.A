@@ -2,8 +2,8 @@
 
 
 // Imprime archivo de configuracion por pantalla
-void chequearParametros(int argc){
-    if(argc != 2){
+void chequearParametros(int argc, int cantidad){
+    if(argc != cantidad){
         perror("Error con los parametros. \n");
         exit(-1);
     }

@@ -60,12 +60,20 @@ void realizarHandshakeConFS(int socketFS){
 	- Path archivo de configuracion.ini
 */
 
-int main(int argc, char **argv) {
+void recibirArchivo(int socketMaster){
+	paquete* unPaquete = recvRemasterizado(socketMaster);
+	char* codigoAImprimir = string_new();
+	string_append(&codigoAImprimir,unPaquete->mensaje);
+	printf(codigoAImprimir);
+	free(unPaquete);
+	free(codigoAImprimir);
+}
 
+int main(int argc, char **argv) {
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
-	chequearParametros(argc);
+	chequearParametros(argc,2);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 5);
-//	t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
+	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
 	int socketFS = conectarAServer(FS_IP, FS_PUERTO);
@@ -98,6 +106,7 @@ int main(int argc, char **argv) {
 						close(socketClienteChequeado);
 					}else{
 						sendDeNotificacion(socketClienteChequeado, ES_YAMA);
+						recibirArchivo(socketClienteChequeado);
 					}
 				}
 			}

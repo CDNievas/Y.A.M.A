@@ -1,1 +1,3 @@
 [INFO] 19:37:22:855 YAMA/(5918:5918): Se cargo exitosamente YAMA.
+[INFO] 23:15:29:853 YAMA/(5208:5208): Se cargo exitosamente YAMA.
+[ERROR] 23:18:22:895 YAMA/(5208:5208): La conexion establecida no es con FileSystem

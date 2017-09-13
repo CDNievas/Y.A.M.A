@@ -25,7 +25,7 @@ void cargarFileSystem(t_config* configuracionFS){
 
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc);
+	chequearParametros(argc,2);
 	t_config* configuracionFS = generarTConfig(argv[1], 1);
 //	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketClientes);
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketEscuchaFS, &socketClientes);
-	pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
+	//pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
 	while(1){
 		socketClientesAuxiliares = socketClientes;
 		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 						break;
 						case ES_YAMA:
 							if(hayNodes && esEstadoSeguro){
-
+								sendDeNotificacion(socketClienteChequeado, ES_FS);
 							}else{
 								FD_CLR(socketClienteChequeado, &socketClientes);
 								close(socketClienteChequeado);

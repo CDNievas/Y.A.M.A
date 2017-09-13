@@ -159,35 +159,16 @@ void realizarHandshakeFS(int socketFS){
 
 int main(int argc, char **argv) {
 	loggerDataNode = log_create("DataNode.log", "DataNode", 1, 0);
-	chequearParametros(argc);
+	chequearParametros(argc,3);
 	t_config* configuracionDataNode = generarTConfig(argv[1], 5);
 	//t_config* configuracionDataNode = generarTConfig("Debug/datanode.ini", 5);
 	cargarDataNode(configuracionDataNode);
 	log_info(loggerDataNode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 	int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	realizarHandshakeFS(socketServerFS);
-	// Manejo del archivo .bin
-	generarDatabin();
+	while(1){
 
-	// Creo el puntero para manejar datos
-	void * datos = malloc(1024*1024);
-	int y = 11;
-	memcpy(datos, (void *) &y, sizeof(int));
-	
-	// Guardo en bloque 0
-	if(setBloque(0,datos)==-1){
-		codError = -5;
-		printf(KRED "11- Acceso a bloque inexistente en archivo .bin. \n" RESET);
-		return codError;
 	}
-
-	if((datos = getBloque(0)) == NULL){
-		codError = -5;
-		printf(KRED "2- Acceso a bloque inexistente en archivo .bin. \n" RESET);
-		return codError; 
-	}
-
-	printf("Dato leido: %i \n", *((int *)datos));
 
 	return EXIT_SUCCESS;
 
