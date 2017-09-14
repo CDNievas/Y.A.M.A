@@ -67,11 +67,10 @@ void cargarDataNode(t_config* configuracionDN){
     config_destroy(configuracionDN);
 }
 
-
+/*
 void generarDatabin(){
 
 	char * msg;
-	printf("pase");
 
 	// Si no existe el archivo lo creo
 	if(!existeArchivo(pathDataBin)){
@@ -140,7 +139,7 @@ int setBloque(int numeroBloque, void * datos){
 	}
 
 
-}
+}*/
 
 void realizarHandshakeFS(int socketFS){
 	sendDeNotificacion(socketFS, ES_DATANODE);
@@ -160,8 +159,8 @@ void realizarHandshakeFS(int socketFS){
 int main(int argc, char **argv) {
 	loggerDataNode = log_create("DataNode.log", "DataNode", 1, 0);
 	chequearParametros(argc,3);
-	t_config* configuracionDataNode = generarTConfig(argv[1], 5);
-	//t_config* configuracionDataNode = generarTConfig("Debug/datanode.ini", 5);
+	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
+	//t_config* configuracionDataNode = generarTConfig("Debug/datanode.ini", 6);
 	cargarDataNode(configuracionDataNode);
 	log_info(loggerDataNode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 	int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);

@@ -1,5 +1,4 @@
 #include "structFS.h"
-#include <pthread.h>
 
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
@@ -12,7 +11,7 @@ int esEstadoSeguro = 1;
 
 //CONSOLA DE FS
 
-void *consolaFS(){
+void consolaFS(){
 	char* comando;
 	while(1){
 		comando = readline("->");
@@ -83,7 +82,7 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketClientes);
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketEscuchaFS, &socketClientes);
-	pthread_create(&hiloConsolaFS, NULL, consolaFS, NULL);
+	pthread_create(&hiloConsolaFS, NULL, (void*)consolaFS, NULL);
 	while(1){
 		socketClientesAuxiliares = socketClientes;
 		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){

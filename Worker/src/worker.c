@@ -86,7 +86,7 @@ void crearProcesoHijo(int socketMaster){
 int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
-	t_config* configuracionWorker = generarTConfig(argv[1], 5);
+	t_config* configuracionWorker = generarTConfig(argv[1], 6);
 	//t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
 	cargarWorker(configuracionWorker);
 	log_info(loggerWorker, "Se cargo correctamente Worker.");

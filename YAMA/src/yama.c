@@ -64,7 +64,7 @@ void recibirArchivo(int socketMaster){
 	paquete* unPaquete = recvRemasterizado(socketMaster);
 	char* codigoAImprimir = string_new();
 	string_append(&codigoAImprimir,unPaquete->mensaje);
-	printf(codigoAImprimir);
+	printf("%s",codigoAImprimir);
 	free(unPaquete);
 	free(codigoAImprimir);
 }
