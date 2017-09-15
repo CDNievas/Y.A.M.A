@@ -50,7 +50,7 @@ void imprimirComandos(){
 
 void analizarComando(char * linea){
 
-  int i,j;
+  int i;
   int comandoNativo;
   int limite = (sizeof(comandos)/sizeof(comandos[0]));
   command comandoAux;
@@ -201,7 +201,6 @@ void consolaFS() {
   while(1) {
     linea = readline(">>");   
 
-    char** comandoDesarmado;
 
     if(linea)
     	add_history(linea);
