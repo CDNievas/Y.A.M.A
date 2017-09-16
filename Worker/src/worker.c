@@ -3,6 +3,10 @@
 #include "../../Biblioteca/src/configParser.c"
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
+#define TRANSFORMACION 332
+#define REDUCCION_LOCAL 333
+#define REDUCCION_GLOBAL 334
+#define SIZE_SCRIPT 1024
 
 t_log* loggerWorker;
 char* IP_FILESYSTEM;
@@ -42,10 +46,47 @@ void cargarWorker(t_config* configuracionWorker){
     config_destroy(configuracionWorker);
 }
 
+void darPermisosAScripts(char* script){
+	struct stat infoScript;
+
+	if(chmod(script,S_IXUSR|S_IXGRP|S_IXOTH|S_ISVTX)!=0){
+		log_error(loggerWorker,"Error al otorgar permisos al script.");
+	}
+	else{
+		stat(script,&infoScript);
+		log_info(loggerWorker,"Los permisos para el script son: %08x\n",infoScript.st_mode);
+	}
+}
+
+char* crearComandoScript(char* pathScript){
+	char* command = string_new();
+	string_append(command,"./");
+	string_append(command,pathScript);
+	free(pathScript);
+	return command;
+}
+
+char* leerBloque(int nroBloque, long bytesOcupados){
+	FILE* dataBin = fopen(RUTA_DATABIN, "rb");
+	fseek(dataBin, nroBloque*1000000, SEEK_SET);
+	char* contenidoBloque = malloc(bytesOcupados+1);
+	fread(contenidoBloque, bytesOcupados, 1, dataBin);
+	contenidoBloque[bytesOcupados] = '\0';
+	return contenidoBloque;
+}
+
 void crearProcesoHijo(int socketMaster){
+	paquete* unPaquete = recvRemasterizado(socketMaster);
+	char* bufferScriptRead = malloc(SIZE_SCRIPT);
+	int tamanioScript;
+	int tamanioPathDestino;
+	int nroBloque;
 	int pipe_padreAHijo[2];
 	int pipe_hijoAPadre[2];
 	int status;
+	long bytesOcupados;
+	char* pathScript;
+	char* pathDestino;
 
 	pipe(pipe_padreAHijo);
 	pipe(pipe_hijoAPadre);
@@ -70,17 +111,68 @@ void crearProcesoHijo(int socketMaster){
 		close(pipe_hijoAPadre[1]);
 		close(pipe_padreAHijo[0]);
 
+		switch(unPaquete->tipoMsj){
+		case TRANSFORMACION:{
+			memcpy(&tamanioScript,unPaquete->mensaje,sizeof(int));
+			pathScript = malloc(tamanioScript);
+			memcpy(pathScript,unPaquete->mensaje+sizeof(int),tamanioScript);
+			memcpy(&nroBloque,unPaquete->mensaje+sizeof(int)+tamanioScript,sizeof(int));
+			memcpy(&bytesOcupados,unPaquete->mensaje+sizeof(int)*2+tamanioScript,sizeof(long));
+			memcpy(&tamanioPathDestino,unPaquete->mensaje+sizeof(int)*2+tamanioScript+sizeof(long),sizeof(int));
+			pathDestino = malloc(tamanioPathDestino);
+			memcpy(pathDestino,unPaquete->mensaje+sizeof(int)*3+tamanioScript+sizeof(double),tamanioPathDestino);
+
+			darPermisosAScripts(pathScript);
+			char* command = crearComandoScript(pathScript);
+
+			char* argv[] = {NULL};
+			char* envp[] = {NULL};
+			execve(command,argv,envp);
+			free(command);
+
+			//sort();
+		}
+		break;
+		case REDUCCION_LOCAL:{
+
+		}
+		break;
+		case REDUCCION_GLOBAL:{
+
+		}
+		break;
+		default:
+			log_error(loggerWorker, "Error al recibir paquete de Master");
+			exit(-1);
+		}
+
 		exit(1);
 	default:
 		printf("Proceso padre con pid: %d \n",pid);
 
 		close(pipe_padreAHijo[0]);
 		close(pipe_hijoAPadre[1]);
+
+		char* bloqueLeido = leerBloque(nroBloque,bytesOcupados);
+		write(pipe_padreAHijo[1],bloqueLeido,strlen(bloqueLeido));
+
 		close(pipe_padreAHijo[1]);
-		close(pipe_hijoAPadre[0]);
 
 		waitpid(pid,&status,0);
+
+		read(pipe_hijoAPadre[0],bufferScriptRead,SIZE_SCRIPT);
+
+		close(pipe_hijoAPadre[0]);
+
+		free(bloqueLeido);
 	}
+
+	FILE* archivoDefinitivo = fopen(pathDestino,"w");
+	fputs(bufferScriptRead,archivoDefinitivo);
+	free(pathDestino);
+	free(bufferScriptRead);
+	free(unPaquete);
+	fclose(archivoDefinitivo);
 }
 
 int main(int argc, char **argv) {

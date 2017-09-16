@@ -25,7 +25,7 @@ void cargarMaster(t_config* configuracionMaster){
     }
 }
 
-void realizarHandshakeMaster(int unSocket, int proceso){
+void realizarHandshake(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
     int notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
@@ -66,14 +66,15 @@ void propagarArchivo(char* unNombreArchivo, int socketDeYama){
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	chequearParametros(argc,5);
-	t_config* configuracionMaster = generarTConfig("master.ini", 2);
+	t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
 	cargarMaster(configuracionMaster);
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
+    realizarHandshake(socketYAMA,ES_YAMA);
     WORKER_IP = "127.0.0.1";
     WORKER_PUERTO = 5010;
-    int socketWorker = conectarAServer(WORKER_IP, WORKER_PUERTO);
-    realizarHandshakeMaster(socketYAMA,ES_YAMA);
-    realizarHandshakeMaster(socketWorker,ES_WORKER);
+    //argv[3] = "Debug/pene.txt";
     propagarArchivo(argv[3],socketYAMA);
+    int socketWorker = conectarAServer(WORKER_IP, WORKER_PUERTO);
+    realizarHandshake(socketWorker,ES_WORKER);
 	return EXIT_SUCCESS;
 }
