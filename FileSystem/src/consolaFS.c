@@ -1,3 +1,6 @@
+#include "consolaFS.h"
+
+
 #define maxSize 256
 
 typedef struct {
@@ -23,26 +26,26 @@ command comandos[] = {
 
 
 void imprimirComandos(){
-  printf("\n");
-  printf("*************************************************\n");
-  printf("*                                               *\n");
-  printf("*   Elegir para ejecutar dicho comando:         *\n");
-  printf("*                                               *\n");
-  printf("*************************************************\n");
-  printf("\n");
+  puts("\n");
+  puts("*************************************************\n");
+  puts("*                                               *\n");
+  puts("*   Elegir para ejecutar dicho comando:         *\n");
+  puts("*                                               *\n");
+  puts("*************************************************\n");
+  puts("\n");
 
-  printf("format: Formatear el FileSystem. \n");
-  printf("rm: Eliminar archivo/directorio/nodo/bloque. \n");
-  printf("rename: Renombrar un archivo o directorio. \n");
-  printf("mv: Mover un archivo o directorio. \n");
-  printf("cat: Mostrar el contenido del archivo como texto plano. \n");
-  printf("mkdir: Crear un directorio. \n");
-  printf("cpfrom: Copiar un archivo local al yamafs. \n");
-  printf("cpto: Copiar un archivo local al yamafs. \n");
-  printf("cpblock: Crear copia de un bloque de un archivo. \n");
-  printf("md5: Solicitar MD5 de un archivo del yamafs. \n");
-  printf("ls Listar los archivos de un directorio. \n");
-  printf("info: Mostrar información de un archivo. \n");
+  puts("format: Formatear el FileSystem. \n");
+  puts("rm: Eliminar archivo/directorio/nodo/bloque. \n");
+  puts("rename: Renombrar un archivo o directorio. \n");
+  puts("mv: Mover un archivo o directorio. \n");
+  puts("cat: Mostrar el contenido del archivo como texto plano. \n");
+  puts("mkdir: Crear un directorio. \n");
+  puts("cpfrom: Copiar un archivo local al yamafs. \n");
+  puts("cpto: Copiar un archivo local al yamafs. \n");
+  puts("cpblock: Crear copia de un bloque de un archivo. \n");
+  puts("md5: Solicitar MD5 de un archivo del yamafs. \n");
+  puts("ls Listar los archivos de un directorio. \n");
+  puts("info: Mostrar información de un archivo. \n");
   
 }
 
@@ -186,7 +189,7 @@ void analizarComando(char * linea){
 
 
 
-void consolaFS() {
+void consolaFS(){
 
   char * linea = string_new();
 

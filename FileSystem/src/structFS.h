@@ -1,9 +1,7 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 #include "../../Biblioteca/src/Socket.c"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <readline/chardefs.h>
+
 
 #ifndef STRUCTFS_H_
 #define STRUCTFS_H_

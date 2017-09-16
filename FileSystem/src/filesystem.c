@@ -1,6 +1,6 @@
-#include "structFS.h"
-#include "consolaFS.c"
 
+#include "consolaFS.h"
+#include "structFS.h"
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
 

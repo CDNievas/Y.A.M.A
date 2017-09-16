@@ -1,4 +1,4 @@
-#include "algunasVariables.h"
+#include "configParser.h"
 
 
 // Imprime archivo de configuracion por pantalla
