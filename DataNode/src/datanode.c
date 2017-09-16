@@ -158,7 +158,7 @@ void realizarHandshakeFS(int socketFS){
 
 int main(int argc, char **argv) {
 	loggerDataNode = log_create("DataNode.log", "DataNode", 1, 0);
-	chequearParametros(argc,3);
+	chequearParametros(argc,2);
 	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
 	//t_config* configuracionDataNode = generarTConfig("Debug/datanode.ini", 6);
 	cargarDataNode(configuracionDataNode);

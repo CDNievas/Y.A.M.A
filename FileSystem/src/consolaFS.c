@@ -25,6 +25,15 @@ command comandos[] = {
 };
 
 
+void liberarComandoDesarmado(char** comandoDesarmado){
+	int i = 0;
+	while(comandoDesarmado[i]!=NULL){
+		free(comandoDesarmado[i]);
+		i++;
+	}
+	free(comandoDesarmado);
+}
+
 void imprimirComandos(){
   puts("\n");
   puts("*************************************************\n");
@@ -92,6 +101,11 @@ void analizarComando(char * linea){
         char * nombreArchivoViejo = comandoDesarmado[1];
         char * nombreArchivoNuevo = comandoDesarmado[2];
 
+        if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
+        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
+        	break;
+        }
+
         string_append(&comandoNuevo,"mv ");
         string_append(&comandoNuevo,nombreArchivoViejo);
         string_append(&comandoNuevo," ");
@@ -100,7 +114,7 @@ void analizarComando(char * linea){
 
         system(comandoNuevo); 
         printf("\n");
-    
+        free(comandoNuevo);
       }
       break; 
 
@@ -152,11 +166,17 @@ void analizarComando(char * linea){
 
         char * nombreArchivoViejo = comandoDesarmado[1];
 
+        if(nombreArchivoViejo == NULL){
+        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando md5sum");
+        	break;
+        }
+
         string_append(&comandoNuevo,"md5sum ");
         string_append(&comandoNuevo,nombreArchivoViejo);
 
         system(comandoNuevo);
         printf("\n");
+        free(comandoNuevo);
       }
       break;
 
@@ -167,43 +187,43 @@ void analizarComando(char * linea){
       break;
 
       case 12:{
-        char * comandoNuevo = string_new();
+        char * comandoNuevo;//;
 
         char * nombreArchivoViejo = comandoDesarmado[1];
+        if(nombreArchivoViejo == NULL){
+        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando info.");
+        	break;
+        }
 
         string_append(&comandoNuevo,"ls -l -h ");
         string_append(&comandoNuevo,nombreArchivoViejo);
 
         system(comandoNuevo);
         printf("\n");
+        free(comandoNuevo);
+        free(nombreArchivoViejo);
       }
       break;
 
       default:
-            printf("Comando no reconocido.\n");
+            //log_error(loggerFileSystem, "Comando no reconocido.");
             break;
 
     }
-
+  liberarComandoDesarmado(comandoDesarmado);
 }
 
 
 
 void consolaFS(){
 
-  char * linea = string_new();
-
-  if(linea == NULL){
-    printf("Problemas creando cadena.");
-  }
- 
+  char * linea;
   imprimirComandos();
 
   printf("\n");
         
   while(1) {
-    linea = readline(">>");   
-
+    linea = readline(">");
 
     if(linea)
     	add_history(linea);
@@ -214,7 +234,7 @@ void consolaFS(){
     }
 
     analizarComando(linea); 
-
+    free(linea);
   }
 
 }
