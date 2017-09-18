@@ -66,13 +66,12 @@ void propagarArchivo(char* unNombreArchivo, int socketDeYama){
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	chequearParametros(argc,5);
-	t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
+	t_config* configuracionMaster = generarTConfig("master.ini", 2);
 	cargarMaster(configuracionMaster);
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
     realizarHandshake(socketYAMA,ES_YAMA);
     WORKER_IP = "127.0.0.1";
     WORKER_PUERTO = 5010;
-    //argv[3] = "Debug/pene.txt";
     propagarArchivo(argv[3],socketYAMA);
     int socketWorker = conectarAServer(WORKER_IP, WORKER_PUERTO);
     realizarHandshake(socketWorker,ES_WORKER);

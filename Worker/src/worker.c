@@ -58,26 +58,26 @@ void darPermisosAScripts(char* script){
 	}
 }
 
-char* crearComandoScript(char* pathScript){
+char* crearComandoScript(char* pathScript,char* pathDestino, int nroBloque, long bytesOcupados){
 	char* command = string_new();
-	string_append(command,"./");
-	string_append(command,pathScript);
+	int bloqueAnterior = nroBloque-1;
+	string_append(&command, "head ");
+	string_append(&command,string_itoa((bloqueAnterior*1048576)+bytesOcupados));
+	string_append(&command," ");
+	string_append(&command,RUTA_DATABIN);
+	string_append(&command," | tail ");
+	string_append(&command,string_itoa(bytesOcupados));
+	string_append(&command,"./");
+	string_append(&command,pathScript);
+	string_append(&command," > ");
+	string_append(&command,pathDestino);
 	free(pathScript);
+	free(pathDestino);
 	return command;
-}
-
-char* leerBloque(int nroBloque, long bytesOcupados){
-	FILE* dataBin = fopen(RUTA_DATABIN, "rb");
-	fseek(dataBin, nroBloque*1000000, SEEK_SET);
-	char* contenidoBloque = malloc(bytesOcupados+1);
-	fread(contenidoBloque, bytesOcupados, 1, dataBin);
-	contenidoBloque[bytesOcupados] = '\0';
-	return contenidoBloque;
 }
 
 void crearProcesoHijo(int socketMaster){
 	paquete* unPaquete = recvRemasterizado(socketMaster);
-	char* bufferScriptRead = malloc(SIZE_SCRIPT);
 	int tamanioScript;
 	int tamanioPathDestino;
 	int nroBloque;
@@ -98,7 +98,6 @@ void crearProcesoHijo(int socketMaster){
 		perror("No se pudo crear el proceso hijo\n");
 		exit(-1);
 	case 0:
-		close(socketMaster);
 
 		printf("Proceso hijo con pid: %d \n",pid);
 		printf("Soy el hijo y mi padre tiene el pid: %d \n",getppid());
@@ -122,15 +121,15 @@ void crearProcesoHijo(int socketMaster){
 			pathDestino = malloc(tamanioPathDestino);
 			memcpy(pathDestino,unPaquete->mensaje+sizeof(int)*3+tamanioScript+sizeof(double),tamanioPathDestino);
 
+			free(unPaquete);
+
 			darPermisosAScripts(pathScript);
-			char* command = crearComandoScript(pathScript);
 
-			char* argv[] = {NULL};
-			char* envp[] = {NULL};
-			execve(command,argv,envp);
+			char* command = crearComandoScript(pathScript,pathDestino,nroBloque,bytesOcupados);
+
+			system(command);
+
 			free(command);
-
-			//sort();
 		}
 		break;
 		case REDUCCION_LOCAL:{
@@ -148,31 +147,20 @@ void crearProcesoHijo(int socketMaster){
 
 		exit(1);
 	default:
+		close(socketMaster);
+
 		printf("Proceso padre con pid: %d \n",pid);
 
 		close(pipe_padreAHijo[0]);
 		close(pipe_hijoAPadre[1]);
 
-		char* bloqueLeido = leerBloque(nroBloque,bytesOcupados);
-		write(pipe_padreAHijo[1],bloqueLeido,strlen(bloqueLeido));
-
 		close(pipe_padreAHijo[1]);
 
 		waitpid(pid,&status,0);
 
-		read(pipe_hijoAPadre[0],bufferScriptRead,SIZE_SCRIPT);
-
 		close(pipe_hijoAPadre[0]);
 
-		free(bloqueLeido);
 	}
-
-	FILE* archivoDefinitivo = fopen(pathDestino,"w");
-	fputs(bufferScriptRead,archivoDefinitivo);
-	free(pathDestino);
-	free(bufferScriptRead);
-	free(unPaquete);
-	fclose(archivoDefinitivo);
 }
 
 int main(int argc, char **argv) {
