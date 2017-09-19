@@ -49,11 +49,13 @@ void cargarWorker(t_config* configuracionWorker){
 void darPermisosAScripts(char* script){
 	struct stat infoScript;
 
-	if(chmod(script,S_IXUSR|S_IXGRP|S_IXOTH|S_ISVTX)!=0){
+	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)!=0){
 		log_error(loggerWorker,"Error al otorgar permisos al script.");
 	}
+	else if(stat(script,&infoScript)!=0){
+		log_error(loggerWorker,"No se pudo obtener informacion del script.");
+	}
 	else{
-		stat(script,&infoScript);
 		log_info(loggerWorker,"Los permisos para el script son: %08x\n",infoScript.st_mode);
 	}
 }
@@ -61,15 +63,15 @@ void darPermisosAScripts(char* script){
 char* crearComandoScript(char* pathScript,char* pathDestino, int nroBloque, long bytesOcupados){
 	char* command = string_new();
 	int bloqueAnterior = nroBloque-1;
-	string_append(&command, "head ");
+	string_append(&command, "head -n ");
 	string_append(&command,string_itoa((bloqueAnterior*1048576)+bytesOcupados));
 	string_append(&command," ");
 	string_append(&command,RUTA_DATABIN);
-	string_append(&command," | tail ");
+	string_append(&command," | tail -n ");
 	string_append(&command,string_itoa(bytesOcupados));
-	string_append(&command,"./");
+	string_append(&command," | ./");
 	string_append(&command,pathScript);
-	string_append(&command," > ");
+	string_append(&command," | ./sort > ");
 	string_append(&command,pathDestino);
 	free(pathScript);
 	free(pathDestino);
