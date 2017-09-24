@@ -21,7 +21,6 @@
 #include <commons/collections/list.h>
 
 
-
 #ifndef FUNCIONESGENERICAS_H_
 #define FUNCIONESGENERICAS_H_
 

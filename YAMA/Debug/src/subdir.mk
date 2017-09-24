@@ -4,13 +4,28 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/yama.c 
+../src/YAMA.c \
+../src/balanceoDeCargas.c \
+../src/funcionesYAMA.c \
+../src/reduccionLocal.c \
+../src/serializaciones.c \
+../src/transformacion.c 
 
 OBJS += \
-./src/yama.o 
+./src/YAMA.o \
+./src/balanceoDeCargas.o \
+./src/funcionesYAMA.o \
+./src/reduccionLocal.o \
+./src/serializaciones.o \
+./src/transformacion.o 
 
 C_DEPS += \
-./src/yama.d 
+./src/YAMA.d \
+./src/balanceoDeCargas.d \
+./src/funcionesYAMA.d \
+./src/reduccionLocal.d \
+./src/serializaciones.d \
+./src/transformacion.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
