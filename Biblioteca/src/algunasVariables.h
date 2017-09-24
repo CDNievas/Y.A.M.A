@@ -37,7 +37,7 @@
 #define SK_FILE_SEND 300
 
 
-typedef struct __attribute__((__packed__)){
+typedef struct{
 	int tipoMsj;
 	int tamMsj;
 	void* mensaje;
