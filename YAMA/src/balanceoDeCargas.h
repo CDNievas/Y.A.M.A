@@ -6,6 +6,7 @@
  */
 
 #include "estructuras.h"
+#include "serializaciones.h"
 
 #ifndef BALANCEODECARGAS_H_
 #define BALANCEODECARGAS_H_
@@ -17,5 +18,6 @@ typedef struct{
 
 copia* balancearCarga(int, infoDeFs*);
 char* nodoParaReduccionGlobal(int);
+copia* replanificarTransformacion(int, t_list* , void*);
 
 #endif /* BALANCEODECARGAS_H_ */

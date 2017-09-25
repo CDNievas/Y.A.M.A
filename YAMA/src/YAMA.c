@@ -10,6 +10,7 @@
 
 #include "reduccionLocal.h"
 #include "transformacion.h"
+#include "funcionesYAMA.h"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
@@ -18,24 +19,40 @@ void manejadorMaster(void* socketMasterCliente){
 	int socketMaster = *(int*)socketMasterCliente;
 	char* nombreArchivoPeticion = string_new();
 	int nroMaster = obtenerNumeroDeMaster();
+	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
+	t_list* listaDeBloquesDeArchivo;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		paquete* paqueteRecibidoDeMaster = recvRemasterizado(socketMaster);
 		switch (paqueteRecibidoDeMaster->tipoMsj){
 			case TRANSFORMACION:
+				log_info(loggerYAMA, "Se recibio una peticion del socket %d para llevar a cabo una transformacion.", socketMaster);
 				string_append(&nombreArchivoPeticion, recibirNombreArchivo(paqueteRecibidoDeMaster->mensaje)); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
 				solicitarArchivo(nombreArchivoPeticion);
-				t_list* listaDeBloques = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
-				cargarTransformacion(socketMaster, nroMaster, listaDeBloques);
+				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
+				listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
+				log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
+				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
+				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo);
+				list_destroy(listaDeBloquesDeArchivo);
+				free(nombreArchivoPeticion);
 				break;
 			case TRANSFORMACION_TERMINADA:
+				log_info(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
 				terminarTransformacion(socketMaster, paqueteRecibidoDeMaster->mensaje); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
+				log_info(loggerYAMA, "Se termino la transformacion del master %d correctamente.", nroMaster);
 				t_list* lista = obtenerListaDelNodo(socketMaster, paqueteRecibidoDeMaster->mensaje);
 				if(sePuedeHacerReduccionLocal(lista)){
+					log_info(loggerYAMA, "Se puede llevar a cabo la reduccion local.");
 					cargarReduccionLocal(socketMaster, nroMaster, lista);
+				}else{
+					log_info(loggerYAMA, "No se puede llevar a cabo la reduccion local aun.");
 				}
+				list_destroy(lista);
 				break;
-			case ERROR_TRANSFORMACION:
-				//REPLANIFICAR
+			case REPLANIFICAR:
+				//REPLANIFICAR, RECIBO DE MASTER EL NRO DE BLOQUE NOMBRE NODO.
+				//A LA FUNCION REPLANIFICAR LE PASO EL MENSAJE Y EL NROMASTER
+				enviarCopiaAMaster(socketMaster, replanificarTransformacion(nroMaster, listaDeBloquesDeArchivo, paqueteRecibidoDeMaster->mensaje));
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
 				terminarReduccionLocal(nroMaster, paqueteRecibidoDeMaster->mensaje); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
@@ -44,15 +61,22 @@ void manejadorMaster(void* socketMasterCliente){
 //				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
-
+				//CIERRO LA CONEXION, MATO EL HILO Y LOGGEO Y LIBERO LAS ESTRUCTURAS (LISTA DE BLOQUES)
+				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
 				break;
 			case ERROR_REDUCCION_LOCAL:
-				//AGREGAR CASO DE REDUCCION GLOBAL
+				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
+				sendDeNotificacion(socketMaster, ABORTAR);
+				break;
+			case ERROR_REDUCCION_GLOBAL:
+				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION GLOBAL. FUNCION RECIBE NROMASTER
+				log_error(loggerYAMA, "Error de reduccion global.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
+				//ELIMINAR EL HILO?
 				break;
 		}
 		destruirPaquete(paqueteRecibidoDeMaster);
@@ -82,7 +106,7 @@ int main(int argc, char *argv[])
 	while(1){
 		socketMastersAuxiliares = socketsMasterCPeticion;
 		if(select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1){
-			log_error(loggerYAMA, "No se pudo llevar a cabo el select.");
+			log_error(loggerYAMA, "No se pudo llevar a cabo el select en YAMA.");
 			exit(-1);
 		}
 		log_info(loggerYAMA, "Un socket realizo una peticion a YAMA.");

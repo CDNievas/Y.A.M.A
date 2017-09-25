@@ -1,5 +1,39 @@
 #include "serializaciones.h"
 
+//----------------------------------------------SERIALIZACIONES AUXILIARES-------------------------------------//
+int obtenerTamanioCopia(copia* copia, conexionNodo* conect){
+	return sizeof(int)*4+string_length(copia->nombreNodo)+string_length(conect->ipNodo);
+}
+
+copia* deserializarCopia(void* copiaSerializada){
+	copia* nuevaCopia = malloc(sizeof(copia));
+	nuevaCopia->nombreNodo = string_new();
+	int tamanioNombre;
+	memcpy(&tamanioNombre, copiaSerializada, sizeof(int));
+	memcpy(nuevaCopia->nombreNodo, copiaSerializada+sizeof(int), tamanioNombre);
+	memcpy(&nuevaCopia->nroBloque, copiaSerializada+sizeof(int)+tamanioNombre, sizeof(int));
+	return nuevaCopia;
+}
+
+void* serializarCopia(copia* copiaASerializar, conexionNodo* conection){
+	void* copiaSerializada = malloc(obtenerTamanioCopia(copiaASerializar, conection));
+	int posicionActual = 0;
+	int tamanioNombre = string_length(copiaASerializar->nombreNodo);
+	memcpy(copiaSerializada, &tamanioNombre, sizeof(int));
+	posicionActual += sizeof(int);
+	memcpy(copiaSerializada+posicionActual, copiaASerializar->nombreNodo, tamanioNombre);
+	posicionActual += tamanioNombre;
+	int tamanioIP = string_length(conection->ipNodo);
+	memcpy(copiaSerializada+posicionActual, &tamanioIP, sizeof(int));
+	posicionActual += sizeof(int);
+	memcpy(copiaASerializar+posicionActual, conection->ipNodo, tamanioIP);
+	posicionActual += tamanioIP;
+	memcpy(copiaASerializar+posicionActual, &conection->puertoNodo, sizeof(int));
+	posicionActual += sizeof(int);
+	memcpy(copiaSerializada+posicionActual, &copiaASerializar->nroBloque, sizeof(int));
+	return copiaSerializada;
+}
+
 //-----------------------------------------------TRANSFORMACION------------------------------------------------//
 //OBTENER TAMANIO DE INFO EN TRANSFORMACION
 int obtenerTamanioInfoTransformacion(t_list* listaInfoNodo){

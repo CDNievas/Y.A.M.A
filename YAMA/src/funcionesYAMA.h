@@ -5,6 +5,7 @@
  *      Author: utnso
  */
 #include "estructuras.h"
+#include "serializaciones.h"
 
 #ifndef FUNCIONESYAMA_H_
 #define FUNCIONESYAMA_H_
@@ -25,5 +26,9 @@ int obtenerJobDeNodo(t_list*);
 void cargarYAMA(t_config*);
 void realizarHandshakeConFS(int);
 void chequeameLaSignal(int);
+/*
+ * ENVIO LA NUEVA COPIA A MASTER TRAS LA REPLANIFICACION
+ */
+void enviarCopiaAMaster(int, copia*);
 
 #endif /* FUNCIONESYAMA_H_ */

@@ -17,6 +17,12 @@ conexionNodo* generarConexionNodo(){
 	return conexion;
 }
 
+copia* generarCopia(){
+	copia* copiaNueva = malloc(sizeof(copia));
+	copiaNueva->nombreNodo = string_new();
+	return copiaNueva;
+}
+
 //LIBERACION DE ESTRUCTURAS
 void liberarConexion(conexionNodo* conexion){
 	free(conexion->ipNodo);
@@ -30,6 +36,11 @@ void liberarInfoFS(infoDeFs* infoDeBloque){
 	free(infoDeBloque->copia1);
 	free(infoDeBloque->copia2);
 	free(infoDeBloque);
+}
+
+void liberarCopia(copia* copiaAEnviar) {
+	free(copiaAEnviar->nombreNodo);
+	free(copiaAEnviar);
 }
 
 //RANDOM NAMES
@@ -180,10 +191,20 @@ void chequeameLaSignal(int signal){
 		exit(-1);
 	}else{
 		ALGORITMO_BALANCEO = string_new();
-		string_append(ALGORITMO_BALANCEO, config_get_string_value(configuracionNueva, "ALGORITMO_BALANCEO"));
+		string_append(&ALGORITMO_BALANCEO, config_get_string_value(configuracionNueva, "ALGORITMO_BALANCEO"));
 		log_info(loggerYAMA, "Se ha actualizado el valor de ALGORITMO_BALANCEO a %s", ALGORITMO_BALANCEO);
 	}
 	config_destroy(configuracionNueva);
+}
+
+//ENVIO DE MENSAJES
+void enviarCopiaAMaster(int socket, copia* copiaAEnviar){
+	conexionNodo* conection = generarConexionNodo();
+	string_append(&conection->nombreNodo, copiaAEnviar->nombreNodo);
+	obtenerIPYPuerto(conection);
+	void* copiaSerializada = serializarCopia(copiaAEnviar, conection);
+	sendRemasterizado(socket, REPLANIFICAR, obtenerTamanioCopia(copiaAEnviar, conection), copiaSerializada);
+	liberarCopia(copiaAEnviar);
 }
 
 

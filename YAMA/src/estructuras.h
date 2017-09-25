@@ -12,7 +12,7 @@
 
 #define TRANSFORMACION 1
 #define TRANSFORMACION_TERMINADA 2
-#define ERROR_TRANSFORMACION 3
+#define REPLANIFICAR 3
 #define REDUCCION_LOCAL_TERMINADA 4
 #define REDUCCION_GLOBAL_TERMINADA 5
 #define ERROR_REDUCCION_LOCAL 6
@@ -25,8 +25,7 @@
 #define INFO_ARCHIVO_FS 13 //CON ESTO LE PIDO A FS LA INFO DEL ARCHIVO
 #define FINALIZADO 14
 
-typedef struct
-{
+typedef struct{
 	char* nombreNodo;
 	char* ipNodo;
 	int puertoNodo;
