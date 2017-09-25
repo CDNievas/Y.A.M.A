@@ -82,15 +82,53 @@ void analizarComando(char * linea){
   switch(comandoNativo){
 
       case 1:{
+        char * comandoNuevo = string_new();
+
         printf("Formateando FileSystem.\n");
+
+        string_append(&comandoNuevo,"rm -r ");
+        string_append(&comandoNuevo,"yamafs:"); // Abro esto porque no se donde vamos a guardar yamafs
+
+        system(comandoNuevo);
+      //system("mkdir yamafs:") //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
+        printf("\n");
+        free(comandoNuevo);
         break;
       } 
 
-      case 2:{
-        //
-        // Ver bien como hacer estos comandos despues
-        //
-        printf("Comando en arreglo! Todavia no se puede ejecutar! (2)\n");
+      case 2:{    
+        char * comandoNuevo = string_new();
+        char * operacion = comandoDesarmado[1];
+        char * path = comandoDesarmado[2];
+        char * nroBloque = comandoDesarmado[3]; // REVISAR COMO PASAR ESTOS PARAMETROS A INT
+        char * nroCopia = comandoDesarmado[4];  
+
+        if(operacion == NULL){
+          //log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando rm");
+          break;
+        }
+
+        switch(operacion){
+
+          case "-d":{
+            string_append(&comandoNuevo,"rmdir ");
+            string_append(&comandoNuevo, path);
+          }
+          break;
+
+          case "-b"{
+            printf("En arreglo.\n");
+          }
+
+          default:
+            string_append(&comandoNuevo,"rm ");
+            string_append(&comandoNuevo, path);
+            break;
+        }
+
+        system(comandoNuevo);
+        printf("\n");
+        free(comandoNuevo);
       }
       break;
 
@@ -121,7 +159,6 @@ void analizarComando(char * linea){
       case 4:{
         system(linea); 
         printf("\n");
-
       }
       break;
 
