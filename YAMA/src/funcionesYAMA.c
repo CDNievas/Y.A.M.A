@@ -133,35 +133,35 @@ void cargarYAMA(t_config* configuracionYAMA){
     if(!config_has_property(configuracionYAMA, "FS_IP")){
         log_error(loggerYAMA, "No se encuentra el parametro FS_IP en el archivo de configuracion");
         exit(-1);
-    }else{
-        FS_IP = string_new();
-        string_append(&FS_IP, config_get_string_value(configuracionYAMA, "FS_IP"));
     }
+    FS_IP = string_new();
+	string_append(&FS_IP, config_get_string_value(configuracionYAMA, "FS_IP"));
     if(!config_has_property(configuracionYAMA, "FS_PUERTO")){
         log_error(loggerYAMA, "No se encuentra el parametro FS_PUERTO en el archivo de configuracion");
         exit(-1);
-    }else{
-        FS_PUERTO = config_get_int_value(configuracionYAMA, "FS_PUERTO");
     }
+    FS_PUERTO = config_get_int_value(configuracionYAMA, "FS_PUERTO");
     if(!config_has_property(configuracionYAMA, "RETARDO_PLANIFICACION")){
         log_error(loggerYAMA, "No se encuentra el parametro RETARDO_PLANIFICACION en el archivo de configuracion");
         exit(-1);
-    }else{
-        RETARDO_PLANIFICACION = config_get_int_value(configuracionYAMA, "RETARDO_PLANIFICACION");
     }
+    RETARDO_PLANIFICACION = config_get_int_value(configuracionYAMA, "RETARDO_PLANIFICACION");
     if(!config_has_property(configuracionYAMA, "ALGORITMO_BALANCEO")){
     	log_error(loggerYAMA, "No se encuentra el parametro RETARDO_PLANIFICACION en el archivo de configuracion");
     	exit(-1);
-    }else{
-        ALGORITMO_BALANCEO = string_new();
-        string_append(&ALGORITMO_BALANCEO, config_get_string_value(configuracionYAMA, "ALGORITMO_BALANCEO"));
     }
+    ALGORITMO_BALANCEO = string_new();
+    string_append(&ALGORITMO_BALANCEO, config_get_string_value(configuracionYAMA, "ALGORITMO_BALANCEO"));
     if(!config_has_property(configuracionYAMA, "PUERTO_MASTERS")){
     	log_error(loggerYAMA, "No se encuentra el parametro PUERTO_MASTERS en el archivo de configuracion");
     	exit(-1);
-    }else{
-    	PUERTO_MASTERS = config_get_int_value(configuracionYAMA, "PUERTO_MASTERS");
     }
+    PUERTO_MASTERS = config_get_int_value(configuracionYAMA, "PUERTO_MASTERS");
+    if(!config_has_property(configuracionYAMA, "BASE_AVAILABILITY")){
+    	log_error(loggerYAMA, "No se encuentra el parametro BASE_AVAILABILITY en el archivo de configuracion");
+    	exit(-1);
+    }
+    BASE_AVAILABILITY = config_get_int_value(configuracionYAMA, "BASE_AVAILABILITY");
     config_destroy(configuracionYAMA);
 }
 

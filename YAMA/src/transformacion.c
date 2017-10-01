@@ -5,10 +5,10 @@
 //PRIMER PASO: PIDO DATOS DE ARCHIVO A FS (PRIMERO RECIBO DE MASTER EL NOMBRE)
 void solicitarArchivo(char* nombreArchivo){
 	int tamanioNombreArchivo = string_length(nombreArchivo);
-	void* peticionDeArchivo = malloc(tamanioNombreArchivo+sizeof(int));
+	void* peticionDeArchivo = malloc(sizeof(int)+tamanioNombreArchivo);
 	memcpy(peticionDeArchivo, &tamanioNombreArchivo, sizeof(int));
 	memcpy(peticionDeArchivo+sizeof(int), nombreArchivo, tamanioNombreArchivo);
-	sendRemasterizado(socketFS, INFO_ARCHIVO_FS, sizeof(int)+string_length(nombreArchivo), peticionDeArchivo);
+	sendRemasterizado(socketFS, INFO_ARCHIVO_FS, sizeof(int)+tamanioNombreArchivo, peticionDeArchivo);
 	free(peticionDeArchivo);
 }
 

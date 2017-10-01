@@ -39,7 +39,6 @@
 
 typedef struct{
 	int tipoMsj;
-	int tamMsj;
 	void* mensaje;
 }paquete;
 
