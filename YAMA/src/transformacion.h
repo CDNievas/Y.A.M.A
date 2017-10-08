@@ -17,6 +17,6 @@ void solicitarArchivo(char*);
 t_list *recibirInfoArchivo();
 char* recibirNombreArchivo(int);
 void cargarTransformacion(int, int, t_list*);
-void terminarTransformacion(int, int*);
+void terminarTransformacion(int, int);
 
 #endif /* TRANSFORMACION_H_ */

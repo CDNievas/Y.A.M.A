@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	signal(SIGUSR1, chequeameLaSignal);
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc,2);
-	t_config* configuracionYAMA = generarTConfig(argv[1], 5);
+	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
 	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");

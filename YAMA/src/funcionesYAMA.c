@@ -105,7 +105,6 @@ void obtenerIPYPuerto(conexionNodo* conexion){
   memcpy(mensaje + sizeof(int), conexion->nombreNodo, tamanio);
   sendRemasterizado(socketFS, DATOS_NODO, sizeof(int)+tamanio, mensaje);
   free(mensaje);
-  paquete* paqueteDeFS = recvRemasterizado(socketFS);
   deserializarIPYPuerto(conexion);
 }
 
