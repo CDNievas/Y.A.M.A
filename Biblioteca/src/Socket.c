@@ -135,6 +135,25 @@ void sendDeNotificacion(int aQuien, int notificacion){
 	}
 }
 
+int recibirInt(int socket){
+	int intRecibido;
+	if(recv(socket, &intRecibido, sizeof(int), 0) == -1){
+		perror("Error al recibir un int.");
+		exit(-1);
+	}
+	return intRecibido;
+}
+
+char* recibirString(int socket){
+	int tamanio = recibirInt(socket);
+	char* stringRecibido = string_new();
+	if(recv(socket, stringRecibido, tamanio, 0) == -1){
+		perror("Error al recibir un string.");
+		exit(-1);
+	}
+	return stringRecibido;
+}
+
 int recvDeNotificacion(int deQuien){
 	int notificacion;
 	if(recv(deQuien, &notificacion, sizeof(int), 0)==-1){

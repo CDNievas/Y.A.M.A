@@ -12,6 +12,8 @@
 
 administracionYAMA* generarAdministracion();
 conexionNodo* generarConexionNodo();
+copia* generarCopia();
+infoDeFs* generarInformacionDeBloque();
 char* obtenerNombreTemporalLocal();
 char* obtenerNombreTemporalGlobal();
 char* obtenerNombreTemporalTransformacion();
@@ -20,7 +22,7 @@ int obtenerNumeroDeMaster();
 void obtenerIPYPuerto(conexionNodo*);
 void liberarConexion(conexionNodo*);
 void liberarInfoFS(infoDeFs*);
-t_list* obtenerListaDelNodo(int, void*);
+t_list* obtenerListaDelNodo(int, int);
 char* obtenerNombreNodo(t_list*);
 int obtenerJobDeNodo(t_list*);
 void cargarYAMA(t_config*);

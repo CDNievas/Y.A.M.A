@@ -22,29 +22,30 @@ int generarSegundoPosible(t_list* listaDelJob, infoDeFs* info){
 	return segundoPosible;
 }
 
-copia* balancearCarga(int nroJob, infoDeFs* info){
-	bool perteneceAlJob(administracionYAMA* admin){
-			return admin->nroJob == nroJob;
-	}
-	int primerPosible;
-	int segundoPosible;
-	if(strcmp(ALGORITMO_BALANCEO, "RR")){
-		t_list* listaDeJob = list_filter(tablaDeEstados, (void*)perteneceAlJob);
-		primerPosible = generarPrimerPosible(listaDeJob, info);
-		segundoPosible = generarSegundoPosible(listaDeJob, info);
-		free(listaDeJob);
-	}else if(strcmp(ALGORITMO_BALANCEO, "WRR")){
-		primerPosible = generarPrimerPosible(tablaDeEstados, info);
-		segundoPosible = generarSegundoPosible(tablaDeEstados, info);
-	}else{
-		log_error(loggerYAMA, "Error en el algoritmo de balanceo.\nChequear archivo de configuracion.");
-		return NULL;
-	}
-	if(primerPosible <= segundoPosible){
-		return info->copia1;
-	}else{
-		return info->copia2;
-	}
+copia* balancearCarga(t_list* listaDeBloques){
+//	bool perteneceAlJob(administracionYAMA* admin){
+//			return admin->nroJob == nroJob;
+//	}
+//	int primerPosible;
+//	int segundoPosible;
+//	if(strcmp(ALGORITMO_BALANCEO, "RR")){
+//		t_list* listaDeJob = list_filter(tablaDeEstados, (void*)perteneceAlJob);
+//		primerPosible = generarPrimerPosible(listaDeJob, info);
+//		segundoPosible = generarSegundoPosible(listaDeJob, info);
+//		free(listaDeJob);
+//	}else if(strcmp(ALGORITMO_BALANCEO, "WRR")){
+//		primerPosible = generarPrimerPosible(tablaDeEstados, info);
+//		segundoPosible = generarSegundoPosible(tablaDeEstados, info);
+//	}else{
+//		log_error(loggerYAMA, "Error en el algoritmo de balanceo.\nChequear archivo de configuracion.");
+//		return NULL;
+//	}
+//	if(primerPosible <= segundoPosible){
+//		return info->copia1;
+//	}else{
+//		return info->copia2;
+//	}
+	return NULL;
 }
 
 char* nodoParaReduccionGlobal(int nroJob){

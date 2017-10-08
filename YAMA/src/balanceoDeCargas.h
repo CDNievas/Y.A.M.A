@@ -16,7 +16,7 @@ typedef struct{
 	int cantidadDeJobs;
 }posibleElegido;
 
-copia* balancearCarga(int, infoDeFs*);
+copia* balancearCarga(t_list*);
 char* nodoParaReduccionGlobal(int);
 copia* replanificarTransformacion(int, t_list* , void*);
 

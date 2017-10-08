@@ -22,11 +22,11 @@ void manejadorMaster(void* socketMasterCliente){
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	t_list* listaDeBloquesDeArchivo;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
-		paquete* paqueteRecibidoDeMaster = recvRemasterizado(socketMaster);
-		switch (paqueteRecibidoDeMaster->tipoMsj){
+		int operacionMaster = recvDeNotificacion(socketMaster);
+		switch (operacionMaster){
 			case TRANSFORMACION:
 				log_info(loggerYAMA, "Se recibio una peticion del socket %d para llevar a cabo una transformacion.", socketMaster);
-				string_append(&nombreArchivoPeticion, recibirNombreArchivo(paqueteRecibidoDeMaster->mensaje)); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
+				string_append(&nombreArchivoPeticion, recibirNombreArchivo(socketMaster)); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
 				listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
@@ -38,24 +38,23 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case TRANSFORMACION_TERMINADA:
 				log_info(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
-				terminarTransformacion(socketMaster, paqueteRecibidoDeMaster->mensaje); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
+				terminarTransformacion(nroMaster, socketMaster); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
 				log_info(loggerYAMA, "Se termino la transformacion del master %d correctamente.", nroMaster);
-				t_list* lista = obtenerListaDelNodo(socketMaster, paqueteRecibidoDeMaster->mensaje);
-				if(sePuedeHacerReduccionLocal(lista)){
+				t_list* listaDelJob = obtenerListaDelNodo(nroMaster, socketMaster);
+				if(sePuedeHacerReduccionLocal(listaDelJob)){
 					log_info(loggerYAMA, "Se puede llevar a cabo la reduccion local.");
-					cargarReduccionLocal(socketMaster, nroMaster, lista);
+					cargarReduccionLocal(socketMaster, nroMaster, listaDelJob);
 				}else{
 					log_info(loggerYAMA, "No se puede llevar a cabo la reduccion local aun.");
 				}
-				list_destroy(lista);
+				list_destroy(listaDelJob);
 				break;
 			case REPLANIFICAR:
 				//REPLANIFICAR, RECIBO DE MASTER EL NRO DE BLOQUE NOMBRE NODO.
 				//A LA FUNCION REPLANIFICAR LE PASO EL MENSAJE Y EL NROMASTER
-				enviarCopiaAMaster(socketMaster, replanificarTransformacion(nroMaster, listaDeBloquesDeArchivo, paqueteRecibidoDeMaster->mensaje));
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
-				terminarReduccionLocal(nroMaster, paqueteRecibidoDeMaster->mensaje); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
+				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
 //				if(sePuedeHacerReduccionGlobal(socketMaster)){
 //					cargarReduccionGlobal(socketMaster);
 //				}
@@ -79,7 +78,6 @@ void manejadorMaster(void* socketMasterCliente){
 				//ELIMINAR EL HILO?
 				break;
 		}
-		destruirPaquete(paqueteRecibidoDeMaster);
 	}
 }
 

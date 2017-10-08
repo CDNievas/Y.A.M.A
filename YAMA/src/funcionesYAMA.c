@@ -23,6 +23,15 @@ copia* generarCopia(){
 	return copiaNueva;
 }
 
+infoDeFs* generarInformacionDeBloque(){
+	infoDeFs* informacion = malloc(sizeof(infoDeFs));
+	informacion->copia1 = malloc(sizeof(copia));
+	informacion->copia2 = malloc(sizeof(copia));
+	informacion->copia1->nombreNodo = string_new();
+	informacion->copia2->nombreNodo = string_new();
+	return informacion;
+}
+
 //LIBERACION DE ESTRUCTURAS
 void liberarConexion(conexionNodo* conexion){
 	free(conexion->ipNodo);
@@ -80,15 +89,13 @@ int obtenerNumeroDeMaster(){
 
 //OBTENER DATOS DE CONEXION CON NODO
 
-void deserializarIPYPuerto(paquete* paqueteConInfo, conexionNodo* conexion){
-	if(paqueteConInfo->tipoMsj != DATOS_NODO){
+void deserializarIPYPuerto(conexionNodo* conexion){
+	if(recibirInt(socketFS) != DATOS_NODO){
 		log_error(loggerYAMA, "Error al recibir la IP y el puerto del nodo.");
 		exit(-1);
 	}
-	memcpy(&conexion->puertoNodo, paqueteConInfo->mensaje, sizeof(int));
-	int tamanioIP;
-	memcpy(&tamanioIP, paqueteConInfo->mensaje, sizeof(int));
-	memcpy(conexion->ipNodo, paqueteConInfo->mensaje, tamanioIP);
+	conexion->puertoNodo = recibirInt(socketFS);
+	conexion->ipNodo = recibirString(socketFS);
 }
 
 void obtenerIPYPuerto(conexionNodo* conexion){
@@ -99,8 +106,7 @@ void obtenerIPYPuerto(conexionNodo* conexion){
   sendRemasterizado(socketFS, DATOS_NODO, sizeof(int)+tamanio, mensaje);
   free(mensaje);
   paquete* paqueteDeFS = recvRemasterizado(socketFS);
-  deserializarIPYPuerto(paqueteDeFS, conexion);
-  destruirPaquete(paqueteDeFS);
+  deserializarIPYPuerto(conexion);
 }
 
 //GETTERS
@@ -110,11 +116,8 @@ int obtenerJobDeNodo(t_list* listaDelNodo){
 	return admin->nroJob;
 }
 
-t_list* obtenerListaDelNodo(int nroMaster, void* mensaje){
-	int tamanioNombre;
-	memcpy(&tamanioNombre, mensaje, sizeof(int));
-	char* nombreNodo = string_new();
-	memcpy(nombreNodo, mensaje + sizeof(int), tamanioNombre);
+t_list* obtenerListaDelNodo(int nroMaster, int socketMaster){
+	char* nombreNodo = recibirString(socketMaster);
 	bool esDeNodo(administracionYAMA* admin){
 		return (strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster);
 	}

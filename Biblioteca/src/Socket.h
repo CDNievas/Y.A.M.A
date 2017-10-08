@@ -18,6 +18,8 @@ int calcularSocketMaximo(int, int);
 int recvDeNotificacion(int);
 void sendDeNotificacion(int , int );
 void sendRemasterizado(int, int, int, void*);
+int recibirInt(int);
+char* recibirString(int);
 void destruirPaquete(paquete*);
 
 #endif /* SRC_SOCKET_H_ */
