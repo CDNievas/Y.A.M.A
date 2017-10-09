@@ -62,20 +62,23 @@ void manejadorMaster(void* socketMasterCliente){
 			case REDUCCION_GLOBAL_TERMINADA:
 				//CIERRO LA CONEXION, MATO EL HILO Y LOGGEO Y LIBERO LAS ESTRUCTURAS (LISTA DE BLOQUES)
 				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
+				pthread_detach(pthread_self());
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
+				pthread_detach(pthread_self());
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION GLOBAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion global.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
+				pthread_detach(pthread_self());
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
-				//ELIMINAR EL HILO?
+				pthread_detach(pthread_self());
 				break;
 		}
 	}
@@ -100,6 +103,9 @@ int main(int argc, char *argv[])
 	FD_ZERO(&socketsMasterCPeticion);
 	FD_SET(socketEscuchaMasters, &socketsMasterCPeticion);
  	pthread_t hiloManejadorMaster;
+ 	pthread_attr_t attr;
+ 	pthread_attr_init(&attr);
+ 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   	tablaDeEstados = list_create();
 	while(1){
 		socketMastersAuxiliares = socketsMasterCPeticion;
@@ -126,7 +132,7 @@ int main(int argc, char *argv[])
            				log_info(loggerYAMA, "Se establecio la conexion con el socket master %d. \n Handshake realizado.", socketClienteChequeado);
             			int* socketCliente = malloc(sizeof(int));
             			*socketCliente = socketClienteChequeado;
-            			pthread_create(&hiloManejadorMaster, NULL, (void*)manejadorMaster, (void*)socketCliente);
+            			pthread_create(&hiloManejadorMaster, &attr, (void*)manejadorMaster, (void*)socketCliente);
             			log_info(loggerYAMA, "Pasando a atender la peticion del socket master %d.", socketClienteChequeado);
            				FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
 					}
