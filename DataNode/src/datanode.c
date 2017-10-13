@@ -1,7 +1,6 @@
-#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
-
+#include "../../Biblioteca/src/algunasVariables.h"
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_DATANODE","RUTA_DATABIN"}
 #define LOGFILE "ggwp.log"
@@ -16,7 +15,6 @@
 [X] Logea acciones
 
 */
-
 
 int PUERTO_FILESYSTEM;
 char* IP_FILESYSTEM;
@@ -66,80 +64,6 @@ void cargarDataNode(t_config* configuracionDN){
     }
     config_destroy(configuracionDN);
 }
-
-/*
-void generarDatabin(){
-
-	char * msg;
-
-	// Si no existe el archivo lo creo
-	if(!existeArchivo(pathDataBin)){
-
-		FILE *fp = fopen(pathDataBin, "wb");
-		ftruncate(fileno(fp), sizeDataBin);
-		fclose(fp);
-		msg = string_from_format("Se creo el archivo .bin en: %s", pathDataBin);
-
-	// Si existe lo dejo	
-	} else {
-		msg = string_from_format("Se encontro el archivo .bin en: %s", pathDataBin);
-	}
-
-	log_info(loggerDataNode,msg);
-
-}
-
-
-void * getBloque(int numeroBloque){
-
-	FILE *fp = fopen(pathDataBin, "rb");
-	
-	int cantBloquesTot = sizeDataBin/sizeBloque;
-	int bloquesLeidos = 0;
-
-	void * bloque = malloc(sizeBloque);
-
-	fseek(fp, numeroBloque*sizeBloque, SEEK_SET);
-
-	// Catch de error por si posicion excede tamaño del archivo
-	if ((bloquesLeidos = fread(bloque,sizeBloque,1,fp)) == 1){
-		
-		fclose(fp);
-		log_info(loggerDataNode,"Se obtuvo informacion del bloque numero: %i", numeroBloque);
-		return bloque;
-
-	} else {
-
-		fclose(fp);
-		log_error(loggerDataNode,"Bloque de archivo inexistente: %i/%i bloques", numeroBloque, cantBloquesTot);
-		return NULL;
-
-	}
-
-}
-
-int setBloque(int numeroBloque, void * datos){
-
-	int cantBloquesTot = sizeDataBin/sizeBloque;
-
-	// Catcheo si bloque pedido excede cantidad total de bloques
-	if(numeroBloque < cantBloquesTot){
-
-		FILE *fp = fopen(pathDataBin, "wb");
-		fseek(fp, numeroBloque*sizeBloque, SEEK_SET);
-		fwrite(datos,sizeBloque,1,fp);
-		fclose(fp);
-		log_info(loggerDataNode,"Se escribio informacion en el bloque numero: %i", numeroBloque);
-		return 0;
-
-	} else {
-		log_error(loggerDataNode,"Bloque de archivo inexistente: %i/%i bloques", numeroBloque, cantBloquesTot);
-		return -1;
-
-	}
-
-
-}*/
 
 void realizarHandshakeFS(int socketFS){
 	sendDeNotificacion(socketFS, ES_DATANODE);

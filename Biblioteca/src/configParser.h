@@ -6,7 +6,6 @@
  */
 
 #include "algunasVariables.h"
-#include "genericas.h"
 
 #ifndef SRC_CONFIGPARSER_H_
 #define SRC_CONFIGPARSER_H_

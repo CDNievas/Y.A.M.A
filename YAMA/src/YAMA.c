@@ -12,7 +12,6 @@
 #include "transformacion.h"
 #include "funcionesYAMA.h"
 #include "../../Biblioteca/src/Socket.c"
-#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 
 void manejadorMaster(void* socketMasterCliente){

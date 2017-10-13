@@ -1,5 +1,17 @@
 #include "configParser.h"
 
+// FUNCIONES AUXILIARES
+
+// Comprueba existencia del archivo
+int existeArchivo(char * path){
+	FILE * FILEarchivo = fopen(path,"r");
+	if (!FILEarchivo)
+		return 0;
+	else {
+		fclose(FILEarchivo);
+		return 1;
+	}
+}
 
 // Imprime archivo de configuracion por pantalla
 void chequearParametros(int argc, int cantidad){
