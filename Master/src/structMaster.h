@@ -1,4 +1,3 @@
-#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
 
@@ -11,14 +10,18 @@
 // No se que nombre ponerles a las rutas de los archivos temporales.
 // Ahora quedan horribles, despues los cambiamos
 
-typedef struct strTransformacion{
-	char* nodo;
-	char* worker_ip;
-	int bloque;
-	long int bytesOcupados;
-	char* temporalesTransformacion;
-} transformacion;
+typedef struct{
+	char* nombreNodo;
+	char* ipNodo;
+	int puertoNodo;
+}conexionNodo;
 
+typedef struct{
+	conexionNodo* conexion;
+	int nroBloque;
+	long bytesOcupados;
+	char* nombreTemporal;
+}infoNodo;
 
 typedef struct strReduccionLocal{
 	char* nodo;
