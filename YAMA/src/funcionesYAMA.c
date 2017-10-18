@@ -32,6 +32,12 @@ infoDeFs* generarInformacionDeBloque(){
 	return informacion;
 }
 
+nodoSistema* generarNodoSistema(){
+	nodoSistema* nodo = malloc(sizeof(nodoSistema));
+	nodo->nombreNodo = string_new();
+	return nodo;
+}
+
 //LIBERACION DE ESTRUCTURAS
 void liberarConexion(conexionNodo* conexion){
 	free(conexion->ipNodo);
@@ -99,13 +105,13 @@ void deserializarIPYPuerto(conexionNodo* conexion){
 }
 
 void obtenerIPYPuerto(conexionNodo* conexion){
-  void* mensaje = malloc(sizeof(int)+string_length(conexion->nombreNodo));
-  int tamanio = string_length(conexion->nombreNodo);
-  memcpy(mensaje, &tamanio, sizeof(int));
-  memcpy(mensaje + sizeof(int), conexion->nombreNodo, tamanio);
-  sendRemasterizado(socketFS, DATOS_NODO, sizeof(int)+tamanio, mensaje);
-  free(mensaje);
-  deserializarIPYPuerto(conexion);
+	void* mensaje = malloc(sizeof(int)+string_length(conexion->nombreNodo));
+	int tamanio = string_length(conexion->nombreNodo);
+	memcpy(mensaje, &tamanio, sizeof(int));
+	memcpy(mensaje + sizeof(int), conexion->nombreNodo, tamanio);
+	sendRemasterizado(socketFS, DATOS_NODO, sizeof(int)+tamanio, mensaje);
+	free(mensaje);
+	deserializarIPYPuerto(conexion);
 }
 
 //GETTERS
@@ -167,14 +173,6 @@ void cargarYAMA(t_config* configuracionYAMA){
     config_destroy(configuracionYAMA);
 }
 
-void realizarHandshakeConFS(int socketFS){
-	sendDeNotificacion(socketFS, ES_YAMA);
-	int notificacion = recvDeNotificacion(socketFS);
-	if(notificacion != ES_FS){
-		log_error(loggerYAMA, "La conexion establecida no es con FileSystem");
-		exit(-1);
-	}
-}
 
 //CHEQUEO DE SIGNAL
 void chequeameLaSignal(int signal){
@@ -207,6 +205,101 @@ void enviarCopiaAMaster(int socket, copia* copiaAEnviar){
 	void* copiaSerializada = serializarCopia(copiaAEnviar, conection);
 	sendRemasterizado(socket, REPLANIFICAR, obtenerTamanioCopia(copiaAEnviar, conection), copiaSerializada);
 	liberarCopia(copiaAEnviar);
+}
+
+//HANDSHAKE CON FS (RECIBO LOS NODOS DEL SISTEMA)
+void handshakeFS(){
+	sendDeNotificacion(socketFS, ES_YAMA);
+	if(recibirInt(socketFS) != ES_FS){
+		log_error(loggerYAMA, "La conexion efectuada no es con FileSystem.");
+		exit(-1);
+	}
+	int cantidadDeNodos = recibirInt(socketFS);
+	int i;
+	for(i = 0; i<cantidadDeNodos; i++){
+		nodoSistema* nuevoNodo = generarNodoSistema();
+		nuevoNodo->nombreNodo = recibirString(socketFS);
+		nuevoNodo->wl = 0;
+		list_add(nodosSistema, nuevoNodo);
+	}
+}
+
+//FUNCIONES PARA MANEJAR LA AVAILABILITY
+int obtenerWLMax(){
+	int maximo = 0;
+	bool maximoWL(nodoSistema* nodoAChequear){
+		if(nodoAChequear->wl>maximo){
+			maximo = nodoAChequear->wl;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	nodoSistema* nodo = list_find(nodosSistema, (void*)maximoWL);
+	return nodo->wl;
+}
+
+int calculoAvailability(char* nombreNodo){
+	bool esNodo(nodoSistema* nodoAChequear){
+		return strcmp(nombreNodo, nodoAChequear->nombreNodo);
+	}
+	int availability = 0;
+	if(strcmp(ALGORITMO_BALANCEO, "Clock")){
+		availability = BASE_AVAILABILITY;
+	}else{
+		int wlMax = obtenerWLMax();
+		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
+		availability = wlMax - nodo->wl;
+	}
+	return availability;
+}
+
+//ARMO LOS DATOS DE BALANCEO A PARTIR DE LOS DATOS RECIBIDOS DE LA LISTA DE FS
+datosBalanceo* obtenerDatosDeCopia(t_list* listaDeBalanceo, copia* copiaAChequear){
+	bool existeEnLaLista(datosBalanceo* datos){
+		return strcmp(datos->nombreNodo, copiaAChequear->nombreNodo);
+	}
+	return list_find(listaDeBalanceo, (void*)existeEnLaLista);
+}
+
+datosBalanceo* generarDatosBalanceo(){
+	datosBalanceo* datos = malloc(sizeof(datosBalanceo));
+	datos->nombreNodo = string_new();
+	datos->bloques = list_create();
+	return datos;
+}
+
+t_list* armarDatosBalanceo(t_list* listaDeBloques){
+	bool porMayorAvailability(datosBalanceo* dato1, datosBalanceo* datos2){
+		return dato1->availability > datos2->availability;
+	}
+	int posicion;
+	t_list* listaDeBalanceo = list_create();
+	for(posicion = 0; posicion < list_size(listaDeBloques); posicion++){
+		infoDeFs* informacionAOrdenar = list_get(listaDeBloques, posicion);
+		datosBalanceo* datoCopia1 = obtenerDatosDeCopia(listaDeBalanceo, informacionAOrdenar->copia1);
+		datosBalanceo* datoCopia2 = obtenerDatosDeCopia(listaDeBalanceo, informacionAOrdenar->copia2);
+		if(datoCopia1 != NULL){
+			list_add(datoCopia1->bloques, &informacionAOrdenar->nroBloque);
+		}else{
+			datosBalanceo* datosAAgregar = generarDatosBalanceo();
+			datosAAgregar->nombreNodo = informacionAOrdenar->copia1->nombreNodo;
+			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
+			list_add(datosAAgregar->bloques, &informacionAOrdenar->nroBloque);
+			list_add(listaDeBalanceo, datosAAgregar);
+		}
+		if(datoCopia2 != NULL){
+			list_add(datoCopia2->bloques, &informacionAOrdenar->nroBloque);
+		}else{
+			datosBalanceo* datosAAgregar = generarDatosBalanceo();
+			datosAAgregar->nombreNodo = informacionAOrdenar->copia2->nombreNodo;
+			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
+			list_add(datosAAgregar->bloques, &informacionAOrdenar->nroBloque);
+			list_add(listaDeBalanceo, datosAAgregar);
+		}
+	}
+	list_sort(listaDeBalanceo, (void*)porMayorAvailability); //ORDENO LA LISTA BALANCEO A PARTIR DEL availability
+	return listaDeBalanceo;
 }
 
 

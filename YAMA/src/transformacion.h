@@ -16,7 +16,8 @@
 void solicitarArchivo(char*);
 t_list *recibirInfoArchivo();
 char* recibirNombreArchivo(int);
-void cargarTransformacion(int, int, t_list*);
+//CARGO LA TRANSFORMACION EN LA TABLA, OBTENGO LOS NODOS A USAR.
+void cargarTransformacion(int, int, t_list*, t_list*);
 void terminarTransformacion(int, int);
 
 #endif /* TRANSFORMACION_H_ */

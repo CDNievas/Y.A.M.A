@@ -144,7 +144,7 @@ int recibirInt(int socket){
 	return intRecibido;
 }
 
-char* recibirString(int socket){
+char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ESTA FUNCION xd
 	int tamanio = recibirInt(socket);
 	char* stringRecibido = string_new();
 	if(recv(socket, stringRecibido, tamanio, 0) == -1){

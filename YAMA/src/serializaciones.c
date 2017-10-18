@@ -5,15 +5,15 @@ int obtenerTamanioCopia(copia* copia, conexionNodo* conect){
 	return sizeof(int)*4+string_length(copia->nombreNodo)+string_length(conect->ipNodo);
 }
 
-copia* deserializarCopia(void* copiaSerializada){
-	copia* nuevaCopia = malloc(sizeof(copia));
-	nuevaCopia->nombreNodo = string_new();
-	int tamanioNombre;
-	memcpy(&tamanioNombre, copiaSerializada, sizeof(int));
-	memcpy(nuevaCopia->nombreNodo, copiaSerializada+sizeof(int), tamanioNombre);
-	memcpy(&nuevaCopia->nroBloque, copiaSerializada+sizeof(int)+tamanioNombre, sizeof(int));
-	return nuevaCopia;
-}
+//copia* deserializarCopia(void* copiaSerializada){
+//	copia* nuevaCopia = malloc(sizeof(copia));
+//	nuevaCopia->nombreNodo = string_new();
+//	int tamanioNombre;
+//	memcpy(&tamanioNombre, copiaSerializada, sizeof(int));
+//	memcpy(nuevaCopia->nombreNodo, copiaSerializada+sizeof(int), tamanioNombre);
+//	memcpy(&nuevaCopia->nroBloque, copiaSerializada+sizeof(int)+tamanioNombre, sizeof(int));
+//	return nuevaCopia;
+//}
 
 void* serializarCopia(copia* copiaASerializar, conexionNodo* conection){
 	void* copiaSerializada = malloc(obtenerTamanioCopia(copiaASerializar, conection));

@@ -20,6 +20,7 @@ void manejadorMaster(void* socketMasterCliente){
 	int nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	t_list* listaDeBloquesDeArchivo;
+	t_list* listaBalanceo;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
@@ -29,9 +30,10 @@ void manejadorMaster(void* socketMasterCliente){
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
 				listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
+				listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
 				log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
 				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
-				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo);
+				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaBalanceo);
 				list_destroy(listaDeBloquesDeArchivo);
 				free(nombreArchivoPeticion);
 				break;
@@ -92,8 +94,9 @@ int main(int argc, char *argv[])
 	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
-//	int socketFS = conectarAServer(FS_IP, FS_PUERTO);
-//	realizarHandshakeConFS(socketFS);
+	nodosSistema = list_create();
+	int socketFS = conectarAServer(FS_IP, FS_PUERTO);
+	handshakeFS();
 	int socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
  	log_info(loggerYAMA, "Escuchando clientes...");
 	int socketMaximo = socketEscuchaMasters, socketClienteChequeado, socketAceptado;
