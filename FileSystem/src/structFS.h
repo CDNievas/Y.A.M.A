@@ -1,4 +1,3 @@
-#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 #include "../../Biblioteca/src/Socket.c"
 

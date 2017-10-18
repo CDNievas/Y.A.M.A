@@ -3,9 +3,10 @@
 #define PARAMETROS {"YAMA_IP","YAMA_PUERTO"}
 
 char* YAMA_IP;
-char*WORKER_IP;
+char* WORKER_IP;
 int YAMA_PUERTO;
 int WORKER_PUERTO;
+int socketYAMA;
 
 t_log* loggerMaster;
 
@@ -68,12 +69,9 @@ int main(int argc, char **argv) {
 	chequearParametros(argc,5);
 	t_config* configuracionMaster = generarTConfig("master.ini", 2);
 	cargarMaster(configuracionMaster);
-    int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
+    socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
     realizarHandshake(socketYAMA,ES_YAMA);
-    WORKER_IP = "127.0.0.1";
-    WORKER_PUERTO = 5010;
-    propagarArchivo(argv[3],socketYAMA);
-    int socketWorker = conectarAServer(WORKER_IP, WORKER_PUERTO);
-    realizarHandshake(socketWorker,ES_WORKER);
+    //propagarArchivo(argv[3],socketYAMA);
+
 	return EXIT_SUCCESS;
 }
