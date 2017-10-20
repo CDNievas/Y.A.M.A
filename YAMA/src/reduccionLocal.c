@@ -30,6 +30,7 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	int tamanioTemporales = obtenerTamanioInfoReduccionLocal(conexion, admin->nameFile, listaDelNodo);
 	log_info(loggerYAMA, "Se prosigue a enviar los datos para la reduccion local al Master %d.", nroMaster);
 	sendRemasterizado(socket, REDUCCION_LOCAL, tamanioTemporales, temporalesSerializados);
+	actualizarWLRLocal(admin->nombreNodo, list_size(listaDelNodo));
 	free(temporalesSerializados);
 	list_add(tablaDeEstados, admin);
 	log_info(loggerYAMA, "Se agrego la informacion en la tabla de estados.");

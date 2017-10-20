@@ -7,6 +7,7 @@ C_SRCS += \
 ../src/YAMA.c \
 ../src/balanceoDeCargas.c \
 ../src/funcionesYAMA.c \
+../src/reduccionGlobal.c \
 ../src/reduccionLocal.c \
 ../src/serializaciones.c \
 ../src/transformacion.c 
@@ -15,6 +16,7 @@ OBJS += \
 ./src/YAMA.o \
 ./src/balanceoDeCargas.o \
 ./src/funcionesYAMA.o \
+./src/reduccionGlobal.o \
 ./src/reduccionLocal.o \
 ./src/serializaciones.o \
 ./src/transformacion.o 
@@ -23,6 +25,7 @@ C_DEPS += \
 ./src/YAMA.d \
 ./src/balanceoDeCargas.d \
 ./src/funcionesYAMA.d \
+./src/reduccionGlobal.d \
 ./src/reduccionLocal.d \
 ./src/serializaciones.d \
 ./src/transformacion.d 

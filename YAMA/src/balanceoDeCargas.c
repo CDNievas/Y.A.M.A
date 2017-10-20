@@ -1,6 +1,6 @@
 #include "balanceoDeCargas.h"
 
-void actualizarWL(t_list* copiasElegidas){
+void actualizarWLTransformacion(t_list* copiasElegidas){
 	copia* copiaElegida;
 	bool esNodo(nodoSistema* nodo){
 		return strcmp(nodo->nombreNodo, copiaElegida->nombreNodo);
@@ -92,9 +92,22 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		}else{
 			posicion++;
 		}
-		actualizarWL(copiasElegidas);
+		actualizarWLTransformacion(copiasElegidas);
 	}
 	return copiasElegidas;
+}
+
+//ACTUALIZO WL EN REDUCCION LOCAL
+
+void actualizarWLRLocal(char* nombreNodo, int cantTemporales){
+	bool esNodo(nodoSistema* nodo){
+		return strcmp(nodo->nombreNodo, nombreNodo);
+	}
+	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
+	nodo->wl += cantTemporales/2;
+	if(cantTemporales%2 != 0){
+		nodo->wl++;
+	}
 }
 
 //BALANCEO LA REDUCCION GLOBAL

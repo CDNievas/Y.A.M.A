@@ -147,3 +147,16 @@ void* serializarInfoReduccionLocal(conexionNodo* conexion, char* nombreTemporal,
 	return temporalesSerializados;
 }
 
+
+//SERIALIZACION DE REDUCCION GLOBAL
+//uint32_t obtenerTamanioReduGlobal(administracionYAMA* admin, t_list* listaNodos){
+//
+//}
+//
+//
+//void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* listaDeNodos){
+//	void* infoSerializada = malloc(obtenerTamanioReduGlobal(reduccion, listaDeNodos));
+//	int cantidadDeNodos = list_size(listaDeNodos);
+//
+//}
+

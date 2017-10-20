@@ -105,7 +105,7 @@ void deserializarIPYPuerto(conexionNodo* conexion){
 
 void obtenerIPYPuerto(conexionNodo* conexion){
 	void* mensaje = malloc(sizeof(int)+string_length(conexion->nombreNodo));
-	int tamanio = string_length(conexion->nombreNodo);
+	uint32_t tamanio = string_length(conexion->nombreNodo);
 	memcpy(mensaje, &tamanio, sizeof(int));
 	memcpy(mensaje + sizeof(int), conexion->nombreNodo, tamanio);
 	sendRemasterizado(socketFS, DATOS_NODO, sizeof(int)+tamanio, mensaje);
@@ -213,8 +213,8 @@ void handshakeFS(){
 		log_error(loggerYAMA, "La conexion efectuada no es con FileSystem.");
 		exit(-1);
 	}
-	int cantidadDeNodos = recibirInt(socketFS);
-	int i;
+	uint32_t cantidadDeNodos = recibirInt(socketFS);
+	uint32_t i;
 	for(i = 0; i<cantidadDeNodos; i++){
 		nodoSistema* nuevoNodo = generarNodoSistema();
 		nuevoNodo->nombreNodo = recibirString(socketFS);
@@ -225,7 +225,7 @@ void handshakeFS(){
 
 //FUNCIONES PARA MANEJAR LA AVAILABILITY
 int obtenerWLMax(){
-	int maximo = 0;
+	uint32_t maximo = 0;
 	bool maximoWL(nodoSistema* nodoAChequear){
 		if(nodoAChequear->wl>maximo){
 			maximo = nodoAChequear->wl;
@@ -242,7 +242,7 @@ int calculoAvailability(char* nombreNodo){
 	bool esNodo(nodoSistema* nodoAChequear){
 		return strcmp(nombreNodo, nodoAChequear->nombreNodo);
 	}
-	int availability = 0;
+	uint32_t availability = 0;
 	if(strcmp(ALGORITMO_BALANCEO, "Clock")){
 		availability = BASE_AVAILABILITY;
 	}else{
@@ -272,7 +272,7 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 	bool porMayorAvailability(datosBalanceo* dato1, datosBalanceo* datos2){
 		return dato1->availability > datos2->availability;
 	}
-	int posicion;
+	uint32_t posicion;
 	t_list* listaDeBalanceo = list_create();
 	for(posicion = 0; posicion < list_size(listaDeBloques); posicion++){
 		infoDeFs* informacionAOrdenar = list_get(listaDeBloques, posicion);

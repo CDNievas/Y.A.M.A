@@ -30,4 +30,6 @@ void incrementarAvailabilityDeNodo(datosBalanceo*);
 t_list* balancearTransformacion(t_list*, t_list*);
 
 
+char* balancearReduccionGlobal(t_list*);
+
 #endif /* BALANCEODECARGAS_H_ */

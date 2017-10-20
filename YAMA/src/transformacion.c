@@ -55,13 +55,7 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
   return informacion;
 }
 
-//GUARDO LA COPIA A UTILIZAR EN LA TABLA DE ESTADOS
-
-void cargarDatosNodoEnAdmin(administracionYAMA* nuevaAdministracion, copia* copiaAUsar){
-	nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo;
-	nuevaAdministracion->nroBloque = copiaAUsar->nroBloque;
-}
-
+//CARGO LOS DATOS DE LA TRANSFORMACION EN LA TABLA DE ESTADOS
 void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaBalanceo){
 	int numeroDeJobPTarea = obtenerNumeroDeJob();
 	log_info(loggerYAMA, "El master %d tiene el numero de Job %d.", nroMaster, numeroDeJobPTarea);
@@ -74,13 +68,14 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 		nuevaAdministracion->nroJob = numeroDeJobPTarea;
 		nuevaAdministracion->nroMaster = nroMaster;
 		nuevaAdministracion->etapa = TRANSFORMACION;
+		nuevaAdministracion->nroBloque = posicion;
 		nuevaAdministracion->nameFile = obtenerNombreTemporalTransformacion();
 		//CREE LA BASE DE LA ESTRUCTURA DE TRANSFORMACION
 		//PASO A ELEGIR LOS NODOS Y CARGARLOS EN LA ESTRUCTURA
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
 		log_info(loggerYAMA, "El Nodo elegido es: %s.\nSu archivo temporal sera: %s\nSu numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nombreNodo, nuevaAdministracion->nameFile, copiaAUsar->nroBloque, infoDeBloque->nroBloque);
-		cargarDatosNodoEnAdmin(nuevaAdministracion, copiaAUsar); //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
+		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
 		infoNodo* informacionDeNodo = generarInfoParaMaster(nuevaAdministracion, infoDeBloque);
 		list_add(tablaDeEstados, nuevaAdministracion);
 		list_add(listaDatosPMaster, informacionDeNodo);

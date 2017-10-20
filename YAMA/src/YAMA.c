@@ -10,6 +10,7 @@
 
 #include "reduccionLocal.h"
 #include "transformacion.h"
+#include "reduccionGlobal.h"
 #include "funcionesYAMA.h"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
@@ -20,7 +21,6 @@ void manejadorMaster(void* socketMasterCliente){
 	int nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	t_list* listaDeBloquesDeArchivo;
-	t_list* listaBalanceo;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
@@ -30,11 +30,10 @@ void manejadorMaster(void* socketMasterCliente){
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
 				listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
-				listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
+				t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
 				log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
 				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
 				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaBalanceo);
-				list_destroy(listaDeBloquesDeArchivo);
 				free(nombreArchivoPeticion);
 				break;
 			case TRANSFORMACION_TERMINADA:
@@ -56,9 +55,11 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
 				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
-//				if(sePuedeHacerReduccionGlobal(socketMaster)){
-//					cargarReduccionGlobal(socketMaster);
-//				}
+				if(sePuedeHacerReduccionGlobal(nroMaster)){
+					t_list* bloquesReducidos = filtrarReduccionesDelNodo(nroMaster);
+//					cargarReduccionGlobal(bloquesReducidos);
+
+				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
 				//CIERRO LA CONEXION, MATO EL HILO Y LOGGEO Y LIBERO LAS ESTRUCTURAS (LISTA DE BLOQUES)

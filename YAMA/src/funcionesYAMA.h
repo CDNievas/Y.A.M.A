@@ -45,6 +45,6 @@ void handshakeFS();
 //FUNCIONES PARA ADMINISTRACION DE BALANCEO
 int obtenerWLMax();
 int calculoAvailability(char*);
-
+t_list* armarDatosBalanceo(t_list*);
 
 #endif /* FUNCIONESYAMA_H_ */
