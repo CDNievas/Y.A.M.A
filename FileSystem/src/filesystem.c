@@ -9,6 +9,9 @@ int PUERTO_ESCUCHA;
 t_log* loggerFileSystem;
 int hayNodes = 0;
 int esEstadoSeguro = 1;
+tablaNodos* tablaGlobalNodos;
+t_list* listaBitmap;
+t_list* tablaGlobalArchivos;
 
 //Habria que implementar la copia de los archivos
 
@@ -22,6 +25,7 @@ void cargarFileSystem(t_config* configuracionFS){
     config_destroy(configuracionFS);
 }
 
+//--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
 	chequearParametros(argc,2);
@@ -37,6 +41,14 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketEscuchaFS, &socketClientes);
 	pthread_create(&hiloConsolaFS, NULL, (void*) consolaFS, NULL);
+
+  tablaGlobalNodos=malloc(sizeof(tablaNodos));
+  tablaGlobalNodos->nodo=list_create();
+  tablaGlobalNodos->contenidoXNodo=list_create();
+
+  listaBitmap=list_create();
+  tablaGlobalArchivos=list_create();
+
 	while(1){
 		socketClientesAuxiliares = socketClientes;
 		if(select(socketMaximo+1, &socketClientesAuxiliares, NULL, NULL, NULL)==-1){
@@ -52,23 +64,26 @@ int main(int argc, char **argv) {
 					socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
 					log_info(loggerFileSystem, "Se ha recibido una nueva conexion.");
 				}else{
-					int notificacion = recvDeNotificacion(socketClienteChequeado);
+					int notificacion=recvDeNotificacion(socketClienteChequeado);
 					switch(notificacion){
 						case ES_DATANODE:
-							hayNodes = 1;
+							//registrarNodo(paqueteRecibido->mensaje);
 							sendDeNotificacion(socketClienteChequeado, ES_FS);
-						break;
+							break;
 						case ES_MASTER:
 							//Hago mas cosas
-						break;
+							break;
 						case ES_YAMA:
 							if(hayNodes && esEstadoSeguro){
-								sendDeNotificacion(socketClienteChequeado, ES_FS);
+								//enviarListaNodos(socketClienteChequeado);
 							}else{
 								FD_CLR(socketClienteChequeado, &socketClientes);
 								close(socketClienteChequeado);
 							}
-						break;
+							break;
+						//case INFO_ARCHIVOFS:
+							//enviarDatoArchivo(paqueteRecibido.mensaje, socketClienteChequeado);
+							//break;
 						default:
 							log_error(loggerFileSystem, "La conexion recibida es erronea.");
 							FD_CLR(socketClienteChequeado, &socketClientes);
