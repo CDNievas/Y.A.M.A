@@ -34,7 +34,6 @@ infoDeFs* generarInformacionDeBloque(){
 
 nodoSistema* generarNodoSistema(){
 	nodoSistema* nodo = malloc(sizeof(nodoSistema));
-	nodo->nombreNodo = string_new();
 	return nodo;
 }
 

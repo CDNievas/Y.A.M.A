@@ -91,11 +91,11 @@ int main(int argc, char *argv[])
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
-	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 5);
+	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
 	nodosSistema = list_create();
-	int socketFS = conectarAServer(FS_IP, FS_PUERTO);
+	socketFS = conectarAServer(FS_IP, FS_PUERTO);
 	handshakeFS();
 	int socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
  	log_info(loggerYAMA, "Escuchando clientes...");
