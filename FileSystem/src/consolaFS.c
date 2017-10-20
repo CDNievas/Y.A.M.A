@@ -87,17 +87,17 @@ void analizarComando(char * linea){
         printf("Formateando FileSystem.\n");
 
         string_append(&comandoNuevo,"rm -r ");
-        string_append(&comandoNuevo,"yamafs:"); // Abro esto porque no se donde vamos a guardar yamafs
+        string_append(&comandoNuevo,"yamafs"); // Abro esto porque no se donde vamos a guardar yamafs
 
         system(comandoNuevo);
-      //system("mkdir yamafs:") //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
+        system("mkdir yamafs") //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
         printf("\n");
         free(comandoNuevo);
         break;
       } 
 
       case 2:{ 
-        printf("Comando en arreglo! Todavia no se puede ejecutar! (7)\n");   
+        printf("Comando en arreglo! Todavia no se puede ejecutar! (2)\n");  
       }
       break;
 

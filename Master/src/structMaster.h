@@ -1,5 +1,4 @@
-#include "../../Biblioteca/src/Socket.c"
-#include "../../Biblioteca/src/configParser.c"
+#include "../../Biblioteca/src/Socket.h"
 
 #ifndef STRUCTMASTER_H_
 #define STRUCTMASTER_H_
@@ -7,35 +6,40 @@
 
 #define sizeMaxMsg 128
 
+char* YAMA_IP;
+char* WORKER_IP;
+int YAMA_PUERTO;
+int WORKER_PUERTO;
+int socketYAMA;
+t_log* loggerMaster;
+
 // No se que nombre ponerles a las rutas de los archivos temporales.
 // Ahora quedan horribles, despues los cambiamos
 
 typedef struct{
 	char* nombreNodo;
 	char* ipNodo;
-	int puertoNodo;
+	uint32_t puertoNodo;
 }conexionNodo;
 
 typedef struct{
 	conexionNodo* conexion;
-	int nroBloque;
-	long bytesOcupados;
+	uint32_t nroBloque;
+	uint32_t bytesOcupados;
 	char* nombreTemporal;
 }infoNodo;
 
-typedef struct strReduccionLocal{
-	char* nodo;
-	char* worker_ip;
-	char* temporalesTransformacion; // Pensaba hacer un array de char*. Cada posicion seria una direccion de archivo temporal de transformacion
-	char* temporalesReduccionLocal;
-} reduccionLocal ;
+typedef struct{
+	conexionNodo * conexion;
+	t_list* temporalesTransformacion; 
+	char* temporalReduccionLocal;
+} infoReduccionLocal;
 
-typedef struct strReduccionGlobal{
-	char* nodo;
-	char* worker_ip;
+typedef struct{
+	conexionNodo * conexion;
 	char* temporalesReduccionLocal;
-	int encargado; // 1 si es encargado, 0 si no.
-} reduccionGlobal;
+	uint32_t encargado; // 1 si es encargado, 0 si no.
+} infoReduccionLocalGlobal;
 
 
 #endif /* STRUCTMASTER_H_ */
