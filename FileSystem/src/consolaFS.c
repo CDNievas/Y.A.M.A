@@ -90,7 +90,7 @@ void analizarComando(char * linea){
         string_append(&comandoNuevo,"yamafs"); // Abro esto porque no se donde vamos a guardar yamafs
 
         system(comandoNuevo);
-        system("mkdir yamafs") //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
+        system("mkdir yamafs"); //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
         printf("\n");
         free(comandoNuevo);
         break;
