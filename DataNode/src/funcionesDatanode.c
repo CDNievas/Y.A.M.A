@@ -49,7 +49,7 @@ void realizarHandshakeFS(int socketFS){
 	log_info(loggerDatanode, "Conexion con FileSystem existosa.");
 }
 
-void cargarBin(t_bitarray * bitarray, void * bmap){
+t_bitarray * cargarBin(void * bmap){
 
 	// fstat(FileD, &scriptMap);
 	if(stat(RUTA_DATABIN,&infoDatabin) < 0){
@@ -62,54 +62,17 @@ void cargarBin(t_bitarray * bitarray, void * bmap){
 
 		log_info(loggerDatanode,"Archivo binario encontrado");
 
-		//FileD = open(PATH,O_RDWR);
+		// Abro el archivo
 		int archivo = open(RUTA_DATABIN, O_RDWR);
 
-		printf("%d \n",(int) mmap(NULL, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0));
+		// Lo mapeo a memoria
+		bmap = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
 
-		// char* bitmap2 = mmap(0, scriptMap.st_size, PROT_WRITE |PROT_READ , MAP_SHARED, FileD,  0);
-		bmap = mmap(NULL, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
-
-		// bitMap= bitarray_create(bitmap2,1048576);
-		bitarray = bitarray_create_with_mode(bmap,SIZEBLOQUE,MSB_FIRST);
-
-		//printf("%d",bitarray_get_max_bit(bitarray));
-
-		log_info(loggerDatanode,"Bitarray creado correctamente");
+		// Creo el bitarray
+		int tamBitarray = (infoDatabin.st_size/1024)/1024;
+		return bitarray_create_with_mode(bmap,tamBitarray,MSB_FIRST);
 
 	}
 
-
 }
-
-
-/*
-void crearBitmap(char  PATH ,char  nodoConectado){
- int FileD;
- FILE* archivoDeBitmap = fopen(PATH,"r+");
- if(archivoDeBitmap == NULL){
-  log_info(logFs,"Se tuvo que crear un bitmap nuevo [%s], ya que no habia un bitmap anterior.",nodoConectado);
-  archivoDeBitmap =fopen(PATH,"w+");
-  int cantidad = 1048576;
-  char* cosa = string_repeat('\0',cantidad);
-  fwrite(cosa,1,cantidad,archivoDeBitmap);
-  free(cosa);
- }
- else{
-  log_info(logFs,"Se cargo el bitmap [%s] al FileSystem ",nodoConectado);
- }
- fclose(archivoDeBitmap);
- FileD = open(PATH,O_RDWR);
-
-
- struct stat scriptMap;
- fstat(FileD, &scriptMap);
-
- char* bitmap2 = mmap(0, scriptMap.st_size, PROT_WRITE |PROT_READ , MAP_SHARED, FileD,  0);
- bitMap= bitarray_create(bitmap2,1048576);
- printf("%d",bitarray_get_max_bit(bitmap2));
- log_info(logFs,"[Configurar Todo]-Se creo correctamente el bitmap [%s]",nodoConectado);
-
-}
- */
 

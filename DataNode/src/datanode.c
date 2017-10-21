@@ -14,16 +14,23 @@ int main(int argc, char **argv) {
 	cargarDataNode(configuracionDataNode);
 	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
-	cargarBin(bitarray,bmap);
-	//printf("%d \n",bitarray_get_max_bit(bitarray));
-
-/*
-	int i = 1;
-	while(i <= 5){
-		printf("%d \n",bitarray_test_bit(bitarray,i));
+	bitarray = cargarBin(bmap);
+	log_info(loggerDatanode,"Bitarray creado correctamente");
+	printf("%d \n",bitarray_get_max_bit(bitarray));
+	/*
+	int i = 0;
+	while(true){
+		bitarray_test_bit(bitarray,i);
+		printf("%d \n",i);
 		i++;
 	}
-*/
+	*/
+
+	printf("%d \n",bitarray_test_bit(bitarray,5242880));
+	printf("%d \n",bitarray_test_bit(bitarray,5242890));
+
+	//printf("%d \n",bitarray_test_bit(bitarray,233));
+
 
 	//int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	//realizarHandshakeFS(socketServerFS);

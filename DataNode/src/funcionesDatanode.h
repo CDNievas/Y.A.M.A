@@ -28,6 +28,6 @@ struct stat infoDatabin; // Guarda informacion del archivo
 
 void cargarDataNode(t_config*);
 void realizarHandshakeFS(int);
-void cargarBin(t_bitarray *, void *);
+t_bitarray * cargarBin(void *);
 
 #endif /* FUNCIONESDATANODE_H_ */
