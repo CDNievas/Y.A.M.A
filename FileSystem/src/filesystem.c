@@ -26,6 +26,45 @@ void cargarFileSystem(t_config* configuracionFS) {
 	config_destroy(configuracionFS);
 }
 
+//--------------------------------Nodos---------------------------------------
+
+//int sacarBloquesLibre( bitarray) {
+//	int i = 0;
+//	int cont = 0;
+//	for (; i < bitarray_get_max_bit(bitarray); i++) {
+//		if (!bitarray_test_bit(bitarray, i)) {
+//			cont++;
+//		}
+//	}
+//	return cont;
+//}
+//
+//void registrarNodo(void* mensaje, int socket) {
+//	char* nombreNodo = string_new();
+//	int tamanioNombreNodo = 0, cantidadDeBloques = 0;
+//	t_bitarray* bitarray;
+//
+//	nombreNodo = recibirString(socket);
+//	cantidadDeBloques = recibirInt(socket);
+//	//bitarray=recibirBitarray(socket);
+//
+//	contenidoNodo bloque = malloc(sizeof(contenidoNodo));
+//	string_append(&bloque.nodo, nombreNodo);
+//	bloque.total = cantidadDeBloques;
+//	bloque.libre = sacarBloquesLibre(bitarray);
+//
+//	tablaGlobalNodos->tamanio += cantidadDeBloques;
+//	tablaGlobalNodos->libres += bloque.libre;
+//	list_add(tablaGlobalNodos->nodo, nombreNodo);
+//	list_add(tablaGlobalNodos->contenidoXNodo, bloque);
+//
+//	tablaBitmapXNodos bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
+//	string_append(&bitmapNodo, nombreNodo);
+//	bitmapNodo.bitarray= bitarray;
+//
+//	list_add(listaBitmap, bitmapNodo);
+//}
+
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
 int sacarTamanioArchivo(FILE* archivo) {
 	fseek(archivo, 0, SEEK_END);
@@ -46,7 +85,7 @@ void almacenarArchivo(void* mensaje, int socket) {
 	char* nombreArchivo = string_new();
 	path = recibirString(socket);
 	nombreArchivo = recibirString(socket);
-	char tipo = (char) recibirInt(socket);
+	//char tipo = (char) recibirInt(socket);
 
 	FILE* archivo = fopen(path, "r+");
 	int bloqueAsignado = 0;
@@ -106,7 +145,8 @@ void almacenarArchivo(void* mensaje, int socket) {
 				int posicionAnterior = *((int*) list_get(posiciones,
 						posicionActual - 1));
 				contenidoAEnviar = malloc((*posicion) - posicionAnterior);
-				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,archivo);
+				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,
+						archivo);
 //				asignarEnviarANodo(contenidoAEnviar,(*posicion) - posicionAnterior, archivo);
 			}
 			posicionActual++;

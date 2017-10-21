@@ -40,7 +40,7 @@ typedef struct __attribute__((packed)) {
 	char* nodo;
 	uint32_t total;
   uint32_t libre;
-} ContenidoNodo;
+} contenidoNodo;
 
 
 //------------------BITMAP------------------------
