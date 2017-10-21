@@ -12,8 +12,10 @@
 #ifndef BALANCEODECARGAS_H_
 #define BALANCEODECARGAS_H_
 
-//UNA VEZ QUE TERMINO DE ELEGIR LOS NODOS, ACTUALIZO LOS WL
-void actualizarWL(t_list*);
+//UNA VEZ QUE TERMINO DE ELEGIR LOS NODOS, ACTUALIZO LOS WL, RECIBE LISTA DE COPIAS A USAR
+void actualizarWLTransformacion(t_list*);
+//ACTUALIZO EL WL EN REDUCCION LOCAL
+void actualizarWLRLocal(char*, int);
 //BUSCO EL BLOQUE SI LO TIENE OTRO NODO
 datosBalanceo* buscarBloque(t_list*, infoDeFs*, int);
 //CHEQUEO SI LA TIENE OTRO NODO
@@ -28,8 +30,7 @@ bool tieneAvailability(datosBalanceo*);
 void incrementarAvailabilityDeNodo(datosBalanceo*);
 //BALANCEO LA TRANSFORMACION, RETORNA LA LISTA DE COPIAS A USAR
 t_list* balancearTransformacion(t_list*, t_list*);
-
-
+//BALANCEO REDUCCION GLOBAL, RETORNA EL NOMBRE DEL NODO ENCARGADO
 char* balancearReduccionGlobal(t_list*);
 
 #endif /* BALANCEODECARGAS_H_ */

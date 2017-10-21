@@ -197,14 +197,14 @@ void chequeameLaSignal(int signal){
 }
 
 //ENVIO DE MENSAJES
-void enviarCopiaAMaster(int socket, copia* copiaAEnviar){
-	conexionNodo* conection = generarConexionNodo();
-	string_append(&conection->nombreNodo, copiaAEnviar->nombreNodo);
-	obtenerIPYPuerto(conection);
-	void* copiaSerializada = serializarCopia(copiaAEnviar, conection);
-	sendRemasterizado(socket, REPLANIFICAR, obtenerTamanioCopia(copiaAEnviar, conection), copiaSerializada);
-	liberarCopia(copiaAEnviar);
-}
+//void enviarCopiaAMaster(int socket, copia* copiaAEnviar){
+//	conexionNodo* conection = generarConexionNodo();
+//	string_append(&conection->nombreNodo, copiaAEnviar->nombreNodo);
+//	obtenerIPYPuerto(conection);
+//	void* copiaSerializada = serializarCopia(copiaAEnviar, conection);
+//	sendRemasterizado(socket, REPLANIFICAR, obtenerTamanioCopia(copiaAEnviar, conection), copiaSerializada);
+//	liberarCopia(copiaAEnviar);
+//}
 
 //HANDSHAKE CON FS (RECIBO LOS NODOS DEL SISTEMA)
 void handshakeFS(){

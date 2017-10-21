@@ -87,7 +87,8 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion+1);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 			}else{
-				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion.");
+				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion.\nCerrando YAMA.");
+				exit(-1);
 			}
 		}else{
 			posicion++;

@@ -56,13 +56,12 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
 }
 
 //CARGO LOS DATOS DE LA TRANSFORMACION EN LA TABLA DE ESTADOS
-void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaBalanceo){
+void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaDeCopias){
 	int numeroDeJobPTarea = obtenerNumeroDeJob();
 	log_info(loggerYAMA, "El master %d tiene el numero de Job %d.", nroMaster, numeroDeJobPTarea);
 	t_list* listaDatosPMaster = list_create();
 	int posicion;
 	log_info(loggerYAMA, "Se prosigue a apligar el algoritmo %s para obtener los Nodos a utilizar.", ALGORITMO_BALANCEO);
-	t_list* listaDeCopias = balancearTransformacion(listaDeBloques, listaBalanceo); //ELIJO DEPENDIENDO DEL ALGORITMO, ME VA A TENER QUE DEVOLVER LA LISTA CON TODAS LAS COPIAS A USAR, LE PASO LA LISTA DE BLOQUES Y LA LISTA DE NODOS DISPONIBLES CON SUS BLOQUES.
 	for(posicion = 0; posicion<list_size(listaDeBloques); posicion++){
 		administracionYAMA* nuevaAdministracion = generarAdministracion();
 		nuevaAdministracion->nroJob = numeroDeJobPTarea;

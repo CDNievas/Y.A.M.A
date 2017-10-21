@@ -18,9 +18,10 @@
 void manejadorMaster(void* socketMasterCliente){
 	int socketMaster = *(int*)socketMasterCliente;
 	char* nombreArchivoPeticion = string_new();
-	int nroMaster = obtenerNumeroDeMaster();
+	uint32_t nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
-	t_list* listaDeBloquesDeArchivo;
+	t_list* listaDeCopias;
+	char* nodoEncargado;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
@@ -29,10 +30,11 @@ void manejadorMaster(void* socketMasterCliente){
 				string_append(&nombreArchivoPeticion, recibirNombreArchivo(socketMaster)); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
-				listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
+				t_list* listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
 				t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
 				log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
 				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
+				listaDeCopias = balancearTransformacion(listaDeBloquesDeArchivo, listaBalanceo);
 				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaBalanceo);
 				free(nombreArchivoPeticion);
 				break;
@@ -57,15 +59,18 @@ void manejadorMaster(void* socketMasterCliente){
 				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
 				if(sePuedeHacerReduccionGlobal(nroMaster)){
 					t_list* bloquesReducidos = filtrarReduccionesDelNodo(nroMaster);
-//					cargarReduccionGlobal(bloquesReducidos);
-
+					nodoEncargado = cargarReduccionGlobal(socketMaster, nroMaster, bloquesReducidos);
 				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
-				//CIERRO LA CONEXION, MATO EL HILO Y LOGGEO Y LIBERO LAS ESTRUCTURAS (LISTA DE BLOQUES)
-				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
-				pthread_detach(pthread_self());
+				terminarReduccionGlobal(nroMaster);
+				almacenadoFinal(socketMaster, nodoEncargado);
 				break;
+//			case FINALIZO:
+//				reestablecerWL(listaDeCopias, nodoEncargado)
+//				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
+//				pthread_detach(pthread_self());
+//				break;
 			case ERROR_REDUCCION_LOCAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
