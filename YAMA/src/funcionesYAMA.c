@@ -95,11 +95,11 @@ int obtenerNumeroDeMaster(){
 //OBTENER DATOS DE CONEXION CON NODO
 
 void deserializarIPYPuerto(conexionNodo* conexion){
-	if(recibirInt(socketFS) != DATOS_NODO){
+	if(recibirUInt(socketFS) != DATOS_NODO){
 		log_error(loggerYAMA, "Error al recibir la IP y el puerto del nodo.");
 		exit(-1);
 	}
-	conexion->puertoNodo = recibirInt(socketFS);
+	conexion->puertoNodo = recibirUInt(socketFS);
 	conexion->ipNodo = recibirString(socketFS);
 }
 
@@ -209,11 +209,11 @@ void chequeameLaSignal(int signal){
 //HANDSHAKE CON FS (RECIBO LOS NODOS DEL SISTEMA)
 void handshakeFS(){
 	sendDeNotificacion(socketFS, ES_YAMA);
-	if(recibirInt(socketFS) != ES_FS){
+	if(recibirUInt(socketFS) != ES_FS){
 		log_error(loggerYAMA, "La conexion efectuada no es con FileSystem.");
 		exit(-1);
 	}
-	uint32_t cantidadDeNodos = recibirInt(socketFS);
+	uint32_t cantidadDeNodos = recibirUInt(socketFS);
 	uint32_t i;
 	for(i = 0; i<cantidadDeNodos; i++){
 		nodoSistema* nuevoNodo = generarNodoSistema();

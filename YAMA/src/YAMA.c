@@ -75,17 +75,21 @@ void manejadorMaster(void* socketMasterCliente){
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
-				pthread_detach(pthread_self());
+				pthread_cancel(pthread_self());
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION GLOBAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion global.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
-				pthread_detach(pthread_self());
+				pthread_cancel(pthread_self());
+				break;
+			case CORTO:
+				log_error(loggerYAMA, "El master %d corto.", nroMaster);
+				pthread_cancel(pthread_self());
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
-				pthread_detach(pthread_self());
+				pthread_cancel(pthread_self());
 				break;
 		}
 	}

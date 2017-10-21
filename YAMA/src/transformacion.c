@@ -20,16 +20,16 @@ t_list *recibirInfoArchivo(){
 		exit(-1);
 	}
 	t_list *listaInfoFs = list_create();
-	int cantidadDeBloques = recibirInt(socketFS);
+	int cantidadDeBloques = recibirUInt(socketFS);
 	int i;
 	for(i = 0; i < cantidadDeBloques; i++){
 		infoDeFs* informacionDeBloque = generarInformacionDeBloque();
-		informacionDeBloque->nroBloque = recibirInt(socketFS);
+		informacionDeBloque->nroBloque = recibirUInt(socketFS);
 		informacionDeBloque->copia1->nombreNodo = recibirString(socketFS);
-		informacionDeBloque->copia1->nroBloque = recibirInt(socketFS);
+		informacionDeBloque->copia1->nroBloque = recibirUInt(socketFS);
 		informacionDeBloque->copia2->nombreNodo = recibirString(socketFS);
-		informacionDeBloque->copia2->nroBloque = recibirInt(socketFS);
-		informacionDeBloque->bytesOcupados = recibirInt(socketFS);
+		informacionDeBloque->copia2->nroBloque = recibirUInt(socketFS);
+		informacionDeBloque->bytesOcupados = recibirUInt(socketFS);
 		list_add(listaInfoFs, informacionDeBloque);
 	}
 	return listaInfoFs;
@@ -91,7 +91,7 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 //FINALIZO LA TRANSFORMACION
 void terminarTransformacion(int nroMaster, int socketMaster){
 	char* nombreNodo = recibirString(socketMaster);
-	int nroBloque = recibirInt(socketMaster);
+	int nroBloque = recibirUInt(socketMaster);
 	int buscarNodo(administracionYAMA* adminAChequear){
 		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && strcmp(adminAChequear->nombreNodo, nombreNodo));
 	}

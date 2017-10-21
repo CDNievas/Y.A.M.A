@@ -25,7 +25,7 @@
 #define INFO_ARCHIVO_FS 13 //CON ESTO LE PIDO A FS LA INFO DEL ARCHIVO
 #define FINALIZADO 14
 #define ALMACENAMIENTO_FINAL 15
-
+#define CORTO 0
 
 //ESTRUCTURAS PARA ADMINISTRAR LA INFO QUE SE LE MANDA A MASTER
 typedef struct{
@@ -37,7 +37,7 @@ typedef struct{
 typedef struct{
 	conexionNodo* conexion;
 	uint32_t nroBloque;
-	long bytesOcupados;
+	uint32_t bytesOcupados;
 	char* nombreTemporal;
 }infoNodo;
 
