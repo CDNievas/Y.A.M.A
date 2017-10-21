@@ -18,7 +18,7 @@ int calcularSocketMaximo(int, int);
 int recvDeNotificacion(int);
 void sendDeNotificacion(int , int );
 void sendRemasterizado(int, int, int, void*);
-int recibirInt(int);
+uint32_t recibirUInt(int);
 char* recibirString(int);
 void destruirPaquete(paquete*);
 
