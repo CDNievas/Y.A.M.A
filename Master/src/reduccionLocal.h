@@ -6,6 +6,10 @@
 #define reduccionLocal_H_
 
 infoReduccionLocal* recibirSolicitudReduccionLocal();
+void conectarAWorkerReduccionLocal(void*);
+void procesarReduccionLocal();
+uint32_t obtenerTamanioReduccionToWorker(t_list* , char*);
+void* serializarReduccionLocalToWorker(t_list*, char*);
 
 
 #endif /* reduccionLocal_H_ */

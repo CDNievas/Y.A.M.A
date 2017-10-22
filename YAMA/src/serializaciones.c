@@ -63,7 +63,7 @@ void *serializarInfoTransformacion(t_list* listaInfoNodo){
 		memcpy(infoSerializada+posicionActual, informacion->conexion->nombreNodo, tamanioNombre);
 		posicionActual += tamanioNombre;
 		//SERIALIZO DATOS DE CONEXION DEL NODO
-		int tamanioIP = string_length(informacion->conexion->ipNodo);
+		uint32_t tamanioIP = string_length(informacion->conexion->ipNodo);
 		memcpy(infoSerializada+posicionActual, &tamanioIP, sizeof(uint32_t));
 		posicionActual += sizeof(uint32_t);
 		memcpy(infoSerializada+posicionActual, informacion->conexion->ipNodo, tamanioIP);
@@ -75,7 +75,7 @@ void *serializarInfoTransformacion(t_list* listaInfoNodo){
 		posicionActual += sizeof(uint32_t);
 		memcpy(infoSerializada+posicionActual, &informacion->bytesOcupados, sizeof(uint32_t));
 		posicionActual += sizeof(uint32_t);
-		int tamanioNombreTemporal = string_length(informacion->nombreTemporal);
+		uint32_t tamanioNombreTemporal = string_length(informacion->nombreTemporal);
 		memcpy(infoSerializada+posicionActual, &tamanioNombreTemporal, sizeof(uint32_t));
 		posicionActual += sizeof(uint32_t);
 		memcpy(infoSerializada+posicionActual, informacion->nombreTemporal, tamanioNombreTemporal);
