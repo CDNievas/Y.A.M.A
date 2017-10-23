@@ -1,0 +1,14 @@
+Limpia la consola 
+tput reset
+
+Compila
+gcc -l librerias archivo.c
+
+Valgrind
+valgrind --leak-check=full ./progama parametros
+
+Crear archivo vacio de N bytes
+truncate -s N nombreArchivo
+
+Crear archivo lleno de basura de N bytes
+head -c N </dev/urandom >nombreArchivo

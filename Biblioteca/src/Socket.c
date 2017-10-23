@@ -117,37 +117,15 @@ int calcularTamanioTotalPaquete(int tamanioMensaje){
   return tamanio;
 }
 
-void sendRemasterizado(int aQuien, int tipo, int tamanio, void* que){
-  void *bufferAEnviar;
-  int tamanioDeMensaje = calcularTamanioTotalPaquete(tamanio);
-  bufferAEnviar = malloc(tamanioDeMensaje);
-  memcpy(bufferAEnviar, &tipo, sizeof(int));
-  memcpy(bufferAEnviar+sizeof(int), &tamanio, sizeof(int));
-  memcpy(bufferAEnviar+sizeof(int)*2, que, tamanio);
-  if(send(aQuien, bufferAEnviar, tamanioDeMensaje, 0)==-1){
-    perror("Error al enviar mensaje");
-    exit(-1);
-  }
-  free(bufferAEnviar);
-}
-
-paquete *recvRemasterizado(int deQuien){
-  paquete* paqueteConMensaje;
-  paqueteConMensaje = malloc(sizeof(paquete));
-  if(recv(deQuien, &paqueteConMensaje->tipoMsj, sizeof(int), 0)==-1){
-    perror("Error al recibir mensaje");
-    exit(-1);
-  }
-  if(recv(deQuien, &paqueteConMensaje->tamMsj, sizeof(int),0)==-1){
-    perror("Error al recibir mensaje");
-    exit(-1);
-  }
-  paqueteConMensaje->mensaje = malloc(paqueteConMensaje->tamMsj);
-  if(recv(deQuien, paqueteConMensaje->mensaje,paqueteConMensaje->tamMsj, 0)==-1){
-    perror("Error al recibir mensaje");
-    exit(-1);
-  }
-  return paqueteConMensaje;
+void sendRemasterizado(int aQuien, int tipoMsj, int tamanioMsj, void* peticionDeArchivo){
+	void* bufferMensaje = malloc(tamanioMsj+sizeof(tipoMsj));
+	memcpy(bufferMensaje, &tipoMsj, sizeof(int));
+	memcpy(bufferMensaje+sizeof(int), peticionDeArchivo, tamanioMsj);
+	if(send(aQuien, bufferMensaje, tamanioMsj+sizeof(int), 0) == -1){
+		perror("Error al enviar mensaje.");
+		exit(-1);
+	}
+	free(bufferMensaje);
 }
 
 void sendDeNotificacion(int aQuien, int notificacion){
@@ -155,6 +133,25 @@ void sendDeNotificacion(int aQuien, int notificacion){
 		perror("Error al enviar notificacion.");
 		exit(-1);
 	}
+}
+
+uint32_t recibirUInt(int socket){
+	uint32_t uintRecibido;
+	if(recv(socket, &uintRecibido, sizeof(uint32_t), 0) == -1){
+		perror("Error al recibir un uint.");
+		exit(-1);
+	}
+	return uintRecibido;
+}
+
+char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ESTA FUNCION xd
+	uint32_t tamanio = recibirUInt(socket);
+	char* stringRecibido = string_new();
+	if(recv(socket, stringRecibido, tamanio, 0) == -1){
+		perror("Error al recibir un string.");
+		exit(-1);
+	}
+	return stringRecibido;
 }
 
 int recvDeNotificacion(int deQuien){
