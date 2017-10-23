@@ -14,23 +14,8 @@ int main(int argc, char **argv) {
 	cargarDataNode(configuracionDataNode);
 	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
-	bitarray = cargarBin(bmap);
+	cargarBin(mapArchivo);
 	log_info(loggerDatanode,"Bitarray creado correctamente");
-	printf("%d \n",bitarray_get_max_bit(bitarray));
-	/*
-	int i = 0;
-	while(true){
-		bitarray_test_bit(bitarray,i);
-		printf("%d \n",i);
-		i++;
-	}
-	*/
-
-	printf("%d \n",bitarray_test_bit(bitarray,5242880));
-	printf("%d \n",bitarray_test_bit(bitarray,5242890));
-
-	//printf("%d \n",bitarray_test_bit(bitarray,233));
-
 
 	//int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	//realizarHandshakeFS(socketServerFS);
@@ -38,10 +23,40 @@ int main(int argc, char **argv) {
 
 	}*/
 
+	// EJEMPLO DE USO
 
-	munmap(bmap,infoDatabin.st_size);
+	// Creo la estructura bloque
+	void * dataInBloque = malloc(SIZEBLOQUE);
+
+	// Cargo el bloque con informacion
+	char * randomChar = malloc(1024);
+	gen_random(randomChar,1024);
+	memcpy(dataInBloque,randomChar,1024);
+
+	// Escribo bloque y chequeo por si hay error
+	if(escribirBloque(0,dataInBloque) < 0){
+		return -1;
+	}
+
+	void * dataOutBloque;
+	dataOutBloque = leerBloque(0);
+
+	if(dataOutBloque == NULL){
+		return -2;
+	}
+
+	printf("%s",dataOutBloque);
+
+	free(dataOutBloque);
+	free(randomChar);
+	free(dataInBloque);
+
+	// LIBERO MEMORIA
+	free(memBitarray);
+	munmap(mapArchivo,cantBloques);
 	bitarray_destroy(bitarray);
 	log_destroy(loggerDatanode);
+
 	return EXIT_SUCCESS;
 
 }

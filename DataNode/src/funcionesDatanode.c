@@ -49,9 +49,8 @@ void realizarHandshakeFS(int socketFS){
 	log_info(loggerDatanode, "Conexion con FileSystem existosa.");
 }
 
-t_bitarray * cargarBin(void * bmap){
+void cargarBin(){
 
-	// fstat(FileD, &scriptMap);
 	if(stat(RUTA_DATABIN,&infoDatabin) < 0){
 		// Error al abrir el archivo
 		log_error(loggerDatanode,"Error al tratar de abrir el archivo.");
@@ -60,19 +59,74 @@ t_bitarray * cargarBin(void * bmap){
 
 	} else {
 
-		log_info(loggerDatanode,"Archivo binario encontrado");
+		log_info(loggerDatanode,"Archivo binario de %d bytes encontrado", infoDatabin.st_size);
 
 		// Abro el archivo
 		int archivo = open(RUTA_DATABIN, O_RDWR);
 
 		// Lo mapeo a memoria
-		bmap = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
 
 		// Creo el bitarray
-		int tamBitarray = (infoDatabin.st_size/1024)/1024;
-		return bitarray_create_with_mode(bmap,tamBitarray,MSB_FIRST);
+		cantBloques = infoDatabin.st_size/SIZEBLOQUE;
+		memBitarray = malloc(cantBloques);
+		bitarray = bitarray_create_with_mode(memBitarray,cantBloques,MSB_FIRST);
+
+		// Vacio bitarray
+		int i = 0;
+		while(i<cantBloques){
+			bitarray_clean_bit(bitarray, i);
+			i++;
+		}
 
 	}
 
+}
+
+int escribirBloque(int nroBloque, void * dataBloque){
+
+	if(nroBloque >= cantBloques){
+
+		return -1;
+
+	} else {
+
+		memcpy(mapArchivo+(nroBloque*SIZEBLOQUE), dataBloque, SIZEBLOQUE);
+		msync(mapArchivo,nroBloque*SIZEBLOQUE,MS_SYNC);
+
+		return 0;
+
+	}
+
+}
+
+void * leerBloque(int nroBloque){
+
+	if(nroBloque >= cantBloques){
+
+		return NULL;
+
+	} else {
+
+		void * dataBloque = malloc(SIZEBLOQUE);
+		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),SIZEBLOQUE);
+		return dataBloque;
+
+	}
+
+}
+
+void gen_random(char *s, const int len) {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    int i;
+    for (i = 0; i < len; i++) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[len-1] = '\0';
 }
 

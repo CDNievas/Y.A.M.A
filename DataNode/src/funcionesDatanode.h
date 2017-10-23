@@ -8,8 +8,8 @@
 #include <commons/bitarray.h>
 #include <sys/mman.h>
 
-#define LOGFILE "ggwp.log"
-#define SIZEBLOQUE 1048576
+#define LOGFILE "ggwp.log" // Nombre del log
+#define SIZEBLOQUE 1048576 // Tamanio del bloque en Bytes
 
 // ARCHIVO DE CONFIGURACION
 int PUERTO_FILESYSTEM;
@@ -21,13 +21,18 @@ int PUERTO_DATANODE;
 int codError; // Variable que se usa para absorber el codigo de error de una funcion
 t_log * loggerDatanode; // Logger
 int sizeDataBin; // Guarda el tamaño del Databin
+int cantBloques; // Guarda cantidad de bloques
 char * pathDataBin; // Guarda el path del databin
-t_bitarray * bitarray; // Bitarray del .bin
-void * bmap; // Memoria del mmap
+t_bitarray * bitarray; // Estructura bitarray del .bin
+char * memBitarray; // Reserva espacio para el bitarray
+void * mapArchivo; // Memoria del mmap
 struct stat infoDatabin; // Guarda informacion del archivo
 
 void cargarDataNode(t_config*);
 void realizarHandshakeFS(int);
-t_bitarray * cargarBin(void *);
+void cargarBin();
+int escribirBloque(int, void *);
+void * leerBloque(int);
+void gen_random(char *, const int);
 
 #endif /* FUNCIONESDATANODE_H_ */
