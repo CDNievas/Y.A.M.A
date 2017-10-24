@@ -2,37 +2,47 @@
 #ifndef FUNCIONESDATANODE_H_
 #define FUNCIONESDATANODE_H_
 
+#include "../../Biblioteca/src/genericas.h"
 #include "../../Biblioteca/src/configParser.h"
 #include "../../Biblioteca/src/Socket.h"
 #include <sys/stat.h>
 #include <commons/bitarray.h>
 #include <sys/mman.h>
 
-#define LOGFILE "ggwp.log" // Nombre del log
-#define SIZEBLOQUE 1048576 // Tamanio del bloque en Bytes
+// CONFIGS
+#define LOGFILE "ggwp.log"
+#define SIZEBLOQUE 1048576
+
+// PROTOCOLO
+#define ENV_INFONODO 100
+#define ENV_BLOQUE 101
+#define ENV_CONFESCRITURA 102
+#define REC_LEER 1
+#define REC_ESCRIBIR 2
+#define BLOQUEINEXISTENTE 3
 
 // ARCHIVO DE CONFIGURACION
-int PUERTO_FILESYSTEM;
-char* IP_FILESYSTEM;
-char* RUTA_DATABIN;
-char* NOMBRE_NODO;
-int PUERTO_DATANODE;
+u_int32_t puertoFilesystem;
+char* ipFilesystem;
+char* rutaDatabin;
+char* nombreNodo;
+u_int32_t puertoDatanode;
 
-int codError; // Variable que se usa para absorber el codigo de error de una funcion
 t_log * loggerDatanode; // Logger
-int sizeDataBin; // Guarda el tamaño del Databin
-int cantBloques; // Guarda cantidad de bloques
-char * pathDataBin; // Guarda el path del databin
-t_bitarray * bitarray; // Estructura bitarray del .bin
-char * memBitarray; // Reserva espacio para el bitarray
+u_int32_t sizeDataBin; // Guarda el tamaño del Databin
+u_int32_t cantBloques; // Guarda cantidad de bloques
 void * mapArchivo; // Memoria del mmap
 struct stat infoDatabin; // Guarda informacion del archivo
+int corte; // Corta el while
 
 void cargarDataNode(t_config*);
-void realizarHandshakeFS(int);
+void realizarHandshakeFS(u_int32_t);
 void cargarBin();
-int escribirBloque(int, void *);
-void * leerBloque(int);
-void gen_random(char *, const int);
+int escribirBloque(u_int32_t, void *);
+void * leerBloque(u_int32_t);
+void enviarInfoNodo(u_int32_t);
+void * recvDeBloque(u_int32_t);
+
+void gen_random(char *, const u_int32_t);
 
 #endif /* FUNCIONESDATANODE_H_ */

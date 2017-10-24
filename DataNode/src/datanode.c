@@ -1,4 +1,5 @@
 #include "funcionesDatanode.h"
+#include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/configParser.c"
 #include "../../Biblioteca/src/Socket.c"
 
@@ -7,54 +8,75 @@
 */
 
 int main(int argc, char **argv) {
-	loggerDatanode = log_create("DataNode.log", "DataNode", 1, 0);
+
 	chequearParametros(argc,2);
-	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
+	loggerDatanode = log_create("DataNode.log", "DataNode", 1, 0);
+
+	// Debug Eclipse
 	//t_config* configuracionDataNode = generarTConfig("src/datanode.ini", 6);
+
+	// Run consola
+	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
 	cargarDataNode(configuracionDataNode);
-	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
+	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", nombreNodo);
+
+	// Cargo binario
 	cargarBin(mapArchivo);
-	log_info(loggerDatanode,"Bitarray creado correctamente");
 
-	//int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
-	//realizarHandshakeFS(socketServerFS);
-	/*while(1){
+	// Conexion con FS
+	int socketServerFS = conectarAServer(ipFilesystem, puertoFilesystem);
+	realizarHandshakeFS(socketServerFS);
 
-	}*/
+	// Envio nombre de nodo y cantidad de bloques al FS
+	enviarInfoNodo(socketServerFS);
 
-	// EJEMPLO DE USO
+	corte = 1;
+	while(corte){
 
-	// Creo la estructura bloque
-	void * dataInBloque = malloc(SIZEBLOQUE);
+		u_int32_t operacion = recvDeNotificacion(socketServerFS);
 
-	// Cargo el bloque con informacion
-	char * randomChar = malloc(1024);
-	gen_random(randomChar,1024);
-	memcpy(dataInBloque,randomChar,1024);
+		switch (operacion){
+			case REC_LEER:{
 
-	// Escribo bloque y chequeo por si hay error
-	if(escribirBloque(0,dataInBloque) < 0){
-		return -1;
+				u_int32_t nroBloque = recibirUInt(socketServerFS);
+				void * bloque;
+
+				// Leo el bloque
+				if((bloque = leerBloque(nroBloque)) == NULL){
+					// Bloque inexistente
+					exit(-99);
+				} else {
+					// Lo envio a FS
+					sendRemasterizado(socketServerFS, ENV_BLOQUE, SIZEBLOQUE, bloque);
+				}
+
+				free(bloque);
+				break;
+			}
+			case REC_ESCRIBIR:{
+
+				u_int32_t nroBloque = recibirUInt(socketServerFS);
+				void * bloque = recvDeBloque(socketServerFS);
+
+				// Escribo bloque
+				if(escribirBloque(nroBloque,bloque) < 0){
+					// Bloque inexistente
+					exit(-98);
+				}
+
+				free(bloque);
+				break;
+			}
+			default:
+				log_warning(loggerDatanode, "Peticion recibida por FS incorrecta.");
+				break;
+		}
+
 	}
-
-	void * dataOutBloque;
-	dataOutBloque = leerBloque(0);
-
-	if(dataOutBloque == NULL){
-		return -2;
-	}
-
-	printf("%s",dataOutBloque);
-
-	free(dataOutBloque);
-	free(randomChar);
-	free(dataInBloque);
 
 	// LIBERO MEMORIA
-	free(memBitarray);
 	munmap(mapArchivo,cantBloques);
-	bitarray_destroy(bitarray);
 	log_destroy(loggerDatanode);
 
 	return EXIT_SUCCESS;
