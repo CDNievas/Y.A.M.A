@@ -2,11 +2,18 @@
 #include "../../Biblioteca/src/configParser.c"
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
-#define TRANSFORMACION 332
-#define REDUCCION_LOCAL 333
-#define REDUCCION_GLOBAL 334
-#define ALMACENADO_FINAL 335
-#define SIZE_SCRIPT 1024
+#define TRANSFORMACION 1
+#define TRANSFORMACION_TERMINADA 2
+#define ERROR_TRANSFORMACION 3
+#define REDUCCION_LOCAL 8
+#define REDUCCION_LOCAL_TERMINADA 4
+#define ERROR_REDUCCION_LOCAL 6
+#define REDUCCION_GLOBAL 9
+#define REDUCCION_GLOBAL_TERMINADA 5
+#define ERROR_REDUCCION_GLOBAL 7
+#define ALMACENADO_FINAL 15
+#define ALMACENADO_FINAL_TERMINADO 16
+#define ERROR_ALMACENADO_FINAL 17
 
 t_log* loggerWorker;
 char* IP_FILESYSTEM;
@@ -65,7 +72,7 @@ void darPermisosAScripts(char* script){
 	}
 }
 
-char* crearComandoScript(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados){
+char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados){
 	char* command = string_new();
 	int bloqueAnterior = nroBloque-1;
 	string_append(&command, "head -n ");
@@ -79,6 +86,19 @@ char* crearComandoScript(char* nombreScript,char* pathDestino, uint32_t nroBloqu
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
+	log_info(loggerWorker, "Se creo correctamente el comando del script transformador");
+	return command;
+}
+
+char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* pathDestino){
+	char* command = string_new();
+	string_append(&command,archivoApareado);
+	string_append(&command," | ./");
+	string_append(&command,nombreScript);
+	string_append(&command," > ");
+	string_append(&command,pathDestino);
+	free(pathDestino);
+	free(archivoApareado);
 	return command;
 }
 
@@ -112,11 +132,15 @@ void eliminarScript(char* nombreScript){
 	free(nombreScript);
 }
 
+char* aparearArchivos(t_list* archivosTemporales){
+	return NULL;
+}
+
 void crearProcesoHijo(int socketMaster){
 	uint32_t tipoEtapa = recibirUInt(socketMaster);
+	log_info(loggerWorker, "Se recibio un job del socket de master %d.",socketMaster);
 	int pipe_padreAHijo[2];
 	int pipe_hijoAPadre[2];
-	int status;
 
 	pipe(pipe_padreAHijo);
 	pipe(pipe_hijoAPadre);
@@ -125,14 +149,14 @@ void crearProcesoHijo(int socketMaster){
 
 	switch(pid){
 	case -1:{
-		perror("No se pudo crear el proceso hijo\n");
+		log_error(loggerWorker, "No se pudo crear el proceso hijo");
+		close(socketMaster);
 		exit(-1);
 	}
 	break;
 	case 0:{
 
-		printf("Proceso hijo con pid: %d \n",pid);
-		printf("Soy el hijo y mi padre tiene el pid: %d \n",getppid());
+		printf("Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
 		dup2(pipe_padreAHijo[0],STDIN_FILENO);
 		dup2(pipe_hijoAPadre[1],STDOUT_FILENO);
@@ -154,16 +178,49 @@ void crearProcesoHijo(int socketMaster){
 
 			darPermisosAScripts(nombreScript);
 
-			char* command = crearComandoScript(nombreScript,pathDestino,nroBloque,bytesOcupados);
+			char* command = crearComandoScriptTransformador(nombreScript,pathDestino,nroBloque,bytesOcupados);
+
+			uint32_t resultado = system(command);
+
+			eliminarScript(nombreScript);
+
+			free(command);
+			//VERIFICAR STATUS
+			if(resultado>=0){
+				log_info(loggerWorker, "Script de transformacion ejecutado correctamente");
+				sendDeNotificacion(socketMaster,TRANSFORMACION_TERMINADA);
+			}
+			else{
+				log_error(loggerWorker, "Ocurrio un error al ejecutar el script de transformacion");
+				sendDeNotificacion(socketMaster,ERROR_TRANSFORMACION);
+			}
+		}
+		break;
+		case REDUCCION_LOCAL:{
+			char* script = recibirString(socketMaster);
+			char* pathDestino = recibirString(socketMaster);
+			char* nombreScript = recibirString(socketMaster);
+			uint32_t cantidadTemporales = recibirUInt(socketMaster);
+			uint32_t posicion;
+			t_list* archivosTemporales = list_create();
+			for(posicion = 0; posicion < cantidadTemporales; posicion++){
+				char* unArchivoTemporal = recibirString(socketMaster);
+				list_add(archivosTemporales,unArchivoTemporal);
+			}
+
+			char* archivoApareado = aparearArchivos(archivosTemporales);
+
+			guardarScript(script,nombreScript);
+
+			darPermisosAScripts(nombreScript);
+
+			char* command = crearComandoScriptReductor(archivoApareado,nombreScript,pathDestino);
 
 			system(command);
 
 			eliminarScript(nombreScript);
 
 			free(command);
-		}
-		break;
-		case REDUCCION_LOCAL:{
 		}
 		break;
 		case REDUCCION_GLOBAL:{
@@ -185,18 +242,11 @@ void crearProcesoHijo(int socketMaster){
 	default:
 		close(socketMaster);
 
-		printf("Proceso padre con pid: %d \n",pid);
+		printf("Soy el proceso padre con pid: %d y mi hijo tiene el pid %d \n ",getpid(),pid);
 
 		close(pipe_padreAHijo[0]);
 		close(pipe_hijoAPadre[1]);
-
 		close(pipe_padreAHijo[1]);
-
-		if(waitpid(pid,&status,0)==-1){
-			log_error(loggerWorker, "Error al esperar que termine el hijo");
-			exit(-1);
-		}
-
 		close(pipe_hijoAPadre[0]);
 
 	}
@@ -209,48 +259,29 @@ int main(int argc, char **argv) {
 	//t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
 	cargarWorker(configuracionWorker);
 	log_info(loggerWorker, "Se cargo correctamente Worker.");
-	int socketMaximo, socketClienteChequeado, socketAceptado;
-	int socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
-	socketMaximo = socketEscuchaWorker;
-	fd_set socketsMasters, socketMastersAuxiliares;
-	FD_ZERO(&socketsMasters);
-	FD_ZERO(&socketMastersAuxiliares);
-	FD_SET(socketEscuchaWorker, &socketsMasters);
+	int socketAceptado, socketEscuchaWorker;
+	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	while(1){
-		socketMastersAuxiliares = socketsMasters;
-		if(select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1){
-			log_error(loggerWorker, "No se pudo llevar a cabo el select.");
-			exit(-1);
+		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
+		log_info(loggerWorker, "Se ha recibido una nueva conexion.");
+		int notificacion = recvDeNotificacion(socketAceptado);
+		switch(notificacion){
+		case ES_MASTER:{
+			log_info(loggerWorker, "Se recibio una conexion de master.");
+			sendDeNotificacion(socketAceptado, ES_WORKER);
+			crearProcesoHijo(socketAceptado);
 		}
-		log_info(loggerWorker, "Se recibio nueva actividad de los clientes");
-		for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
-			if(FD_ISSET(socketClienteChequeado, &socketMastersAuxiliares)){
-				if(socketClienteChequeado == socketEscuchaWorker){
-					socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
-					FD_SET(socketAceptado, &socketsMasters);
-					socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
-					log_info(loggerWorker, "Se ha recibido una nueva conexion.");
-				}else{
-					int notificacion = recvDeNotificacion(socketClienteChequeado);
-					switch(notificacion){
-					case ES_MASTER:{
-						sendDeNotificacion(socketClienteChequeado, ES_WORKER);
-						crearProcesoHijo(socketClienteChequeado);
-					}
-					break;
-					case ES_WORKER:{
-						sendDeNotificacion(socketClienteChequeado, ES_WORKER);
-					}
-					break;
-					default:
-						log_error(loggerWorker, "La conexion recibida es erronea.");
-						FD_CLR(socketClienteChequeado, &socketsMasters);
-						close(socketClienteChequeado);
-					}
-				}
-
-			}
+		break;
+		case ES_WORKER:{
+			log_info(loggerWorker, "Se recibio una conexion de otro worker.");
+			sendDeNotificacion(socketAceptado, ES_WORKER);
+		}
+		break;
+		default:
+			log_error(loggerWorker, "La conexion recibida es erronea.");
+			close(socketAceptado);
 		}
 	}
+	close(socketEscuchaWorker);
 	return EXIT_SUCCESS;
 }
