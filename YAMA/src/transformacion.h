@@ -20,4 +20,12 @@ char* recibirNombreArchivo(int);
 void cargarTransformacion(int, int, t_list*, t_list*);
 void terminarTransformacion(int, int);
 
+bool hayQueReplanificar(administracionYAMA*, t_list*);
+t_list* filtrarTablaFallida(uint32_t, char*);
+//Actualizo la tabla de estados con el nodo fallido
+void cargarFallo(uint32_t, char*);
+t_list* obtenerBloquesFallidos(uint32_t, char*);
+//Replanifico con la otra copia y cargo en la tabla de estados
+void cargarReplanificacion(int, uint32_t, char*, t_list*);
+
 #endif /* TRANSFORMACION_H_ */

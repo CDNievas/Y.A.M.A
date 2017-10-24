@@ -1,7 +1,6 @@
 
 #include "Socket.h"
 
-
 int verificarErrorSocket(int socket) {
 	if (socket == -1) {
 		perror("Error de socket");

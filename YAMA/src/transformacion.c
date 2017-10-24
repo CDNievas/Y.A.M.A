@@ -63,18 +63,14 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 	int posicion;
 	log_info(loggerYAMA, "Se prosigue a apligar el algoritmo %s para obtener los Nodos a utilizar.", ALGORITMO_BALANCEO);
 	for(posicion = 0; posicion<list_size(listaDeBloques); posicion++){
-		administracionYAMA* nuevaAdministracion = generarAdministracion();
-		nuevaAdministracion->nroJob = numeroDeJobPTarea;
-		nuevaAdministracion->nroMaster = nroMaster;
-		nuevaAdministracion->etapa = TRANSFORMACION;
-		nuevaAdministracion->nroBloque = posicion;
-		nuevaAdministracion->nameFile = obtenerNombreTemporalTransformacion();
+		administracionYAMA* nuevaAdministracion = generarAdministracion(numeroDeJobPTarea, nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
 		//CREE LA BASE DE LA ESTRUCTURA DE TRANSFORMACION
 		//PASO A ELEGIR LOS NODOS Y CARGARLOS EN LA ESTRUCTURA
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
 		log_info(loggerYAMA, "El Nodo elegido es: %s.\nSu archivo temporal sera: %s\nSu numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nombreNodo, nuevaAdministracion->nameFile, copiaAUsar->nroBloque, infoDeBloque->nroBloque);
 		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
+		nuevaAdministracion->nroBloque = copiaAUsar->nroBloque;
 		infoNodo* informacionDeNodo = generarInfoParaMaster(nuevaAdministracion, infoDeBloque);
 		list_add(tablaDeEstados, nuevaAdministracion);
 		list_add(listaDatosPMaster, informacionDeNodo);
@@ -91,10 +87,100 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 //FINALIZO LA TRANSFORMACION
 void terminarTransformacion(int nroMaster, int socketMaster){
 	char* nombreNodo = recibirString(socketMaster);
-	int nroBloque = recibirUInt(socketMaster);
+	uint32_t nroBloque = recibirUInt(socketMaster);
 	int buscarNodo(administracionYAMA* adminAChequear){
-		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && strcmp(adminAChequear->nombreNodo, nombreNodo));
+		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && strcmp(adminAChequear->nombreNodo, nombreNodo)  && adminAChequear->etapa == TRANSFORMACION);
 	}
 	administracionYAMA *adminAModificar = list_find(tablaDeEstados, (void*)buscarNodo);
 	adminAModificar->estado = FINALIZADO;
 }
+
+t_list* obtenerBloquesFallidos(uint32_t nroMaster, char* nodoFallido){
+	bool esFallido(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && strcmp(admin->nombreNodo, nodoFallido);
+	}
+	return list_filter(tablaDeEstados, (void*)esFallido);
+}
+
+void cargarFallo(uint32_t nroMaster, char* nodoFallido){
+	t_list* listaDeFallados = obtenerBloquesFallidos(nroMaster, nodoFallido);
+	uint32_t posicion;
+	for(posicion = 0; posicion < list_size(listaDeFallados); posicion++){
+		administracionYAMA* admin = list_get(listaDeFallados, posicion);
+		admin->estado = FALLO;
+	}
+	list_destroy(listaDeFallados);
+}
+
+t_list* filtrarTablaFallida(uint32_t nroMaster, char* nodoFallido){
+	bool esEntradaFallida(administracionYAMA* admin){
+		return nroMaster == admin->nroMaster || strcmp(admin->nombreNodo, nodoFallido) || admin->estado == FALLO;
+	}
+	t_list* lista = list_filter(tablaDeEstados, (void*)esEntradaFallida);
+	return lista;
+}
+
+bool hayQueReplanificar(administracionYAMA* admin, t_list* lista){
+	bool esBloqueAReplanificar(infoDeFs* info){
+		return info->copia1->nroBloque == admin->nroBloque || info->copia2->nroBloque == admin->nroBloque;
+	}
+	return list_any_satisfy(lista, (void*)esBloqueAReplanificar);
+}
+
+infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBloques){
+	bool buscarDatoAReplanificar(infoDeFs* info){
+		return (admin->nroBloque == info->copia1->nroBloque && strcmp(admin->nombreNodo, info->copia1->nombreNodo))
+				|| (admin->nroBloque == info->copia2->nroBloque && strcmp(admin->nombreNodo, info->copia2->nombreNodo));
+	}
+	return list_find(listaDeBloques, (void*)buscarDatoAReplanificar);
+}
+
+copia* obtenerCopiaDeReplanificacion(administracionYAMA* adminFallida, infoDeFs* info){
+	if(strcmp(adminFallida->nombreNodo, info->copia1->nombreNodo)){
+		return info->copia1;
+	}else{
+		return info->copia2;
+	}
+}
+
+void cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){
+	bool esBloqueFallido(infoDeFs* info){
+		return strcmp(info->copia1->nombreNodo, nodoFallido) || strcmp(info->copia2->nombreNodo, nodoFallido);
+	}
+	t_list* listaBloquesAReplanificar = list_filter(listaDeBloques, (void*)esBloqueFallido);
+	t_list* listaEntradasAReplanificar = filtrarTablaFallida(nroMaster, nodoFallido);
+	t_list* listaParaMaster = list_create();
+	t_list* listaParaWL = list_create();
+	uint32_t posicion;
+	for(posicion = 0; posicion < list_size(listaEntradasAReplanificar); posicion++){
+		administracionYAMA* adminFallida = list_get(listaEntradasAReplanificar, posicion);
+		if(hayQueReplanificar(adminFallida, listaBloquesAReplanificar)){
+			infoDeFs* info = obtenerDatosAReplanificar(adminFallida, listaBloquesAReplanificar);
+			copia* copiaACargar = obtenerCopiaDeReplanificacion(adminFallida, info);
+			administracionYAMA* nuevaTransformacion = generarAdministracion(obtenerJobDeNodo(listaEntradasAReplanificar),nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
+			nuevaTransformacion->nroBloque = copiaACargar->nroBloque;
+			nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
+			infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
+			list_add(listaParaMaster, datoPMaster);
+			list_add(tablaDeEstados, nuevaTransformacion);
+			list_add(listaParaWL, copiaACargar);
+			reducirWL(nodoFallido);
+		}
+	}
+	actualizarWLTransformacion(listaParaWL);
+	void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
+	sendRemasterizado(socketMaster, REPLANIFICAR, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
+	free(listaParaMaster);
+	free(listaBloquesAReplanificar);
+	free(listaEntradasAReplanificar);
+	free(listaParaWL);
+}
+
+
+
+
+
+
+
+
+

@@ -11,9 +11,8 @@
 #define FUNCIONESYAMA_H_
 
 //GENERACION DE ESTRUCTURAS
-administracionYAMA* generarAdministracion();
+administracionYAMA* generarAdministracion(uint32_t, uint32_t, uint32_t, char*);
 conexionNodo* generarConexionNodo();
-copia* generarCopia();
 infoDeFs* generarInformacionDeBloque();
 nodoSistema* generarNodoSistema();
 

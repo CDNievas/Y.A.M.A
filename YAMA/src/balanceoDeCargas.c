@@ -4,8 +4,16 @@ void incrementarAvailability(t_list* listaBalanceo){
 	int posicion;
 	for(posicion = 0; posicion < list_size(listaBalanceo); posicion++){
 		datosBalanceo* nodo = list_get(listaBalanceo, posicion);
-		nodo->availability++;
+		incrementarAvailabilityDeNodo(nodo);
 	}
+}
+
+void reducirWL(char* nodo){
+	bool esNodo(nodoSistema* aModificar){
+		return strcmp(aModificar->nombreNodo, nodo);
+	}
+	nodoSistema* nodoAModificar = list_find(nodosSistema, (void*)esNodo);
+	nodoAModificar->wl--;
 }
 
 void actualizarWLTransformacion(t_list* copiasElegidas){
@@ -147,33 +155,3 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	return nodoElegido->nombreNodo;
 }
 
-
-
-
-
-//-----------------------------------REPLANIFICACION-------------------------------------------//
-//--------------------------------FUNCIONES AUXILIARES DE PLANIFICACION------------------------//
-//copia* obtenerLaOtraCopia(infoDeFs* info, copia* copiaFallida){
-//	if(strcmp(info->copia1->nombreNodo, copiaFallida->nombreNodo)){
-//		return info->copia2;
-//	}else if(strcmp(info->copia2->nombreNodo, copiaFallida->nombreNodo)){
-//		return info->copia1;
-//	}else{
-//		log_error(loggerYAMA, "Error al tratar de obtener la otra copia del archivo durante replanificacion.\nABORTANDO.");
-//		exit(-1);
-//	}
-//}
-//copia* obtenerOtraCopia(t_list* listaDeArchivo, copia* copiaFallida){
-//	bool esDeLaCopia(infoDeFs* info){
-//		return (strcmp(info->copia1->nombreNodo, copiaFallida->nombreNodo) && info->copia1->nroBloque == copiaFallida->nroBloque) || (strcmp(info->copia2->nombreNodo, copiaFallida->nombreNodo)&& info->copia2->nroBloque == copiaFallida->nroBloque); //EL MEJOR IF DE MI VIDA XD
-//	}
-//	infoDeFs* info = list_find(listaDeArchivo, (void*)esDeLaCopia);
-//	return obtenerLaOtraCopia(info, copiaFallida);
-//}
-//
-//copia* replanificarTransformacion(int nroMaster, t_list* listaDeArchivo , void* mensaje){
-//	copia* copiaFallida = deserializarCopia(mensaje);
-//	free(copiaFallida->nombreNodo);
-//	free(copiaFallida);
-//	return obtenerOtraCopia(listaDeArchivo, copiaFallida);
-//}

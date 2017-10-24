@@ -34,20 +34,14 @@ t_list* obtenerConexionesDeNodos(t_list* listaDeMaster){
 	return listaDeConexiones;
 }
 
-char* cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster){
-	administracionYAMA* nuevaReduccionG = generarAdministracion();
-	nuevaReduccionG->nroJob = obtenerJobDeNodo(listaDeMaster);
+void cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster){
+	administracionYAMA* nuevaReduccionG = generarAdministracion(obtenerJobDeNodo(listaDeMaster),nroMaster, REDUCCION_GLOBAL, obtenerNombreTemporalGlobal());
 	nuevaReduccionG->nroBloque = 0;
-	nuevaReduccionG->estado = EN_PROCESO;
-	nuevaReduccionG->etapa = REDUCCION_GLOBAL;
-	nuevaReduccionG->nameFile = obtenerNombreTemporalGlobal();
-	nuevaReduccionG->nroMaster = nroMaster;
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
 	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster);
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
 	free(infoGlobalSerializada);
-	return nuevaReduccionG->nombreNodo;
 }
 
 void terminarReduccionGlobal(uint32_t nroMaster){
@@ -58,7 +52,17 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 	admin->estado = FINALIZADO;
 }
 
-void almacenadoFinal(int socketMaster, char* nodoEncargado){
+char* buscarNodoEncargado(uint32_t nroMaster){
+	bool esReduccionFinalizada(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL_TERMINADA;
+	}
+
+	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);
+	return admin->nombreNodo;
+}
+
+void almacenadoFinal(int socketMaster, uint32_t nroMaster){
+	char* nodoEncargado = buscarNodoEncargado(nroMaster);
 	conexionNodo* conect = generarConexionNodo();
 	conect->nombreNodo = nodoEncargado;
 	obtenerIPYPuerto(conect);

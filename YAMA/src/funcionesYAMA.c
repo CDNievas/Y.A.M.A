@@ -2,11 +2,14 @@
 #include "funcionesYAMA.h"
 
 //GENERACION DE ESTRUCTURAS
-administracionYAMA* generarAdministracion(){
+administracionYAMA* generarAdministracion(uint32_t nroJob, uint32_t nroMaster, uint32_t operacion, char* nameFile){
 	administracionYAMA* adminNuevo = malloc(sizeof(administracionYAMA));
 	adminNuevo->nombreNodo = string_new();
-	adminNuevo->nameFile = string_new();
+	adminNuevo->nameFile = nameFile;
 	adminNuevo->estado = EN_PROCESO;
+	adminNuevo->etapa = operacion;
+	adminNuevo->nroJob = nroJob;
+	adminNuevo->nroMaster = nroMaster;
 	return adminNuevo;
 }
 
@@ -15,12 +18,6 @@ conexionNodo* generarConexionNodo(){
 	conexion->ipNodo = string_new();
 	conexion->nombreNodo = string_new();
 	return conexion;
-}
-
-copia* generarCopia(){
-	copia* copiaNueva = malloc(sizeof(copia));
-	copiaNueva->nombreNodo = string_new();
-	return copiaNueva;
 }
 
 infoDeFs* generarInformacionDeBloque(){
@@ -123,7 +120,7 @@ int obtenerJobDeNodo(t_list* listaDelNodo){
 t_list* obtenerListaDelNodo(int nroMaster, int socketMaster){
 	char* nombreNodo = recibirString(socketMaster);
 	bool esDeNodo(administracionYAMA* admin){
-		return (strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster);
+		return (strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster && admin->etapa == TRANSFORMACION && admin->estado != FALLO);
 	}
 	t_list* listaDelNodo = list_filter(tablaDeEstados, (void*)esDeNodo);
 	free(nombreNodo);

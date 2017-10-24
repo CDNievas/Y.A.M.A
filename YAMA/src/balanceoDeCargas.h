@@ -16,6 +16,8 @@
 void actualizarWLTransformacion(t_list*);
 //ACTUALIZO EL WL EN REDUCCION LOCAL
 void actualizarWLRLocal(char*, int);
+//Reduzco el wl de un solo nodo (Me va a servir para reducir el wl cuando termine toda la ejecucion)
+void reducirWL(char*);
 //BUSCO EL BLOQUE SI LO TIENE OTRO NODO
 datosBalanceo* buscarBloque(t_list*, infoDeFs*, int);
 //CHEQUEO SI LA TIENE OTRO NODO

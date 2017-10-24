@@ -4,7 +4,7 @@
 //CHEQUEO SI PUEDO HACER LA REDUCCION LOCAL
 bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 	bool reduccionesLocalesTerminadas(administracionYAMA* admin){
-		return admin->estado == FINALIZADO;
+		return admin->estado == FINALIZADO || admin->estado == FALLO;
 	}
 	log_info(loggerYAMA, "Se prosigue a verificar si se puede llevar a cabo la reduccion local en el Nodo %s.", obtenerNombreNodo(listaDelNodo));
 	return list_all_satisfy(listaDelNodo, (void*)reduccionesLocalesTerminadas);
@@ -12,16 +12,12 @@ bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 
 //CARGO LA REDUCCION LOCAL
 void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
-	administracionYAMA* admin = generarAdministracion();
+	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
 	log_info(loggerYAMA, "Se prosigue a hacer la reduccion local en el Nodo %s.", admin->nombreNodo);
-	admin->nroMaster = socket;
-	admin->etapa = REDUCCION_LOCAL;
 	//FALTA NRO DE BLOQUE, PQ NO TENGO LA MAS PALIDA IDEA DE QUE TENGO QUE PONER xd
 	admin->nroBloque = 0;
-	admin->nameFile = obtenerNombreTemporalLocal();
 	log_info(loggerYAMA, "El nombre del temporal de reduccion local para el Nodo %s es %s", admin->nombreNodo, admin->nameFile);
-	admin->nroJob = obtenerJobDeNodo(listaDelNodo);
 	conexionNodo* conexion = generarConexionNodo();
 	conexion->nombreNodo = admin->nombreNodo;
 	//CARGO LA CONEXION
