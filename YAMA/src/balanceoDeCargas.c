@@ -1,5 +1,13 @@
 #include "balanceoDeCargas.h"
 
+void incrementarAvailability(t_list* listaBalanceo){
+	int posicion;
+	for(posicion = 0; posicion < list_size(listaBalanceo); posicion++){
+		datosBalanceo* nodo = list_get(listaBalanceo, posicion);
+		nodo->availability++;
+	}
+}
+
 void actualizarWLTransformacion(t_list* copiasElegidas){
 	copia* copiaElegida;
 	bool esNodo(nodoSistema* nodo){
@@ -15,15 +23,21 @@ void actualizarWLTransformacion(t_list* copiasElegidas){
 
 datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posicionIncial){
 	datosBalanceo* nodo;
+	uint32_t posicionActual = posicionIncial + 1;
 	while(1){
-		if(posicionIncial >= list_size(listaDeBalanceo)){
-			posicionIncial = 0;
+		//Si doy toda la vuelta y no encontre el bloque, incremento la availability de todos
+		if(posicionActual == posicionIncial){
+			incrementarAvailability(listaDeBalanceo);
+		}
+		//Si llegue al maximo, vuelvo a empezar
+		if(posicionActual >= list_size(listaDeBalanceo)){
+			posicionActual = 0;
 		}
 		nodo = list_get(listaDeBalanceo, posicionIncial);
 		if(tieneAvailability(nodo) && tieneBloqueBuscado(nodo, bloque)){
 			break;
 		}else{
-			posicionIncial++;
+			posicionActual++;
 		}
 	}
 	return nodo;

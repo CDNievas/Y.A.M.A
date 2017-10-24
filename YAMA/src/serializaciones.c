@@ -195,8 +195,6 @@ void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* lista
 	posicionActual += sizeof(uint32_t);
 	memcpy(infoSerializada+posicionActual, &conect->puertoNodo, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
-	memcpy(infoSerializada+posicionActual, &cantidadDeNodos, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
 	memcpy(infoSerializada+posicionActual, &tamanioTemporalLocal, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
 	memcpy(infoSerializada+posicionActual, adminEncargado->nameFile, tamanioTemporalLocal);
@@ -205,6 +203,8 @@ void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* lista
 	posicionActual += sizeof(uint32_t);
 	memcpy(infoSerializada+posicionActual, reduccion->nameFile, tamanioTemporalGlobal);
 	posicionActual += tamanioTemporalGlobal;
+	memcpy(infoSerializada+posicionActual, &cantidadDeNodos, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
 	for(posicion = 0; posicion < list_size(listaDeNodos); posicion++){
 		administracionYAMA* admin = list_get(listaDeNodos, posicion);
 		conexionNodo* conectionAux = list_get(listaDeConexiones, posicion);
@@ -227,7 +227,6 @@ void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* lista
 		posicionActual += tamanioFileLocal;
 	}
 	return infoSerializada;
-
 }
 
 uint32_t obtenerTamanioInfoAlmacenamientoFinal(conexionNodo* conect){
