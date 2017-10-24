@@ -54,3 +54,41 @@ void propagarArchivo(char* unNombreArchivo, int socketDeYama){
 	sendRemasterizado(socketDeYama,SK_FILE_SEND,string_length(contenidoArchivo),contenidoArchivo);
 	free(contenidoArchivo);
 }
+
+void verificarNodo(char* nodo){
+    uint32_t cantidadNodos = list_size(nombresNodos);
+    uint32_t posicion;
+    uint32_t corte = 0;
+
+    if(cantidadNodos == 0){
+        list_add(nombresNodos,nodo);
+    }
+
+    for(posicion=0; posicion<cantidadNodos; posicion++){
+        if(corte==0){
+          char* nodoAux = list_get(nombresNodos,posicion);
+          if(strcmp(nodoAux,nodo) != 0){
+              list_add(nombresNodos,nodo);
+              corte++;
+          }
+      }
+    }
+}
+
+uint32_t tamanioArchivoAModificar(){
+    return string_length(archivoAModificar) + sizeof(uint32_t);
+}
+
+void* serializarArchivoAModificar(){
+    uint32_t posicionActual = 0;
+
+    void* datosSerializados = malloc(tamanioArchivoAModificar());
+
+    uint32_t tamanioArchivo = string_length(archivoAModificar);
+    memcpy(datosSerializados + posicionActual, &tamanioArchivo, sizeof(uint32_t));
+    posicionActual += sizeof(uint32_t);
+    memcpy(datosSerializados + posicionActual, &archivoAModificar, tamanioArchivo);
+    posicionActual += tamanioArchivo;
+
+    return datosSerializados;
+}

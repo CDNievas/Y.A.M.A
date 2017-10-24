@@ -3,8 +3,22 @@
 #ifndef STRUCTMASTER_H_
 #define STRUCTMASTER_H_
 
-
-#define sizeMaxMsg 128
+#define TRANSFORMACION 1
+#define TRANSFORMACION_TERMINADA 2
+#define REPLANIFICAR 3
+#define REDUCCION_LOCAL_TERMINADA 4
+#define REDUCCION_GLOBAL_TERMINADA 5
+#define ERROR_REDUCCION_LOCAL 6
+#define ERROR_REDUCCION_GLOBAL 7
+#define REDUCCION_LOCAL 8
+#define REDUCCION_GLOBAL 9
+#define ABORTAR 10
+#define EN_PROCESO 11
+#define DATOS_NODO 12 //CON ESTO LE PIDO A FS LOS DATOS DE CONEXION DEL NODO
+#define INFO_ARCHIVO_FS 13 //CON ESTO LE PIDO A FS LA INFO DEL ARCHIVO
+#define FINALIZADO 14
+#define ALMACENAMIENTO_FINAL 15
+#define CORTO 0
 
 char* YAMA_IP;
 char* WORKER_IP;
@@ -13,8 +27,16 @@ int WORKER_PUERTO;
 int socketYAMA;
 t_log* loggerMaster;
 
-// No se que nombre ponerles a las rutas de los archivos temporales.
-// Ahora quedan horribles, despues los cambiamos
+char* scriptTransformador;
+char* scriptReduccion;
+char* archivoAModificar;
+char* pathDondeGuardar;
+
+pthread_mutex_t mutexTransformacion;
+
+t_list * nombresNodos;
+int cantidadDeProcesosNodos;
+
 
 typedef struct{
 	char* nombreNodo;

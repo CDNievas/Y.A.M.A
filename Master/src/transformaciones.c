@@ -2,6 +2,7 @@
 
 
 //EL SOCKETYAMA LO DECLARE COMO VARIABLE GLOBAL.
+
 // Creo lista de solicitudes de transformaciones
 t_list* recibirSolicitudTransformacion(){
     t_list * listaPRecibir = list_create();   
@@ -13,18 +14,19 @@ t_list* recibirSolicitudTransformacion(){
         nodoActual->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
 
         nodoActual->conexion->nombreNodo = recibirString(socketYAMA);
+        verificarNodo(nodoActual->conexion->nombreNodo); // Verifico si puede agregar el nombre de nodo a la lista para saber cantidad de Procesos nodos 
         nodoActual->conexion->ipNodo = recibirString(socketYAMA);
         nodoActual->conexion->puertoNodo = recibirUInt(socketYAMA);
         nodoActual->nroBloque = recibirUInt(socketYAMA);
         nodoActual->bytesOcupados = recibirUInt(socketYAMA);
         nodoActual->nombreTemporal = recibirString(socketYAMA);
-
+    
         list_add(listaPRecibir,nodoActual);
-    }
 
     return listaPRecibir;
 
 }
+
 
 //Funcion que atiende las solicitudes de transformacion.
 void conectarAWorkerTransformacion(void* nodoConInfo){
@@ -35,48 +37,64 @@ void conectarAWorkerTransformacion(void* nodoConInfo){
     int tamanioDatosToW = tamanioDatosToWorker(nuevo.nombreTemporal);
     int tamanioDatosToY = sizeof(uint32_t)*2 + string_length(nuevo.conexion->nombreNodo);
 
+    log_info(loggerMaster,"Realizando conexion con Worker. IP: %s. Puerto: %d.", nuevo.conexion->ipNodo, nuevo.conexion->puertoNodo);
     int socketWorker = conectarAServer(nuevo.conexion->ipNodo, nuevo.conexion->puertoNodo);
-    //propagarArchivo(archivo,socketWorker);        // Enviar programa de transformacion.
-    sendRemasterizado(socketWorker,1 /*TRANSFORMACION*/, tamanioDatosToW, datosToWorker);  // SEGUN EL PROTOCOLO TRANSFORMACION = 1. Sin definir en este archivo.
-    uint32_t respuesta = recibirUInt(socketWorker);                                                   //CONFIRMACION DE WORKER
-    // LA NOTIFICACION A YAMA TIENE Q SER EL NOMBRE DEL NODO Y EL BLOQUE.
-    // QUE CARAJO HAGO CON LA RESPUESTA DE WORKER?
-    sendRemasterizado(socketYAMA,1 /*TRANSFORMACION*/, tamanioDatosToY, datosToYama);               //NOTIFICAR A YAMA
-
-
-    //free(nodoParaHilo->conexion);
-    //free(nodoParaHilo);
+    sendDeNotificacion(socketWorker, TRANSFORMACION);
+    log_info(loggerMaster, "Conexion con Worker exitosa.");
+    log_info(loggerMaster,"Propagando archivo transformador a Worker.");
+    propagarArchivo(scriptTransformador,socketWorker);        // Enviar programa de transformacion.
+    log_info(loggerMaster,"Propagacion de archivo a Worker exitosa.");
+    log_info(loggerMaster,"Enviando bloque:%d, bytes ocupados:%d y temporal:%s a Worker", nuevo.nroBloque, nuevo.bytesOcupados, nuevo.nombreTemporal);
+    sendRemasterizado(socketWorker,TRANSFORMACION, tamanioDatosToW, datosToWorker); 
+    // Uso las funciones wait y signal para recibir la respuesta. El mutex permite que no reciban dos hilos al mismo tiempo la rta
+    //***********************************************
+    pthread_mutex_lock(&mutexTransformador);
+    uint32_t respuesta = recibirUInt(socketWorker);                                                 //CONFIRMACION DE WORKER
+    pthread_mutex_unlock(&mutexTransformador);
+    //***********************************************
+    log_info(loggerMaster,"Recibo respuesta por parte del Worker.");
+    log_info(loggerMaster,"Notifico a YAMA del resultado de la transformacion.");
+    sendRemasterizado(socketYAMA,respuesta, tamanioDatosToY, datosToYama);                          //NOTIFICAR A YAMA
 }
 
+
 int tamanioDatosToWorker(char* nombreTemporal){
-    return sizeof(uint32_t)*3 + string_length(nombreTemporal);
+    return sizeof(uint32_t)*4 + string_length(nombreTemporal) + string_length(scriptTransformador);
 }
 
 //Creo todos los hilos para cada solicitud.
 void procesarTransformacion(){
-    t_list * transformaciones = recibirSolicitudTransformacion();    
+    t_list* solicitudesTransformacion = recibirSolicitudTransformacion();
+    cantidadDeProcesosNodos = list_size(nombresNodos); // Asigno la cantidad de procesos nodos que tengo para la reduccion local
+    log_info(loggerMaster,"Recibo lista de solicitudes de transformacion.");    
     int i;
 
-    for(i=0; i < list_size(transformaciones); i++){
+    for(i=0; i < list_size(solicitudesTransformacion); i++){
         pthread_t hiloInit;
         infoNodo * nodoParaHilo = malloc(sizeof(infoNodo));
         nodoParaHilo->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
         nodoParaHilo->conexion->nombreNodo = string_new();
         nodoParaHilo->conexion->ipNodo = string_new();
         nodoParaHilo->nombreTemporal = string_new();
-
-        nodoParaHilo = list_get(transformaciones,i); // saco informacion de las posiciones una por una
+        nodoParaHilo = list_get(solicitudesTransformacion,i); // saco informacion de las posiciones una por una
+        log_info(loggerMaster, "Realizando transformacion en el Nodo: %s.", nodoParaHilo->conexion->nombreNodo);
         pthread_create(&hiloInit,NULL, (void*) conectarAWorkerTransformacion,(void*)nodoParaHilo);
         pthread_join(hiloInit,NULL);
     }
 
 }
 
+
 void* serializarTransformacionToWorker(uint32_t bloque, uint32_t bytesOcupados, char* nombreTemporal){
     int posicionActual = 0;
 
     void* infoSerializada = malloc(tamanioDatosToWorker(nombreTemporal));
 
+    uint32_t tamanioScriptTransformador = string_length(scriptTransformador);
+    memcpy(infoSerializada + posicionActual, &tamanioScriptTransformador, sizeof(uint32_t));
+    posicionActual += sizeof(uint32_t);
+    memcpy(infoSerializada + posicionActual, &scriptTransformador, tamanioScriptTransformador);
+    posicionActual += tamanioScriptTransformador;
     memcpy(infoSerializada + posicionActual, &bloque, sizeof(uint32_t));
     posicionActual += sizeof(uint32_t);
     memcpy(infoSerializada + posicionActual, &bytesOcupados, sizeof(uint32_t));
@@ -89,6 +107,7 @@ void* serializarTransformacionToWorker(uint32_t bloque, uint32_t bytesOcupados, 
 
     return infoSerializada;
 }
+
 
 void* serializarTransformacionToYama(char* nodo, uint32_t bloque){
     int posicionActual = 0;
