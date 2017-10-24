@@ -22,6 +22,7 @@ t_list* recibirSolicitudTransformacion(){
         nodoActual->nombreTemporal = recibirString(socketYAMA);
     
         list_add(listaPRecibir,nodoActual);
+    }
 
     return listaPRecibir;
 
@@ -48,13 +49,17 @@ void conectarAWorkerTransformacion(void* nodoConInfo){
     sendRemasterizado(socketWorker,TRANSFORMACION, tamanioDatosToW, datosToWorker); 
     // Uso las funciones wait y signal para recibir la respuesta. El mutex permite que no reciban dos hilos al mismo tiempo la rta
     //***********************************************
-    pthread_mutex_lock(&mutexTransformador);
+    pthread_mutex_lock(&mutexTransformacion);
     uint32_t respuesta = recibirUInt(socketWorker);                                                 //CONFIRMACION DE WORKER
-    pthread_mutex_unlock(&mutexTransformador);
+    pthread_mutex_unlock(&mutexTransformacion);
     //***********************************************
     log_info(loggerMaster,"Recibo respuesta por parte del Worker.");
     log_info(loggerMaster,"Notifico a YAMA del resultado de la transformacion.");
     sendRemasterizado(socketYAMA,respuesta, tamanioDatosToY, datosToYama);                          //NOTIFICAR A YAMA
+
+    free(datosToWorker);
+    free(datosToYama);
+    free(nodoConInfo);
 }
 
 
