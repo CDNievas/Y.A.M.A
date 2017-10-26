@@ -22,6 +22,21 @@ char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
 
+void sigchld_handler(int s){
+	while(wait(NULL) > 0);
+}
+
+void eliminarProcesosMuertos(){
+	struct sigaction sa;
+	sa.sa_handler = sigchld_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+		log_error(loggerWorker,"Error de sigaction al eliminar procesos muertos");
+		exit(-1);
+	}
+}
+
 void cargarWorker(t_config* configuracionWorker){
     if(!config_has_property(configuracionWorker, "IP_FILESYSTEM")){
         log_error(loggerWorker,"No se encuentra cargado IP_FILESYSTEM en el archivo.\n");
@@ -103,6 +118,14 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 }
 
 void guardarScript(char* script,char* nombreScript){
+	string_append(&nombreScript,"XXXXXX");
+	int resultado = mkstemp(nombreScript);
+
+	if(resultado==-1){
+		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
+		exit(-1);
+	}
+
 	FILE* archivoScript = fopen(nombreScript,"w");
 
 	if(archivoScript==NULL){
@@ -134,6 +157,27 @@ void eliminarScript(char* nombreScript){
 
 char* aparearArchivos(t_list* archivosTemporales){
 	return NULL;
+}
+
+void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t casoExito){
+	uint32_t resultado = system(command);
+	switch(resultado){
+	case -1:{
+		log_error(loggerWorker, "Error al crear el hijo para ejecutar el programa con system.");
+		sendDeNotificacion(socketMaster,casoError);
+	}
+	break;
+	case 0:{
+		log_error(loggerWorker, "Shell no disponible. (Error al disponer de los comandos.");
+		sendDeNotificacion(socketMaster,casoError);
+	}
+	break;
+	default:
+		log_info(loggerWorker, "Script ejecutado correctamente");
+		sendDeNotificacion(socketMaster,casoExito);
+	}
+
+	free(command);
 }
 
 void crearProcesoHijo(int socketMaster){
@@ -180,20 +224,10 @@ void crearProcesoHijo(int socketMaster){
 
 			char* command = crearComandoScriptTransformador(nombreScript,pathDestino,nroBloque,bytesOcupados);
 
-			uint32_t resultado = system(command);
+			ejecutarPrograma(command,socketMaster,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA);
 
 			eliminarScript(nombreScript);
 
-			free(command);
-			//VERIFICAR STATUS
-			if(resultado>=0){
-				log_info(loggerWorker, "Script de transformacion ejecutado correctamente");
-				sendDeNotificacion(socketMaster,TRANSFORMACION_TERMINADA);
-			}
-			else{
-				log_error(loggerWorker, "Ocurrio un error al ejecutar el script de transformacion");
-				sendDeNotificacion(socketMaster,ERROR_TRANSFORMACION);
-			}
 		}
 		break;
 		case REDUCCION_LOCAL:{
@@ -216,11 +250,10 @@ void crearProcesoHijo(int socketMaster){
 
 			char* command = crearComandoScriptReductor(archivoApareado,nombreScript,pathDestino);
 
-			system(command);
+			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA);
 
 			eliminarScript(nombreScript);
 
-			free(command);
 		}
 		break;
 		case REDUCCION_GLOBAL:{
@@ -261,6 +294,7 @@ int main(int argc, char **argv) {
 	log_info(loggerWorker, "Se cargo correctamente Worker.");
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
+	eliminarProcesosMuertos();
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.");

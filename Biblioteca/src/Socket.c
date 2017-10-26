@@ -1,40 +1,33 @@
-
 #include "Socket.h"
 
-int verificarErrorSocket(int socket) {
+void verificarErrorSocket(int socket) {
 	if (socket == -1) {
 		perror("Error de socket");
 		exit(-1);
-	} else {
-		return 0;
 	}
 }
-int verificarErrorSetsockopt(int socket) {
+
+void verificarErrorSetsockopt(int socket) {
 	int yes = 1;
 	if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		perror("Error de setsockopt");
 		exit(-1);
-	} else {
-		return 0;
-	}
-}
-int verificarErrorBind(int socket, struct sockaddr_in mySocket) {
-	if (bind(socket, (struct sockaddr *) &mySocket, sizeof(mySocket)) == -1) {
-		perror("Error de bind");
-		exit(-1);
-	} else {
-		return 0;
-	}
-}
-int verificarErrorListen(int socket) {
-	if (listen(socket, BACKLOG) == -1) {
-		perror("Error de listen");
-		exit(-1);
-	} else {
-		return 0;
 	}
 }
 
+void verificarErrorBind(int socket, struct sockaddr_in mySocket) {
+	if (bind(socket, (struct sockaddr *) &mySocket, sizeof(mySocket)) == -1) {
+		perror("Error de bind");
+		exit(-1);
+	}
+}
+
+void verificarErrorListen(int socket) {
+	if (listen(socket, BACKLOG) == -1) {
+		perror("Error de listen");
+		exit(-1);
+	}
+}
 
 int ponerseAEscucharClientes(int puerto, int protocolo) {
 	struct sockaddr_in mySocket;
@@ -54,17 +47,14 @@ int aceptarConexionDeCliente(int socketListener) {
 	int socketAceptador;
 	struct sockaddr_in su_addr;
 	socklen_t sin_size;
-	sin_size = sizeof(struct sockaddr_in); //VER COMO IMPLEMENTAR SELECT!!
+	sin_size = sizeof(struct sockaddr_in);
 
-	//while (1) {
-	if ((socketAceptador = accept(socketListener, (struct sockaddr *) &su_addr,
-			&sin_size)) == -1) {
+	if ((socketAceptador = accept(socketListener, (struct sockaddr *) &su_addr,&sin_size)) == -1) {
 		perror("Error al aceptar conexion");
 		exit(-1);
 	} else {
 		printf("Se ha conectado a: %s\n", inet_ntoa(su_addr.sin_addr));
 	}
-	//}
 
 	return socketAceptador;
 }
@@ -81,8 +71,6 @@ int conectarAServer(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
 		exit(-1);
 	}
 
-	verificarErrorSetsockopt(socket_server);
-
 	//Guardo datos del server
 	direccion_server.sin_family = AF_INET;
 	direccion_server.sin_port = htons(puerto);
@@ -90,8 +78,7 @@ int conectarAServer(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
 	memset(&(direccion_server.sin_zero), 0, 8);
 
 	//Conecto con servidor, si hay error finalizo
-	if (connect(socket_server, (struct sockaddr *) &direccion_server,
-			sizeof(struct sockaddr)) == -1) {
+	if (connect(socket_server, (struct sockaddr *) &direccion_server,sizeof(struct sockaddr)) == -1) {
 		perror("Error al conectar con el servidor.");
 		close(socket_server);
 		exit(-1);
