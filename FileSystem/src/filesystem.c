@@ -11,6 +11,8 @@ int esEstadoSeguro = 1;
 tablaNodos* tablaGlobalNodos;
 t_list* listaBitmap;
 t_list* tablaGlobalArchivos;
+bool hayEstadoAnterior;
+t_list* listaConexionNodos;
 
 //Habria que implementar la copia de los archivos
 
@@ -28,42 +30,43 @@ void cargarFileSystem(t_config* configuracionFS) {
 
 //--------------------------------Nodos---------------------------------------
 
-//int sacarBloquesLibre( bitarray) {
-//	int i = 0;
-//	int cont = 0;
-//	for (; i < bitarray_get_max_bit(bitarray); i++) {
-//		if (!bitarray_test_bit(bitarray, i)) {
-//			cont++;
-//		}
-//	}
-//	return cont;
-//}
-//
-//void registrarNodo(void* mensaje, int socket) {
-//	char* nombreNodo = string_new();
-//	int tamanioNombreNodo = 0, cantidadDeBloques = 0;
-//	t_bitarray* bitarray;
-//
-//	nombreNodo = recibirString(socket);
-//	cantidadDeBloques = recibirInt(socket);
-//	//bitarray=recibirBitarray(socket);
-//
-//	contenidoNodo bloque = malloc(sizeof(contenidoNodo));
-//	string_append(&bloque.nodo, nombreNodo);
-//	bloque.total = cantidadDeBloques;
-//	bloque.libre = sacarBloquesLibre(bitarray);
-//
-//	tablaGlobalNodos->tamanio += cantidadDeBloques;
-//	tablaGlobalNodos->libres += bloque.libre;
-//	list_add(tablaGlobalNodos->nodo, nombreNodo);
-//	list_add(tablaGlobalNodos->contenidoXNodo, bloque);
-//
-//	tablaBitmapXNodos bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
-//	string_append(&bitmapNodo, nombreNodo);
-//	bitmapNodo.bitarray= bitarray;
-//
-//	list_add(listaBitmap, bitmapNodo);
-//}
+void registrarNodo(int socket) {
+	char* nombreNodo = string_new();
+	int tamanioNombreNodo = 0, cantidadDeBloques = 0;
+	t_bitarray* bitarray;
+
+	nombreNodo = recibirString(socket);
+	cantidadDeBloques = recibirUInt(socket);
+	//bitarray=recibirBitarray(socket);
+	if (hayEstadoAnterior) {
+		//verificarNodo(nombreNodo);
+	} else {
+		//CARGO LA TABLA DE NODOS
+		contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
+		bloque->nodo = string_new();
+		string_append(&bloque->nodo, nombreNodo);
+		bloque->total = cantidadDeBloques;
+		//bloque->libre = sacarBloquesLibre(bitarray);
+
+		tablaGlobalNodos->tamanio += cantidadDeBloques;
+		tablaGlobalNodos->libres += bloque->libre;
+		list_add(tablaGlobalNodos->nodo, nombreNodo);
+		list_add(tablaGlobalNodos->contenidoXNodo, bloque);
+
+		//CARGO LA TABLA DE BITMAPS
+		tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
+		string_append(&bitmapNodo->nodo, nombreNodo);
+		bitmapNodo->bitarray = bitarray;
+		list_add(listaBitmap, bitmapNodo);
+
+		//CARGO LA TABLA DE CONEXIONES DE NODO
+		nodoConexion* nodoConectado = malloc(sizeof(nodoConexion));
+		nodoConectado->nodo = string_new();
+		string_append(nodoConectado->nodo, nombreNodo);
+		nodoConectado->soket= socket;
+		list_add(listaConexionNodos, nodoConectado);
+	}
+}
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
 int sacarTamanioArchivo(FILE* archivo) {
@@ -85,7 +88,7 @@ void almacenarArchivo(void* mensaje, int socket) {
 	char* nombreArchivo = string_new();
 	path = recibirString(socket);
 	nombreArchivo = recibirString(socket);
-	//char tipo = (char) recibirInt(socket);
+	char tipo = (char) recibirUInt(socket);
 
 	FILE* archivo = fopen(path, "r+");
 	int bloqueAsignado = 0;
@@ -210,6 +213,7 @@ int main(int argc, char **argv) {
 
 	listaBitmap = list_create();
 	tablaGlobalArchivos = list_create();
+	listaConexionNodos=list_create();
 
 	while (1) {
 		socketClientesAuxiliares = socketClientes;
