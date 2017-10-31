@@ -39,12 +39,13 @@
 
 //PROTOCOLO
 
-#define BACKLOG 10
+#define BACKLOG 20
 
 #define ES_FS 1
 #define ES_WORKER 2
 #define ES_MASTER 3
 #define ES_YAMA 4
+#define ES_OTRO_WORKER 30
 #define ES_DATANODE 1000
 #define SK_FILE_SEND 300
 
