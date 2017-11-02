@@ -81,13 +81,18 @@ void cargarBin(){
 
 		}
 
+		if(close(archivo) < 0){
+			log_error(loggerDatanode,"Fallo al cerrar el archivo.");
+			exit(-3);
+		}
+
 		cantBloques = infoDatabin.st_size/SIZEBLOQUE;
 
 	}
 
 }
 
-int escribirBloque(uint32_t nroBloque, void * dataBloque){
+int escribirBloque(uint32_t nroBloque, void * dataBloque, uint32_t cantBytes){
 
 	if(nroBloque >= cantBloques){
 
@@ -97,7 +102,7 @@ int escribirBloque(uint32_t nroBloque, void * dataBloque){
 	} else {
 
 		// Escribo en memoria del mmap
-		memcpy(mapArchivo+(nroBloque*SIZEBLOQUE), dataBloque, SIZEBLOQUE);
+		memcpy(mapArchivo+(nroBloque*SIZEBLOQUE), dataBloque, cantBytes);
 
 		// Actualizo el archivo
 		if(msync(mapArchivo,nroBloque*SIZEBLOQUE,MS_SYNC)){
@@ -116,7 +121,7 @@ int escribirBloque(uint32_t nroBloque, void * dataBloque){
 
 }
 
-void * leerBloque(uint32_t nroBloque){
+void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
 
 	if(nroBloque >= cantBloques){
 
@@ -125,8 +130,8 @@ void * leerBloque(uint32_t nroBloque){
 
 	} else {
 
-		void * dataBloque = miMalloc(SIZEBLOQUE,loggerDatanode,"Fallo en leerBloque()");
-		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),SIZEBLOQUE);
+		void * dataBloque = miMalloc(cantBytes,loggerDatanode,"Fallo en leerBloque()");
+		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),cantBytes);
 
 		return dataBloque;
 
@@ -157,9 +162,9 @@ void enviarInfoNodo(uint32_t socket){
 
 }
 
-void * recvDeBloque(u_int32_t socket){
-	void * bloque = miMalloc(SIZEBLOQUE,loggerDatanode,"Fallo en recvDeBloque()");
-	if(recv(socket, &bloque, SIZEBLOQUE, 0)==-1){
+void * recvDeBloque(u_int32_t socket, u_int32_t cantBytes){
+	void * bloque = miMalloc(cantBytes,loggerDatanode,"Fallo en recvDeBloque()");
+	if(recv(socket, &bloque, cantBytes, 0)==-1){
 		perror("Error al recibir la notificacion.");
 		exit(-1);
 	}

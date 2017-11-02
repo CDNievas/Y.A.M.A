@@ -31,44 +31,117 @@ void cargarFileSystem(t_config* configuracionFS) {
 //--------------------------------Nodos---------------------------------------
 
 void registrarNodo(int socket) {
-	char* nombreNodo = string_new();
-	int tamanioNombreNodo = 0, cantidadDeBloques = 0;
-	t_bitarray* bitarray;
+
+	char * nombreNodo = string_new();
+	int cantBloques;
+	t_bitarray * bitarray;
 
 	nombreNodo = recibirString(socket);
-	cantidadDeBloques = recibirUInt(socket);
-	//bitarray=recibirBitarray(socket);
-	if (hayEstadoAnterior) {
-		//verificarNodo(nombreNodo);
+	cantBloques = recibirUInt(socket);
+
+	// Checkeo estado anterior
+	if(hayEstadoAnterior){
+		bitarray = abrirBitmap(nombreNodo,cantBloques);
 	} else {
-		//CARGO LA TABLA DE NODOS
-		contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
-		bloque->nodo = string_new();
-		string_append(&bloque->nodo, nombreNodo);
-		bloque->total = cantidadDeBloques;
-		//bloque->libre = sacarBloquesLibre(bitarray);
-
-		tablaGlobalNodos->tamanio += cantidadDeBloques;
-		tablaGlobalNodos->libres += bloque->libre;
-		list_add(tablaGlobalNodos->nodo, nombreNodo);
-		list_add(tablaGlobalNodos->contenidoXNodo, bloque);
-
-		//CARGO LA TABLA DE BITMAPS
-		tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
-		string_append(&bitmapNodo->nodo, nombreNodo);
-		bitmapNodo->bitarray = bitarray;
-		list_add(listaBitmap, bitmapNodo);
-
-		//CARGO LA TABLA DE CONEXIONES DE NODO
-		nodoConexion* nodoConectado = malloc(sizeof(nodoConexion));
-		nodoConectado->nodo = string_new();
-		string_append(nodoConectado->nodo, nombreNodo);
-		nodoConectado->soket= socket;
-		list_add(listaConexionNodos, nodoConectado);
+		bitarray = crearBitmap(nombreNodo,cantBloques);
 	}
+
+	// Creo el bloque de info del nodo
+	contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
+
+	// Asigno nombre del nodo
+	bloque->nodo = string_new();
+	string_append(&bloque->nodo, nombreNodo);
+
+	// Asigno cant de bloques
+	bloque->total = cantBloques;
+
+	// Asigno cant de bloques libres
+	bloque->libre = cantBloquesLibres(bitarray);
+
+	// Aniado a la tabla de info de nodos
+	tablaGlobalNodos->tamanio += bloque->total;
+	tablaGlobalNodos->libres += bloque->libre;
+	list_add(tablaGlobalNodos->nodo, nombreNodo);
+	list_add(tablaGlobalNodos->contenidoXNodo, bloque);
+
+	// Aniado a la tala de bitmaps
+	tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
+	string_append(&bitmapNodo->nodo, nombreNodo);
+	bitmapNodo->bitarray = bitarray;
+	list_add(listaBitmap, bitmapNodo);
+
+	// Aniado a la tabla de conexiones de nodo
+	nodoConexion* nodoConectado = malloc(sizeof(nodoConexion));
+	nodoConectado->nodo = string_new();
+	string_append(nodoConectado->nodo, nombreNodo);
+	nodoConectado->soket= socket;
+	list_add(listaConexionNodos, nodoConectado);
+
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
+char * obtenerPathBitmap(char * nombreNodo){
+
+	// Path
+	char * path = string_new();
+	path= "/metadata/bitmap/";
+	string_append(path, nombreNodo);
+	string_append(path, ".dat");
+
+	return path;
+
+}
+
+t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
+
+	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
+	uint32_t archivo; // FD Archivo
+	struct stat infoBitmap; // Guarda informacion del archivo
+	void * mapArchivo; // Memoria del mmap
+	t_bitarray * bitarray; // Bitarray
+
+	// Abro el archivo
+	if(stat(path,&infoBitmap) < 0){
+		// Error al abrir el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	if((archivo = open(path, O_RDWR)) < 0){
+		// Error al abrir el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	// Lo mapeo a memoria
+	mapArchivo = mmap(0, infoBitmap.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+
+	bitarray = bitarray_create_with_mode(mapArchivo,cantBloques,MSB_FIRST);
+
+	if(close(archivo) < 0){
+		log_error(loggerFileSystem,"Fallo al cerrar el archivo.");
+		exit(-1);
+	}
+
+	return bitarray;
+
+}
+
+t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
+
+	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
+
+	if((truncate(path,cantBloques)) == -1){
+		// Error al crear el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	return abrirBitmap(nombreNodo, cantBloques);
+
+}
+
 int sacarTamanioArchivo(FILE* archivo) {
 	fseek(archivo, 0, SEEK_END);
 	int tamanioArchivo = ftell(archivo);
@@ -239,7 +312,6 @@ int main(int argc, char **argv) {
 							socketClienteChequeado);
 					switch (notificacion) {
 					case ES_DATANODE:
-						//registrarNodo(paqueteRecibido->mensaje, int socket);
 						sendDeNotificacion(socketClienteChequeado, ES_FS);
 						break;
 					case ES_MASTER:
@@ -252,6 +324,9 @@ int main(int argc, char **argv) {
 							FD_CLR(socketClienteChequeado, &socketClientes);
 							close(socketClienteChequeado);
 						}
+						break;
+					case REC_INFONODO:
+						registrarNodo(socketClienteChequeado);
 						break;
 						//case INFO_ARCHIVOFS:
 						//enviarDatoArchivo(paqueteRecibido.mensaje, socketClienteChequeado);

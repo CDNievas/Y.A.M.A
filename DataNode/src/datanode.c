@@ -40,34 +40,43 @@ int main(int argc, char **argv) {
 			case REC_LEER:{
 
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
+				u_int32_t cantBytes = recibirUInt(socketServerFS);
+
 				void * bloque;
 
 				// Leo el bloque
-				if((bloque = leerBloque(nroBloque)) == NULL){
+				if((bloque = leerBloque(nroBloque,cantBytes)) == NULL){
 					// Bloque inexistente
 					exit(-99);
 				} else {
 					// Lo envio a FS
-					sendRemasterizado(socketServerFS, ENV_BLOQUE, SIZEBLOQUE, bloque);
+					sendRemasterizado(socketServerFS, ENV_BLOQUE, cantBytes, bloque);
 				}
 
 				free(bloque);
 				break;
 			}
+
 			case REC_ESCRIBIR:{
 
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
+				u_int32_t cantBytes = recibirUInt(socketServerFS);
+
 				void * bloque = recvDeBloque(socketServerFS);
 
 				// Escribo bloque
-				if(escribirBloque(nroBloque,bloque) < 0){
+				if(escribirBloque(nroBloque,cantBytes,bloque) < 0){
 					// Bloque inexistente
+					sendDeNotificacion(socketServerFS, ESC_CORRECTA);
 					exit(-98);
 				}
 
+				sendDeNotificacion(socketServerFS, ESC_INCORRECTA);
 				free(bloque);
 				break;
+
 			}
+
 			default:
 				log_warning(loggerDatanode, "Peticion recibida por FS incorrecta.");
 				break;
