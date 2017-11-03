@@ -1,7 +1,7 @@
 #include "reduccionLocal.h"
 
 infoReduccionLocal* recibirSolicitudReduccionLocal(){
-	infoReduccionLocal* solicitud = malloc(sizeof(infoReduccionLocal));
+	infoReduccionLocal* solicitud = (infoReduccionLocal*) malloc(sizeof(infoReduccionLocal));
 	solicitud->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
 	solicitud->temporalesTransformacion = list_create();
 	solicitud->temporalReduccionLocal = string_new();
@@ -24,25 +24,118 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(){
 
 void conectarAWorkerReduccionLocal(void* solicitud){
 	infoReduccionLocal nuevo = *(infoReduccionLocal*) solicitud;
-	void * datosToWorker = serializarReduccionLocalToWorker(nuevo.temporalesTransformacion, nuevo.temporalReduccionLocal);
-	int tamanioDatosToWorker = obtenerTamanioReduccionToWorker(nuevo.temporalesTransformacion, nuevo.temporalReduccionLocal);
+
+	char* contenidoScript = obtenerContenido(scriptReduccion);
+	void * datosToWorker = serializarReduccionLocalToWorker(nuevo.temporalesTransformacion, nuevo.temporalReduccionLocal, contenidoScript);
+	int tamanioDatosToWorker = obtenerTamanioReduccionToWorker(nuevo.temporalesTransformacion, nuevo.temporalReduccionLocal, contenidoScript);
 
 	log_info(loggerMaster,"Realizando conexion con Worker. IP: %s. Puerto: %d.", nuevo.conexion->ipNodo, nuevo.conexion->puertoNodo);
 	int socketWorker = conectarAServer(nuevo.conexion->ipNodo, nuevo.conexion->puertoNodo);
-	sendDeNotificacion(socketWorker, REDUCCION_LOCAL);
-	log_info(loggerMaster,"Conexion con worker exitosa.");
-	log_info(loggerMaster,"Propagando archivo de reduccion local a Worker.");
-	propagarArchivo(scriptReduccion,socketWorker);
-	log_info(loggerMaster,"Propagacion de archivo a Worker exitosa.");
-	log_info(loggerMaster,"Enviando archivos temporales de transformacion y temporal de reduccion local: %s.",nuevo.temporalReduccionLocal);
-	sendRemasterizado(socketWorker,REDUCCION_LOCAL,tamanioDatosToWorker, datosToWorker);
-	uint32_t respuesta = recibirUInt(socketWorker);                                                 //CONFIRMACION DE WORKER
-    log_info(loggerMaster,"Recibo respuesta por parte del Worker.");
-    log_info(loggerMaster,"Notifico a YAMA del resultado de la transformacion.");
-    //sendRemasterizado(socketYAMA,respuesta, tamanioDatosToY, datosToYama);        
+	// VERIFICO SI ME PUDE CONECTAR CON WORKER
+	if(socketWorker==0){
+		log_info(loggerMaster, "No se pudo conectar con Worker en ETAPA REDUCCION LOCAL."); 
+        log_info(loggerMaster, "Avisando a YAMA que fallo conexion con: %s.", nuevo.conexion->nombreNodo);  
+        //pthread_mutex_lock(&mutexReplanificacionTransformacion);        
+        sendDeNotificacion(socketYAMA,ERROR_REDUCCION_LOCAL);        
+        int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
+        //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
 
-    free(datosToWorker);
-    free(solicitud);
+        switch (respuestaReplanificacion){
+                case ABORTAR:{
+                    log_info(loggerMaster, "Fallo etapa de Reduccion local en nodo: %s .", nuevo.conexion->nombreNodo);
+                    log_info(loggerMaster, "Cerrando proceso Master!.");
+                    free(datosToWorker);
+                    free(solicitud);
+                    exit(-1);
+                } break;          
+                default:{
+                    log_info(loggerMaster, "Tipo de mensaje no coincidente.");
+                    log_info(loggerMaster, "Cerrando proceso Master!.");
+                    free(datosToWorker);
+                    free(solicitud);
+                    exit(-1);
+                } break;
+
+        }
+    // ME PUDE CONECTAR    
+	} else{
+		log_info(loggerMaster,"Conexion con worker exitosa.");
+		log_info(loggerMaster,"Enviando archivos temporales de transformacion y temporal de reduccion local: %s.",nuevo.temporalReduccionLocal);
+		sendRemasterizado(socketWorker,REDUCCION_LOCAL,tamanioDatosToWorker, datosToWorker);
+		log_info(loggerMaster,"Recibo respuesta por parte del Worker.");
+		//pthread_mutex_lock(&mutexReplanificacionTransformacion);
+		int respuesta = recvDeNotificacionMaster(socketWorker);                                                 //CONFIRMACION DE WORKER
+		//pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+
+	// VERIFICO SI WORKER NO SE CAYO EN EL MEDIO	
+		if(respuesta==0){
+			log_info(loggerMaster, "Worker se cayo y no se pudo recibir una respuesta.");  
+            log_info(loggerMaster, "Avisando a YAMA que fallo conexion con: %s.", nuevo.conexion->nombreNodo);                      
+            //pthread_mutex_lock(&mutexReplanificacionTransformacion);
+            sendDeNotificacion(socketYAMA,ERROR_REDUCCION_LOCAL);
+            int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
+            //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+
+            switch (respuestaReplanificacion){
+                case ABORTAR:{
+                    log_info(loggerMaster, "Fallo etapa de Reduccion local en nodo: %s .", nuevo.conexion->nombreNodo);
+                    log_info(loggerMaster, "Cerrando proceso Master!.");
+                    free(datosToWorker);
+                    free(solicitud);
+                    exit(-1);
+                } break;          
+                default:{
+                    log_info(loggerMaster, "Tipo de mensaje no coincidente.");
+                    log_info(loggerMaster, "Cerrando proceso Master!.");
+                    free(datosToWorker);
+                    free(solicitud);
+                    exit(-1);
+                } break;
+        	}
+		} else{
+			switch (respuesta){
+				case REDUCCION_LOCAL_TERMINADA:{
+					log_info(loggerMaster,"Notifico a YAMA que la REDUCCION LOCAL fue TERMINADA.");
+					sendDeNotificacion(socketYAMA,REDUCCION_LOCAL_TERMINADA);
+					free(datosToWorker);
+    				free(solicitud);
+    				exit(-1);
+				} break;
+				case ERROR_REDUCCION_LOCAL:{
+					log_info(loggerMaster, "Worker me avisa que fallo la REDUCCION LOCAL.");  
+		            log_info(loggerMaster, "Avisando a YAMA que fallo REDUCCION LOCAL con: %s.", nuevo.conexion->nombreNodo);                      
+		            //pthread_mutex_lock(&mutexReplanificacionTransformacion);
+		            sendDeNotificacion(socketYAMA,ERROR_REDUCCION_LOCAL);
+		            int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
+		            //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+
+		            switch (respuestaReplanificacion){
+		                case ABORTAR:{
+		                    log_info(loggerMaster, "Fallo etapa de Reduccion local en nodo: %s .", nuevo.conexion->nombreNodo);
+		                    log_info(loggerMaster, "Cerrando proceso Master!.");
+		                    free(datosToWorker);
+		                    free(solicitud);
+		                    exit(-1);
+		                } break;          
+		                default:{
+		                    log_info(loggerMaster, "Tipo de mensaje no coincidente.");
+		                    log_info(loggerMaster, "Cerrando proceso Master!.");
+		                    free(datosToWorker);
+		                    free(solicitud);
+		                    exit(-1);
+		                } break;
+		        	}
+				} break;
+				default:{
+					log_info(loggerMaster, "Tipo de mensaje no coincidente.");
+		            log_info(loggerMaster, "Cerrando proceso Master!.");
+		            free(datosToWorker);
+		            free(solicitud);
+		            exit(-1);	
+				} break;
+			} // aca cierro el switch de respuesta
+		}
+	}   
 }
 
 
@@ -51,7 +144,7 @@ void procesarReduccionLocal(){
 
 	for(i=0; i<cantidadDeProcesosNodos; i++){
 	   pthread_t hiloInit;
-	   infoReduccionLocal* solicitud = malloc(sizeof(infoReduccionLocal));
+	   infoReduccionLocal* solicitud = (infoReduccionLocal*) malloc(sizeof(infoReduccionLocal));
 	   solicitud->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
 	   solicitud->temporalesTransformacion = list_create();
 	   solicitud->temporalReduccionLocal = string_new();
@@ -63,23 +156,11 @@ void procesarReduccionLocal(){
 	}
 }
 
-// LO QUE  ME MANDA WORKER DE REDUCCION LOCAL:
-/*
-   //char* script = recibirString(socketMaster);
-   char* pathDestino = recibirString(socketMaster);
-   char* nombreScript = recibirString(socketMaster);
-   uint32_t cantidadTemporales = recibirUInt(socketMaster);
-   uint32_t posicion;
-   t_list* archivosTemporales = list_create();
-
-   for(posicion = 0; posicion < cantidadTemporales; posicion++){
-    char* unArchivoTemporal = recibirString(socketMaster);
-    list_add(archivosTemporales,unArchivoTemporal);
-   }
-*/
-
-uint32_t obtenerTamanioReduccionToWorker(t_list* temporales, char* temporalResultante){
+uint32_t obtenerTamanioReduccionToWorker(t_list* temporales, char* temporalResultante, char* contenidoScript){
 	uint32_t tamanio = 0, posicion;
+
+	tamanio += sizeof(uint32_t);
+	tamanio += string_length(contenidoScript);
 
 	tamanio += sizeof(uint32_t);
 	tamanio += string_length(temporalResultante);
@@ -99,23 +180,28 @@ uint32_t obtenerTamanioReduccionToWorker(t_list* temporales, char* temporalResul
 	return tamanio;
 }
 
-void* serializarReduccionLocalToWorker(t_list* temporales, char* temporalResultante){
+void* serializarReduccionLocalToWorker(t_list* temporales, char* temporalResultante,char* contenidoScript){
 	int posicionActual = 0;
 	uint32_t i;
 	uint32_t cantidadTemporales = list_size(temporales);
-	void* infoSerializada = malloc(obtenerTamanioReduccionToWorker(temporales, temporalResultante));
+	void* infoSerializada = malloc(obtenerTamanioReduccionToWorker(temporales, temporalResultante,contenidoScript));
 
+	uint32_t tamanioContenido = string_length(contenidoScript);
+    memcpy(infoSerializada + posicionActual, &tamanioContenido, sizeof(uint32_t));
+    posicionActual += sizeof(uint32_t);
+    memcpy(infoSerializada + posicionActual, contenidoScript, tamanioContenido);
+    posicionActual += tamanioContenido;
 
 	uint32_t tamanioTemporalResultante = string_length(temporalResultante);
 	memcpy(infoSerializada + posicionActual, &tamanioTemporalResultante, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
-	memcpy(infoSerializada + posicionActual, &temporalResultante, tamanioTemporalResultante);
+	memcpy(infoSerializada + posicionActual, temporalResultante, tamanioTemporalResultante);
 	posicionActual += tamanioTemporalResultante;
 
 	uint32_t tamanioScript = string_length(scriptReduccion);
 	memcpy(infoSerializada + posicionActual, &tamanioScript, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
-	memcpy(infoSerializada + posicionActual, &scriptReduccion, tamanioScript);
+	memcpy(infoSerializada + posicionActual, scriptReduccion, tamanioScript);
 	posicionActual += tamanioScript;
 
 	memcpy(infoSerializada + posicionActual, &cantidadTemporales, sizeof(uint32_t));
@@ -127,7 +213,7 @@ void* serializarReduccionLocalToWorker(t_list* temporales, char* temporalResulta
 		uint32_t tamanioTemporal = string_length(temporal);
 		memcpy(infoSerializada + posicionActual, &tamanioTemporal, sizeof(uint32_t));
 		posicionActual += sizeof(uint32_t);
-		memcpy(infoSerializada + posicionActual, &temporal, tamanioTemporal);
+		memcpy(infoSerializada + posicionActual, temporal, tamanioTemporal);
 		posicionActual += tamanioTemporal;
 	}
 

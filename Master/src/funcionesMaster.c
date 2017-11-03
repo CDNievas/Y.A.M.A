@@ -48,13 +48,13 @@ char* obtenerContenido(char* unPath){
 	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
 	return contenidoArchivo;
 }
-
-void propagarArchivo(char* unNombreArchivo, int socketDeYama){
+/*
+void propagarArchivo(char* unNombreArchivo, int socketDeYama, int tipoMensaje){
 	char* contenidoArchivo = obtenerContenido(unNombreArchivo);
-	sendRemasterizado(socketDeYama,SK_FILE_SEND,string_length(contenidoArchivo),contenidoArchivo);
+	sendRemasterizado(socketDeYama,tipoMensaje,string_length(contenidoArchivo),contenidoArchivo);
 	free(contenidoArchivo);
 }
-
+*/
 void verificarNodo(char* nodo){
     uint32_t cantidadNodos = list_size(nombresNodos);
     uint32_t posicion;
@@ -91,4 +91,46 @@ void* serializarArchivoAModificar(){
     posicionActual += tamanioArchivo;
 
     return datosSerializados;
+}
+
+int recvDeNotificacionMaster(int deQuien){
+    int notificacion;
+    int resultado;
+    if((resultado = recv(deQuien, &notificacion, sizeof(int), 0))==-1){
+        perror("Error al recibir la notificacion.");
+        exit(-1);
+    }
+
+    if(resultado==0){
+        return 0;
+    } else{
+        return notificacion;
+    }
+}
+
+
+int conectarAWorker(char *ip, int puerto) { //Recibe ip y puerto, devuelve socket que se conecto
+
+    int socket_server = socket(AF_INET, SOCK_STREAM, 0);
+    struct hostent *infoDelServer;
+    struct sockaddr_in direccion_server; // información del server
+
+    //Obtengo info del server
+    if ((infoDelServer = gethostbyname(ip)) == NULL) {
+        perror("Error al obtener datos del server.");
+    }
+
+    //Guardo datos del server
+    direccion_server.sin_family = AF_INET;
+    direccion_server.sin_port = htons(puerto);
+    direccion_server.sin_addr = *(struct in_addr *) infoDelServer->h_addr; //h_addr apunta al primer elemento h_addr_lista
+    memset(&(direccion_server.sin_zero), 0, 8);
+
+    //Conecto con servidor, si hay error finalizo
+    if (connect(socket_server, (struct sockaddr *) &direccion_server,sizeof(struct sockaddr)) == -1) {
+        perror("Error al conectar con el servidor.");
+    }
+
+    return socket_server;
+
 }

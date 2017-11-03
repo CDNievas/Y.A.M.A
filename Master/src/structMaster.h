@@ -19,6 +19,9 @@
 #define FINALIZADO 14
 #define ALMACENAMIENTO_FINAL 15
 #define CORTO 0
+#define ALMACENADO_FINAL_TERMINADO 16
+#define ERROR_ALMACENADO_FINAL 17
+#define ERROR_TRANSFORMACION 18
 
 char* YAMA_IP;
 char* WORKER_IP;
@@ -32,10 +35,15 @@ char* scriptReduccion;
 char* archivoAModificar;
 char* pathDondeGuardar;
 
-pthread_mutex_t mutexTransformacion;
+pthread_mutex_t mutexRespuestaTransformacion;
+pthread_mutex_t mutexReplanificacionTransformacion;
 
 t_list * nombresNodos;
 int cantidadDeProcesosNodos;
+
+infoEncargadoRG * encargado;   // Var global donde se sabe quien es el encargado de la reducc global
+// ACORDARSE DE HACER EL FREE DE ESTO.
+
 
 
 typedef struct{
@@ -52,16 +60,27 @@ typedef struct{
 }infoNodo;
 
 typedef struct{
-	conexionNodo * conexion;
+	conexionNodo* conexion;
 	t_list* temporalesTransformacion; 
 	char* temporalReduccionLocal;
 } infoReduccionLocal;
 
 typedef struct{
-	conexionNodo * conexion;
-	char* temporalesReduccionLocal;
-	uint32_t encargado; // 1 si es encargado, 0 si no.
-} infoReduccionLocalGlobal;
+	conexionNodo* conexion;
+	char* temporalReduccionLocal;
+	char* temporalReduccionGlobal;	
+} infoEncargadoRG; 
+
+typedef struct{
+	conexionNodo* conexion;
+	char* temporalReduccionLocal;	
+} infoReduccionGlobal; 
+
+typedef struct {
+	conexionNodo* conexion;
+	char* resultadoReduccionGlobal;
+} almacenamientoFinal;
+
 
 
 #endif /* STRUCTMASTER_H_ */

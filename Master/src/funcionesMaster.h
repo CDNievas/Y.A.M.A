@@ -12,6 +12,8 @@ void propagarArchivo(char*, int);
 void verificarNodo(char*);
 uint32_t tamanioArchivoAModificar();
 void* serializarArchivoAModificar();
+int recvDeNotificacionMaster(int);
+int conectarAWorker(char*, int);
 
 
 #endif /* FUNCIONESMASTER_H_ */

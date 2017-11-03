@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/almacenadoFinal.c \
 ../src/funcionesMaster.c \
 ../src/master.c \
 ../src/reduccionGlobal.c \
@@ -11,6 +12,7 @@ C_SRCS += \
 ../src/transformaciones.c 
 
 OBJS += \
+./src/almacenadoFinal.o \
 ./src/funcionesMaster.o \
 ./src/master.o \
 ./src/reduccionGlobal.o \
@@ -18,6 +20,7 @@ OBJS += \
 ./src/transformaciones.o 
 
 C_DEPS += \
+./src/almacenadoFinal.d \
 ./src/funcionesMaster.d \
 ./src/master.d \
 ./src/reduccionGlobal.d \
