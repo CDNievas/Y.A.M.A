@@ -41,11 +41,6 @@ pthread_mutex_t mutexReplanificacionTransformacion;
 t_list * nombresNodos;
 int cantidadDeProcesosNodos;
 
-infoEncargadoRG * encargado;   // Var global donde se sabe quien es el encargado de la reducc global
-// ACORDARSE DE HACER EL FREE DE ESTO.
-
-
-
 typedef struct{
 	char* nombreNodo;
 	char* ipNodo;
@@ -81,6 +76,9 @@ typedef struct {
 	char* resultadoReduccionGlobal;
 } almacenamientoFinal;
 
+
+infoEncargadoRG * encargado;   // Var global donde se sabe quien es el encargado de la reducc global
+// ACORDARSE DE HACER EL FREE DE ESTO.
 
 
 #endif /* STRUCTMASTER_H_ */
