@@ -7,7 +7,7 @@
 
 t_list * recibirSolicitudReduccionGlobal();
 void procesarReduccionGlobal();
-uint32_t tamanioDatosToWorkerReduccion(t_list *);
-void* serializarReduccionGlobalToWorker(t_list *);
+uint32_t tamanioDatosToWorkerReduccion(t_list *,char*);
+void* serializarReduccionGlobalToWorker(t_list *, char*);
 
 #endif /* reduccionGlobal_H_ */
