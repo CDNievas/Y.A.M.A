@@ -42,10 +42,11 @@ int main(int argc, char **argv) {
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
 				u_int32_t cantBytes = recibirUInt(socketServerFS);
 
-				void * bloque;
+				//Leo el bloque
+				void * bloque = leerBloque(nroBloque,cantBytes);
 
-				// Leo el bloque
-				if((bloque = leerBloque(nroBloque,cantBytes)) == NULL){
+
+				if(bloque == NULL){
 					// Bloque inexistente
 					exit(-99);
 				} else {
@@ -65,7 +66,8 @@ int main(int argc, char **argv) {
 				void * bloque = recvDeBloque(socketServerFS);
 
 				// Escribo bloque
-				if(escribirBloque(nroBloque,cantBytes,bloque) < 0){
+				int resultado = escribirBloque(nroBloque,bloque,cantBytes);
+				if(resultado<0){
 					// Bloque inexistente
 					sendDeNotificacion(socketServerFS, ESC_CORRECTA);
 					exit(-98);

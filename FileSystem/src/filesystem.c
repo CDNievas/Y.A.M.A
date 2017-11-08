@@ -14,6 +14,67 @@ t_list* tablaGlobalArchivos;
 bool hayEstadoAnterior;
 t_list* listaConexionNodos;
 
+char * obtenerPathBitmap(char * nombreNodo){
+
+	// Path
+	char * path = string_new();
+	path= "/metadata/bitmap/";
+	string_append(&path, nombreNodo);
+	string_append(&path, ".dat");
+
+	return path;
+
+}
+
+t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
+
+	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
+	uint32_t archivo; // FD Archivo
+	struct stat infoBitmap; // Guarda informacion del archivo
+	void * mapArchivo; // Memoria del mmap
+	t_bitarray * bitarray; // Bitarray
+
+	// Abro el archivo
+	if(stat(path,&infoBitmap) < 0){
+		// Error al abrir el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	if((archivo = open(path, O_RDWR)) < 0){
+		// Error al abrir el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	// Lo mapeo a memoria
+	mapArchivo = mmap(0, infoBitmap.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+
+	bitarray = bitarray_create_with_mode(mapArchivo,cantBloques,MSB_FIRST);
+
+	if(close(archivo) < 0){
+		log_error(loggerFileSystem,"Fallo al cerrar el archivo.");
+		exit(-1);
+	}
+
+	return bitarray;
+
+}
+
+t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
+
+	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
+
+	if((truncate(path,cantBloques)) == -1){
+		// Error al crear el archivo
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
+		exit(-1);
+	}
+
+	return abrirBitmap(nombreNodo, cantBloques);
+
+}
+
 //Habria que implementar la copia de los archivos
 
 void cargarFileSystem(t_config* configuracionFS) {
@@ -74,74 +135,13 @@ void registrarNodo(int socket) {
 	// Aniado a la tabla de conexiones de nodo
 	nodoConexion* nodoConectado = malloc(sizeof(nodoConexion));
 	nodoConectado->nodo = string_new();
-	string_append(nodoConectado->nodo, nombreNodo);
+	string_append(&(nodoConectado->nodo), nombreNodo);
 	nodoConectado->soket= socket;
 	list_add(listaConexionNodos, nodoConectado);
 
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
-char * obtenerPathBitmap(char * nombreNodo){
-
-	// Path
-	char * path = string_new();
-	path= "/metadata/bitmap/";
-	string_append(path, nombreNodo);
-	string_append(path, ".dat");
-
-	return path;
-
-}
-
-t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
-
-	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
-	uint32_t archivo; // FD Archivo
-	struct stat infoBitmap; // Guarda informacion del archivo
-	void * mapArchivo; // Memoria del mmap
-	t_bitarray * bitarray; // Bitarray
-
-	// Abro el archivo
-	if(stat(path,&infoBitmap) < 0){
-		// Error al abrir el archivo
-		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
-		exit(-1);
-	}
-
-	if((archivo = open(path, O_RDWR)) < 0){
-		// Error al abrir el archivo
-		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
-		exit(-1);
-	}
-
-	// Lo mapeo a memoria
-	mapArchivo = mmap(0, infoBitmap.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
-
-	bitarray = bitarray_create_with_mode(mapArchivo,cantBloques,MSB_FIRST);
-
-	if(close(archivo) < 0){
-		log_error(loggerFileSystem,"Fallo al cerrar el archivo.");
-		exit(-1);
-	}
-
-	return bitarray;
-
-}
-
-t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
-
-	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
-
-	if((truncate(path,cantBloques)) == -1){
-		// Error al crear el archivo
-		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
-		exit(-1);
-	}
-
-	return abrirBitmap(nombreNodo, cantBloques);
-
-}
-
 int sacarTamanioArchivo(FILE* archivo) {
 	fseek(archivo, 0, SEEK_END);
 	int tamanioArchivo = ftell(archivo);
