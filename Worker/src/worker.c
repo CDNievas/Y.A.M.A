@@ -244,6 +244,8 @@ void crearProcesoHijo(int socketMaster){
 				list_add(archivosTemporales,unArchivoTemporal);
 			}
 
+			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
+
 			char* archivoApareado = aparearArchivos(archivosTemporales);
 
 			guardarScript(script,nombreScript);
@@ -254,7 +256,8 @@ void crearProcesoHijo(int socketMaster){
 
 			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA);
 
-			eliminarScript(nombreScript);
+			eliminarArchivo(nombreScript);
+			eliminarArchivo(archivoApareado);
 
 		}
 		break;
