@@ -155,6 +155,65 @@ void eliminarScript(char* nombreScript){
 	free(nombreScript);
 }
 
+char* leerLinea(FILE* unArchivo){
+	char* lineaLeida = string_new();
+
+	while(!feof(unArchivo))
+	{
+		int cadenaLeida = fgetc(unArchivo);
+
+		if (cadenaLeida != '\n')
+		{
+			string_append(&lineaLeida,&cadenaLeida);
+		}
+		else{
+			break;
+		}
+	}
+
+	log_info(loggerWorker, "Se obtuvo la siguiente linea del archivo.\n");
+
+	return lineaLeida;
+}
+
+void leerPrimerRegistrosArchivos(t_list* archivosTemporales){
+	int posicion;
+	for(posicion=0;posicion<list_size(archivosTemporales);posicion++){
+		char* unNombreArchivoTemporal = list_remove(archivosTemporales,0);
+		FILE* unArchivoTemporal = fopen(unNombreArchivoTemporal,"r");
+
+		if(unArchivoTemporal==NULL){
+			log_error(loggerWorker,"No se pudo abrir uno de los archivos a aparear.\n");
+			exit(-1);
+		}
+
+		char* unaLineaLeida = leerLinea(unArchivoTemporal);
+		infoArchivo* unaInfoDeArchivo = malloc(sizeof(infoArchivo));
+		unaInfoDeArchivo->bloqueLeido = unaLineaLeida;
+		unaInfoDeArchivo->unArchivo = unArchivoTemporal;
+		list_add(archivosTemporales,unaInfoDeArchivo);
+		free(unNombreArchivoTemporal);
+	}
+	log_info(loggerWorker, "Se abrieron todos los archivos de la lista.\n");
+}
+
+void leerSiguienteLinea(char* menorString, infoArchivo* unaInfoDeArchivo,t_list* archivosTemporales){
+	string_append(&menorString,unaInfoDeArchivo->bloqueLeido);
+	char* unaNuevaLineaLeida = leerLinea(unaInfoDeArchivo->unArchivo);
+	free(unaInfoDeArchivo->bloqueLeido);
+	if(unaNuevaLineaLeida!=NULL){
+		unaInfoDeArchivo->bloqueLeido = unaNuevaLineaLeida;
+		list_add(archivosTemporales,unaInfoDeArchivo);
+	}
+	else{
+		if(fclose(unaInfoDeArchivo->unArchivo)==EOF){
+			log_error(loggerWorker,"No se pudo cerrar el archivo.\n");
+		}
+		log_info(loggerWorker,"El archivo se pudo cerrar correctamente.\n");
+		free(unaInfoDeArchivo);
+	}
+}
+
 char* aparearArchivos(t_list* archivosTemporales){
 	char* nombreArchivoApareado = string_new();
 	string_append(&nombreArchivoApareado,"archivoApareado");
