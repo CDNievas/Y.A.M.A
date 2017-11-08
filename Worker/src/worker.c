@@ -180,6 +180,28 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
+void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* nombreResultante,char* rutaResultante){
+
+	char* contenidoArchivoReduccionGlobal = obtenerContenido(nombreArchivoReduccionGlobal);
+
+	uint32_t tamanioContenidoArchivoReduccionGlobal= string_length(contenidoArchivoReduccionGlobal);
+	uint32_t tamanionombreResultante= string_length(nombreResultante);
+	uint32_t tamaniorutaResultante= string_length(rutaResultante);
+	uint32_t tamanioTotalAEnviar = tamanioContenidoArchivoReduccionGlobal+tamaniorutaResultante+tamanionombreResultante+(sizeof(uint32_t)*3);
+
+	void* datosAEnviar = malloc(tamanioTotalAEnviar);
+
+	memcpy(datosAEnviar,&tamanioContenidoArchivoReduccionGlobal,sizeof(uint32_t));
+	memcpy(datosAEnviar+sizeof(uint32_t),contenidoArchivoReduccionGlobal,tamanioContenidoArchivoReduccionGlobal);
+	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+sizeof(uint32_t),&tamanionombreResultante,sizeof(uint32_t));
+	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+sizeof(uint32_t)*2,nombreResultante,tamanionombreResultante);
+	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+sizeof(uint32_t)*2,&tamaniorutaResultante,sizeof(uint32_t));
+	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+sizeof(uint32_t)*3,rutaResultante,tamaniorutaResultante);
+
+	log_info(loggerWorker, "Datos serializados correctamente para ser enviados al FileSystem\n");
+	sendRemasterizado(socketFS,ALMACENADO_FINAL,tamanioTotalAEnviar,datosAEnviar);
+}
+
 uint32_t asignarStreamADatosParaEnviar(uint32_t tamanioPrevio, char* streamAEnviar, void* datosAEnviar){
 	uint32_t tamanioStream = string_length(streamAEnviar);
 	datosAEnviar = realloc(datosAEnviar,tamanioStream+sizeof(uint32_t)+tamanioPrevio);
