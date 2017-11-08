@@ -180,6 +180,43 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
+void realizarHandshakeWorker(char* unArchivoTemporal, uint32_t unSocketWorker){
+
+	uint32_t tamanioArchivoTemporal = string_length(unArchivoTemporal);
+	void* datosAEnviar = malloc(tamanioArchivoTemporal+sizeof(uint32_t));
+
+	sendDeNotificacion(unSocketWorker, ES_WORKER);
+
+	if(recvDeNotificacion(unSocketWorker) != ES_OTRO_WORKER){
+		log_error(loggerWorker, "La conexion efectuada no es con otro worker.\n");
+		close(unSocketWorker);
+		exit(-1);
+	}
+
+	log_info(loggerWorker, "Se conecto con otro worker.\n");
+
+	memcpy(datosAEnviar,&tamanioArchivoTemporal,sizeof(uint32_t));
+	memcpy(datosAEnviar+sizeof(uint32_t),unArchivoTemporal,tamanioArchivoTemporal);
+
+	log_info(loggerWorker, "Datos serializados para ser enviados al otro worker.\n");
+
+	sendRemasterizado(unSocketWorker,APAREO_GLOBAL,tamanioArchivoTemporal+sizeof(uint32_t),datosAEnviar);
+
+	free(unArchivoTemporal);
+	free(datosAEnviar);
+}
+
+void realizarHandshakeFS(uint32_t socketFS){
+	sendDeNotificacion(socketFS, ES_WORKER);
+
+	if(recibirUInt(socketFS) != ES_FS){
+		log_error(loggerWorker, "La conexion efectuada no es con FileSystem.\n");
+		close(socketFS);
+		exit(-1);
+	}
+	log_info(loggerWorker, "Se conecto con el FileSystem.\n");
+}
+
 long int obtenerTamanioArchivo(FILE* unArchivo){
 	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
 
