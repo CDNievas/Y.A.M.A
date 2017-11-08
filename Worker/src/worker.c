@@ -180,6 +180,55 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
+long int obtenerTamanioArchivo(FILE* unArchivo){
+	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
+
+	if(retornoSeek==0){
+		log_error(loggerWorker,"Error de fseek.\n");
+		exit(-1);
+	}
+
+	long int tamanioArchivo = ftell(unArchivo);
+
+	if(tamanioArchivo==-1){
+		log_error(loggerWorker,"Error de ftell.\n");
+		exit(-1);
+	}
+
+	return tamanioArchivo;
+}
+
+char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
+{
+	int retornoSeek = fseek(unArchivo, 0, SEEK_SET);
+
+	if(retornoSeek==0){
+		log_error(loggerWorker,"Error de fseek.\n");
+		exit(-1);
+	}
+
+	char* contenidoArchivo = malloc(tamanioArchivo+1);
+	fread(contenidoArchivo, tamanioArchivo, 1, unArchivo);
+	contenidoArchivo[tamanioArchivo] = '\0';
+	return contenidoArchivo;
+}
+
+char* obtenerContenido(char* unPath){
+	FILE* archivoALeer = fopen(unPath, "r");
+
+	if(archivoALeer==NULL){
+		log_error(loggerWorker,"No se pudo abrir el archivo: %s.\n",unPath);
+		exit(-1);
+	}
+
+	log_info(loggerWorker,"Se pudo abrir el archivo: %s.\n",unPath);
+
+	long int tamanioArchivo = obtenerTamanioArchivo(archivoALeer);
+	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
+	log_info(loggerWorker, "Se pudo obtener el contenido del archivo: %s.\n",unPath);
+	return contenidoArchivo;
+}
+
 void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* nombreResultante,char* rutaResultante){
 
 	char* contenidoArchivoReduccionGlobal = obtenerContenido(nombreArchivoReduccionGlobal);
