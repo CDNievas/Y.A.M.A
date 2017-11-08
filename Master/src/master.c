@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
-	chequearParametros(argc,6);
+	chequearParametros(argc,5);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
 	cargarMaster(configuracionMaster);
 	scriptTransformador = argv[2];
