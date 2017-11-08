@@ -155,6 +155,67 @@ void eliminarScript(char* nombreScript){
 	free(nombreScript);
 }
 
+char* aparearArchivos(t_list* archivosTemporales){
+	char* nombreArchivoApareado = string_new();
+	string_append(&nombreArchivoApareado,"archivoApareado");
+	crearArchivoTemporal(nombreArchivoApareado);
+	leerPrimerRegistrosArchivos(archivosTemporales);
+	FILE* archivoApareado = fopen(nombreArchivoApareado,"w");
+
+	if(archivoApareado==NULL){
+		log_error(loggerWorker,"No se pudo abrir el archivo apareado.\n");
+		exit(-1);
+	}
+
+	log_info(loggerWorker, "Se abrio el archivo donde se guarda lo apareado localmente.\n");
+
+	while(!list_is_empty(archivosTemporales)){
+		char* menorString = string_new();
+		menorString = NULL;
+		int cantidad = list_size(archivosTemporales);
+		int posicion;
+
+		for(posicion=0;posicion<cantidad;posicion++){
+			infoArchivo* unaInfoDeArchivo = list_remove(archivosTemporales,0);
+			if(menorString!=NULL){
+				if(strcmp(unaInfoDeArchivo->bloqueLeido,menorString)<=0){
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoDeArchivo->bloqueLeido,menorString);
+					free(menorString);
+					char* menorString = string_new();
+					menorString = NULL;
+					leerSiguienteLinea(menorString,unaInfoDeArchivo,archivosTemporales);
+				}
+				else{
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoDeArchivo->bloqueLeido);
+					list_add(archivosTemporales,unaInfoDeArchivo);
+				}
+			}
+			else{
+				leerSiguienteLinea(menorString,unaInfoDeArchivo,archivosTemporales);
+			}
+		}
+
+		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
+
+		if(fputs(menorString,archivoApareado)==EOF){
+			log_error(loggerWorker,"No se pudo escribir en el archivo apareado.\n");
+			exit(-1);
+		}
+
+		log_info(loggerWorker, "El string: %s se escribio correctamente en el archivo apareado.\n",menorString);
+
+		free(menorString);
+	}
+
+	if(fclose(archivoApareado)==EOF){
+		log_error(loggerWorker,"No se pudo cerrar el archivo apareado local.\n");
+	}
+
+	log_info(loggerWorker, "Se cerro correctamente el archivo apareado local.\n");
+
+	return nombreArchivoApareado;
+}
+
 char* realizarApareoGlobal(t_list* listaSocketsWorkers){
 	int posicion;
 	t_list* datosArchivos = list_create();
