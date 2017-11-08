@@ -180,6 +180,32 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
+void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
+	char* contenidoArchivo = obtenerContenido(nombreArchivoTemporal);
+	int posicion;
+	char* streamAEnviar = string_new();
+	void* datosAEnviar;
+	uint32_t tamanioPrevio = 0;
+
+	for(posicion=0;contenidoArchivo[posicion]!='\0';posicion++){
+		if (contenidoArchivo[posicion] == '\n')
+		{
+			tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
+		}
+		else{
+			string_append(&streamAEnviar,&(contenidoArchivo[posicion]));
+		}
+
+	}
+
+	string_append(&streamAEnviar,"\0");
+	tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
+	log_info(loggerWorker, "Todos los datos del archivo temporal reducido del worker fueron serializados\n");
+	sendRemasterizado(socketAceptado,APAREO_GLOBAL,tamanioPrevio,datosAEnviar);
+	free(contenidoArchivo);
+	free(datosAEnviar);
+}
+
 void crearProcesoHijo(int socketMaster){
 	log_info(loggerWorker, "Se recibio un job del socket de master %d.\n",socketMaster);
 	int pipe_padreAHijo[2];
