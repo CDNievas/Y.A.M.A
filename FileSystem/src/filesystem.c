@@ -118,7 +118,7 @@ void registrarNodo(int socket) {
 	bloque->total = cantBloques;
 
 	// Asigno cant de bloques libres
-	bloque->libre = cantBloquesLibres(bitarray);
+	//bloque->libre = cantBloquesLibres(bitarray);
 
 	// Aniado a la tabla de info de nodos
 	tablaGlobalNodos->tamanio += bloque->total;
