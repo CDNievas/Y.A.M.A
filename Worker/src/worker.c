@@ -294,7 +294,30 @@ void crearProcesoHijo(int socketMaster){
 		}
 		break;
 		case ALMACENADO_FINAL:{
+			char* nombreArchivoReduccionGlobal = recibirString(socketMaster);
+						char* nombreResultante = recibirString(socketMaster);
+						char* rutaResultante = recibirString(socketMaster);
 
+						log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar el almacenado final");
+
+						uint32_t socketFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
+						realizarHandshakeFS(socketFS);
+
+						enviarDatosAFS(socketFS,nombreArchivoReduccionGlobal,nombreResultante,rutaResultante);
+
+						int notificacion = recvDeNotificacion(socketFS);
+
+						if(notificacion==ALMACENADO_FINAL_TERMINADO){
+							sendDeNotificacion(socketMaster,ALMACENADO_FINAL_TERMINADO);
+							close(socketFS);
+						} else if(notificacion==ERROR_ALMACENADO_FINAL){
+							sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
+							close(socketFS);
+						} else{
+							log_error(loggerWorker, "La conexion recibida es erronea.\n");
+							sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
+							close(socketFS);
+						}
 		}
 		break;
 		default:
