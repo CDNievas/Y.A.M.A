@@ -4,7 +4,7 @@
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
 #define TRANSFORMACION 1
 #define TRANSFORMACION_TERMINADA 2
-#define ERROR_TRANSFORMACION 3
+#define ERROR_TRANSFORMACION 18
 #define REDUCCION_LOCAL 8
 #define REDUCCION_LOCAL_TERMINADA 4
 #define ERROR_REDUCCION_LOCAL 6
@@ -14,6 +14,7 @@
 #define ALMACENADO_FINAL 15
 #define ALMACENADO_FINAL_TERMINADO 16
 #define ERROR_ALMACENADO_FINAL 17
+#define APAREO_GLOBAL 18
 
 t_log* loggerWorker;
 char* IP_FILESYSTEM;
@@ -21,6 +22,11 @@ char* RUTA_DATABIN;
 char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
+
+typedef struct{
+	FILE* unArchivo;
+	char* bloqueLeido;
+}infoArchivo;
 
 void sigchld_handler(int s){
 	while(wait(NULL) > 0);
@@ -32,7 +38,7 @@ void eliminarProcesosMuertos(){
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-		log_error(loggerWorker,"Error de sigaction al eliminar procesos muertos");
+		log_error(loggerWorker,"Error de sigaction al eliminar procesos muertos.\n");
 		exit(-1);
 	}
 }
@@ -80,7 +86,7 @@ void darPermisosAScripts(char* script){
 		log_error(loggerWorker,"Error al otorgar permisos al script.\n");
 	}
 	else if(stat(script,&infoScript)!=0){
-		log_error(loggerWorker,"No se pudo obtener informacion del script.");
+		log_error(loggerWorker,"No se pudo obtener informacion del script.\n");
 	}
 	else{
 		log_info(loggerWorker,"Los permisos para el script son: %08x\n",infoScript.st_mode);
@@ -89,9 +95,8 @@ void darPermisosAScripts(char* script){
 
 char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados){
 	char* command = string_new();
-	int bloqueAnterior = nroBloque-1;
 	string_append(&command, "head -n ");
-	string_append(&command,string_itoa((bloqueAnterior*1048576)+bytesOcupados));
+	string_append(&command,string_itoa((nroBloque*1048576)+bytesOcupados));
 	string_append(&command," ");
 	string_append(&command,RUTA_DATABIN);
 	string_append(&command," | tail -n ");
@@ -101,7 +106,7 @@ char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
-	log_info(loggerWorker, "Se creo correctamente el comando del script transformador");
+	log_info(loggerWorker, "Se creo correctamente el comando del script transformador\n");
 	return command;
 }
 
@@ -114,10 +119,11 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	string_append(&command,pathDestino);
 	free(pathDestino);
 	free(archivoApareado);
+	log_info(loggerWorker, "Se creo correctamente el comando del script reductor\n");
 	return command;
 }
 
-void guardarScript(char* script,char* nombreScript){
+void crearArchivoTemporal(char* nombreScript){
 	string_append(&nombreScript,"XXXXXX");
 	int resultado = mkstemp(nombreScript);
 
@@ -125,27 +131,37 @@ void guardarScript(char* script,char* nombreScript){
 		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
 		exit(-1);
 	}
+	log_info(loggerWorker, "Se creo correctamente un archivo temporal con nombre: %s.\n",nombreScript);
+}
+
+void guardarScript(char* script,char* nombreScript){
+	crearArchivoTemporal(nombreScript);
 
 	FILE* archivoScript = fopen(nombreScript,"w");
 
 	if(archivoScript==NULL){
-		log_error(loggerWorker,"No se pudo guardar el script.\n");
+		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el script.\n");
 		exit(-1);
 	}
+	log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el script: %s.\n",nombreScript);
 
 	if(fputs(script,archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo escribir en el archivo del script.\n");
 		exit(-1);
 	}
 
+	log_info(loggerWorker, "Se pudo escribir en el archivo donde se guarda el script: %s.\n",nombreScript);
+
 	if(fclose(archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo cerrar el archivo del script.\n");
 	}
 
+	log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el script: %s.\n",nombreScript);
+
 	free(script);
 }
 
-void eliminarScript(char* nombreScript){
+void eliminarArchivo(char* nombreScript){
 	if(remove(nombreScript)!=0){
 		log_error(loggerWorker,"No se pudo eliminar el script.\n");
 	}
