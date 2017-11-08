@@ -22,6 +22,6 @@
 
 - [X] Aplicar nmap().
 - [X] Estructuras FS (tabla de directorios, archivos, nodos, bitmap).
-- [ ] YAMA planifica tareas con Round Robin.
-- [ ] Master y YAMA efectuan todo un recorrido respetando el RR (sin comunicacion contra el Worker ni FS).
-- [ ] FS debe permitir la copia de un archivo al yamafs y su almacentamiento partiendolo en bloques.
+- [X] YAMA planifica tareas con Round Robin.
+- [X] Master y YAMA efectuan todo un recorrido respetando el RR (sin comunicacion contra el Worker ni FS).
+- [X] FS debe permitir la copia de un archivo al yamafs y su almacentamiento partiendolo en bloques.
