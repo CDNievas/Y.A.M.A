@@ -262,7 +262,35 @@ void crearProcesoHijo(int socketMaster){
 		}
 		break;
 		case REDUCCION_GLOBAL:{
+			char* script = recibirString(socketMaster);
+			char* pathDestino = recibirString(socketMaster);
+						char* nombreScript = recibirString(socketMaster);
+						uint32_t cantidadWorkers = recibirUInt(socketMaster);
+						uint32_t posicionWorker;
+						t_list* listaSocketsWorkers = list_create();
+						for(posicionWorker = 0; posicionWorker < cantidadWorkers; posicionWorker++){
+							char* archivoTemporal = recibirString(socketMaster);
+							char* ipWorker = recibirString(socketMaster);
+							uint32_t puertoWorker = recibirUInt(socketMaster);
+							uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
+							realizarHandshakeWorker(archivoTemporal,unSocketWorker);
+							list_add(listaSocketsWorkers,&unSocketWorker);
+						}
 
+						log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
+
+						char* archivoApareado = realizarApareoGlobal(listaSocketsWorkers);
+
+						guardarScript(script,nombreScript);
+
+						darPermisosAScripts(nombreScript);
+
+						char* command = crearComandoScriptReductor(archivoApareado,nombreScript,pathDestino);
+
+						ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_GLOBAL,REDUCCION_GLOBAL_TERMINADA);
+
+						eliminarArchivo(nombreScript);
+						eliminarArchivo(archivoApareado);
 		}
 		break;
 		case ALMACENADO_FINAL:{
