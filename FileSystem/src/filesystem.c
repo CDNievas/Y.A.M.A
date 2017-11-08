@@ -14,6 +14,8 @@ t_list* tablaGlobalArchivos;
 bool hayEstadoAnterior;
 t_list* listaConexionNodos;
 
+//---------------------------------------------------BITMAP---------------------------------------------------------
+
 char * obtenerPathBitmap(char * nombreNodo){
 
 	// Path
@@ -21,7 +23,6 @@ char * obtenerPathBitmap(char * nombreNodo){
 	path= "/metadata/bitmap/";
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
-
 	return path;
 
 }
@@ -90,6 +91,17 @@ void cargarFileSystem(t_config* configuracionFS) {
 }
 
 //--------------------------------Nodos---------------------------------------
+int cantBloquesLibres(t_bitarray* bitarray) {
+	int i = 0;
+	int cont = 0;
+	for (; i < bitarray_get_max_bit(bitarray); i++) {
+		if (!bitarray_test_bit(bitarray, i)) {
+			cont++;
+		}
+	}
+	return cont;
+}
+
 
 void registrarNodo(int socket) {
 
@@ -103,9 +115,9 @@ void registrarNodo(int socket) {
 	// Checkeo estado anterior
 	if(hayEstadoAnterior){
 		bitarray = abrirBitmap(nombreNodo,cantBloques);
+
 	} else {
 		bitarray = crearBitmap(nombreNodo,cantBloques);
-	}
 
 	// Creo el bloque de info del nodo
 	contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
@@ -118,7 +130,7 @@ void registrarNodo(int socket) {
 	bloque->total = cantBloques;
 
 	// Asigno cant de bloques libres
-	//bloque->libre = cantBloquesLibres(bitarray);
+	bloque->libre = cantBloquesLibres(bitarray);
 
 	// Aniado a la tabla de info de nodos
 	tablaGlobalNodos->tamanio += bloque->total;
@@ -138,7 +150,7 @@ void registrarNodo(int socket) {
 	string_append(&(nodoConectado->nodo), nombreNodo);
 	nodoConectado->soket= socket;
 	list_add(listaConexionNodos, nodoConectado);
-
+	}
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -266,9 +278,9 @@ void enviarListaNodos(int socket) {
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc, 2);
-	t_config* configuracionFS = generarTConfig(argv[1], 1);
-//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	//chequearParametros(argc, 2);
+	//t_config* configuracionFS = generarTConfig(argv[1], 1);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);

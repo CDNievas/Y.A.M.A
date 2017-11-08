@@ -4,28 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/almacenadoFinal.c \
-../src/funcionesMaster.c \
-../src/master.c \
-../src/reduccionGlobal.c \
-../src/reduccionLocal.c \
-../src/transformaciones.c 
+../src/master.c 
 
 OBJS += \
-./src/almacenadoFinal.o \
-./src/funcionesMaster.o \
-./src/master.o \
-./src/reduccionGlobal.o \
-./src/reduccionLocal.o \
-./src/transformaciones.o 
+./src/master.o 
 
 C_DEPS += \
-./src/almacenadoFinal.d \
-./src/funcionesMaster.d \
-./src/master.d \
-./src/reduccionGlobal.d \
-./src/reduccionLocal.d \
-./src/transformaciones.d 
+./src/master.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
