@@ -180,6 +180,20 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
+uint32_t asignarStreamADatosParaEnviar(uint32_t tamanioPrevio, char* streamAEnviar, void* datosAEnviar){
+	uint32_t tamanioStream = string_length(streamAEnviar);
+	datosAEnviar = realloc(datosAEnviar,tamanioStream+sizeof(uint32_t)+tamanioPrevio);
+	tamanioPrevio = tamanioStream+sizeof(uint32_t)+tamanioPrevio;
+
+	memcpy(datosAEnviar,&tamanioStream,sizeof(uint32_t));
+	memcpy(datosAEnviar+sizeof(uint32_t),streamAEnviar,tamanioStream);
+
+	free(streamAEnviar);
+	streamAEnviar = string_new();
+
+	return tamanioPrevio;
+}
+
 void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
 	char* contenidoArchivo = obtenerContenido(nombreArchivoTemporal);
 	int posicion;
