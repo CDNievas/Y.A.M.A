@@ -13,6 +13,7 @@
 #define ESC_INCORRECTA 103
 #define ENV_LEER 104
 #define ENV_ESCRIBIR 105
+#define INFO_ARCHIVO_FS 13
 
 //------------------DIRECOTORIO------------------------
 typedef struct t_directory {

@@ -275,6 +275,79 @@ void enviarListaNodos(int socket) {
 	sendRemasterizado(socket, ES_FS, tamanioMsj, mensaje);
 }
 
+//ENVIAR DATOS
+
+int tamanioStruct(copiasXBloque* contenido){
+	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
+}
+
+void* serializarCopiaBloque(copiasXBloque* contenido){
+	int posicionActual = 0;
+
+	void* datosSerializados = malloc(tamanioStruct(contenido));
+
+	// serializo bloque
+	uint32_t tamanioBloque = string_length(contenido->bloque);
+	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
+	posicionActual += tamanioBloque;
+	//serializo copia1
+	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
+	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
+	posicionActual += tamanioCopia1;
+	memcpy(datosSerializados + posicionActual, contenido->copia1->bloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	// serializo copia2
+	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
+	memcpy(datosSerializados + posicionActual, &tamanioCopia2, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
+	posicionActual += tamanioCopia2;
+	memcpy(datosSerializados + posicionActual, contenido->copia2->bloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	//serializo bytes
+	memcpy(datosSerializados + posicionActual, contenido->bytes, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+
+	return datosSerializados;
+
+}
+
+void enviarTablaAYama(tablaArchivos* entradaArchivo){
+	uint32_t cont=0;
+	uint32_t posicionActual=0;
+	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
+
+	void* mensaje= malloc((sizeof(copiasXBloque)*list_size(entradaArchivo->bloques)+sizeof(uint32_t)));
+
+	memcpy(mensaje+posicionActual,list_size(entradaArchivo->bloques),sizeof(uint32_t)); //REVISAR
+	posicionActual += sizeof(uint32_t);
+
+	while(cont<list_size(entradaArchivo->bloques)){
+		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+		memcpy(mensaje,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
+		posicionActual+=tamanioStruct(copiaBloque);
+	}
+
+	uint32_t tamanioMsj=sizeof(uint32_t)+(sizeof(copiasXBloque)*list_size(entradaArchivo->bloques)); //REVISAR
+
+	sendRemasterizado(socket, INFO_ARCHIVO_FS, tamanioMsj, mensaje);
+}
+
+
+void enviarDatoArchivo(int socket){
+  char* archivoABuscar=recibirString(socket);
+	bool esArchivo(tablaArchivos* archivo){
+		return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
+	}
+	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
+
+	enviarTablaAYama(entradaArchivo);
+}
+
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
@@ -340,9 +413,9 @@ int main(int argc, char **argv) {
 					case REC_INFONODO:
 						registrarNodo(socketClienteChequeado);
 						break;
-						//case INFO_ARCHIVOFS:
-						//enviarDatoArchivo(paqueteRecibido.mensaje, socketClienteChequeado);
-						//break;
+					case INFO_ARCHIVO_FS:
+						enviarDatoArchivo(socketClienteChequeado);
+						break;
 					default:
 						log_error(loggerFileSystem,
 								"La conexion recibida es erronea.");
