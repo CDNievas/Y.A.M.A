@@ -181,34 +181,35 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 }
 
 void crearProcesoHijo(int socketMaster){
-	uint32_t tipoEtapa = recibirUInt(socketMaster);
-	log_info(loggerWorker, "Se recibio un job del socket de master %d.",socketMaster);
+	log_info(loggerWorker, "Se recibio un job del socket de master %d.\n",socketMaster);
 	int pipe_padreAHijo[2];
 	int pipe_hijoAPadre[2];
 
 	pipe(pipe_padreAHijo);
 	pipe(pipe_hijoAPadre);
+	log_info(loggerWorker, "Pipes creados\n");
 
 	pid_t pid = fork();
 
 	switch(pid){
 	case -1:{
-		log_error(loggerWorker, "No se pudo crear el proceso hijo");
+		log_error(loggerWorker, "No se pudo crear el proceso hijo\n");
 		close(socketMaster);
 		exit(-1);
 	}
 	break;
 	case 0:{
-
-		printf("Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
+		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
 		dup2(pipe_padreAHijo[0],STDIN_FILENO);
 		dup2(pipe_hijoAPadre[1],STDOUT_FILENO);
 
 		close(pipe_padreAHijo[1]);
 		close(pipe_hijoAPadre[0]);
-		close(pipe_hijoAPadre[1]);
 		close(pipe_padreAHijo[0]);
+		close(pipe_hijoAPadre[1]);
+
+		uint32_t tipoEtapa = recibirUInt(socketMaster);
 
 		switch(tipoEtapa){
 		case TRANSFORMACION:{
@@ -218,6 +219,8 @@ void crearProcesoHijo(int socketMaster){
 			uint32_t bytesOcupados = recibirUInt(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
 
+			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
+
 			guardarScript(script,nombreScript);
 
 			darPermisosAScripts(nombreScript);
@@ -226,8 +229,7 @@ void crearProcesoHijo(int socketMaster){
 
 			ejecutarPrograma(command,socketMaster,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA);
 
-			eliminarScript(nombreScript);
-
+			eliminarArchivo(nombreScript);
 		}
 		break;
 		case REDUCCION_LOCAL:{
@@ -268,6 +270,7 @@ void crearProcesoHijo(int socketMaster){
 			log_error(loggerWorker, "Error al recibir paquete de Master");
 			exit(-1);
 		}
+		close(socketMaster);
 
 		exit(1);
 	}
@@ -275,13 +278,12 @@ void crearProcesoHijo(int socketMaster){
 	default:
 		close(socketMaster);
 
-		printf("Soy el proceso padre con pid: %d y mi hijo tiene el pid %d \n ",getpid(),pid);
+		log_info(loggerWorker,"Soy el proceso padre con pid: %d y mi hijo tiene el pid %d \n ",getpid(),pid);
 
 		close(pipe_padreAHijo[0]);
 		close(pipe_hijoAPadre[1]);
 		close(pipe_padreAHijo[1]);
 		close(pipe_hijoAPadre[0]);
-
 	}
 }
 
@@ -291,28 +293,31 @@ int main(int argc, char **argv) {
 	t_config* configuracionWorker = generarTConfig(argv[1], 6);
 	//t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
 	cargarWorker(configuracionWorker);
-	log_info(loggerWorker, "Se cargo correctamente Worker.");
+	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
+	log_info(loggerWorker, "Procesos muertos eliminados del sistema.\n");
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
-		log_info(loggerWorker, "Se ha recibido una nueva conexion.");
+		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
 		int notificacion = recvDeNotificacion(socketAceptado);
 		switch(notificacion){
 		case ES_MASTER:{
-			log_info(loggerWorker, "Se recibio una conexion de master.");
+			log_info(loggerWorker, "Se recibio una conexion de master.\n");
 			sendDeNotificacion(socketAceptado, ES_WORKER);
 			crearProcesoHijo(socketAceptado);
 		}
 		break;
 		case ES_WORKER:{
-			log_info(loggerWorker, "Se recibio una conexion de otro worker.");
-			sendDeNotificacion(socketAceptado, ES_WORKER);
+			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
+			sendDeNotificacion(socketAceptado, ES_OTRO_WORKER);
+			char* nombreArchivoTemporal = recibirString(socketAceptado);
+			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
 		}
 		break;
 		default:
-			log_error(loggerWorker, "La conexion recibida es erronea.");
+			log_error(loggerWorker, "La conexion recibida es erronea.\n");
 			close(socketAceptado);
 		}
 	}
