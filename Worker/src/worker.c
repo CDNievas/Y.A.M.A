@@ -155,25 +155,99 @@ void eliminarScript(char* nombreScript){
 	free(nombreScript);
 }
 
-char* aparearArchivos(t_list* archivosTemporales){
-	return NULL;
+char* realizarApareoGlobal(t_list* listaSocketsWorkers){
+	int posicion;
+	t_list* datosArchivos = list_create();
+	char* archivoApareado = string_new();
+	string_append(&archivoApareado,"archivoApareoGlobal");
+	crearArchivoTemporal(archivoApareado);
+
+	FILE* archivoGlobalApareado = fopen(archivoApareado,"w");
+
+	if(archivoGlobalApareado==NULL){
+		log_error(loggerWorker,"No se pudo abrir el archivo global apareado.\n");
+		exit(-1);
+	}
+
+	log_info(loggerWorker, "Se creo el archivo donde se guarda lo apareado globalmente.\n");
+
+	while(!list_is_empty(listaSocketsWorkers)){
+		int cantidad = list_size(listaSocketsWorkers);
+		for(posicion=0;posicion<cantidad;posicion++){
+			uint32_t unSocketWorker = list_remove(listaSocketsWorkers, 0);
+			char* unPedacitoArchivo = recibirString(unSocketWorker);
+			if(unPedacitoArchivo!="\0"){
+				list_add(listaSocketsWorkers,&unSocketWorker);
+				list_add(datosArchivos,unPedacitoArchivo);
+			}
+			else{
+				free(unPedacitoArchivo);
+			}
+		}
+		log_info(loggerWorker, "Se recibio un set de stream de los workers.\n");
+		cantidad = list_size(datosArchivos);
+		char* menorString = string_new();
+		menorString = NULL;
+		for(posicion=0;posicion<cantidad;posicion++){
+			char* unPedacitoArchivo = list_remove(datosArchivos,0);
+			if(menorString!=NULL){
+				if(strcmp(unPedacitoArchivo,menorString)<=0){
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unPedacitoArchivo,menorString);
+					free(menorString);
+					char* menorString = string_new();
+					menorString = NULL;
+					string_append(&menorString,unPedacitoArchivo);
+					free(unPedacitoArchivo);
+				}
+				else{
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unPedacitoArchivo);
+					list_add(datosArchivos,unPedacitoArchivo);
+				}
+			}
+			else{
+				string_append(&menorString,unPedacitoArchivo);
+				free(unPedacitoArchivo);
+			}
+		}
+
+		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
+
+		if(fputs(menorString,archivoGlobalApareado)==EOF){
+			log_error(loggerWorker,"No se pudo escribir en el archivo global apareado.\n");
+			exit(-1);
+		}
+
+		log_info(loggerWorker, "El string: %s se escribio correctamente en el archivo global apareado.\n",menorString);
+
+		free(menorString);
+	}
+
+
+	if(fclose(archivoGlobalApareado)==EOF){
+		log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
+	}
+
+	log_info(loggerWorker, "Se cerro correctamente el archivo global apareado.\n");
+
+	list_destroy(datosArchivos);
+
+	return archivoApareado;
 }
 
 void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t casoExito){
 	uint32_t resultado = system(command);
-	switch(resultado){
-	case -1:{
-		log_error(loggerWorker, "Error al crear el hijo para ejecutar el programa con system.");
+
+	if(!WIFEXITED(resultado)){
+		log_error(loggerWorker, "Error al ejecutar el script con system.\n");
+
+		if(WIFSIGNALED(resultado)){
+			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
+		}
+
 		sendDeNotificacion(socketMaster,casoError);
 	}
-	break;
-	case 0:{
-		log_error(loggerWorker, "Shell no disponible. (Error al disponer de los comandos.");
-		sendDeNotificacion(socketMaster,casoError);
-	}
-	break;
-	default:
-		log_info(loggerWorker, "Script ejecutado correctamente");
+	else{
+		log_info(loggerWorker, "Script ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
 		sendDeNotificacion(socketMaster,casoExito);
 	}
 
