@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
 				u_int32_t cantBytes = recibirUInt(socketServerFS);
 
-				void * bloque = recvDeBloque(socketServerFS);
+				void * bloque = recvDeBloque(socketServerFS,cantBytes);
 
 				// Escribo bloque
 				int resultado = escribirBloque(nroBloque,bloque,cantBytes);
