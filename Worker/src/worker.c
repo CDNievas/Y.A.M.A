@@ -244,6 +244,8 @@ char* realizarApareoGlobal(t_list* listaInfoApareo){
 			}
 		}
 
+		string_append(&menorString,"\n");
+
 		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
 
 		if(fputs(menorString,archivoGlobalApareado)==EOF){
@@ -292,6 +294,11 @@ void realizarHandshakeWorker(char* unArchivoTemporal, uint32_t unSocketWorker){
 
 	uint32_t tamanioArchivoTemporal = string_length(unArchivoTemporal);
 	void* datosAEnviar = malloc(tamanioArchivoTemporal+sizeof(uint32_t));
+
+	if(datosAEnviar==NULL){
+		log_error(loggerWorker,"Error al asignar memoria para realizar handshake con otro worker.\n");
+		exit(-10);
+	}
 
 	sendDeNotificacion(unSocketWorker, ES_WORKER);
 
@@ -353,6 +360,12 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 	}
 
 	char* contenidoArchivo = malloc(tamanioArchivo+1);
+
+	if(contenidoArchivo==NULL){
+		log_error(loggerWorker,"Error al asignar memoria para leer el archivo.\n");
+		exit(-10);
+	}
+
 	fread(contenidoArchivo, tamanioArchivo, 1, unArchivo);
 	contenidoArchivo[tamanioArchivo] = '\0';
 	return contenidoArchivo;
@@ -385,6 +398,11 @@ void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* n
 	uint32_t tamanioTotalAEnviar = tamanioContenidoArchivoReduccionGlobal+tamaniorutaResultante+tamanionombreResultante+(sizeof(uint32_t)*3);
 
 	void* datosAEnviar = malloc(tamanioTotalAEnviar);
+
+	if(datosAEnviar==NULL){
+		log_error(loggerWorker,"Error al asignar memoria para enviar datos al FileSystem.\n");
+		exit(-10);
+	}
 
 	memcpy(datosAEnviar,&tamanioContenidoArchivoReduccionGlobal,sizeof(uint32_t));
 	memcpy(datosAEnviar+sizeof(uint32_t),contenidoArchivoReduccionGlobal,tamanioContenidoArchivoReduccionGlobal);
@@ -590,6 +608,10 @@ void crearProcesoHijo(int socketMaster){
 				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
 				realizarHandshakeWorker(archivoTemporal,unSocketWorker);
 				infoApareoArchivo* unaInfoArchivo = malloc(sizeof(infoApareoArchivo));
+				if(unaInfoArchivo==NULL){
+					log_error(loggerWorker,"Error al asignar memoria en almacenamiento global.\n");
+					exit(-10);
+				}
 				unaInfoArchivo->socketParaRecibir = unSocketWorker;
 				unaInfoArchivo->bloqueLeido = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
