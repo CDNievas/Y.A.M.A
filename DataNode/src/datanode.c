@@ -80,6 +80,7 @@ int main(int argc, char **argv) {
 			}
 
 			default:
+				corte = 0;
 				log_warning(loggerDatanode, "Peticion recibida por FS incorrecta.");
 				break;
 		}

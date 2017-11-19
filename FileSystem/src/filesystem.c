@@ -20,7 +20,8 @@ char * obtenerPathBitmap(char * nombreNodo){
 
 	// Path
 	char * path = string_new();
-	path= "/metadata/bitmap/";
+	string_append(&path, "/metadata/bitmap/");
+//	path= "/metadata/bitmap/";
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
 	return path;
@@ -105,11 +106,11 @@ int cantBloquesLibres(t_bitarray* bitarray) {
 
 void registrarNodo(int socket) {
 
-	char * nombreNodo = string_new();
+	char * nombreNodo;
 	int cantBloques;
 	t_bitarray * bitarray;
 
-	nombreNodo = recibirString(socket);
+	nombreNodo = (char*)recibirString(socket);
 	cantBloques = recibirUInt(socket);
 
 	// Checkeo estado anterior
@@ -334,7 +335,7 @@ void enviarTablaAYama(tablaArchivos* entradaArchivo){
 
 	uint32_t tamanioMsj=sizeof(uint32_t)+(sizeof(copiasXBloque)*list_size(entradaArchivo->bloques)); //REVISAR
 
-	sendRemasterizado(socket, INFO_ARCHIVO_FS, tamanioMsj, mensaje);
+//	sendRemasterizado(socket, INFO_ARCHIVO_FS, tamanioMsj, mensaje);
 }
 
 
@@ -351,9 +352,9 @@ void enviarDatoArchivo(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	//chequearParametros(argc, 2);
-	//t_config* configuracionFS = generarTConfig(argv[1], 1);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 1);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -413,9 +414,9 @@ int main(int argc, char **argv) {
 					case REC_INFONODO:
 						registrarNodo(socketClienteChequeado);
 						break;
-					case INFO_ARCHIVO_FS:
-						enviarDatoArchivo(socketClienteChequeado);
-						break;
+//					case INFO_ARCHIVO_FS:
+//						enviarDatoArchivo(socketClienteChequeado);
+//						break;
 					default:
 						log_error(loggerFileSystem,
 								"La conexion recibida es erronea.");

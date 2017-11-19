@@ -148,13 +148,13 @@ void enviarInfoNodo(uint32_t socket){
 	// Cantidad de bloques
 	u_int32_t bloques = cantBloques;
 
-	void * mensaje = malloc(tamanioMensaje);
+	void * mensaje = malloc(tamanioMensaje + sizeof(uint32_t));
 
-	memcpy(mensaje, &tamNombreNodo, sizeof(tamNombreNodo));
-	memcpy(mensaje + sizeof(tamNombreNodo), nombreNodo, tamanioMensaje);
-	memcpy(mensaje + sizeof(tamNombreNodo) + tamanioMensaje, &bloques, sizeof(cantBloques));
+	memcpy(mensaje, &tamNombreNodo, sizeof(uint32_t));
+	memcpy(mensaje + sizeof(tamNombreNodo), nombreNodo, tamNombreNodo);
+	memcpy(mensaje + tamanioMensaje, &bloques, sizeof(uint32_t));
 
-	sendRemasterizado(socket, ENV_INFONODO, sizeof(tamNombreNodo)+tamanioMensaje+sizeof(bloques), mensaje);
+	sendRemasterizado(socket, ENV_INFONODO, tamanioMensaje+sizeof(bloques), mensaje);
 
 	free(mensaje);
 
