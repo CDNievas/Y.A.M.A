@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include <commons/string.h>
 
 void verificarErrorSocket(int socket) {
 	if (socket == -1) {
@@ -52,8 +53,6 @@ int aceptarConexionDeCliente(int socketListener) {
 	if ((socketAceptador = accept(socketListener, (struct sockaddr *) &su_addr,&sin_size)) == -1) {
 		perror("Error al aceptar conexion");
 		exit(-1);
-	} else {
-		printf("Se ha conectado a: %s\n", inet_ntoa(su_addr.sin_addr));
 	}
 
 	return socketAceptador;
@@ -138,6 +137,7 @@ char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ES
 		exit(-1);
 	}
 	char* stringRecibido = string_substring_until(string, tamanio);
+	free(string);
 	return stringRecibido;
 }
 

@@ -4,7 +4,6 @@
 //GENERACION DE ESTRUCTURAS
 administracionYAMA* generarAdministracion(uint32_t nroJob, uint32_t nroMaster, uint32_t operacion, char* nameFile){
 	administracionYAMA* adminNuevo = malloc(sizeof(administracionYAMA));
-	adminNuevo->nombreNodo = string_new();
 	adminNuevo->nameFile = nameFile;
 	adminNuevo->estado = EN_PROCESO;
 	adminNuevo->etapa = operacion;
@@ -15,8 +14,6 @@ administracionYAMA* generarAdministracion(uint32_t nroJob, uint32_t nroMaster, u
 
 conexionNodo* generarConexionNodo(){
 	conexionNodo* conexion = malloc(sizeof(conexionNodo));
-	conexion->ipNodo = string_new();
-	conexion->nombreNodo = string_new();
 	return conexion;
 }
 
@@ -24,8 +21,6 @@ infoDeFs* generarInformacionDeBloque(){
 	infoDeFs* informacion = malloc(sizeof(infoDeFs));
 	informacion->copia1 = malloc(sizeof(copia));
 	informacion->copia2 = malloc(sizeof(copia));
-	informacion->copia1->nombreNodo = string_new();
-	informacion->copia2->nombreNodo = string_new();
 	return informacion;
 }
 
@@ -35,6 +30,12 @@ nodoSistema* generarNodoSistema(){
 }
 
 //LIBERACION DE ESTRUCTURAS
+void liberarDatoMaster(infoNodo* info){
+	free(info->nombreTemporal);
+	liberarConexion(info->conexion);
+	free(info);
+}
+
 void liberarConexion(conexionNodo* conexion){
 	free(conexion->ipNodo);
 	free(conexion->nombreNodo);
@@ -54,12 +55,19 @@ void liberarCopia(copia* copiaAEnviar) {
 	free(copiaAEnviar);
 }
 
+void liberarDatosBalanceo(datosBalanceo* datos){
+	list_destroy(datos->bloques);
+	free(datos);
+}
+
 //RANDOM NAMES
 char* obtenerNombreTemporalLocal(){
 	char* nombreArchivo = string_new();
 	string_append(&nombreArchivo, "tempFileLocal");
-	string_append(&nombreArchivo, string_itoa(numeroDeTemporalLocal));
+	char* numero = string_itoa(numeroDeTemporalLocal);
+	string_append(&nombreArchivo, numero);
 	numeroDeTemporalLocal++;
+	free(numero);
 	return nombreArchivo;
 }
 
@@ -73,9 +81,11 @@ char* obtenerNombreTemporalGlobal(){
 
 char* obtenerNombreTemporalTransformacion(){
 	char* nombreArchivo = string_new();
+	char* numero = string_itoa(numeroDeTemporalTransformacion);
 	string_append(&nombreArchivo, "tempFileTransformacion");
-	string_append(&nombreArchivo, string_itoa(numeroDeTemporalTransformacion));
+	string_append(&nombreArchivo, numero);
 	numeroDeTemporalTransformacion++;
+	free(numero);
 	return nombreArchivo;
 }
 
@@ -117,13 +127,11 @@ int obtenerJobDeNodo(t_list* listaDelNodo){
 	return admin->nroJob;
 }
 
-t_list* obtenerListaDelNodo(int nroMaster, int socketMaster){
-	char* nombreNodo = recibirString(socketMaster);
+t_list* obtenerListaDelNodo(int nroMaster, int socketMaster, char* nombreNodo){
 	bool esDeNodo(administracionYAMA* admin){
-		return (strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster && admin->etapa == TRANSFORMACION && admin->estado != FALLO);
+		return (!strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster && admin->etapa == TRANSFORMACION && admin->estado != FALLO);
 	}
 	t_list* listaDelNodo = list_filter(tablaDeEstados, (void*)esDeNodo);
-	free(nombreNodo);
 	return listaDelNodo;
 }
 
@@ -211,6 +219,7 @@ void handshakeFS(){
 		exit(-1);
 	}
 	uint32_t cantidadDeNodos = recibirUInt(socketFS);
+	log_info(loggerYAMA, "Cantidad de nodos del sistema: %d", cantidadDeNodos);
 	uint32_t i;
 	for(i = 0; i<cantidadDeNodos; i++){
 		nodoSistema* nuevoNodo = generarNodoSistema();
@@ -260,7 +269,6 @@ datosBalanceo* obtenerDatosDeCopia(t_list* listaDeBalanceo, copia* copiaAChequea
 
 datosBalanceo* generarDatosBalanceo(){
 	datosBalanceo* datos = malloc(sizeof(datosBalanceo));
-	datos->nombreNodo = string_new();
 	datos->bloques = list_create();
 	return datos;
 }
@@ -276,21 +284,21 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 		datosBalanceo* datoCopia1 = obtenerDatosDeCopia(listaDeBalanceo, informacionAOrdenar->copia1);
 		datosBalanceo* datoCopia2 = obtenerDatosDeCopia(listaDeBalanceo, informacionAOrdenar->copia2);
 		if(datoCopia1 != NULL){
-			list_add(datoCopia1->bloques, &informacionAOrdenar->nroBloque);
+			list_add(datoCopia1->bloques, informacionAOrdenar->nroBloque);
 		}else{
 			datosBalanceo* datosAAgregar = generarDatosBalanceo();
 			datosAAgregar->nombreNodo = informacionAOrdenar->copia1->nombreNodo;
 			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
-			list_add(datosAAgregar->bloques, &informacionAOrdenar->nroBloque);
+			list_add(datosAAgregar->bloques, informacionAOrdenar->nroBloque);
 			list_add(listaDeBalanceo, datosAAgregar);
 		}
 		if(datoCopia2 != NULL){
-			list_add(datoCopia2->bloques, &informacionAOrdenar->nroBloque);
+			list_add(datoCopia2->bloques, informacionAOrdenar->nroBloque);
 		}else{
 			datosBalanceo* datosAAgregar = generarDatosBalanceo();
 			datosAAgregar->nombreNodo = informacionAOrdenar->copia2->nombreNodo;
 			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
-			list_add(datosAAgregar->bloques, &informacionAOrdenar->nroBloque);
+			list_add(datosAAgregar->bloques, informacionAOrdenar->nroBloque);
 			list_add(listaDeBalanceo, datosAAgregar);
 		}
 	}

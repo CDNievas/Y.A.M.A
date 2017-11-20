@@ -89,7 +89,7 @@ void *serializarInfoTransformacion(t_list* listaInfoNodo){
 uint32_t obtenerTamanioInfoReduccionLocal(conexionNodo* conexion, char* nombreTemporal, t_list* listaDelNodo){
 	uint32_t tamanioTemporal = 0, posicion;
 	//INTS PARA TAMANIO DE: NOMBRE NODO, NOMBRE TEMPORAL, IP, CANTIDAD DE ARCHIVOS TEMPORALES
-	tamanioTemporal += sizeof(uint32_t)*4;
+	tamanioTemporal += sizeof(uint32_t)*5;
 	tamanioTemporal += string_length(conexion->nombreNodo);
 	tamanioTemporal += string_length(conexion->ipNodo);
 	tamanioTemporal += string_length(nombreTemporal);
@@ -139,7 +139,7 @@ void* serializarInfoReduccionLocal(conexionNodo* conexion, char* nombreTemporal,
 	  memcpy(temporalesSerializados+posicionActual, admin->nameFile, tamanioTemporal);
 	  posicionActual += tamanioTemporal;
 	}
-	liberarConexion(conexion); //ERROR DE FREE ACA
+//	liberarConexion(conexion); //ERROR DE FREE ACA
 	return temporalesSerializados;
 }
 

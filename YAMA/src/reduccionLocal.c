@@ -29,6 +29,7 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	free(temporalesSerializados);
 	list_add(tablaDeEstados, admin);
 	log_info(loggerYAMA, "Se agrego la informacion en la tabla de estados.");
+	liberarConexion(conexion);
 }
 
 //TERMINAR REDUCCION LOCAL

@@ -47,6 +47,7 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
   infoNodo* informacion = malloc(sizeof(infoNodo));
   informacion->conexion = generarConexionNodo();
   informacion->nombreTemporal = string_new();
+  informacion->conexion->nombreNodo = string_new();
   informacion->nroBloque = administracion->nroBloque;
   informacion->bytesOcupados = infoBloque->bytesOcupados;
   string_append(&informacion->conexion->nombreNodo, administracion->nombreNodo);
@@ -61,15 +62,18 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 	log_info(loggerYAMA, "El master %d tiene el numero de Job %d.", nroMaster, numeroDeJobPTarea);
 	t_list* listaDatosPMaster = list_create();
 	int posicion;
-	log_info(loggerYAMA, "Se prosigue a apligar el algoritmo %s para obtener los Nodos a utilizar.", ALGORITMO_BALANCEO);
 	for(posicion = 0; posicion<list_size(listaDeBloques); posicion++){
 		administracionYAMA* nuevaAdministracion = generarAdministracion(numeroDeJobPTarea, nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
 		//CREE LA BASE DE LA ESTRUCTURA DE TRANSFORMACION
 		//PASO A ELEGIR LOS NODOS Y CARGARLOS EN LA ESTRUCTURA
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
-		log_info(loggerYAMA, "El Nodo elegido es: %s.\nSu archivo temporal sera: %s\nSu numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nombreNodo, nuevaAdministracion->nameFile, copiaAUsar->nroBloque, infoDeBloque->nroBloque);
-		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
+		log_info(loggerYAMA, "El Nodo elegido es: %s.", copiaAUsar->nombreNodo);
+		log_info(loggerYAMA, "Su archivo temporal sera: %s.", nuevaAdministracion->nameFile);
+		log_info(loggerYAMA, "Su numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nroBloque, infoDeBloque->nroBloque);
+		nuevaAdministracion->nombreNodo = string_new();
+		string_append(&nuevaAdministracion->nombreNodo, copiaAUsar->nombreNodo);
+//		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
 		nuevaAdministracion->nroBloque = copiaAUsar->nroBloque;
 		infoNodo* informacionDeNodo = generarInfoParaMaster(nuevaAdministracion, infoDeBloque);
 		list_add(tablaDeEstados, nuevaAdministracion);
@@ -80,19 +84,19 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 	void* informacionDeTransformacion =  serializarInfoTransformacion(listaDatosPMaster);
 	sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaDatosPMaster), informacionDeTransformacion);
 	log_info(loggerYAMA, "Se envio correctamente la informacion de la transformacion al master %d", nroMaster);
-	list_destroy(listaDatosPMaster);
+	list_destroy_and_destroy_elements(listaDatosPMaster, (void*)liberarDatoMaster);
 	free(informacionDeTransformacion);
 }
 
 //FINALIZO LA TRANSFORMACION
-void terminarTransformacion(int nroMaster, int socketMaster){
-	char* nombreNodo = recibirString(socketMaster);
+void terminarTransformacion(int nroMaster, int socketMaster, char* nombreNodo){
 	uint32_t nroBloque = recibirUInt(socketMaster);
 	int buscarNodo(administracionYAMA* adminAChequear){
-		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && strcmp(adminAChequear->nombreNodo, nombreNodo)  && adminAChequear->etapa == TRANSFORMACION);
+		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && !strcmp(adminAChequear->nombreNodo, nombreNodo)  && adminAChequear->etapa == TRANSFORMACION);
 	}
 	administracionYAMA *adminAModificar = list_find(tablaDeEstados, (void*)buscarNodo);
 	adminAModificar->estado = FINALIZADO;
+	log_info(loggerYAMA, "Se finalizo la transformacion del nodo %s en el archivo %d.", nombreNodo, nroBloque);
 }
 
 t_list* obtenerBloquesFallidos(uint32_t nroMaster, char* nodoFallido){

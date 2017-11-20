@@ -25,10 +25,14 @@ int obtenerNumeroDeMaster();
 
 //OBTENGO DATOS DE CONEXION
 void obtenerIPYPuerto(conexionNodo*);
+
+//LIBERACION DE DATOS
+void liberarDatoMaster(infoNodo*);
 void liberarConexion(conexionNodo*);
 void liberarInfoFS(infoDeFs*);
+void liberarDatosBalanceo(datosBalanceo*);
 
-t_list* obtenerListaDelNodo(int, int);
+t_list* obtenerListaDelNodo(int, int, char*);
 char* obtenerNombreNodo(t_list*);
 int obtenerJobDeNodo(t_list*);
 void cargarYAMA(t_config*);

@@ -17,7 +17,7 @@
 
 void manejadorMaster(void* socketMasterCliente){
 	int socketMaster = *(int*)socketMasterCliente;
-	char* nombreArchivoPeticion = string_new(), nodoFallido;
+	char* nombreArchivoPeticion, nodoFallido;
 	uint32_t nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	char* nodoEncargado;
@@ -27,24 +27,27 @@ void manejadorMaster(void* socketMasterCliente){
 		switch (operacionMaster){
 			case TRANSFORMACION:
 				log_info(loggerYAMA, "Se recibio una peticion del socket %d para llevar a cabo una transformacion.", socketMaster);
-				string_append(&nombreArchivoPeticion, recibirNombreArchivo(socketMaster)); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
+				nombreArchivoPeticion = recibirNombreArchivo(socketMaster); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
 				t_list* listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
-				t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
 				log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
-				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
+				log_info(loggerYAMA, "Preparando los datos para el balanceo de cargas.");
+				t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
+				log_info(loggerYAMA, "Llevando a cabo el balanceo de cargas con el algoritmo %s.", ALGORITMO_BALANCEO);
 				t_list* listaDeCopias = balancearTransformacion(listaDeBloquesDeArchivo, listaBalanceo);
+				log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
 				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaDeCopias);
 				list_destroy(listaDeBloquesDeArchivo);
 				list_destroy(listaDeCopias);
-				list_destroy(listaBalanceo);
+				list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
+				free(nombreArchivoPeticion);
 				break;
 			case TRANSFORMACION_TERMINADA:
 				log_info(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
-				terminarTransformacion(nroMaster, socketMaster); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
-				log_info(loggerYAMA, "Se termino la transformacion del master %d correctamente.", nroMaster);
-				t_list* listaDelJob = obtenerListaDelNodo(nroMaster, socketMaster);
+				char* nombreNodo = recibirString(socketMaster);
+				terminarTransformacion(nroMaster, socketMaster, nombreNodo); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
+				t_list* listaDelJob = obtenerListaDelNodo(nroMaster, socketMaster, nombreNodo);
 				if(sePuedeHacerReduccionLocal(listaDelJob)){
 					log_info(loggerYAMA, "Se puede llevar a cabo la reduccion local.");
 					cargarReduccionLocal(socketMaster, nroMaster, listaDelJob);
@@ -97,7 +100,7 @@ void manejadorMaster(void* socketMasterCliente){
 				pthread_cancel(pthread_self());
 				break;
 			case CORTO:
-				log_error(loggerYAMA, "El master %d corto.", nroMaster);
+				log_info(loggerYAMA, "El master %d corto.", nroMaster);
 				pthread_cancel(pthread_self());
 				break;
 			default:
@@ -114,12 +117,14 @@ int main(int argc, char *argv[])
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
-	//t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 6);
+//	t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
 	nodosSistema = list_create();
 	socketFS = conectarAServer(FS_IP, FS_PUERTO);
+	log_info(loggerYAMA, "Conexion con FileSystem realizada.");
 	handshakeFS();
+	log_info(loggerYAMA, "Handshake con FileSystem realizado.");
 	int socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
  	log_info(loggerYAMA, "Escuchando clientes...");
 	int socketMaximo = socketEscuchaMasters, socketClienteChequeado, socketAceptado;
@@ -154,7 +159,7 @@ int main(int argc, char *argv[])
 						close(socketClienteChequeado);
 					}else{
 						sendDeNotificacion(socketClienteChequeado, ES_YAMA);
-           				log_info(loggerYAMA, "Se establecio la conexion con el socket master %d. \n Handshake realizado.", socketClienteChequeado);
+           				log_info(loggerYAMA, "Se establecio la conexion con el socket master %d - Handshake realizado.", socketClienteChequeado);
             			int* socketCliente = malloc(sizeof(int));
             			*socketCliente = socketClienteChequeado;
             			pthread_create(&hiloManejadorMaster, &attr, (void*)manejadorMaster, (void*)socketCliente);

@@ -20,7 +20,8 @@ void reducirWL(char* nodo){
 void actualizarWLTransformacion(t_list* copiasElegidas){
 	copia* copiaElegida;
 	bool esNodo(nodoSistema* nodo){
-		return strcmp(nodo->nombreNodo, copiaElegida->nombreNodo);
+		return !strcmp(nodo->nombreNodo, copiaElegida->nombreNodo);
+
 	}
 	int posicion;
 	for(posicion = 0; posicion < list_size(copiasElegidas); posicion++){
@@ -64,10 +65,13 @@ bool laTieneOtroNodo(infoDeFs* bloqueABuscar, t_list* listaDeBalanceo){
 }
 
 copia* obtenerCopia(datosBalanceo* nodo, infoDeFs* bloque){
-	if(strcmp(nodo->nombreNodo, bloque->copia1->nombreNodo)){
+	if(!strcmp(nodo->nombreNodo, bloque->copia1->nombreNodo)){
 		return bloque->copia1;
-	}else{
+	}else if(!strcmp(nodo->nombreNodo, bloque->copia2->nombreNodo)){
 		return bloque->copia2;
+	}else{
+		log_error(loggerYAMA, "Error al obtener los datos de la copia a utilizar.");
+		exit(-1);
 	}
 }
 bool tieneBloqueBuscado(datosBalanceo* nodo, infoDeFs* bloque){
@@ -104,13 +108,17 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		if(tieneAvailability(nodoAChequear)){
 			if(tieneBloqueBuscado(nodoAChequear, bloqueABuscar)){
 				posicion++;
-				list_add(copiasElegidas, obtenerCopia(nodoAChequear, bloqueABuscar));
+				copia* copiaElegida = obtenerCopia(nodoAChequear, bloqueABuscar);
+				list_add(copiasElegidas, copiaElegida);
+				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", copiaElegida->nombreNodo, bloqueABuscar->nroBloque);
+				cantidadAsignados++;
 				//paso a buscar el bloque con un puntero auxiliar
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
 				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion+1);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
+				cantidadAsignados++;
 			}else{
-				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion.\nCerrando YAMA.");
+				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion - Cerrando YAMA.");
 				exit(-1);
 			}
 		}else{
@@ -125,7 +133,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 
 void actualizarWLRLocal(char* nombreNodo, int cantTemporales){
 	bool esNodo(nodoSistema* nodo){
-		return strcmp(nodo->nombreNodo, nombreNodo);
+		return !strcmp(nodo->nombreNodo, nombreNodo);
 	}
 	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 	nodo->wl += cantTemporales;
