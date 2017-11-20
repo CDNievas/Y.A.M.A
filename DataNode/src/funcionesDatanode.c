@@ -22,6 +22,7 @@ void cargarDataNode(t_config* configuracionDN){
     }else{
         nombreNodo = string_new();
         string_append(&nombreNodo, config_get_string_value(configuracionDN, "NOMBRE_NODO"));
+        string_append(&nombreNodo, "\0");
     }
     if(!config_has_property(configuracionDN, "PUERTO_DATANODE")){
     	log_error(loggerDatanode, "El archivo de configuracion no contiene PUERTO_DATANODE");

@@ -1,0 +1,6 @@
+[INFO] 21:52:06:442 DataNode/(13989:13989): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 21:52:07:235 DataNode/(13989:13989): Archivo binario de 1048576 bytes encontrado
+[INFO] 21:52:10:887 DataNode/(13989:13989): Conexion con FileSystem existosa.
+[INFO] 21:54:07:386 DataNode/(14120:14120): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 21:54:08:866 DataNode/(14120:14120): Archivo binario de 1048576 bytes encontrado
+[INFO] 21:54:11:345 DataNode/(14120:14120): Conexion con FileSystem existosa.

@@ -6,3 +6,33 @@
 [INFO] 18:57:52:345 FileSystem/(3624:3624): Se recibio nueva actividad de los clientes
 [INFO] 18:57:55:101 FileSystem/(3624:3624): Se ha recibido una nueva conexion.
 [INFO] 18:57:56:523 FileSystem/(3624:3624): Se recibio nueva actividad de los clientes
+[INFO] 20:07:45:909 FileSystem/(8908:8908): Se recibio nueva actividad de los clientes
+[INFO] 20:07:58:708 FileSystem/(8908:8908): Se ha recibido una nueva conexion.
+[INFO] 20:08:02:689 FileSystem/(8908:8908): Se recibio nueva actividad de los clientes
+[INFO] 20:08:18:659 FileSystem/(8908:8908): Se recibio nueva actividad de los clientes
+[INFO] 20:10:09:177 FileSystem/(9135:9135): Se recibio nueva actividad de los clientes
+[INFO] 20:10:13:291 FileSystem/(9135:9135): Se ha recibido una nueva conexion.
+[INFO] 20:10:15:213 FileSystem/(9135:9135): Se recibio nueva actividad de los clientes
+[INFO] 20:10:22:592 FileSystem/(9135:9135): Se recibio nueva actividad de los clientes
+[ERROR] 20:11:00:227 FileSystem/(9135:9135): Error al tratar de abrir el archivo.
+[INFO] 20:12:27:770 FileSystem/(9352:9352): Se recibio nueva actividad de los clientes
+[INFO] 20:12:31:69 FileSystem/(9352:9352): Se ha recibido una nueva conexion.
+[INFO] 20:12:33:66 FileSystem/(9352:9352): Se recibio nueva actividad de los clientes
+[INFO] 20:12:40:681 FileSystem/(9352:9352): Se recibio nueva actividad de los clientes
+[INFO] 20:15:36:812 FileSystem/(9576:9576): Se recibio nueva actividad de los clientes
+[INFO] 20:15:40:653 FileSystem/(9576:9576): Se ha recibido una nueva conexion.
+[INFO] 20:15:42:342 FileSystem/(9576:9576): Se recibio nueva actividad de los clientes
+[INFO] 20:15:48:477 FileSystem/(9576:9576): Se recibio nueva actividad de los clientes
+[ERROR] 20:17:11:640 FileSystem/(9576:9576): Error al tratar de abrir el archivo.
+[INFO] 20:22:35:495 FileSystem/(10180:10180): Se recibio nueva actividad de los clientes
+[INFO] 20:22:35:495 FileSystem/(10180:10180): Se ha recibido una nueva conexion.
+[INFO] 20:22:35:496 FileSystem/(10180:10180): Se recibio nueva actividad de los clientes
+[INFO] 20:22:35:500 FileSystem/(10180:10180): Se recibio nueva actividad de los clientes
+[INFO] 21:31:15:323 FileSystem/(12098:12098): Se recibio nueva actividad de los clientes
+[INFO] 21:31:15:323 FileSystem/(12098:12098): Se ha recibido una nueva conexion.
+[INFO] 21:31:15:326 FileSystem/(12098:12098): Se recibio nueva actividad de los clientes
+[INFO] 21:31:15:329 FileSystem/(12098:12098): Se recibio nueva actividad de los clientes
+[INFO] 21:40:50:134 FileSystem/(12636:12636): Se recibio nueva actividad de los clientes
+[INFO] 21:40:50:134 FileSystem/(12636:12636): Se ha recibido una nueva conexion.
+[INFO] 21:40:50:135 FileSystem/(12636:12636): Se recibio nueva actividad de los clientes
+[INFO] 21:40:50:142 FileSystem/(12636:12636): Se recibio nueva actividad de los clientes

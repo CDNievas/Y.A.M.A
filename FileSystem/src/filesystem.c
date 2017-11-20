@@ -17,7 +17,6 @@ t_list* listaConexionNodos;
 //---------------------------------------------------BITMAP---------------------------------------------------------
 
 char * obtenerPathBitmap(char * nombreNodo){
-
 	// Path
 	char * path = string_new();
 	string_append(&path, "/metadata/bitmap/");
@@ -110,7 +109,8 @@ void registrarNodo(int socket) {
 	int cantBloques;
 	t_bitarray * bitarray;
 
-	nombreNodo = (char*)recibirString(socket);
+	nombreNodo = recibirString(socket);
+
 	cantBloques = recibirUInt(socket);
 
 	// Checkeo estado anterior
@@ -169,82 +169,82 @@ int sacarTamanioArchivo(FILE* archivo) {
 //	enviarANodo(nodoAsignado, contenidoBloque);
 //}
 
-void almacenarArchivo(void* mensaje, int socket) {
-	char* path = string_new();
-	char* nombreArchivo = string_new();
-	path = recibirString(socket);
-	nombreArchivo = recibirString(socket);
-	char tipo = (char) recibirUInt(socket);
-
-	FILE* archivo = fopen(path, "r+");
-	int bloqueAsignado = 0;
-	char* contenidoBloque = string_new();
-	int tamanioArchivo = sacarTamanioArchivo(archivo);
-
-	if (tipo == "B") {
-
-		int tamanio = sacarTamanioArchivo(archivo);
-		void * contenidoAEnviar = malloc(1048576);
-		while (tamanio >= 0) {
-			if (tamanio < 1048576) {
-				fread(contenidoAEnviar, tamanio, 1, archivo);
-//				asignarEnviarANodo(contenidoAEnviar, tamanio, archivo);
-				break;
-			} else {
-				fread(contenidoAEnviar, 1048576, 1, archivo);
-//				asignarEnviarANodo(contenidoAEnviar, 1048576, archivo);
-				tamanio -= 1048576;
-			}
-		}
-		free(contenidoAEnviar);
-
-	} else {
-		char digito;
-		int ultimoBarraN = 0;
-		int registroAntesMega = 0;
-		void * contenidoAEnviar;
-		int ultimaPosicion = 0;
-		t_list * posiciones = list_create();
-
-		while (!feof(archivo)) {
-			digito = fgetc(archivo);
-
-			if (digito == '\n') {
-				ultimoBarraN = ftell(archivo);
-			}
-
-			if (ftell(archivo) == 1048576 + registroAntesMega) {
-				registroAntesMega = ultimoBarraN;
-				list_add(posiciones, &ultimoBarraN);
-			}
-		}
-
-		fseek(archivo, 0, SEEK_END);
-		ultimaPosicion = ftell(archivo);
-		list_add(posiciones, &ultimaPosicion);
-		fseek(archivo, 0, SEEK_SET);
-		int posicionActual = 0;
-
-		void partir(int * posicion) {
-			if (posicionActual == 0) {
-				contenidoAEnviar = malloc(*posicion);
-				fread(contenidoAEnviar, *posicion, 1, archivo);
-//				asignarEnviarANodo(contenidoAEnviar, *posicion, archivo);
-			} else {
-				int posicionAnterior = *((int*) list_get(posiciones,
-						posicionActual - 1));
-				contenidoAEnviar = malloc((*posicion) - posicionAnterior);
-				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,
-						archivo);
-//				asignarEnviarANodo(contenidoAEnviar,(*posicion) - posicionAnterior, archivo);
-			}
-			posicionActual++;
-		}
-		list_iterate(posiciones, partir);
-		free(contenidoAEnviar);
-
-	}
-}
+//void almacenarArchivo(void* mensaje, int socket) {
+//	char* path = string_new();
+//	char* nombreArchivo = string_new();
+//	path = recibirString(socket);
+//	nombreArchivo = recibirString(socket);
+//	char tipo = (char) recibirUInt(socket);
+//
+//	FILE* archivo = fopen(path, "r+");
+//	int bloqueAsignado = 0;
+//	char* contenidoBloque = string_new();
+//	int tamanioArchivo = sacarTamanioArchivo(archivo);
+//
+//	if (tipo == "B") {
+//
+//		int tamanio = sacarTamanioArchivo(archivo);
+//		void * contenidoAEnviar = malloc(1048576);
+//		while (tamanio >= 0) {
+//			if (tamanio < 1048576) {
+//				fread(contenidoAEnviar, tamanio, 1, archivo);
+////				asignarEnviarANodo(contenidoAEnviar, tamanio, archivo);
+//				break;
+//			} else {
+//				fread(contenidoAEnviar, 1048576, 1, archivo);
+////				asignarEnviarANodo(contenidoAEnviar, 1048576, archivo);
+//				tamanio -= 1048576;
+//			}
+//		}
+//		free(contenidoAEnviar);
+//
+//	} else {
+//		char digito;
+//		int ultimoBarraN = 0;
+//		int registroAntesMega = 0;
+//		void * contenidoAEnviar;
+//		int ultimaPosicion = 0;
+//		t_list * posiciones = list_create();
+//
+//		while (!feof(archivo)) {
+//			digito = fgetc(archivo);
+//
+//			if (digito == '\n') {
+//				ultimoBarraN = ftell(archivo);
+//			}
+//
+//			if (ftell(archivo) == 1048576 + registroAntesMega) {
+//				registroAntesMega = ultimoBarraN;
+//				list_add(posiciones, &ultimoBarraN);
+//			}
+//		}
+//
+//		fseek(archivo, 0, SEEK_END);
+//		ultimaPosicion = ftell(archivo);
+//		list_add(posiciones, &ultimaPosicion);
+//		fseek(archivo, 0, SEEK_SET);
+//		int posicionActual = 0;
+//
+//		void partir(int * posicion) {
+//			if (posicionActual == 0) {
+//				contenidoAEnviar = malloc(*posicion);
+//				fread(contenidoAEnviar, *posicion, 1, archivo);
+////				asignarEnviarANodo(contenidoAEnviar, *posicion, archivo);
+//			} else {
+//				int posicionAnterior = *((int*) list_get(posiciones,
+//						posicionActual - 1));
+//				contenidoAEnviar = malloc((*posicion) - posicionAnterior);
+//				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,
+//						archivo);
+////				asignarEnviarANodo(contenidoAEnviar,(*posicion) - posicionAnterior, archivo);
+//			}
+//			posicionActual++;
+//		}
+//		list_iterate(posiciones, partir);
+//		free(contenidoAEnviar);
+//
+//	}
+//}
 
 //--------------------------------YAMA----------------------------------------
 //ENVIAR TABLA NODOS
@@ -339,15 +339,15 @@ void enviarTablaAYama(tablaArchivos* entradaArchivo){
 }
 
 
-void enviarDatoArchivo(int socket){
-  char* archivoABuscar=recibirString(socket);
-	bool esArchivo(tablaArchivos* archivo){
-		return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
-	}
-	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
-
-	enviarTablaAYama(entradaArchivo);
-}
+//void enviarDatoArchivo(int socket){
+//  char* archivoABuscar=recibirString(socket);
+//	bool esArchivo(tablaArchivos* archivo){
+//		return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
+//	}
+//	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
+//
+//	enviarTablaAYama(entradaArchivo);
+//}
 
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {

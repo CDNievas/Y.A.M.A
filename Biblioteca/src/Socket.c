@@ -132,12 +132,13 @@ uint32_t recibirUInt(int socket){
 
 char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ESTA FUNCION xd
 	uint32_t tamanio = recibirUInt(socket);
-	char* string = malloc(tamanio);
+	void* string = malloc(tamanio);
 	if(recv(socket, string, tamanio, 0) == -1){
 		perror("Error al recibir un string.");
 		exit(-1);
 	}
-	return string;
+	char* stringRecibido = string_substring_until(string, tamanio);
+	return stringRecibido;
 }
 
 int recvDeNotificacion(int deQuien){

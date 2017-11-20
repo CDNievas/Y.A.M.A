@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 	loggerDatanode = log_create("DataNode.log", "DataNode", 1, 0);
 
 	// Debug Eclipse
-	//t_config* configuracionDataNode = generarTConfig("src/datanode.ini", 6);
+//	t_config* configuracionDataNode = generarTConfig("src/datanode.ini", 6);
 
 	// Run consola
 	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
