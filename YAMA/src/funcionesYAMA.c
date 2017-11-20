@@ -299,3 +299,20 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 }
 
 
+char* buscarNodoEncargado(uint32_t nroMaster){
+	bool esReduccionFinalizada(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL_TERMINADA;
+	}
+
+	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);
+	return admin->nombreNodo;
+}
+
+
+t_list* filtrarTablaMaster(uint32_t nroMaster){
+  bool esDeMaster(administracionYAMA* admin){
+    return admin->nroMaster == nroMaster;
+  }
+  t_list* listaMaster = list_filter(tablaDeEstados, (void*)esDeMaster);
+  return listaMaster;
+}

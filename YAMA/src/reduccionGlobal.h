@@ -18,5 +18,7 @@ t_list *filtrarReduccionesDelNodo(int);
 t_list* obtenerConexionesDeNodos(t_list*);
 void cargarReduccionGlobal(int, int, t_list*);
 void terminarReduccionGlobal(uint32_t);
+void almacenadoFinal(int, uint32_t);
+void reestablecerWL(int);
 
 #endif /* REDUCCIONGLOBAL_H_ */

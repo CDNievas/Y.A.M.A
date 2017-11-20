@@ -39,6 +39,7 @@ void cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaste
 	nuevaReduccionG->nroBloque = 0;
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
 	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster);
+	actualizarWLRGlobal(nuevaReduccionG->nombreNodo, list_size(listaDeMaster));
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
 	free(infoGlobalSerializada);
@@ -52,14 +53,7 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 	admin->estado = FINALIZADO;
 }
 
-char* buscarNodoEncargado(uint32_t nroMaster){
-	bool esReduccionFinalizada(administracionYAMA* admin){
-		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL_TERMINADA;
-	}
 
-	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);
-	return admin->nombreNodo;
-}
 
 void almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
@@ -69,4 +63,21 @@ void almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect);
 	sendRemasterizado(socketMaster, ALMACENAMIENTO_FINAL, obtenerTamanioInfoAlmacenamientoFinal(conect), infoAlmacenadoFinal);
 	free(infoAlmacenadoFinal);
+}
+
+void reestablecerWL(int nroMaster){
+	bool esTransformacion(administracionYAMA* admin){
+		return admin->etapa == TRANSFORMACION && admin->estado == FINALIZADO;
+	}
+	bool esReduLocal(administracionYAMA* admin){
+		return admin->etapa == REDUCCION_LOCAL && admin->estado == FINALIZADO;
+	}
+	t_list* listaTransformaciones;
+	t_list* listaReduccionesLocales;
+
+	listaTransformaciones = list_filter(tablaDeEstados, (void*)esTransformacion);
+	listaReduccionesLocales = list_filter(tablaDeEstados, (void*)esReduLocal);
+
+	eliminarTrabajosLocales(listaTransformaciones);
+	eliminarTrabajosGlobales(nroMaster, listaReduccionesLocales);
 }

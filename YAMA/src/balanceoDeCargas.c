@@ -1,4 +1,5 @@
 #include "balanceoDeCargas.h"
+#include <math.h>
 
 void incrementarAvailability(t_list* listaBalanceo){
 	int posicion;
@@ -127,10 +128,11 @@ void actualizarWLRLocal(char* nombreNodo, int cantTemporales){
 		return strcmp(nodo->nombreNodo, nombreNodo);
 	}
 	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
-	nodo->wl += cantTemporales/2;
-	if(cantTemporales%2 != 0){
-		nodo->wl++;
-	}
+	nodo->wl += cantTemporales;
+//	nodo->wl += cantTemporales/2;
+//	if(cantTemporales%2 != 0){
+//		nodo->wl++;
+//	}
 }
 
 //BALANCEO LA REDUCCION GLOBAL
@@ -155,3 +157,37 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	return nodoElegido->nombreNodo;
 }
 
+
+void eliminarTrabajosLocales(t_list* listaTransformaciones){
+  uint32_t posicion;
+  for(posicion = 0; posicion < list_size(listaTransformaciones); posicion++){
+    administracionYAMA * admin = list_get(listaTransformaciones, posicion);
+    //UNA POR TRANSFORMACION
+    reducirWL(admin->nombreNodo);
+    //UNA POR REDUCCION LOCAL
+    reducirWL(admin->nombreNodo);
+  }
+}
+
+void eliminarTrabajosGlobales(int nroMaster, t_list* listaReducLocales){
+  char* nodoEncargado = buscarNodoEncargado(nroMaster);
+  uint32_t cantidadWLAReducir = list_size(listaReducLocales)/2;
+  if(cantidadWLAReducir%2 != 0){
+	  cantidadWLAReducir++;
+  }
+  int i;
+  for(i = 0; i < cantidadWLAReducir; i++){
+    reducirWL(nodoEncargado);
+  }
+}
+
+void actualizarWLRGlobal(char* nombreNodo, int cantidadReducs){
+	bool esNodo(nodoSistema* nodo){
+		return strcmp(nodo->nombreNodo, nombreNodo);
+	}
+	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
+	nodo->wl += cantidadReducs/2;
+	if(cantidadReducs % 2 != 0){
+		nodo->wl++;
+	}
+}

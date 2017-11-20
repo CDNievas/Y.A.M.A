@@ -21,6 +21,7 @@ void manejadorMaster(void* socketMasterCliente){
 	uint32_t nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	char* nodoEncargado;
+	bool pudoReplanificar = 1;
 	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
@@ -36,6 +37,8 @@ void manejadorMaster(void* socketMasterCliente){
 				t_list* listaDeCopias = balancearTransformacion(listaDeBloquesDeArchivo, listaBalanceo);
 				cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaDeCopias);
 				list_destroy(listaDeBloquesDeArchivo);
+				list_destroy(listaDeCopias);
+				list_destroy(listaBalanceo);
 				break;
 			case TRANSFORMACION_TERMINADA:
 				log_info(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
@@ -57,24 +60,30 @@ void manejadorMaster(void* socketMasterCliente){
 				cargarFallo(nroMaster, nodoFallido); //MODIFICO LA TABLA DE ESTADOS (PONGO EN FALLO LAS ENTRADAS DEL NODO)
 				solicitarArchivo(nombreArchivoPeticion); // PIDO NUEVAMENTE LOS DATOS A FS
 				t_list* listaDeBloques = recibirInfoArchivo(); // RECIBO LOS DATOS DEL ARCHIVO
-				cargarReplanificacion(socketMaster, nroMaster, nodoFallido, listaDeBloques); // CARGO LA REPLANIFICACION EN LA TABLA DE ESTADOS (ACA REPLANIFICO)
+				pudoReplanificar = cargarReplanificacion(socketMaster, nroMaster, nodoFallido, listaDeBloques); // CARGO LA REPLANIFICACION EN LA TABLA DE ESTADOS (ACA REPLANIFICO)
+				list_destroy(listaDeBloques);
+				if(!pudoReplanificar){
+					sendDeNotificacion(socketMaster, ABORTAR);
+					pthread_cancel(pthread_self());
+				}
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
 				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
 				if(sePuedeHacerReduccionGlobal(nroMaster)){ //CHEQUEO SI TODOS LOS NODOS TERMINARON DE REDUCIR
 					t_list* bloquesReducidos = filtrarReduccionesDelNodo(nroMaster); //OBTENGO TODAS LAS REDUCCIONES LOCALES QUE HIZO EL MASTER
 					cargarReduccionGlobal(socketMaster, nroMaster, bloquesReducidos);
+					list_destroy(bloquesReducidos);
 				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
 				terminarReduccionGlobal(nroMaster);
 				almacenadoFinal(socketMaster, nroMaster);
 				break;
-//			case FINALIZO:
-//				reestablecerWL(listaDeCopias, nodoEncargado)
-//				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
-//				pthread_detach(pthread_self());
-//				break;
+			case FINALIZO:
+				reestablecerWL(nroMaster);
+				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
+				pthread_detach(pthread_self());
+				break;
 			case ERROR_REDUCCION_LOCAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");

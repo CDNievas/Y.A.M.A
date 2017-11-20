@@ -143,40 +143,79 @@ copia* obtenerCopiaDeReplanificacion(administracionYAMA* adminFallida, infoDeFs*
 	}
 }
 
-void cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){
+bool chequearOtraCopia(char* nodoFallido, infoDeFs* info, t_list* listaDeEntradas){
+  char* nodoPorChequear = string_new();
+  bool esNodoYFallo(administracionYAMA* admin){
+    return strcmp(nodoPorChequear, admin->nombreNodo) && admin->estado == FALLO;
+  }
+  if(strcmp(info->copia1->nombreNodo, nodoFallido)){
+    nodoPorChequear = info->copia2->nombreNodo;
+  }else{
+    nodoPorChequear = info->copia1->nombreNodo;
+  }
+  return list_any_satisfy(listaDeEntradas, (void*)esNodoYFallo);
+}
+
+bool puedoReplanificar(uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){
+/*
+  1- Obtengo las entradas pertenecientes al nodo de la tabla
+  2- Chequeo si el otro nodo (el que no es el fallido), tambien esta fallido
+  3- Si ocurre eso: break, retorno false
+  4- Sino, retorno true
+*/
+  uint32_t posicion;
+  t_list* listaDeEntradas = filtrarTablaMaster(nroMaster);
+  for (posicion = 0; posicion < list_size(listaDeBloques); posicion++) {
+    infoDeFs* info = list_get(listaDeBloques, posicion);
+    if(chequearOtraCopia(nodoFallido, info, listaDeEntradas)){
+      list_destroy(listaDeEntradas);
+      return false;
+    }
+  }
+  list_destroy(listaDeEntradas);
+  return true;
+}
+
+bool cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){
 	bool esBloqueFallido(infoDeFs* info){
 		return strcmp(info->copia1->nombreNodo, nodoFallido) || strcmp(info->copia2->nombreNodo, nodoFallido);
 	}
 	t_list* listaBloquesAReplanificar = list_filter(listaDeBloques, (void*)esBloqueFallido);
 	t_list* listaEntradasAReplanificar = filtrarTablaFallida(nroMaster, nodoFallido);
-	t_list* listaParaMaster = list_create();
-	t_list* listaParaWL = list_create();
-	uint32_t posicion;
-	for(posicion = 0; posicion < list_size(listaEntradasAReplanificar); posicion++){
-		administracionYAMA* adminFallida = list_get(listaEntradasAReplanificar, posicion);
-		if(hayQueReplanificar(adminFallida, listaBloquesAReplanificar)){
-			infoDeFs* info = obtenerDatosAReplanificar(adminFallida, listaBloquesAReplanificar);
-			copia* copiaACargar = obtenerCopiaDeReplanificacion(adminFallida, info);
-			administracionYAMA* nuevaTransformacion = generarAdministracion(obtenerJobDeNodo(listaEntradasAReplanificar),nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
-			nuevaTransformacion->nroBloque = copiaACargar->nroBloque;
-			nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
-			infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
-			list_add(listaParaMaster, datoPMaster);
-			list_add(tablaDeEstados, nuevaTransformacion);
-			list_add(listaParaWL, copiaACargar);
-			reducirWL(nodoFallido);
-		}
-	}
-	actualizarWLTransformacion(listaParaWL);
-	void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
-	sendRemasterizado(socketMaster, REPLANIFICAR, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
-	free(listaParaMaster);
-	free(listaBloquesAReplanificar);
-	free(listaEntradasAReplanificar);
-	free(listaParaWL);
+  if(puedoReplanificar(nroMaster, nodoFallido, listaBloquesAReplanificar)){
+    t_list* listaParaMaster = list_create();
+  	t_list* listaParaWL = list_create();
+  	uint32_t posicion;
+  	for(posicion = 0; posicion < list_size(listaEntradasAReplanificar); posicion++){
+  		administracionYAMA* adminFallida = list_get(listaEntradasAReplanificar, posicion);
+  		if(hayQueReplanificar(adminFallida, listaBloquesAReplanificar)){
+  			infoDeFs* info = obtenerDatosAReplanificar(adminFallida, listaBloquesAReplanificar);
+
+  			copia* copiaACargar = obtenerCopiaDeReplanificacion(adminFallida, info);
+  			administracionYAMA* nuevaTransformacion = generarAdministracion(obtenerJobDeNodo(listaEntradasAReplanificar),nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
+  			nuevaTransformacion->nroBloque = copiaACargar->nroBloque;
+  			nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
+  			infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
+  			list_add(listaParaMaster, datoPMaster);
+  			list_add(tablaDeEstados, nuevaTransformacion);
+  			list_add(listaParaWL, copiaACargar);
+  			reducirWL(nodoFallido);
+  		}
+  	}
+  	actualizarWLTransformacion(listaParaWL);
+  	void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
+  	sendRemasterizado(socketMaster, REPLANIFICAR, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
+    free(listaParaMaster);
+  	free(listaBloquesAReplanificar);
+  	free(listaEntradasAReplanificar);
+  	free(listaParaWL);
+    return true;
+  }else{
+    free(listaBloquesAReplanificar);
+  	free(listaEntradasAReplanificar);
+    return false;
+  }
 }
-
-
 
 
 

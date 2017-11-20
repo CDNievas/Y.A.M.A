@@ -9,6 +9,7 @@
 #include "serializaciones.h"
 #include "funcionesYAMA.h"
 
+
 #ifndef BALANCEODECARGAS_H_
 #define BALANCEODECARGAS_H_
 
@@ -34,5 +35,10 @@ void incrementarAvailabilityDeNodo(datosBalanceo*);
 t_list* balancearTransformacion(t_list*, t_list*);
 //BALANCEO REDUCCION GLOBAL, RETORNA EL NOMBRE DEL NODO ENCARGADO
 char* balancearReduccionGlobal(t_list*);
+//ACTUALIZO EL WL DE REDUCCION GLOBAL
+void actualizarWLRGlobal(char*, int);
+//ROLLBACK DE WLs
+void eliminarTrabajosLocales(t_list*);
+void eliminarTrabajosGlobales(int, t_list*);
 
 #endif /* BALANCEODECARGAS_H_ */

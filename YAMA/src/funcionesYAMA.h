@@ -46,4 +46,8 @@ int obtenerWLMax();
 int calculoAvailability(char*);
 t_list* armarDatosBalanceo(t_list*);
 
+//BUSCO EL NODO ENCARGADO DE LA REDUCCION GLOBAL
+char* buscarNodoEncargado(uint32_t);
+
+t_list* filtrarTablaMaster(uint32_t);
 #endif /* FUNCIONESYAMA_H_ */
