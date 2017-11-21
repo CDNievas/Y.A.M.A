@@ -1,4 +1,3 @@
-
 #include "reduccionGlobal.h"
 
 bool sePuedeHacerReduccionGlobal(int nroMaster){
@@ -67,12 +66,16 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 
 void almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
+	log_info(loggerYAMA, "El nodo encargado para el almacenamiento final es %s.", nodoEncargado);
 	conexionNodo* conect = generarConexionNodo();
 	conect->nombreNodo = nodoEncargado;
 	obtenerIPYPuerto(conect);
+	log_info(loggerYAMA, "Se prosigue a serializar la informacion para el almacenamiento final del master %d.", nroMaster);
 	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect);
 	sendRemasterizado(socketMaster, ALMACENAMIENTO_FINAL, obtenerTamanioInfoAlmacenamientoFinal(conect), infoAlmacenadoFinal);
+	log_info(loggerYAMA, "Se enviaron los datos para el almacenamiento final al master %d.", nroMaster);
 	free(infoAlmacenadoFinal);
+	liberarConexion(conect);
 }
 
 void reestablecerWL(int nroMaster){

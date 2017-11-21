@@ -1,4 +1,3 @@
-
 #include "funcionesYAMA.h"
 
 //GENERACION DE ESTRUCTURAS
@@ -317,7 +316,7 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 
 char* buscarNodoEncargado(uint32_t nroMaster){
 	bool esReduccionFinalizada(administracionYAMA* admin){
-		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL_TERMINADA;
+		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL;
 	}
 
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);

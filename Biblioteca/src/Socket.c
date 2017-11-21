@@ -144,11 +144,8 @@ char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ES
 int recvDeNotificacion(int deQuien){
 	int notificacion;
 	int resultadoRecv = recv(deQuien, &notificacion, sizeof(int), 0);
-	if(resultadoRecv ==-1){
-		perror("Error al recibir la notificacion.");
-		exit(-1);
-	}else if(resultadoRecv == 0){
-		notificacion = 0;
+	if(resultadoRecv == -1 || resultadoRecv == 0){
+		return 0;
 	}
 	return notificacion;
 }

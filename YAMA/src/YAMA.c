@@ -55,6 +55,7 @@ void manejadorMaster(void* socketMasterCliente){
 				}else{
 					log_info(loggerYAMA, "No se puede llevar a cabo la reduccion local aun.");
 				}
+				free(nombreNodo);
 				list_destroy(listaDelJob);
 				break;
 			case REPLANIFICAR:
@@ -85,7 +86,9 @@ void manejadorMaster(void* socketMasterCliente){
 				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
+				log_info(loggerYAMA, "Se recibio una notificacion para finalizar la reduccion global por parte del master %d.", nroMaster);
 				terminarReduccionGlobal(nroMaster);
+				log_info(loggerYAMA, "Se prosigue a realizar el almacenado final para el master %d.", nroMaster);
 				almacenadoFinal(socketMaster, nroMaster);
 				break;
 			case FINALIZO:
