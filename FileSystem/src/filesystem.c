@@ -1,13 +1,14 @@
 #include "consolaFS.h"
 #include "structFS.h"
+#include <math.h>
 
 #define PARAMETROS {"PUERTO_ESCUCHA"}
 
 int PUERTO_ESCUCHA;
 
 t_log* loggerFileSystem;
-int hayNodes = 0;
-int esEstadoSeguro = 1;
+int hayNodos;
+bool esEstadoSeguro;
 tablaNodos* tablaGlobalNodos;
 t_list* listaBitmap;
 t_list* tablaGlobalArchivos;
@@ -19,7 +20,7 @@ t_list* listaConexionNodos;
 char * obtenerPathBitmap(char * nombreNodo){
 	// Path
 	char * path = string_new();
-	string_append(&path, "/metadata/bitmap/");
+	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/bitmap/");
 //	path= "/metadata/bitmap/";
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
@@ -30,28 +31,39 @@ char * obtenerPathBitmap(char * nombreNodo){
 t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 
 	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
-	uint32_t archivo; // FD Archivo
+	int archivo= open(path, O_RDWR); // FD Archivo
 	struct stat infoBitmap; // Guarda informacion del archivo
-	void * mapArchivo; // Memoria del mmap
+	char * mapArchivo; // Memoria del mmap
 	t_bitarray * bitarray; // Bitarray
 
-	// Abro el archivo
-	if(stat(path,&infoBitmap) < 0){
+	if(archivo  < 0){
 		// Error al abrir el archivo
 		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
 		exit(-1);
 	}
 
-	if((archivo = open(path, O_RDWR)) < 0){
+	// Abro el archivo
+	if(fstat(archivo,&infoBitmap) < 0){
 		// Error al abrir el archivo
 		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
 		exit(-1);
 	}
+
+
 
 	// Lo mapeo a memoria
 	mapArchivo = mmap(0, infoBitmap.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+	if (mapArchivo == MAP_FAILED) {
+				printf("Error al mapear a memoria: %s\n", strerror(errno));
+				close(archivo);
+	}
 
-	bitarray = bitarray_create_with_mode(mapArchivo,cantBloques,MSB_FIRST);
+	int tamanioBitarray=cantBloques/2;
+	 if(cantBloques % 2 != 0){
+	  tamanioBitarray++;
+	 }
+
+	bitarray = bitarray_create_with_mode(mapArchivo,tamanioBitarray,MSB_FIRST);
 
 	if(close(archivo) < 0){
 		log_error(loggerFileSystem,"Fallo al cerrar el archivo.");
@@ -64,15 +76,17 @@ t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 
 t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
 
+
+	log_debug(loggerFileSystem,"Se procede a crear el archivo Bitmap.bin");
 	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
-
-	if((truncate(path,cantBloques)) == -1){
-		// Error al crear el archivo
-		log_error(loggerFileSystem,"Error al tratar de abrir el archivo.");
-		exit(-1);
+	int file = open(path,O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+	char* contenido=string_repeat('\0',cantBloques);
+	if(file<0){
+		log_info(loggerFileSystem,"No se pudo crear el archivo");
 	}
+	write(file,contenido,cantBloques);
+	return abrirBitmap(nombreNodo,cantBloques);
 
-	return abrirBitmap(nombreNodo, cantBloques);
 
 }
 
@@ -94,7 +108,8 @@ void cargarFileSystem(t_config* configuracionFS) {
 int cantBloquesLibres(t_bitarray* bitarray) {
 	int i = 0;
 	int cont = 0;
-	for (; i < bitarray_get_max_bit(bitarray); i++) {
+	int tamaniobitarray = bitarray_get_max_bit(bitarray);
+	for (; i < tamaniobitarray; i++) {
 		if (!bitarray_test_bit(bitarray, i)) {
 			cont++;
 		}
@@ -115,7 +130,7 @@ void registrarNodo(int socket) {
 
 	// Checkeo estado anterior
 	if(hayEstadoAnterior){
-		bitarray = abrirBitmap(nombreNodo,cantBloques);
+		//bitarray = abrirBitmap(nombreNodo,cantBloques);
 
 	} else {
 		bitarray = crearBitmap(nombreNodo,cantBloques);
@@ -141,6 +156,7 @@ void registrarNodo(int socket) {
 
 	// Aniado a la tala de bitmaps
 	tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
+	bitmapNodo->nodo=string_new();
 	string_append(&bitmapNodo->nodo, nombreNodo);
 	bitmapNodo->bitarray = bitarray;
 	list_add(listaBitmap, bitmapNodo);
@@ -152,6 +168,7 @@ void registrarNodo(int socket) {
 	nodoConectado->soket= socket;
 	list_add(listaConexionNodos, nodoConectado);
 	}
+	hayNodos++;
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -169,87 +186,87 @@ int sacarTamanioArchivo(FILE* archivo) {
 //	enviarANodo(nodoAsignado, contenidoBloque);
 //}
 
-//void almacenarArchivo(void* mensaje, int socket) {
-//	char* path = string_new();
-//	char* nombreArchivo = string_new();
-//	path = recibirString(socket);
-//	nombreArchivo = recibirString(socket);
-//	char tipo = (char) recibirUInt(socket);
-//
-//	FILE* archivo = fopen(path, "r+");
-//	int bloqueAsignado = 0;
-//	char* contenidoBloque = string_new();
-//	int tamanioArchivo = sacarTamanioArchivo(archivo);
-//
-//	if (tipo == "B") {
-//
-//		int tamanio = sacarTamanioArchivo(archivo);
-//		void * contenidoAEnviar = malloc(1048576);
-//		while (tamanio >= 0) {
-//			if (tamanio < 1048576) {
-//				fread(contenidoAEnviar, tamanio, 1, archivo);
-////				asignarEnviarANodo(contenidoAEnviar, tamanio, archivo);
-//				break;
-//			} else {
-//				fread(contenidoAEnviar, 1048576, 1, archivo);
-////				asignarEnviarANodo(contenidoAEnviar, 1048576, archivo);
-//				tamanio -= 1048576;
-//			}
-//		}
-//		free(contenidoAEnviar);
-//
-//	} else {
-//		char digito;
-//		int ultimoBarraN = 0;
-//		int registroAntesMega = 0;
-//		void * contenidoAEnviar;
-//		int ultimaPosicion = 0;
-//		t_list * posiciones = list_create();
-//
-//		while (!feof(archivo)) {
-//			digito = fgetc(archivo);
-//
-//			if (digito == '\n') {
-//				ultimoBarraN = ftell(archivo);
-//			}
-//
-//			if (ftell(archivo) == 1048576 + registroAntesMega) {
-//				registroAntesMega = ultimoBarraN;
-//				list_add(posiciones, &ultimoBarraN);
-//			}
-//		}
-//
-//		fseek(archivo, 0, SEEK_END);
-//		ultimaPosicion = ftell(archivo);
-//		list_add(posiciones, &ultimaPosicion);
-//		fseek(archivo, 0, SEEK_SET);
-//		int posicionActual = 0;
-//
-//		void partir(int * posicion) {
-//			if (posicionActual == 0) {
-//				contenidoAEnviar = malloc(*posicion);
-//				fread(contenidoAEnviar, *posicion, 1, archivo);
-////				asignarEnviarANodo(contenidoAEnviar, *posicion, archivo);
-//			} else {
-//				int posicionAnterior = *((int*) list_get(posiciones,
-//						posicionActual - 1));
-//				contenidoAEnviar = malloc((*posicion) - posicionAnterior);
-//				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,
-//						archivo);
-////				asignarEnviarANodo(contenidoAEnviar,(*posicion) - posicionAnterior, archivo);
-//			}
-//			posicionActual++;
-//		}
-//		list_iterate(posiciones, partir);
-//		free(contenidoAEnviar);
-//
-//	}
-//}
+void almacenarArchivo(void* mensaje, int socket) {
+	char* path = string_new();
+	char* nombreArchivo = string_new();
+	path = recibirString(socket);
+	nombreArchivo = recibirString(socket);
+	char tipo = (char) recibirUInt(socket);
+
+	FILE* archivo = fopen(path, "r+");
+	int bloqueAsignado = 0;
+	char* contenidoBloque = string_new();
+	int tamanioArchivo = sacarTamanioArchivo(archivo);
+
+	if (tipo == "B") {
+
+		int tamanio = sacarTamanioArchivo(archivo);
+		void * contenidoAEnviar = malloc(1048576);
+		while (tamanio >= 0) {
+			if (tamanio < 1048576) {
+				fread(contenidoAEnviar, tamanio, 1, archivo);
+//				asignarEnviarANodo(contenidoAEnviar, tamanio, archivo);
+				break;
+			} else {
+				fread(contenidoAEnviar, 1048576, 1, archivo);
+//				asignarEnviarANodo(contenidoAEnviar, 1048576, archivo);
+				tamanio -= 1048576;
+			}
+		}
+		free(contenidoAEnviar);
+
+	} else {
+		char digito;
+		int ultimoBarraN = 0;
+		int registroAntesMega = 0;
+		void * contenidoAEnviar;
+		int ultimaPosicion = 0;
+		t_list * posiciones = list_create();
+
+		while (!feof(archivo)) {
+			digito = fgetc(archivo);
+
+			if (digito == '\n') {
+				ultimoBarraN = ftell(archivo);
+			}
+
+			if (ftell(archivo) == 1048576 + registroAntesMega) {
+				registroAntesMega = ultimoBarraN;
+				list_add(posiciones, &ultimoBarraN);
+			}
+		}
+
+		fseek(archivo, 0, SEEK_END);
+		ultimaPosicion = ftell(archivo);
+		list_add(posiciones, &ultimaPosicion);
+		fseek(archivo, 0, SEEK_SET);
+		int posicionActual = 0;
+
+		void partir(int * posicion) {
+			if (posicionActual == 0) {
+				contenidoAEnviar = malloc(*posicion);
+				fread(contenidoAEnviar, *posicion, 1, archivo);
+//				asignarEnviarANodo(contenidoAEnviar, *posicion, archivo);
+			} else {
+				int posicionAnterior = *((int*) list_get(posiciones,
+						posicionActual - 1));
+				contenidoAEnviar = malloc((*posicion) - posicionAnterior);
+				fread(contenidoAEnviar, (*posicion) - posicionAnterior, 1,
+						archivo);
+//				asignarEnviarANodo(contenidoAEnviar,(*posicion) - posicionAnterior, archivo);
+			}
+			posicionActual++;
+		}
+		list_iterate(posiciones, partir);
+		free(contenidoAEnviar);
+
+	}
+}
 
 //--------------------------------YAMA----------------------------------------
 //ENVIAR TABLA NODOS
 
-int sacarTamanioMEnsaje() {
+int sacarTamanioMensaje() {
 	int tamanio = 0;
 	int i = 0;
 	for (; i < list_size(tablaGlobalNodos->nodo); i++) {
@@ -257,22 +274,26 @@ int sacarTamanioMEnsaje() {
 		int tamanioNodo = string_length(list_get(tablaGlobalNodos->nodo, i));
 		tamanio += tamanioNodo;
 	}
+	tamanio+=sizeof(uint32_t);
 	return tamanio;
 }
 
 void enviarListaNodos(int socket) {
-	void* mensaje = malloc(sizeof(tablaGlobalNodos->nodo));
+	void* mensaje = malloc(sacarTamanioMensaje());
 	int posicionActual = 0;
 	int i = 0;
+	int cantNodo=list_size(tablaGlobalNodos->nodo);
+	memcpy(mensaje,&cantNodo,sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
 	for (; i < list_size(tablaGlobalNodos->nodo); i++) {
 		int tamanioNodo = string_length(list_get(tablaGlobalNodos->nodo, i));
-		memcpy(mensaje, &tamanioNodo, sizeof(int));
+		memcpy(mensaje+posicionActual, &tamanioNodo, sizeof(int));
 		posicionActual += sizeof(int);
 		memcpy(mensaje + posicionActual, list_get(tablaGlobalNodos->nodo, i),
 				tamanioNodo);
 		posicionActual += tamanioNodo;
 	}
-	int tamanioMsj = sacarTamanioMEnsaje();
+	int tamanioMsj = sacarTamanioMensaje();
 	sendRemasterizado(socket, ES_FS, tamanioMsj, mensaje);
 }
 
@@ -299,7 +320,7 @@ void* serializarCopiaBloque(copiasXBloque* contenido){
 	posicionActual += sizeof(uint32_t);
 	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
 	posicionActual += tamanioCopia1;
-	memcpy(datosSerializados + posicionActual, contenido->copia1->bloque, sizeof(uint32_t));
+	memcpy(datosSerializados + posicionActual, &contenido->copia1->bloque, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
 	// serializo copia2
 	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
@@ -307,54 +328,68 @@ void* serializarCopiaBloque(copiasXBloque* contenido){
 	posicionActual += sizeof(uint32_t);
 	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
 	posicionActual += tamanioCopia2;
-	memcpy(datosSerializados + posicionActual, contenido->copia2->bloque, sizeof(uint32_t));
+	memcpy(datosSerializados + posicionActual, &contenido->copia2->bloque, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
 	//serializo bytes
-	memcpy(datosSerializados + posicionActual, contenido->bytes, sizeof(uint32_t));
+	memcpy(datosSerializados + posicionActual, &contenido->bytes, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
 
 	return datosSerializados;
 
 }
 
-void enviarTablaAYama(tablaArchivos* entradaArchivo){
+int sacarTamanio(tablaArchivos* entradaArchivo){
+	uint32_t cont=0;
+	uint32_t posicionActual=0;
+	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
+	while(cont<list_size(entradaArchivo->bloques)){
+		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+		posicionActual+=tamanioStruct(copiaBloque);
+	}
+	free(copiaBloque);
+	return posicionActual;
+}
+
+
+void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 	uint32_t cont=0;
 	uint32_t posicionActual=0;
 	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
 
-	void* mensaje= malloc((sizeof(copiasXBloque)*list_size(entradaArchivo->bloques)+sizeof(uint32_t)));
+	void* mensaje= malloc(sizeof(uint32_t)+sacarTamanio(entradaArchivo));
 
-	memcpy(mensaje+posicionActual,list_size(entradaArchivo->bloques),sizeof(uint32_t)); //REVISAR
+	int cantBloques=list_size(entradaArchivo->bloques);
+	memcpy(mensaje,&cantBloques,sizeof(uint32_t)); //REVISAR
 	posicionActual += sizeof(uint32_t);
 
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-		memcpy(mensaje,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
+		memcpy(mensaje+posicionActual,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
 		posicionActual+=tamanioStruct(copiaBloque);
 	}
 
-	uint32_t tamanioMsj=sizeof(uint32_t)+(sizeof(copiasXBloque)*list_size(entradaArchivo->bloques)); //REVISAR
-
-//	sendRemasterizado(socket, INFO_ARCHIVO_FS, tamanioMsj, mensaje);
+	sendRemasterizado(socket, INFO_ARCHIVO_FS, posicionActual, mensaje);
 }
 
 
-//void enviarDatoArchivo(int socket){
-//  char* archivoABuscar=recibirString(socket);
-//	bool esArchivo(tablaArchivos* archivo){
-//		return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
-//	}
-//	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
-//
-//	enviarTablaAYama(entradaArchivo);
-//}
+	void enviarDatoArchivo(int socket){
+	  char* archivoABuscar=recibirString(socket);
+		bool esArchivo(tablaArchivos* archivo){
+			return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
+		}
+		tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
+		if(entradaArchivo==NULL){
+			//CACHEAR ERROR
+		}
+		enviarTablaAYama(socket,entradaArchivo);
+	}
 
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-//	chequearParametros(argc, 2);
-//	t_config* configuracionFS = generarTConfig(argv[1], 1);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 1);
+	//t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -373,6 +408,10 @@ int main(int argc, char **argv) {
 	listaBitmap = list_create();
 	tablaGlobalArchivos = list_create();
 	listaConexionNodos=list_create();
+
+	hayNodos=0;
+	esEstadoSeguro=true;
+
 
 	while (1) {
 		socketClientesAuxiliares = socketClientes;
@@ -404,7 +443,7 @@ int main(int argc, char **argv) {
 						//Hago mas cosas
 						break;
 					case ES_YAMA:
-						if (hayNodes && esEstadoSeguro) {
+						if (hayNodos==2 && esEstadoSeguro) {
 							enviarListaNodos(socketClienteChequeado);
 						} else {
 							FD_CLR(socketClienteChequeado, &socketClientes);
@@ -414,9 +453,9 @@ int main(int argc, char **argv) {
 					case REC_INFONODO:
 						registrarNodo(socketClienteChequeado);
 						break;
-//					case INFO_ARCHIVO_FS:
-//						enviarDatoArchivo(socketClienteChequeado);
-//						break;
+					case INFO_ARCHIVO_FS:
+						enviarDatoArchivo(socketClienteChequeado);
+						break;
 					default:
 						log_error(loggerFileSystem,
 								"La conexion recibida es erronea.");
