@@ -31,6 +31,7 @@ void liberarDatoMaster(infoNodo*);
 void liberarConexion(conexionNodo*);
 void liberarInfoFS(infoDeFs*);
 void liberarDatosBalanceo(datosBalanceo*);
+void liberarNodoSistema(nodoSistema*);
 
 t_list* obtenerListaDelNodo(int, int, char*);
 char* obtenerNombreNodo(t_list*);

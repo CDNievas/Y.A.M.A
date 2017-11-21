@@ -2,14 +2,16 @@
 #include "reduccionGlobal.h"
 
 bool sePuedeHacerReduccionGlobal(int nroMaster){
-	bool esDeNodo(administracionYAMA* admin){
-		return nroMaster == admin->nroMaster;
+	bool esDeNodoYEsRedu(administracionYAMA* admin){
+		return nroMaster == admin->nroMaster && admin->etapa == REDUCCION_LOCAL;
 	}
 	bool esReduccionTerminada(administracionYAMA* admin){
 		return admin->estado == FINALIZADO && admin->etapa == REDUCCION_LOCAL;
 	}
-	t_list* listaDeNodos = list_filter(tablaDeEstados, (void*) esDeNodo);
-	return list_all_satisfy(listaDeNodos, (void*) esReduccionTerminada);
+	t_list* listaDeNodos = list_filter(tablaDeEstados, (void*) esDeNodoYEsRedu);
+	int sePuede = list_all_satisfy(listaDeNodos, (void*) esReduccionTerminada);
+	list_destroy(listaDeNodos);
+	return sePuede;
 }
 
 
@@ -21,12 +23,13 @@ t_list *filtrarReduccionesDelNodo(int nroMaster){
 	return listaDeMaster;
 }
 
-t_list* obtenerConexionesDeNodos(t_list* listaDeMaster){
+t_list* obtenerConexionesDeNodos(t_list* listaDeMaster, char* nodoEncargado){
 	uint32_t posicion;
 	t_list* listaDeConexiones = list_create();
 	for(posicion = 0; posicion < list_size(listaDeMaster); posicion++){
 		administracionYAMA* admin = list_get(listaDeMaster, posicion);
 		conexionNodo* conect = generarConexionNodo();
+		conect->nombreNodo = string_new();
 		string_append(&conect->nombreNodo, admin->nombreNodo);
 		obtenerIPYPuerto(conect);
 		list_add(listaDeConexiones, conect);
@@ -38,11 +41,13 @@ void cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaste
 	administracionYAMA* nuevaReduccionG = generarAdministracion(obtenerJobDeNodo(listaDeMaster),nroMaster, REDUCCION_GLOBAL, obtenerNombreTemporalGlobal());
 	nuevaReduccionG->nroBloque = 0;
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
-	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster);
+	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster, nuevaReduccionG->nombreNodo);
 	actualizarWLRGlobal(nuevaReduccionG->nombreNodo, list_size(listaDeMaster));
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
+	list_add(tablaDeEstados, nuevaReduccionG);
 	free(infoGlobalSerializada);
+	list_destroy_and_destroy_elements(listaDeConexiones, (void*)liberarConexion);
 }
 
 void terminarReduccionGlobal(uint32_t nroMaster){

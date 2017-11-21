@@ -140,7 +140,7 @@ infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBl
 }
 
 copia* obtenerCopiaDeReplanificacion(administracionYAMA* adminFallida, infoDeFs* info){
-	if(strcmp(adminFallida->nombreNodo, info->copia1->nombreNodo)){
+	if(strcmp(adminFallida->nombreNodo, info->copia1->nombreNodo) == 0){
 		return info->copia1;
 	}else{
 		return info->copia2;

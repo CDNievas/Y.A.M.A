@@ -60,6 +60,11 @@ void liberarDatosBalanceo(datosBalanceo* datos){
 	free(datos);
 }
 
+void liberarNodoSistema(nodoSistema* nodo){
+	free(nodo->nombreNodo);
+	free(nodo);
+}
+
 //RANDOM NAMES
 char* obtenerNombreTemporalLocal(){
 	char* nombreArchivo = string_new();
@@ -74,8 +79,10 @@ char* obtenerNombreTemporalLocal(){
 char* obtenerNombreTemporalGlobal(){
 	char* nombreArchivo = string_new();
 	string_append(&nombreArchivo, "tempFileGlobal");
-	string_append(&nombreArchivo, string_itoa(numeroDeTemporalGlobal));
+	char* numero = string_itoa(numeroDeTemporalGlobal);
+	string_append(&nombreArchivo, numero);
 	numeroDeTemporalGlobal++;
+	free(numero);
 	return nombreArchivo;
 }
 

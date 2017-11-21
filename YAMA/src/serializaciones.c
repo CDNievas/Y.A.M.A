@@ -163,7 +163,7 @@ uint32_t obtenerTamanioReduGlobal(administracionYAMA* reduccion, t_list* listaCo
 
 conexionNodo* obtenerConexionNodoEncargado(char* nombreNodo, t_list* listaDeConexiones){
 	bool esNodo(conexionNodo* conect){
-		return strcmp(conect->nombreNodo, nombreNodo);
+		return strcmp(conect->nombreNodo, nombreNodo) == 0;
 	}
 	return list_remove_by_condition(listaDeConexiones, (void*)esNodo);
 }
@@ -226,6 +226,7 @@ void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* lista
 		memcpy(infoSerializada+posicionActual, admin->nameFile, tamanioFileLocal);
 		posicionActual += tamanioFileLocal;
 	}
+	liberarConexion(conect);
 	return infoSerializada;
 }
 

@@ -15,7 +15,7 @@
 
 bool sePuedeHacerReduccionGlobal(int);
 t_list *filtrarReduccionesDelNodo(int);
-t_list* obtenerConexionesDeNodos(t_list*);
+t_list* obtenerConexionesDeNodos(t_list*, char*);
 void cargarReduccionGlobal(int, int, t_list*);
 void terminarReduccionGlobal(uint32_t);
 void almacenadoFinal(int, uint32_t);

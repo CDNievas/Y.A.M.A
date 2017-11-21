@@ -19,7 +19,8 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	admin->nroBloque = 0;
 	log_info(loggerYAMA, "El nombre del temporal de reduccion local para el Nodo %s es %s", admin->nombreNodo, admin->nameFile);
 	conexionNodo* conexion = generarConexionNodo();
-	conexion->nombreNodo = admin->nombreNodo;
+	conexion->nombreNodo = string_new();
+	string_append(&conexion->nombreNodo, admin->nombreNodo);
 	//CARGO LA CONEXION
 	obtenerIPYPuerto(conexion);
 	void* temporalesSerializados = serializarInfoReduccionLocal(conexion, admin->nameFile, listaDelNodo);
@@ -36,9 +37,10 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 void terminarReduccionLocal(int nroMaster, int socketMaster){
 	char* nombreNodo = recibirString(socketMaster);
 	bool esReducLocalBuscada(administracionYAMA* admin){
-		return admin->etapa == REDUCCION_LOCAL && strcmp(admin->nombreNodo, nombreNodo) && admin->nroMaster == nroMaster;
+		return admin->etapa == REDUCCION_LOCAL && !strcmp(admin->nombreNodo, nombreNodo) && admin->nroMaster == nroMaster;
 	}
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReducLocalBuscada);
 	admin->estado = FINALIZADO;
+	free(nombreNodo);
 }
 

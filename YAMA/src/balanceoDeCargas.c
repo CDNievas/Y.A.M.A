@@ -148,21 +148,25 @@ void actualizarWLRLocal(char* nombreNodo, int cantTemporales){
 char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	int minimoWL = -1;
 	uint32_t posicion;
-	datosBalanceo* nodoBalanceado;
+	administracionYAMA* nodoBalanceado;
 	nodoSistema* nodoElegido = generarNodoSistema();
+	nodoElegido->nombreNodo = string_new();
 	bool esNodo(nodoSistema* nodo){
-		return strcmp(nodo->nombreNodo, nodoBalanceado->nombreNodo);
+		return strcmp(nodo->nombreNodo, nodoBalanceado->nombreNodo) == 0;
 	}
 	for(posicion = 0; posicion < list_size(listaDeBalanceo); posicion++){
 		nodoBalanceado = list_get(listaDeBalanceo, posicion);
 		nodoSistema* nodoAChequear = list_find(nodosSistema, (void*)esNodo);
 		if(nodoAChequear->wl < minimoWL || minimoWL == -1){
 			minimoWL = nodoAChequear->wl;
-			nodoElegido->nombreNodo = nodoAChequear->nombreNodo;
+			string_append(&nodoElegido->nombreNodo, nodoAChequear->nombreNodo);
 			nodoElegido->wl = nodoAChequear->wl;
 		}
 	}
-	return nodoElegido->nombreNodo;
+	char* nombreNodo = string_new();
+	string_append(&nombreNodo, nodoElegido->nombreNodo);
+	liberarNodoSistema(nodoElegido);
+	return nombreNodo;
 }
 
 
@@ -191,7 +195,7 @@ void eliminarTrabajosGlobales(int nroMaster, t_list* listaReducLocales){
 
 void actualizarWLRGlobal(char* nombreNodo, int cantidadReducs){
 	bool esNodo(nodoSistema* nodo){
-		return strcmp(nodo->nombreNodo, nombreNodo);
+		return strcmp(nodo->nombreNodo, nombreNodo) == 0;
 	}
 	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 	nodo->wl += cantidadReducs/2;
