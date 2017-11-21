@@ -234,6 +234,7 @@ void handshakeFS(){
 		nuevoNodo->wl = 0;
 		list_add(nodosSistema, nuevoNodo);
 	}
+	log_info(loggerYAMA, "Se han recibido todos los nodos del sistema correctamente.");
 }
 
 //FUNCIONES PARA MANEJAR LA AVAILABILITY

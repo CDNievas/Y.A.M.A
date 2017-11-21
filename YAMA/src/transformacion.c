@@ -91,12 +91,13 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 //FINALIZO LA TRANSFORMACION
 void terminarTransformacion(int nroMaster, int socketMaster, char* nombreNodo){
 	uint32_t nroBloque = recibirUInt(socketMaster);
+	log_info(loggerYAMA, "La transformacion a finalizar es la del nodo %s en el bloque %d.", nombreNodo, nroBloque);
 	int buscarNodo(administracionYAMA* adminAChequear){
 		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && !strcmp(adminAChequear->nombreNodo, nombreNodo)  && adminAChequear->etapa == TRANSFORMACION);
 	}
 	administracionYAMA *adminAModificar = list_find(tablaDeEstados, (void*)buscarNodo);
 	adminAModificar->estado = FINALIZADO;
-	log_info(loggerYAMA, "Se finalizo la transformacion del nodo %s en el archivo %d.", nombreNodo, nroBloque);
+	log_info(loggerYAMA, "Se actualizo la tabla de estados, finalizando la transformacion del nodo %s sobre el bloque %d.", nombreNodo, nroBloque);
 }
 
 t_list* obtenerBloquesFallidos(uint32_t nroMaster, char* nodoFallido){

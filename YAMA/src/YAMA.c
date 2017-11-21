@@ -48,6 +48,7 @@ void manejadorMaster(void* socketMasterCliente){
 				char* nombreNodo = recibirString(socketMaster);
 				terminarTransformacion(nroMaster, socketMaster, nombreNodo); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
 				t_list* listaDelJob = obtenerListaDelNodo(nroMaster, socketMaster, nombreNodo);
+				log_info(loggerYAMA, "Se prosigue a chequear si se puede llevar a cabo la reduccion local en el nodo %s.", nombreNodo);
 				if(sePuedeHacerReduccionLocal(listaDelJob)){
 					log_info(loggerYAMA, "Se puede llevar a cabo la reduccion local.");
 					cargarReduccionLocal(socketMaster, nroMaster, listaDelJob);
@@ -71,11 +72,16 @@ void manejadorMaster(void* socketMasterCliente){
 				}
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
+				log_info(loggerYAMA, "Se recibio una notificacion para finalizar con una reduccion local por parte del master %d.", nroMaster);
 				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
+				log_info(loggerYAMA, "Se prosigue a chequear si se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
 				if(sePuedeHacerReduccionGlobal(nroMaster)){ //CHEQUEO SI TODOS LOS NODOS TERMINARON DE REDUCIR
+					log_info(loggerYAMA, "Se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
 					t_list* bloquesReducidos = filtrarReduccionesDelNodo(nroMaster); //OBTENGO TODAS LAS REDUCCIONES LOCALES QUE HIZO EL MASTER
 					cargarReduccionGlobal(socketMaster, nroMaster, bloquesReducidos);
 					list_destroy(bloquesReducidos);
+				}else{
+					log_info(loggerYAMA, "Todavia no se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
 				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
