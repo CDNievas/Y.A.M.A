@@ -68,7 +68,8 @@ void almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
 	log_info(loggerYAMA, "El nodo encargado para el almacenamiento final es %s.", nodoEncargado);
 	conexionNodo* conect = generarConexionNodo();
-	conect->nombreNodo = nodoEncargado;
+	conect->nombreNodo = string_new();
+	string_append(&conect->nombreNodo, nodoEncargado);
 	obtenerIPYPuerto(conect);
 	log_info(loggerYAMA, "Se prosigue a serializar la informacion para el almacenamiento final del master %d.", nroMaster);
 	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect);
@@ -93,4 +94,7 @@ void reestablecerWL(int nroMaster){
 
 	eliminarTrabajosLocales(listaTransformaciones);
 	eliminarTrabajosGlobales(nroMaster, listaReduccionesLocales);
+
+	list_destroy(listaTransformaciones);
+	list_destroy(listaReduccionesLocales);
 }

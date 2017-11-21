@@ -269,7 +269,7 @@ int calculoAvailability(char* nombreNodo){
 //ARMO LOS DATOS DE BALANCEO A PARTIR DE LOS DATOS RECIBIDOS DE LA LISTA DE FS
 datosBalanceo* obtenerDatosDeCopia(t_list* listaDeBalanceo, copia* copiaAChequear){
 	bool existeEnLaLista(datosBalanceo* datos){
-		return strcmp(datos->nombreNodo, copiaAChequear->nombreNodo);
+		return strcmp(datos->nombreNodo, copiaAChequear->nombreNodo) == 0;
 	}
 	return list_find(listaDeBalanceo, (void*)existeEnLaLista);
 }

@@ -17,12 +17,13 @@
 
 void manejadorMaster(void* socketMasterCliente){
 	int socketMaster = *(int*)socketMasterCliente;
+	int sigueProcesando = 1;
 	char* nombreArchivoPeticion, nodoFallido;
 	uint32_t nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
 	char* nodoEncargado;
 	bool pudoReplanificar = 1;
-	while(1){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
+	while(sigueProcesando){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
 			case TRANSFORMACION:
@@ -71,6 +72,7 @@ void manejadorMaster(void* socketMasterCliente){
 					sendDeNotificacion(socketMaster, ABORTAR);
 					pthread_cancel(pthread_self());
 				}
+				free(nodoFallido);
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
 				log_info(loggerYAMA, "Se recibio una notificacion para finalizar con una reduccion local por parte del master %d.", nroMaster);
@@ -95,26 +97,31 @@ void manejadorMaster(void* socketMasterCliente){
 				reestablecerWL(nroMaster);
 				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
 				pthread_detach(pthread_self());
+				sigueProcesando = 0;
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				pthread_cancel(pthread_self());
+				sigueProcesando = 0;
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION GLOBAL. FUNCION RECIBE NROMASTER
 				log_error(loggerYAMA, "Error de reduccion global.\nAbortando el Job");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				pthread_cancel(pthread_self());
+				sigueProcesando = 0;
 				break;
 			case CORTO:
 				log_info(loggerYAMA, "El master %d corto.", nroMaster);
 				pthread_cancel(pthread_self());
+				sigueProcesando = 0;
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
 				pthread_cancel(pthread_self());
+				sigueProcesando = 0;
 				break;
 		}
 	}

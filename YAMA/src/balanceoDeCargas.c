@@ -11,7 +11,7 @@ void incrementarAvailability(t_list* listaBalanceo){
 
 void reducirWL(char* nodo){
 	bool esNodo(nodoSistema* aModificar){
-		return strcmp(aModificar->nombreNodo, nodo);
+		return strcmp(aModificar->nombreNodo, nodo) == 0;
 	}
 	nodoSistema* nodoAModificar = list_find(nodosSistema, (void*)esNodo);
 	nodoAModificar->wl--;
@@ -189,7 +189,7 @@ void eliminarTrabajosLocales(t_list* listaTransformaciones){
 void eliminarTrabajosGlobales(int nroMaster, t_list* listaReducLocales){
   char* nodoEncargado = buscarNodoEncargado(nroMaster);
   uint32_t cantidadWLAReducir = list_size(listaReducLocales)/2;
-  if(cantidadWLAReducir%2 != 0){
+  if(list_size(listaReducLocales)%2 != 0){
 	  cantidadWLAReducir++;
   }
   int i;
