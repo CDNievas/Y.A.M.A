@@ -14,6 +14,9 @@
 #define ENV_LEER 104
 #define ENV_ESCRIBIR 105
 #define INFO_ARCHIVO_FS 13
+#define ARCHIVO_NO_ENCONTRADO -14
+#define DATOS_NODO 12
+#define ALMACENADO_FINAL 15
 
 //------------------DIRECOTORIO------------------------
 typedef struct t_directory {
@@ -59,6 +62,8 @@ typedef struct
 	char* nodo;
 	uint32_t total;
 	uint32_t libre;
+	uint32_t porcentajeOcioso;
+	uint32_t socket;
 } contenidoNodo;
 
 //------------------BITMAP------------------------
@@ -68,10 +73,11 @@ typedef struct
 	t_bitarray *bitarray;
 } tablaBitmapXNodos;
 
-//-------------------CONEXION DE NODOS---------
-typedef struct	__attribute__((packed)) {
+//------------------DATOS CONEXION NODO------------------------
+typedef struct
+	__attribute__((packed)) {
 	char* nodo;
-	uint32_t soket;
-} nodoConexion;
-
+	uint32_t puerto;
+	char* ip;
+} datosConexionNodo;
 #endif /* STRUCTFS_H_ */
