@@ -23,6 +23,10 @@
 #define ERROR_ALMACENADO_FINAL 17
 #define ERROR_TRANSFORMACION 18
 
+#define YES 1
+#define NO 0
+
+
 char* YAMA_IP;
 char* WORKER_IP;
 int YAMA_PUERTO;
@@ -34,11 +38,13 @@ char* scriptTransformador;
 char* scriptReduccion;
 char* archivoAModificar;
 char* pathDondeGuardar;
-
+/*
 pthread_mutex_t mutexRespuestaTransformacion;
 pthread_mutex_t mutexReplanificacionTransformacion;
-
+*/
 t_list * nombresNodos;
+t_list * banderasReplanificacion;
+t_list * hilosCreados; // Con esto recorro un hilo constantemente
 int cantidadDeProcesosNodos;
 
 typedef struct{
@@ -75,6 +81,18 @@ typedef struct {
 	conexionNodo* conexion;
 	char* resultadoReduccionGlobal;
 } almacenamientoFinal;
+
+
+typedef struct {
+	pthread_t thread;
+	char* nodo;
+}infoHilo; // STRUCT PARA SABER QUE HILOS MATAR.
+
+typedef struct{
+	char* nodo;
+	uint32_t FLAG_REPLANIFICACION;
+	uint32_t FLAG_ABORTAR;
+}banderasParaNodos; // STRUCT PARA SABER CUANDO ABORTAR O REPLANIFICAR CADA NODO
 
 
 infoEncargadoRG * encargado;   // Var global donde se sabe quien es el encargado de la reducc global

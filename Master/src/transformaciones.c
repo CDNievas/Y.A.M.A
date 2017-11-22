@@ -1,7 +1,30 @@
 #include "transformaciones.h"
 
-
 //EL SOCKETYAMA LO DECLARE COMO VARIABLE GLOBAL.
+
+//Creo todos los hilos para cada solicitud.
+void procesarTransformacion(){
+    hilosCreados = list_create();    // Creo lista para almacenar INFO de todos los hilos
+    t_list* solicitudesTransformacion = recibirSolicitudTransformacion();
+    cantidadDeProcesosNodos = list_size(nombresNodos); // Asigno la cantidad de procesos nodos que tengo para la reduccion local
+    log_info(loggerMaster,"Recibo lista de solicitudes de transformacion.");    
+    int i;
+    crearBanderasParaCadaNodo(); // CREO LAS BANDERAS DE REPLANIFICACION Y ABORTAR CON SUS RESPECTIVOS NODOS. FLAGS EN 0
+
+    pthread_t threadKiller;
+    pthread_create(&threadKiller,NULL, (void*) matadoraDeHilos,NULL);
+    pthread_join(threadKiller,NULL);
+
+
+    for(i=0; i < list_size(solicitudesTransformacion); i++){
+        pthread_t hiloInit;
+        infoNodo * nodoParaHilo = list_get(solicitudesTransformacion,i); // saco informacion de las posiciones una por una
+        log_info(loggerMaster, "Realizando transformacion en el Nodo: %s.", nodoParaHilo->conexion->nombreNodo);
+        pthread_create(&hiloInit,NULL, (void*) conectarAWorkerTransformacion,(void*)nodoParaHilo);
+        pthread_join(hiloInit,NULL);
+    }
+
+}
 
 // Creo lista de solicitudes de transformaciones
 t_list* recibirSolicitudTransformacion(){
@@ -29,7 +52,8 @@ t_list* recibirSolicitudTransformacion(){
 //Funcion que atiende las solicitudes de transformacion.
 void conectarAWorkerTransformacion(void* nodoConInfo){
     infoNodo nuevo = *(infoNodo*) nodoConInfo;
-    infoNodo * nodoAReplanificar;
+    pthread_t thread = pthread_self();                      
+    cargoHiloEnLista(thread,nuevo.conexion->nombreNodo);  // METO INFO (pthread y nodo) DEL HILO EN LISTA 
 
     char* contenidoScript = obtenerContenido(scriptTransformador); 
     void* datosToWorker = serializarTransformacionToWorker(nuevo.nroBloque, nuevo.bytesOcupados, nuevo.nombreTemporal, contenidoScript);
@@ -44,36 +68,20 @@ void conectarAWorkerTransformacion(void* nodoConInfo){
     if(socketWorker == 0){
         log_info(loggerMaster, "No se pudo conectar con Worker en ETAPA TRANSFORMACION."); 
         log_info(loggerMaster, "Avisando a YAMA que fallo conexion con el nodo: %s.", nuevo.nroBloque);  
-        pthread_mutex_lock(&mutexReplanificacionTransformacion);        
+        //pthread_mutex_lock(&mutexReplanificacionTransformacion);        
         sendRemasterizado(socketYAMA,REPLANIFICAR, tamanioDatosToY, datosToYama);        
         int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
-        pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+        //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
 
         switch (respuestaReplanificacion){
                 case ABORTAR:{
-                    log_info(loggerMaster, "Se decide no replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                    log_info(loggerMaster, "Cerrando proceso Master!.");
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    exit(-1);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                 } break;
                 case REPLANIFICAR:{
-                    log_info(loggerMaster, "Se decide replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                    nodoAReplanificar = recibirNodoAReplanificar();
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    conectarAWorkerTransformacion((void*) nodoAReplanificar);                    
-                    log_info(loggerMaster, "REPLANIFICANDO BLOQUE: %s.", nuevo.nroBloque);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, YES,NO);
                 } break;
                 default:{
-                    log_info(loggerMaster, "Tipo de mensaje no coincidente.");
-                    log_info(loggerMaster, "Cerrando proceso Master!.");
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    exit(-1);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                 } break;
 
             }
@@ -83,46 +91,30 @@ void conectarAWorkerTransformacion(void* nodoConInfo){
         log_info(loggerMaster,"Enviando bloque:%d, bytes ocupados:%d y temporal:%s a Worker", nuevo.nroBloque, nuevo.bytesOcupados, nuevo.nombreTemporal);
         sendRemasterizado(socketWorker,TRANSFORMACION, tamanioDatosToW, datosToWorker);         
         // Uso las funciones wait y signal para recibir la respuesta. El mutex permite que no reciban dos hilos al mismo tiempo la rta
-        pthread_mutex_lock(&mutexRespuestaTransformacion);
+        //pthread_mutex_lock(&mutexRespuestaTransformacion);
         int respuesta = recvDeNotificacionMaster(socketWorker);                                                 //CONFIRMACION DE WORKER
-        pthread_mutex_unlock(&mutexRespuestaTransformacion);
+        //pthread_mutex_unlock(&mutexRespuestaTransformacion);
         log_info(loggerMaster,"Recibo respuesta por parte del Worker.");
 
     // 2) VERIFICO RESPUESTA QUE ME DA WORKER.    
         if(respuesta == 0){
             log_info(loggerMaster, "Worker se cayo y no se pudo recibir una respuesta.");  
             log_info(loggerMaster, "Avisando a YAMA que fallo conexion con el nodo: %s.", nuevo.nroBloque);                      
-            pthread_mutex_lock(&mutexReplanificacionTransformacion);
+            //pthread_mutex_lock(&mutexReplanificacionTransformacion);
             sendRemasterizado(socketYAMA,REPLANIFICAR, tamanioDatosToY, datosToYama);
             int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
-            pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+            //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
 
             // HACER SWITCH PARA ATENDER DISTINTAS RESPUESTAS POR PARTE DE YAMA
             switch (respuestaReplanificacion){
                 case ABORTAR:{
-                    log_info(loggerMaster, "Se decide no replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                    log_info(loggerMaster, "Cerrando proceso Master!.");
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    exit(-1);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                 } break;
                 case REPLANIFICAR:{
-                    log_info(loggerMaster, "Se decide replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                    nodoAReplanificar = recibirNodoAReplanificar();
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    conectarAWorkerTransformacion((void*) nodoAReplanificar);                    
-                    log_info(loggerMaster, "REPLANIFICANDO BLOQUE: %s.", nuevo.nroBloque);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, YES,NO);
                 } break;
                 default:{
-                    log_info(loggerMaster, "Tipo de mensaje no coincidente.");
-                    log_info(loggerMaster, "Cerrando proceso Master!.");
-                    free(datosToWorker);
-                    free(datosToYama);
-                    free(nodoConInfo);
-                    exit(-1);
+                    cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                 } break;
 
             }
@@ -141,72 +133,119 @@ void conectarAWorkerTransformacion(void* nodoConInfo){
                 case ERROR_TRANSFORMACION:{
                     log_info(loggerMaster,"Transformacion terminada con ERRORES. Nodo: %s, Bloque: %s",nuevo.conexion->nombreNodo, nuevo.nroBloque);
                     log_info(loggerMaster,"Notifico a YAMA del resultado de la transformacion.");
-                    pthread_mutex_lock(&mutexReplanificacionTransformacion);
+                    //pthread_mutex_lock(&mutexReplanificacionTransformacion);
                     sendRemasterizado(socketYAMA,REPLANIFICAR, tamanioDatosToY, datosToYama);
                     int respuestaReplanificacion = recvDeNotificacionMaster(socketYAMA);
-                    pthread_mutex_unlock(&mutexReplanificacionTransformacion);
+                    //pthread_mutex_unlock(&mutexReplanificacionTransformacion);
 
                     switch (respuestaReplanificacion){
                             case ABORTAR:{
-                                log_info(loggerMaster, "Se decide no replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                                log_info(loggerMaster, "Cerrando proceso Master!.");
-                                free(datosToWorker);
-                                free(datosToYama);
-                                free(nodoConInfo);
-                                exit(-1);
+                                cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                             } break;
                             case REPLANIFICAR:{
-                                log_info(loggerMaster, "Se decide replanificar la solicitud del bloque: %d .", nuevo.nroBloque);
-                                nodoAReplanificar = recibirNodoAReplanificar();
-                                free(datosToWorker);
-                                free(datosToYama);
-                                free(nodoConInfo);
-                                conectarAWorkerTransformacion((void*) nodoAReplanificar);
-                                log_info(loggerMaster, "REPLANIFICANDO BLOQUE: %s.", nuevo.nroBloque);
+                                cambiarFlagNodo(nuevo.conexion->nombreNodo, YES,NO);
                             } break;
                             default:{
-                                log_info(loggerMaster, "Tipo de mensaje no coincidente.");
-                                log_info(loggerMaster, "Cerrando proceso Master!.");
-                                free(datosToWorker);
-                                free(datosToYama);
-                                free(nodoConInfo);
-                                exit(-1);
+                                cambiarFlagNodo(nuevo.conexion->nombreNodo, NO,YES);
                             } break;
                     }
                 }
             }
         }
     }
-    free(nodoAReplanificar);
 }
-
 
 
 int tamanioDatosToWorker(char* nombreTemporal,char* contenidoScript){
     return sizeof(uint32_t)*5 + string_length(nombreTemporal) + string_length(scriptTransformador) + string_length(contenidoScript);
 }
 
-//Creo todos los hilos para cada solicitud.
-void procesarTransformacion(){
-    t_list* solicitudesTransformacion = recibirSolicitudTransformacion();
-    cantidadDeProcesosNodos = list_size(nombresNodos); // Asigno la cantidad de procesos nodos que tengo para la reduccion local
-    log_info(loggerMaster,"Recibo lista de solicitudes de transformacion.");    
-    int i;
+void matadoraDeHilos(){
+    uint32_t pos;
+    while(1){
+        for(pos=0;pos<list_size(banderasReplanificacion);pos++){
+            banderasParaNodos * banderas = list_get(banderasReplanificacion,pos);     // saco info de un nodo
+            if(banderas->FLAG_REPLANIFICACION == YES){
+                matarHilosDeTalNodo(banderas->nodo);
+                recibirNuevasSolicitudesYReplanificar();
+            } else{
+                if(banderas->FLAG_ABORTAR == YES){
+                    matarHilosDeTalNodo(banderas->nodo);
+                    // ABORTAR! COMO?
+                }
+            }
+        } // TERMINA FOR
+    }
+}
 
+void recibirNuevasSolicitudesYReplanificar(){
+    t_list* solicitudesTransformacion = recibirSolicitudTransformacion();
+
+    uint32_t i;
     for(i=0; i < list_size(solicitudesTransformacion); i++){
         pthread_t hiloInit;
-        infoNodo * nodoParaHilo = (infoNodo*)malloc(sizeof(infoNodo));
-        nodoParaHilo->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
-        nodoParaHilo->conexion->nombreNodo = string_new();
-        nodoParaHilo->conexion->ipNodo = string_new();
-        nodoParaHilo->nombreTemporal = string_new();
-        nodoParaHilo = list_get(solicitudesTransformacion,i); // saco informacion de las posiciones una por una
+        infoNodo * nodoParaHilo = list_get(solicitudesTransformacion,i); // saco informacion de las posiciones una por una
         log_info(loggerMaster, "Realizando transformacion en el Nodo: %s.", nodoParaHilo->conexion->nombreNodo);
         pthread_create(&hiloInit,NULL, (void*) conectarAWorkerTransformacion,(void*)nodoParaHilo);
         pthread_join(hiloInit,NULL);
     }
-
 }
+
+void matarHilosDeTalNodo(char* nodo){
+    uint32_t pos;
+
+    for(pos=0; pos < list_size(hilosCreados); pos++){
+        infoHilo * info = list_get(hilosCreados,pos);
+        char* nodoAux = info->nodo;
+
+        if(strcmp(nodoAux,nodo)==0){
+            pthread_t threadAMatar = info->thread;
+            pthread_detach(threadAMatar);
+            list_remove(hilosCreados,pos);
+        }
+    }
+}
+
+// CREO UNA STRUCT BANDERA PARA CADA NODO.
+void crearBanderasParaCadaNodo(){
+    int i;
+    banderasReplanificacion = list_create();
+
+    for (i=0; i<list_size(nombresNodos); i++){
+        banderasParaNodos * banderas = malloc(sizeof(banderasParaNodos));
+        banderas->nodo = string_new();
+
+        banderas->nodo = list_get(nombresNodos,i);
+        banderas->FLAG_REPLANIFICACION = 0;
+        banderas->FLAG_ABORTAR = 0;
+
+        list_add(banderasReplanificacion,banderas);
+    }
+}
+
+// CARGO INFO DE HILO EN UNA LISTA PARA PODER MATARLOS LUEGO
+void cargoHiloEnLista(pthread_t thread, char* nodo){
+    infoHilo * info = malloc(sizeof(infoHilo));
+    info->nodo = string_new();
+    info->nodo = nodo;
+    info->thread = thread;
+    list_add(hilosCreados,info);
+}
+
+// CON ESTO PUEDO CAMBIAR VALORES DE LAS FLAGS
+void cambiarFlagNodo(char* nodo, uint32_t flagTransformacion, uint32_t flagAbortar){
+    int i;
+    for (i = 0; i<list_size(banderasReplanificacion); i++){
+        banderasParaNodos * banderaAux = list_get(banderasReplanificacion,i);
+
+        char* nodoAux = banderaAux->nodo;
+        if(strcmp(nodoAux,nodo)==0){
+            banderaAux->FLAG_REPLANIFICACION = flagTransformacion;
+            banderaAux->FLAG_ABORTAR = flagAbortar;
+        }    
+    }
+}
+
 
 
 void* serializarTransformacionToWorker(uint32_t bloque, uint32_t bytesOcupados, char* nombreTemporal,char* contenidoScript){
@@ -259,6 +298,7 @@ void* serializarTransformacionToYama(char* nodo, uint32_t bloque){
 }
 
 
+/*
 infoNodo * recibirNodoAReplanificar(){
     infoNodo * nodoNuevo = (infoNodo*)malloc(sizeof(infoNodo));
     nodoNuevo->conexion = (conexionNodo*) malloc(sizeof(conexionNodo));
@@ -272,3 +312,4 @@ infoNodo * recibirNodoAReplanificar(){
 
     return nodoNuevo;
 }
+*/
