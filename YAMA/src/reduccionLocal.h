@@ -13,7 +13,7 @@
 #ifndef REDUCCIONLOCAL_H_
 #define REDUCCIONLOCAL_H_
 
-void cargarReduccionLocal(int, int, t_list*);
+int cargarReduccionLocal(int, int, t_list*);
 void terminarReduccionLocal(int, int);
 bool sePuedeHacerReduccionLocal(t_list*);
 

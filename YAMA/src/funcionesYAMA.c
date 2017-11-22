@@ -110,10 +110,12 @@ int obtenerNumeroDeMaster(){
 void deserializarIPYPuerto(conexionNodo* conexion){
 	if(recibirUInt(socketFS) != DATOS_NODO){
 		log_error(loggerYAMA, "Error al recibir la IP y el puerto del nodo.");
-		exit(-1);
+		conexion->puertoNodo = -1;
+		conexion->ipNodo = NULL;
+	}else{
+		conexion->puertoNodo = recibirUInt(socketFS);
+		conexion->ipNodo = recibirString(socketFS);
 	}
-	conexion->puertoNodo = recibirUInt(socketFS);
-	conexion->ipNodo = recibirString(socketFS);
 }
 
 void obtenerIPYPuerto(conexionNodo* conexion){

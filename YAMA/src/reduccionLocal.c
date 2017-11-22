@@ -11,7 +11,7 @@ bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 }
 
 //CARGO LA REDUCCION LOCAL
-void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
+int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
 	log_info(loggerYAMA, "Se prosigue a hacer la reduccion local en el nodo %s.", admin->nombreNodo);
@@ -23,6 +23,9 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	string_append(&conexion->nombreNodo, admin->nombreNodo);
 	//CARGO LA CONEXION
 	obtenerIPYPuerto(conexion);
+	if(conexion->ipNodo == NULL && conexion->puertoNodo == -1){
+		return -1;
+	}
 	log_info(loggerYAMA, "Se obtuvieron los datos para llevar a cabo las conexiones con los otros nodos.");
 	void* temporalesSerializados = serializarInfoReduccionLocal(conexion, admin->nameFile, listaDelNodo);
 	log_info(loggerYAMA, "Se prosigue a enviar los datos para la reduccion local al Master %d.", nroMaster);
@@ -33,6 +36,7 @@ void cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	list_add(tablaDeEstados, admin);
 	log_info(loggerYAMA, "Se agrego la informacion de la reduccion local del master %d en la tabla de estados.", nroMaster);
 	liberarConexion(conexion);
+	return 1;
 }
 
 //TERMINAR REDUCCION LOCAL

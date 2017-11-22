@@ -17,7 +17,7 @@ t_list *recibirInfoArchivo(){
 	int tipoMsj = recvDeNotificacion(socketFS);
 	if(tipoMsj != INFO_ARCHIVO_FS){
 		log_error(loggerYAMA, "Error al recibir paquete con informacion de archivo de FileSystem");
-		exit(-1);
+		return NULL;
 	}
 	t_list *listaInfoFs = list_create();
 	int cantidadDeBloques = recibirUInt(socketFS);
@@ -53,11 +53,14 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
   string_append(&informacion->conexion->nombreNodo, administracion->nombreNodo);
   string_append(&informacion->nombreTemporal, administracion->nameFile);
   obtenerIPYPuerto(informacion->conexion);
+  if(informacion->conexion->ipNodo == NULL && informacion->conexion->puertoNodo == -1){
+	  return NULL;
+  }
   return informacion;
 }
 
 //CARGO LOS DATOS DE LA TRANSFORMACION EN LA TABLA DE ESTADOS
-void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaDeCopias){
+int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaDeCopias){
 	int numeroDeJobPTarea = obtenerNumeroDeJob();
 	log_info(loggerYAMA, "El master %d tiene el numero de Job %d.", nroMaster, numeroDeJobPTarea);
 	t_list* listaDatosPMaster = list_create();
@@ -76,6 +79,9 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 //		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
 		nuevaAdministracion->nroBloque = copiaAUsar->nroBloque;
 		infoNodo* informacionDeNodo = generarInfoParaMaster(nuevaAdministracion, infoDeBloque);
+		if(informacionDeNodo == NULL){
+			return -1;
+		}
 		list_add(tablaDeEstados, nuevaAdministracion);
 		list_add(listaDatosPMaster, informacionDeNodo);
 		liberarInfoFS(infoDeBloque);
@@ -86,6 +92,7 @@ void cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloque
 	log_info(loggerYAMA, "Se envio correctamente la informacion de la transformacion al master %d", nroMaster);
 	list_destroy_and_destroy_elements(listaDatosPMaster, (void*)liberarDatoMaster);
 	free(informacionDeTransformacion);
+	return 1;
 }
 
 //FINALIZO LA TRANSFORMACION
