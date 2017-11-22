@@ -40,3 +40,38 @@
 [INFO] 23:16:12:93 FileSystem/(17530:17530): Se ha recibido una nueva conexion.
 [INFO] 23:16:14:182 FileSystem/(17530:17530): Se recibio nueva actividad de los clientes
 [INFO] 23:16:21:736 FileSystem/(17530:17530): Se recibio nueva actividad de los clientes
+[INFO] 15:52:15:906 FileSystem/(3275:3275): Se recibio nueva actividad de los clientes
+[INFO] 15:52:28:521 FileSystem/(3275:3275): Se ha recibido una nueva conexion.
+[INFO] 15:52:30:587 FileSystem/(3275:3275): Se recibio nueva actividad de los clientes
+[INFO] 15:52:41:112 FileSystem/(3275:3275): Se recibio nueva actividad de los clientes
+[INFO] 15:54:21:621 FileSystem/(3612:3612): Se recibio nueva actividad de los clientes
+[INFO] 15:54:21:621 FileSystem/(3612:3612): Se ha recibido una nueva conexion.
+[INFO] 15:54:21:622 FileSystem/(3612:3612): Se recibio nueva actividad de los clientes
+[INFO] 15:54:21:626 FileSystem/(3612:3612): Se recibio nueva actividad de los clientes
+[DEBUG] 15:54:32:118 FileSystem/(3612:3612): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:58:47:533 FileSystem/(3701:3701): Se recibio nueva actividad de los clientes
+[INFO] 15:58:47:533 FileSystem/(3701:3701): Se ha recibido una nueva conexion.
+[INFO] 15:58:47:533 FileSystem/(3701:3701): Se recibio nueva actividad de los clientes
+[INFO] 15:58:47:537 FileSystem/(3701:3701): Se recibio nueva actividad de los clientes
+[DEBUG] 15:58:53:574 FileSystem/(3701:3701): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:02:56:17 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:02:56:17 FileSystem/(3877:3877): Se ha recibido una nueva conexion.
+[INFO] 16:02:56:18 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:02:56:22 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[DEBUG] 16:02:58:978 FileSystem/(3877:3877): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:03:58:904 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:04:04:720 FileSystem/(3877:3877): Se ha recibido una nueva conexion.
+[INFO] 16:04:08:143 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:04:58:164 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:05:00:778 FileSystem/(3877:3877): Se ha recibido una nueva conexion.
+[INFO] 16:05:00:778 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:05:00:781 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[DEBUG] 16:05:01:913 FileSystem/(3877:3877): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:05:17:483 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:05:20:945 FileSystem/(3877:3877): Se ha recibido una nueva conexion.
+[INFO] 16:05:25:137 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[INFO] 16:07:01:36 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[ERROR] 16:07:10:825 FileSystem/(3877:3877): La conexion recibida es erronea.
+[INFO] 16:07:21:924 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
+[ERROR] 16:07:21:924 FileSystem/(3877:3877): La conexion recibida es erronea.
+[ERROR] 16:07:21:924 FileSystem/(3877:3877): No se pudo llevar a cabo el select.

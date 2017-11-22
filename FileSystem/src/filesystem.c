@@ -26,7 +26,6 @@ char * obtenerPathBitmap(char * nombreNodo){
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
 	return path;
-
 }
 
 t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
@@ -72,7 +71,7 @@ t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 		log_error(loggerFileSystem,"Fallo al cerrar el archivo.");
 		exit(-1);
 	}
-
+	free(path);
 	return bitarray;
 
 }
@@ -82,12 +81,14 @@ t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
 
 	log_debug(loggerFileSystem,"Se procede a crear el archivo Bitmap.bin");
 	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
-	int file = open(path,O_RDWR|O_CREAT,S_IRUSR|S_IWUSR);
+	int file = open(path, O_RDWR | O_CREAT,S_IRUSR | S_IWUSR);
 	char* contenido=string_repeat('\0',cantBloques);
 	if(file<0){
 		log_info(loggerFileSystem,"No se pudo crear el archivo");
 	}
 	write(file,contenido,cantBloques);
+	free(contenido);
+	free(path);
 	return abrirBitmap(nombreNodo,cantBloques);
 
 
@@ -124,6 +125,7 @@ int cantBloquesLibres(t_bitarray* bitarray) {
 void registrarNodo(int socket) {
 
 	char * nombreNodo;
+	//provisorio para probar: agregar string_new();
 	char* ip;
 	int cantBloques,puerto;
 	t_bitarray * bitarray;
@@ -179,6 +181,8 @@ void registrarNodo(int socket) {
 	list_add(listaConexionNodos,datosConexion);
 	}
 	hayNodos++;
+	free(ip);
+	free(nombreNodo);
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -375,6 +379,7 @@ void enviarListaNodos(int socket) {
 	}
 	int tamanioMsj = sacarTamanioMensaje();
 	sendRemasterizado(socket, ES_FS, tamanioMsj, mensaje);
+	free(mensaje);
 }
 
 //ENVIAR DATOS
@@ -513,7 +518,7 @@ int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
 	chequearParametros(argc, 2);
 	t_config* configuracionFS = generarTConfig(argv[1], 1);
-	//t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
