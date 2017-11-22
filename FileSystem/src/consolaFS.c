@@ -1,3 +1,4 @@
+
 #include "consolaFS.h"
 
 
@@ -105,8 +106,8 @@ void analizarComando(char * linea){
       case 3:{
         char * comandoNuevo = string_new();
 
-        char * nombreArchivoViejo = comandoDesarmado[1];
-        char * nombreArchivoNuevo = comandoDesarmado[2];
+        char * nombreArchivoViejo = comandoDesarmado[0];
+        char * nombreArchivoNuevo = comandoDesarmado[1];
 
         if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
         	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
@@ -117,7 +118,6 @@ void analizarComando(char * linea){
         string_append(&comandoNuevo,nombreArchivoViejo);
         string_append(&comandoNuevo," ");
         string_append(&comandoNuevo,nombreArchivoNuevo);
-
 
         system(comandoNuevo); 
         printf("\n");
@@ -144,9 +144,12 @@ void analizarComando(char * linea){
       break;
 
        case 7:{
-        //
-        // Ver bien como hacer estos comandos despues
-        //
+    	   char * nombreArchivoViejo = comandoDesarmado[0];
+    	   char * nombreArchivoNuevo = comandoDesarmado[1];
+    	   char flag = (char)atoi(comandoDesarmado[2]);
+
+    	   almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
+
         printf("Comando en arreglo! Todavia no se puede ejecutar! (7)\n");
       }
       break;

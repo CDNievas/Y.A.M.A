@@ -8,6 +8,8 @@
 #include "../../Biblioteca/src/configParser.h"
 #include <readline/chardefs.h>
 #include <readline/history.h>
+#include <commons/bitarray.h>
+#include <sys/mman.h>
 
 #ifndef CONSOLAFS_H_
 #define CONSOLAFS_H_

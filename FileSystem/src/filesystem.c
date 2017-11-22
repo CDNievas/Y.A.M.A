@@ -59,10 +59,12 @@ t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 				close(archivo);
 	}
 
-	int tamanioBitarray=cantBloques/2;
-	 if(cantBloques % 2 != 0){
-	  tamanioBitarray++;
-	 }
+//	int tamanioBitarray=cantBloques/2;
+//	 if(cantBloques % 2 != 0){
+//	  tamanioBitarray++;
+//	 }
+
+	int tamanioBitarray=cantBloques;
 
 	bitarray = bitarray_create_with_mode(mapArchivo,tamanioBitarray,MSB_FIRST);
 
@@ -109,7 +111,7 @@ void cargarFileSystem(t_config* configuracionFS) {
 int cantBloquesLibres(t_bitarray* bitarray) {
 	int i = 0;
 	int cont = 0;
-	int tamaniobitarray = bitarray_get_max_bit(bitarray);
+	int tamaniobitarray = (bitarray_get_max_bit(bitarray)/8);
 	for (; i < tamaniobitarray; i++) {
 		if (!bitarray_test_bit(bitarray, i)) {
 			cont++;
@@ -147,7 +149,11 @@ void registrarNodo(int socket) {
 	string_append(&bloque->nodo, nombreNodo);
 	bloque->total = cantBloques;
 	bloque->libre = cantBloquesLibres(bitarray);
-	bloque->porcentajeOcioso=ceil((bloque->libre*100)/cantBloques);
+	int numero = (bloque->libre*100)/cantBloques;
+	if((bloque->libre*100)%cantBloques != 0){
+	 numero++;
+	}
+	bloque->porcentajeOcioso=numero;
 	bloque->socket=socket;
 
 	// Aniado a la tabla de info de nodos
@@ -182,10 +188,26 @@ int sacarTamanioArchivo(FILE* archivo) {
 	return tamanioArchivo;
 }
 
+int asignarBloqueNodo(contenidoNodo* nodo){
+	int posicion=0;
+	bool esNodo(tablaBitmapXNodos* nodoConBitmap){
+		return(string_equals_ignore_case(nodoConBitmap->nodo,nodo->nodo));
+	}
+	t_bitarray* bitarray = list_find(listaBitmap,(void*)esNodo);
+	int tamaniobitarray = (bitarray_get_max_bit(bitarray)/8);
+	for(;posicion<tamaniobitarray;posicion++){
+		if (!bitarray_test_bit(bitarray, posicion)) {
+			return posicion;
+		}
+	}
+	return 0;
+}
 
-void asignarEnviarANodo(void* contenidoAEnviar,int posicion){
+void asignarEnviarANodo(char* contenidoAEnviar,int tamanio){
 	int tabajoOcioso=0;
 	int cont=0;
+	void* mensaje=malloc(sizeof(uint32_t)*2+string_length(contenidoAEnviar));
+	uint32_t posicionActual=0;
 	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
 	contenidoNodo* nodo1=malloc(sizeof(contenidoNodo));
 	for(;cont<list_size(tablaGlobalNodos->nodo);cont++){
@@ -200,31 +222,58 @@ void asignarEnviarANodo(void* contenidoAEnviar,int posicion){
 		nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
 	}
 
-	sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,posicion,contenidoAEnviar);
-	if(recvDeNotificacion(nodo0->socket)==ESC_CORRECTA){
+	int bloqueAsignado=asignarBloqueNodo(nodo0);
 
+	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
+	posicionActual+=tamanio;
+
+	sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,tamanio,mensaje);
+	if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
+		//CACHER ERROR
 	}
+	free(mensaje);
 
-	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicion,contenidoAEnviar);
+	mensaje=malloc(sizeof(uint32_t)*2+string_length(contenidoAEnviar));
 
-	if(recvDeNotificacion(nodo1->socket)==ESC_CORRECTA){
+	bloqueAsignado=asignarBloqueNodo(nodo1);
 
+	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
+	posicionActual+=tamanio;
+
+
+	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,tamanio,mensaje);
+
+	if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
+		//CACHER ERROR
 	}
+	free(mensaje);
 
 }
 
 void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
-	int posicionActual = 0;
+	uint32_t posicionActual = 0;
 	void enviarNodoPorPosicion(int posicion) {
 		if (posicionActual == 0) {
-			void* contenidoAEnviar = malloc(posicion+1);
+			char* contenidoAEnviar = malloc(posicion);
 			fread(contenidoAEnviar, posicion, 1, archivo);
 			asignarEnviarANodo(contenidoAEnviar, posicion);
 			free(contenidoAEnviar);
 		} else {
 			posicionActual--;
-			int posicionAnterior = (int) list_get(posiciones,posicionActual);
-			void* contenidoAEnviar = malloc(posicion - posicionAnterior);
+			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual);
+			char* contenidoAEnviar = malloc(posicion - posicionAnterior);
 			fread(contenidoAEnviar, posicion - posicionAnterior, 1,archivo);
 			asignarEnviarANodo(contenidoAEnviar,posicion - posicionAnterior);
 			free(contenidoAEnviar);
@@ -236,8 +285,9 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
 
 void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
 
-	FILE* archivo = fopen(pathArchivo, "r+");
-	int tamanio = sacarTamanioArchivo(archivo);
+	//FILE* archivo = fopen(pathArchivo, "rb");//CACHEAR ERROR ARCHIVO
+	FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
+	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
 
 	if (tipo == 'B') {
@@ -252,9 +302,9 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
 		}
 	} else {
 		char digito;
-		int ultimoBarraN = 0;
-		int registroAntesMega = 0;
-		int ultimaPosicion = 0;
+		uint32_t ultimoBarraN = 0;
+		uint32_t registroAntesMega = 0;
+		uint32_t ultimaPosicion = 0;
 
 		while (!feof(archivo)) {
 			digito = fgetc(archivo);
@@ -266,7 +316,6 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
 			if (ftell(archivo) == 1048576 + registroAntesMega) {
 				registroAntesMega = ultimoBarraN;
 				list_add(posicionBloquesAGuardar,ultimoBarraN);
-				//list_add(posiciones, &ultimoBarraN);
 			}
 		}
 
@@ -280,7 +329,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
 }
 
 //------------------------------------------------LEER-------------------------------------------------------------
-void* leerArchivo(char* ruta,char* nombreArchivo){
+void leerArchivo(char* ruta,char* nombreArchivo){
 	int cont=0;
 	bool esArchivo(tablaArchivos* archivo){
 		return(string_equals_ignore_case(archivo->nombreArchivo,nombreArchivo));
@@ -289,10 +338,10 @@ void* leerArchivo(char* ruta,char* nombreArchivo){
 
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+
 	}
 
 }
-
 
 //--------------------------------YAMA----------------------------------------
 //ENVIAR TABLA NODOS
@@ -438,24 +487,25 @@ void enviarDatosConexionNodo(int socket){
 
 }
 //--------------------------------Worker----------------------------------------
-//void almacenarArchivoWorker(int socket){
-//	char* contenido = string_new();
-//	char* path = string_new();
-//	char* nombreArchivo = string_new();
-//	uint32_t tipo;
-//	contenido = recibirString(socket);
-//	nombreArchivo = recibirString(socket);
-//	path = recibirString(socket);
-//	tipo = recibirUInt(socket);
-//	FILE* archivo=fopen(nombreArchivo,r+);
-//
-//	if(tipo==21){
-//		almacenarArchivo(,path,B);
-//	}
-//	if(tipo==22){
-//
-//	}
-//}
+void almacenarArchivoWorker(int socket){
+	char* contenido = string_new();
+	char* path = string_new();
+	char* nombreArchivo = string_new();
+	uint32_t tipo;
+	contenido = recibirString(socket);
+	nombreArchivo = recibirString(socket);
+	path = recibirString(socket);
+	tipo = recibirUInt(socket);
+	FILE* archivo=fopen(nombreArchivo,"r+");
+	fputs(contenido,archivo);
+	fclose(archivo);
+	if(tipo==21){
+		almacenarArchivo(nombreArchivo,path,'B');
+	}
+	if(tipo==22){
+		almacenarArchivo(nombreArchivo,path,'T');
+	}
+}
 
 
 //--------------------------------Main----------------------------------------
@@ -513,9 +563,6 @@ int main(int argc, char **argv) {
 					switch (notificacion) {
 					case ES_DATANODE:
 						sendDeNotificacion(socketClienteChequeado, ES_FS);
-						break;
-					case ES_MASTER:
-						//Hago mas cosas
 						break;
 					case ES_YAMA:
 						if (hayNodos==2 && esEstadoSeguro) {
