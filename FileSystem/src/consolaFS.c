@@ -144,9 +144,9 @@ void analizarComando(char * linea){
       break;
 
        case 7:{
-    	   char * nombreArchivoViejo = comandoDesarmado[0];
-    	   char * nombreArchivoNuevo = comandoDesarmado[1];
-    	   char flag = (char)atoi(comandoDesarmado[2]);
+    	   char * nombreArchivoViejo = comandoDesarmado[1];
+    	   char * nombreArchivoNuevo = comandoDesarmado[2];
+    	   char * flag = comandoDesarmado[3];
 
     	   almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
 

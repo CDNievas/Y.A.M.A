@@ -134,8 +134,8 @@ void registrarNodo(int socket) {
 
 	cantBloques = recibirUInt(socket);
 
-	ip=recibirString(socket);
-	puerto=recibirUInt(socket);
+	//ip=recibirString(socket);
+	//puerto=recibirUInt(socket);
 
 
 	// Checkeo estado anterior
@@ -172,17 +172,17 @@ void registrarNodo(int socket) {
 	list_add(listaBitmap, bitmapNodo);
 
 	//Aniado los datos de conexion del nodo
-	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
-	datosConexion->nodo=string_new();
-	string_append(&datosConexion->nodo, nombreNodo);
-	datosConexion->ip=string_new();
-	string_append(&datosConexion->ip, ip);
-	datosConexion->puerto=puerto;
-	list_add(listaConexionNodos,datosConexion);
+//	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
+//	datosConexion->nodo=string_new();
+//	string_append(&datosConexion->nodo, nombreNodo);
+//	datosConexion->ip=string_new();
+//	string_append(&datosConexion->ip, ip);
+//	datosConexion->puerto=puerto;
+//	list_add(listaConexionNodos,datosConexion);
 	}
 	hayNodos++;
-	free(ip);
-	free(nombreNodo);
+	//free(ip);
+	//free(nombreNodo);
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -197,10 +197,10 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	bool esNodo(tablaBitmapXNodos* nodoConBitmap){
 		return(string_equals_ignore_case(nodoConBitmap->nodo,nodo->nodo));
 	}
-	t_bitarray* bitarray = list_find(listaBitmap,(void*)esNodo);
-	int tamaniobitarray = (bitarray_get_max_bit(bitarray)/8);
+	tablaBitmapXNodos* nodoConbitarray = list_find(listaBitmap,(void*)esNodo);
+	int tamaniobitarray = (bitarray_get_max_bit(nodoConbitarray->bitarray)/8);
 	for(;posicion<tamaniobitarray;posicion++){
-		if (!bitarray_test_bit(bitarray, posicion)) {
+		if (!bitarray_test_bit(nodoConbitarray->bitarray, posicion)) {
 			return posicion;
 		}
 	}
@@ -221,7 +221,7 @@ void asignarEnviarANodo(char* contenidoAEnviar,int tamanio){
 		nodo0=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia0);
 
 		bool nodoMasOciosoCopia1(contenidoNodo* contenidoDelNodo){
-			return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo));
+			return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo)==0);
 		}
 		nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
 	}
@@ -287,14 +287,14 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
 
-void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
+void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
-	//FILE* archivo = fopen(pathArchivo, "rb");//CACHEAR ERROR ARCHIVO
-	FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
+	FILE* archivo = fopen(pathArchivo, "r+");//CACHEAR ERROR ARCHIVO
+	//FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
-
-	if (tipo == 'B') {
+	fseek(archivo,0,SEEK_SET);
+	if (strcmp(tipo,"B")==0) {
 		while (tamanio >= 0) {
 			if (tamanio < 1048576) {
 				list_add(posicionBloquesAGuardar,tamanio);
@@ -305,7 +305,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char tipo) {
 			}
 		}
 	} else {
-		char digito;
+		int digito;
 		uint32_t ultimoBarraN = 0;
 		uint32_t registroAntesMega = 0;
 		uint32_t ultimaPosicion = 0;
@@ -516,9 +516,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc, 2);
-	t_config* configuracionFS = generarTConfig(argv[1], 1);
-//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	//chequearParametros(argc, 2);
+	//t_config* configuracionFS = generarTConfig(argv[1], 1);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);

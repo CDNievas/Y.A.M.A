@@ -75,3 +75,54 @@
 [INFO] 16:07:21:924 FileSystem/(3877:3877): Se recibio nueva actividad de los clientes
 [ERROR] 16:07:21:924 FileSystem/(3877:3877): La conexion recibida es erronea.
 [ERROR] 16:07:21:924 FileSystem/(3877:3877): No se pudo llevar a cabo el select.
+[INFO] 17:38:26:384 FileSystem/(3945:3945): Se recibio nueva actividad de los clientes
+[INFO] 17:38:29:894 FileSystem/(3945:3945): Se ha recibido una nueva conexion.
+[INFO] 17:38:31:513 FileSystem/(3945:3945): Se recibio nueva actividad de los clientes
+[INFO] 17:38:37:82 FileSystem/(3945:3945): Se recibio nueva actividad de los clientes
+[INFO] 17:43:22:590 FileSystem/(4245:4245): Se recibio nueva actividad de los clientes
+[INFO] 17:43:26:49 FileSystem/(4245:4245): Se ha recibido una nueva conexion.
+[INFO] 17:43:27:959 FileSystem/(4245:4245): Se recibio nueva actividad de los clientes
+[INFO] 17:43:33:990 FileSystem/(4245:4245): Se recibio nueva actividad de los clientes
+[INFO] 17:44:23:870 FileSystem/(4458:4458): Se recibio nueva actividad de los clientes
+[INFO] 17:44:28:61 FileSystem/(4458:4458): Se ha recibido una nueva conexion.
+[INFO] 17:44:29:922 FileSystem/(4458:4458): Se recibio nueva actividad de los clientes
+[INFO] 17:44:35:475 FileSystem/(4458:4458): Se recibio nueva actividad de los clientes
+[DEBUG] 17:44:40:626 FileSystem/(4458:4458): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:02:50:540 FileSystem/(4768:4768): Se recibio nueva actividad de los clientes
+[INFO] 18:02:50:540 FileSystem/(4768:4768): Se ha recibido una nueva conexion.
+[INFO] 18:02:50:541 FileSystem/(4768:4768): Se recibio nueva actividad de los clientes
+[INFO] 18:02:50:550 FileSystem/(4768:4768): Se recibio nueva actividad de los clientes
+[DEBUG] 18:02:57:249 FileSystem/(4768:4768): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:04:28:364 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[INFO] 18:04:28:365 FileSystem/(4888:4888): Se ha recibido una nueva conexion.
+[INFO] 18:04:28:366 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[INFO] 18:04:28:377 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[DEBUG] 18:04:30:847 FileSystem/(4888:4888): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:04:53:806 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[INFO] 18:04:53:806 FileSystem/(4888:4888): Se ha recibido una nueva conexion.
+[INFO] 18:04:53:806 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[INFO] 18:04:53:808 FileSystem/(4888:4888): Se recibio nueva actividad de los clientes
+[DEBUG] 18:04:56:565 FileSystem/(4888:4888): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:07:47:367 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[INFO] 18:07:47:367 FileSystem/(4981:4981): Se ha recibido una nueva conexion.
+[INFO] 18:07:47:369 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[INFO] 18:07:47:384 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[DEBUG] 18:07:49:531 FileSystem/(4981:4981): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:07:55:956 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[INFO] 18:07:55:957 FileSystem/(4981:4981): Se ha recibido una nueva conexion.
+[INFO] 18:07:55:957 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[INFO] 18:07:55:959 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[DEBUG] 18:07:56:795 FileSystem/(4981:4981): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:13:29:432 FileSystem/(4981:4981): Se recibio nueva actividad de los clientes
+[ERROR] 18:13:29:433 FileSystem/(4981:4981): La conexion recibida es erronea.
+[INFO] 18:23:18:15 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[INFO] 18:23:18:19 FileSystem/(5301:5301): Se ha recibido una nueva conexion.
+[INFO] 18:23:18:24 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[INFO] 18:23:18:42 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[DEBUG] 18:23:20:996 FileSystem/(5301:5301): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:23:32:335 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[INFO] 18:23:32:336 FileSystem/(5301:5301): Se ha recibido una nueva conexion.
+[INFO] 18:23:32:336 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[INFO] 18:23:32:365 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
+[DEBUG] 18:23:34:467 FileSystem/(5301:5301): Se procede a crear el archivo Bitmap.bin
+[INFO] 18:27:31:104 FileSystem/(5301:5301): Se recibio nueva actividad de los clientes
