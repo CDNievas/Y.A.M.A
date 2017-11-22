@@ -134,3 +134,4 @@ int conectarAWorker(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
     return socket_server;
 
 }
+

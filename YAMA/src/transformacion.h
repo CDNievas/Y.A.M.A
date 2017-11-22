@@ -17,7 +17,7 @@ void solicitarArchivo(char*);
 t_list *recibirInfoArchivo();
 char* recibirNombreArchivo(int);
 //CARGO LA TRANSFORMACION EN LA TABLA, OBTENGO LOS NODOS A USAR.
-void cargarTransformacion(int, int, t_list*, t_list*);
+int cargarTransformacion(int, int, t_list*, t_list*);
 void terminarTransformacion(int, int, char*);
 
 bool hayQueReplanificar(administracionYAMA*, t_list*);
@@ -26,6 +26,6 @@ t_list* filtrarTablaFallida(uint32_t, char*);
 void cargarFallo(uint32_t, char*);
 t_list* obtenerBloquesFallidos(uint32_t, char*);
 //Replanifico con la otra copia y cargo en la tabla de estados
-bool cargarReplanificacion(int, uint32_t, char*, t_list*);
+int cargarReplanificacion(int, uint32_t, char*, t_list*);
 
 #endif /* TRANSFORMACION_H_ */

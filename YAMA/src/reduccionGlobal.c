@@ -31,18 +31,25 @@ t_list* obtenerConexionesDeNodos(t_list* listaDeMaster, char* nodoEncargado){
 		conect->nombreNodo = string_new();
 		string_append(&conect->nombreNodo, admin->nombreNodo);
 		obtenerIPYPuerto(conect);
+		if(conect->ipNodo == NULL && conect->puertoNodo == -1){
+			return NULL;
+		}
 		list_add(listaDeConexiones, conect);
 	}
 	return listaDeConexiones;
 }
 
-void cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster){
+int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster){
 	administracionYAMA* nuevaReduccionG = generarAdministracion(obtenerJobDeNodo(listaDeMaster),nroMaster, REDUCCION_GLOBAL, obtenerNombreTemporalGlobal());
 	nuevaReduccionG->nroBloque = 0;
 	log_info(loggerYAMA, "Se prosigue a aplicar el algoritmo de balanceo para elegir el nodo encargado de la reduccion global");
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
 	log_info(loggerYAMA, "El nodo elegido para llevar a cabo la reduccion global es %s.", nuevaReduccionG->nombreNodo);
 	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster, nuevaReduccionG->nombreNodo);
+	if(listaDeConexiones == NULL){
+		log_error(loggerYAMA, "Se fallo al tratar de obtener los datos de conexion de los nodos.");
+		return -1;
+	}
 	log_info(loggerYAMA, "Se pidieron los datos para que el master %d lleve a cabo las conexiones con el nodo encargado.");
 	actualizarWLRGlobal(nuevaReduccionG->nombreNodo, list_size(listaDeMaster));
 	log_info(loggerYAMA, "Se actualizo el WL del nodo %s.", nuevaReduccionG->nombreNodo);
@@ -52,6 +59,7 @@ void cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaste
 	list_add(tablaDeEstados, nuevaReduccionG);
 	free(infoGlobalSerializada);
 	list_destroy_and_destroy_elements(listaDeConexiones, (void*)liberarConexion);
+	return 1;
 }
 
 void terminarReduccionGlobal(uint32_t nroMaster){
@@ -64,19 +72,23 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 
 
 
-void almacenadoFinal(int socketMaster, uint32_t nroMaster){
+int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
 	log_info(loggerYAMA, "El nodo encargado para el almacenamiento final es %s.", nodoEncargado);
 	conexionNodo* conect = generarConexionNodo();
 	conect->nombreNodo = string_new();
 	string_append(&conect->nombreNodo, nodoEncargado);
 	obtenerIPYPuerto(conect);
+	if(conect->nombreNodo == NULL && conect->puertoNodo == -1){
+		return -1;
+	}
 	log_info(loggerYAMA, "Se prosigue a serializar la informacion para el almacenamiento final del master %d.", nroMaster);
 	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect);
 	sendRemasterizado(socketMaster, ALMACENAMIENTO_FINAL, obtenerTamanioInfoAlmacenamientoFinal(conect), infoAlmacenadoFinal);
 	log_info(loggerYAMA, "Se enviaron los datos para el almacenamiento final al master %d.", nroMaster);
 	free(infoAlmacenadoFinal);
 	liberarConexion(conect);
+	return 1;
 }
 
 void reestablecerWL(int nroMaster){
@@ -97,4 +109,12 @@ void reestablecerWL(int nroMaster){
 
 	list_destroy(listaTransformaciones);
 	list_destroy(listaReduccionesLocales);
+}
+
+void fallaReduccionGlobal(int nroMaster){
+	bool esReduccionGlobal(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_GLOBAL;
+	}
+	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionGlobal);
+	admin->estado = FALLO;
 }
