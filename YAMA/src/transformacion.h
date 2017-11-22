@@ -26,6 +26,6 @@ t_list* filtrarTablaFallida(uint32_t, char*);
 void cargarFallo(uint32_t, char*);
 t_list* obtenerBloquesFallidos(uint32_t, char*);
 //Replanifico con la otra copia y cargo en la tabla de estados
-bool cargarReplanificacion(int, uint32_t, char*, t_list*);
+int cargarReplanificacion(int, uint32_t, char*, t_list*);
 
 #endif /* TRANSFORMACION_H_ */

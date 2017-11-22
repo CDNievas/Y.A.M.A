@@ -16,5 +16,6 @@
 int cargarReduccionLocal(int, int, t_list*);
 void terminarReduccionLocal(int, int);
 bool sePuedeHacerReduccionLocal(t_list*);
+void fallaReduccionLocal(int);
 
 #endif /* REDUCCIONLOCAL_H_ */

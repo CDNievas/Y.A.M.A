@@ -18,10 +18,10 @@
 void manejadorMaster(void* socketMasterCliente){
 	int socketMaster = *(int*)socketMasterCliente;
 	int sigueProcesando = 1;
-	char* nombreArchivoPeticion, nodoFallido;
+	char* nombreArchivoPeticion;
+	char* nodoFallido;
 	uint32_t nroMaster = obtenerNumeroDeMaster();
 	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
-	char* nodoEncargado;
 	bool pudoReplanificar = 1;
 	while(sigueProcesando && estaFS){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
@@ -44,7 +44,7 @@ void manejadorMaster(void* socketMasterCliente){
 						log_error(loggerYAMA, "No se pueden llevar a cabo las peticiones del master %d debido a problemas en la conexion con FileSystem.", nroMaster);
 						log_error(loggerYAMA, "Liberando recursos del hilo del master %d.", nroMaster);
 					}
-					list_destroy(listaDeBloquesDeArchivo);
+					list_destroy(listaDeBloquesDeArchivo); //LEAKS AQUI (si hay...)
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
 
@@ -77,11 +77,17 @@ void manejadorMaster(void* socketMasterCliente){
 				cargarFallo(nroMaster, nodoFallido); //MODIFICO LA TABLA DE ESTADOS (PONGO EN FALLO LAS ENTRADAS DEL NODO)
 				solicitarArchivo(nombreArchivoPeticion); // PIDO NUEVAMENTE LOS DATOS A FS
 				t_list* listaDeBloques = recibirInfoArchivo(); // RECIBO LOS DATOS DEL ARCHIVO
-				pudoReplanificar = cargarReplanificacion(socketMaster, nroMaster, nodoFallido, listaDeBloques); // CARGO LA REPLANIFICACION EN LA TABLA DE ESTADOS (ACA REPLANIFICO)
-				list_destroy(listaDeBloques);
-				if(!pudoReplanificar){
-					sendDeNotificacion(socketMaster, ABORTAR);
-					pthread_cancel(pthread_self());
+				if(listaDeBloques != NULL){
+					pudoReplanificar = cargarReplanificacion(socketMaster, nroMaster, nodoFallido, listaDeBloques); // CARGO LA REPLANIFICACION EN LA TABLA DE ESTADOS (ACA REPLANIFICO)
+					list_destroy(listaDeBloques);
+					if(pudoReplanificar == 0){
+						sendDeNotificacion(socketMaster, ABORTAR);
+						pthread_cancel(pthread_self());
+					}else if(pudoReplanificar == -1){
+						estaFS = false;
+					}
+				}else{
+					estaFS = false;
 				}
 				free(nodoFallido);
 				break;
@@ -116,16 +122,18 @@ void manejadorMaster(void* socketMasterCliente){
 				close(socketMaster);
 				break;
 			case ERROR_REDUCCION_LOCAL:
-				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION LOCAL. FUNCION RECIBE NROMASTER
-				log_error(loggerYAMA, "Error de reduccion local.\nAbortando el Job");
+				fallaReduccionLocal(nroMaster);
+				log_error(loggerYAMA, "Error de reduccion local.");
+				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				pthread_cancel(pthread_self());
 				sigueProcesando = 0;
 				close(socketMaster);
 				break;
 			case ERROR_REDUCCION_GLOBAL:
-				//ACTUALIZAR TABLA DE ESTADOS, ABORTAR REDUCCION GLOBAL. FUNCION RECIBE NROMASTER
-				log_error(loggerYAMA, "Error de reduccion global.\nAbortando el Job");
+				fallaReduccionGlobal(nroMaster);
+				log_error(loggerYAMA, "Error de reduccion global.");
+				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				pthread_cancel(pthread_self());
 				sigueProcesando = 0;

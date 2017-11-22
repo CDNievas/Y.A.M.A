@@ -53,3 +53,14 @@ void terminarReduccionLocal(int nroMaster, int socketMaster){
 	free(nombreNodo);
 }
 
+void fallaReduccionLocal(int nroMaster){
+	bool esReducLocal(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_LOCAL;
+	}
+	void finalizarReducLocal(administracionYAMA* admin){
+		admin->estado = FALLO;
+	}
+	t_list* listaDeReducciones = list_filter(tablaDeEstados, (void*)esReducLocal);
+	list_iterate(listaDeReducciones, (void*)finalizarReducLocal);
+}
+

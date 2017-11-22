@@ -110,3 +110,11 @@ void reestablecerWL(int nroMaster){
 	list_destroy(listaTransformaciones);
 	list_destroy(listaReduccionesLocales);
 }
+
+void fallaReduccionGlobal(int nroMaster){
+	bool esReduccionGlobal(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_GLOBAL;
+	}
+	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionGlobal);
+	admin->estado = FALLO;
+}
