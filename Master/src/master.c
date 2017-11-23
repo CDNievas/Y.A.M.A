@@ -395,7 +395,7 @@ int main(int argc, char **argv) {
     log_info(loggerMaster,"Se ha conectado con YAMA. IP: %s - PUERTO: %d \n",YAMA_IP,YAMA_PUERTO);
     realizarHandshake(socketYAMA,ES_YAMA);
     log_info(loggerMaster,"Handshake con YAMA realizado exitosamente.\n");
-    enviarArchivoAYAMA(argv[4],socketYAMA);
+    enviarArchivoAYAMA(argv[2],socketYAMA);
     log_info(loggerMaster,"Envio de archivo realizado con exito.\n");
     listaInfoNodos = list_create();
     listaHilosTransformacion = list_create();

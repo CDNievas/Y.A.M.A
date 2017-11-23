@@ -517,9 +517,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-//	chequearParametros(argc, 2);
-//	t_config* configuracionFS = generarTConfig(argv[1], 1);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 1);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);

@@ -21,21 +21,25 @@ t_list *recibirInfoArchivo(){
 		return NULL;
 	}else if(tipoMsj == PATH_FILE_INCORRECTO){
 		return NULL;
+	}else if(tipoMsj == INFO_ARCHIVO_FS){
+		t_list *listaInfoFs = list_create();
+		int cantidadDeBloques = recibirUInt(socketFS);
+		int i;
+		for(i = 0; i < cantidadDeBloques; i++){
+			infoDeFs* informacionDeBloque = generarInformacionDeBloque();
+			informacionDeBloque->nroBloque = recibirUInt(socketFS);
+			informacionDeBloque->copia1->nombreNodo = recibirString(socketFS);
+			informacionDeBloque->copia1->nroBloque = recibirUInt(socketFS);
+			informacionDeBloque->copia2->nombreNodo = recibirString(socketFS);
+			informacionDeBloque->copia2->nroBloque = recibirUInt(socketFS);
+			informacionDeBloque->bytesOcupados = recibirUInt(socketFS);
+			list_add(listaInfoFs, informacionDeBloque);
+		}
+		return listaInfoFs;
+	}else{
+		return NULL;
 	}
-	t_list *listaInfoFs = list_create();
-	int cantidadDeBloques = recibirUInt(socketFS);
-	int i;
-	for(i = 0; i < cantidadDeBloques; i++){
-		infoDeFs* informacionDeBloque = generarInformacionDeBloque();
-		informacionDeBloque->nroBloque = recibirUInt(socketFS);
-		informacionDeBloque->copia1->nombreNodo = recibirString(socketFS);
-		informacionDeBloque->copia1->nroBloque = recibirUInt(socketFS);
-		informacionDeBloque->copia2->nombreNodo = recibirString(socketFS);
-		informacionDeBloque->copia2->nroBloque = recibirUInt(socketFS);
-		informacionDeBloque->bytesOcupados = recibirUInt(socketFS);
-		list_add(listaInfoFs, informacionDeBloque);
-	}
-	return listaInfoFs;
+
 }
 
 
