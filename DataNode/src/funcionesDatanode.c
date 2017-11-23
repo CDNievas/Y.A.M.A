@@ -163,12 +163,15 @@ void enviarInfoNodo(uint32_t socket){
 
 }
 
-void * recvDeBloque(u_int32_t socket, u_int32_t cantBytes){
-	void * bloque = miMalloc(cantBytes,loggerDatanode,"Fallo en recvDeBloque()");
-	if(recv(socket, bloque, cantBytes, MSG_WAITALL)==-1){
-		perror("Error al recibir la notificacion.");
+char * recvDeBloque(u_int32_t socket){
+	uint32_t tamanio = recibirUInt(socket);
+	void* string = malloc(tamanio);
+	if(recv(socket, string, tamanio, 0) == -1){
+		perror("Error al recibir un string.");
 		exit(-1);
 	}
-	return bloque;
+	char* stringRecibido = string_substring_until(string, tamanio);
+	free(string);
+	return stringRecibido;
 }
 

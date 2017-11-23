@@ -41,7 +41,7 @@ void cargarBin();
 int escribirBloque(uint32_t, char *, uint32_t);
 void * leerBloque(uint32_t, uint32_t);
 void enviarInfoNodo(u_int32_t);
-void * recvDeBloque(u_int32_t, u_int32_t);
+char * recvDeBloque(u_int32_t);
 
 void gen_random(char *, const u_int32_t);
 
