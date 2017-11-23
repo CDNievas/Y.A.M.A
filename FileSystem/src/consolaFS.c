@@ -106,8 +106,8 @@ void analizarComando(char * linea){
       case 3:{
         char * comandoNuevo = string_new();
 
-        char * nombreArchivoViejo = comandoDesarmado[0];
-        char * nombreArchivoNuevo = comandoDesarmado[1];
+        char * nombreArchivoViejo = comandoDesarmado[1];
+        char * nombreArchivoNuevo = comandoDesarmado[2];
 
         if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
         	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
@@ -196,9 +196,10 @@ void analizarComando(char * linea){
       break;
 
       case 12:{
-        char * comandoNuevo;//;
+        char * comandoNuevo = string_new();//;
 
-        char * nombreArchivoViejo = comandoDesarmado[1];
+        char * nombreArchivoViejo = string_new();
+        string_append(&nombreArchivoViejo, comandoDesarmado[1]);
         if(nombreArchivoViejo == NULL){
         	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando info.");
         	break;

@@ -139,7 +139,9 @@ t_list* obtenerListaDelNodo(int nroMaster, int socketMaster, char* nombreNodo){
 	bool esDeNodo(administracionYAMA* admin){
 		return (!strcmp(nombreNodo, admin->nombreNodo) && admin->nroMaster == nroMaster && admin->etapa == TRANSFORMACION && admin->estado != FALLO);
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	t_list* listaDelNodo = list_filter(tablaDeEstados, (void*)esDeNodo);
+	pthread_mutex_unlock(&semTablaEstados);
 	return listaDelNodo;
 }
 
@@ -320,9 +322,11 @@ char* buscarNodoEncargado(uint32_t nroMaster){
 	bool esReduccionFinalizada(administracionYAMA* admin){
 		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL;
 	}
-
+	//SEM_WAIT
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);
-	return admin->nombreNodo;
+	char* nodoEncargado = admin->nombreNodo;
+	//SEM_POST
+	return nodoEncargado;
 }
 
 

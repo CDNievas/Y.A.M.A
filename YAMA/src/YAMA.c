@@ -32,7 +32,7 @@ void manejadorMaster(void* socketMasterCliente){
 				solicitarArchivo(nombreArchivoPeticion);
 				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
 				t_list* listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
-				if(listaDeBloquesDeArchivo != NULL){
+				if(listaDeBloquesDeArchivo != NULL && estaFS){
 					log_info(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
 					log_info(loggerYAMA, "Preparando los datos para el balanceo de cargas.");
 					t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
@@ -47,9 +47,8 @@ void manejadorMaster(void* socketMasterCliente){
 					list_destroy(listaDeBloquesDeArchivo); //LEAKS AQUI (si hay...)
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
-
-				}else{
-					estaFS = false;
+				}else if(listaDeBloquesDeArchivo == NULL && estaFS){
+					log_error("El archivo %s solicitado por el master %d no existe en el FileSystem.", nombreArchivoPeticion, nroMaster);
 				}
 				free(nombreArchivoPeticion);
 				break;
@@ -178,7 +177,6 @@ int main(int argc, char *argv[])
 	log_info(loggerYAMA, "Conexion con FileSystem realizada.");
 	handshakeFS();
 	estaFS = true;
-//	pthread_mutex_init(&semConexionFS,NULL);
 	log_info(loggerYAMA, "Handshake con FileSystem realizado.");
 	int socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
  	log_info(loggerYAMA, "Escuchando clientes...");
@@ -192,6 +190,9 @@ int main(int argc, char *argv[])
  	pthread_attr_init(&attr);
  	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   	tablaDeEstados = list_create();
+  	//INICIALIZO SEMAFOROS PARA VAR COMPARTIDAS.
+  	pthread_mutex_init(&semNodosSistema, NULL);
+  	pthread_mutex_init(&semTablaEstados, NULL);
 	while(estaFS){
 		socketMastersAuxiliares = socketsMasterCPeticion;
 		if((select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1)){

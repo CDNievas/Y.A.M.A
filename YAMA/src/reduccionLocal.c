@@ -7,7 +7,10 @@ bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 		return admin->estado == FINALIZADO || admin->estado == FALLO;
 	}
 	log_info(loggerYAMA, "Se prosigue a verificar si se puede llevar a cabo la reduccion local en el Nodo %s.", obtenerNombreNodo(listaDelNodo));
-	return list_all_satisfy(listaDelNodo, (void*)reduccionesLocalesTerminadas);
+	pthread_mutex_lock(&semTablaEstados);
+	int satisfacen = list_all_satisfy(listaDelNodo, (void*)reduccionesLocalesTerminadas);
+	pthread_mutex_unlock(&semTablaEstados);
+	return satisfacen;
 }
 
 //CARGO LA REDUCCION LOCAL
@@ -33,7 +36,9 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	actualizarWLRLocal(admin->nombreNodo, list_size(listaDelNodo));
 	log_info(loggerYAMA, "Se actualizo el WL del nodo %s.", admin->nombreNodo);
 	free(temporalesSerializados);
+	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, admin);
+	pthread_mutex_unlock(&semTablaEstados);
 	log_info(loggerYAMA, "Se agrego la informacion de la reduccion local del master %d en la tabla de estados.", nroMaster);
 	liberarConexion(conexion);
 	return 1;
@@ -47,8 +52,10 @@ void terminarReduccionLocal(int nroMaster, int socketMaster){
 		return admin->etapa == REDUCCION_LOCAL && !strcmp(admin->nombreNodo, nombreNodo) && admin->nroMaster == nroMaster;
 	}
 	log_info(loggerYAMA, "Se prosigue a actualizar la tabla de estados.");
+	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReducLocalBuscada);
 	admin->estado = FINALIZADO;
+	pthread_mutex_unlock(&semTablaEstados);
 	log_info(loggerYAMA, "Tabla de estados actualizada.");
 	free(nombreNodo);
 }
@@ -60,7 +67,10 @@ void fallaReduccionLocal(int nroMaster){
 	void finalizarReducLocal(administracionYAMA* admin){
 		admin->estado = FALLO;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	t_list* listaDeReducciones = list_filter(tablaDeEstados, (void*)esReducLocal);
+
 	list_iterate(listaDeReducciones, (void*)finalizarReducLocal);
+	pthread_mutex_unlock(&semTablaEstados);
 }
 

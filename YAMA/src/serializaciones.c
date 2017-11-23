@@ -149,6 +149,7 @@ uint32_t obtenerTamanioReduGlobal(administracionYAMA* reduccion, t_list* listaCo
 	uint32_t tamanio = 0, posicion;
 	tamanio += string_length(reduccion->nameFile); //TEMPORAL GLOBAL
 	tamanio += sizeof(uint32_t); //TAMANIO DEL NOMBRE DEL TEMPORAL GLOBAL
+	tamanio += sizeof(uint32_t); //CANTIDAD DE NODOS
 	for(posicion = 0; posicion<list_size(listaNodos); posicion++){
 		administracionYAMA* admin = list_get(listaNodos, posicion);
 		tamanio += string_length(admin->nameFile); //TEMPORAL LOCAL
@@ -193,6 +194,8 @@ void* serializarInfoReduccionGlobal(administracionYAMA* reduccion, t_list* lista
 	posicionActual += tamanioNombre;
 	memcpy(infoSerializada+posicionActual, &tamanioIP, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
+	memcpy(infoSerializada+posicionActual, conect->ipNodo, tamanioIP);
+	posicionActual += tamanioIP;
 	memcpy(infoSerializada+posicionActual, &conect->puertoNodo, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
 	memcpy(infoSerializada+posicionActual, &tamanioTemporalLocal, sizeof(uint32_t));

@@ -13,8 +13,10 @@ void reducirWL(char* nodo){
 	bool esNodo(nodoSistema* aModificar){
 		return strcmp(aModificar->nombreNodo, nodo) == 0;
 	}
+	pthread_mutex_lock(&semNodosSistema);
 	nodoSistema* nodoAModificar = list_find(nodosSistema, (void*)esNodo);
 	nodoAModificar->wl--;
+	pthread_mutex_unlock(&semNodosSistema);
 }
 
 void actualizarWLTransformacion(t_list* copiasElegidas){
@@ -26,8 +28,10 @@ void actualizarWLTransformacion(t_list* copiasElegidas){
 	int posicion;
 	for(posicion = 0; posicion < list_size(copiasElegidas); posicion++){
 		copiaElegida = list_get(copiasElegidas, posicion);
+		pthread_mutex_lock(&semNodosSistema);
 		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 		nodo->wl += 1;
+		pthread_mutex_unlock(&semNodosSistema);
 	}
 }
 
@@ -140,12 +144,10 @@ void actualizarWLRLocal(char* nombreNodo, int cantTemporales){
 	bool esNodo(nodoSistema* nodo){
 		return !strcmp(nodo->nombreNodo, nombreNodo);
 	}
+	pthread_mutex_lock(&semNodosSistema);
 	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 	nodo->wl += cantTemporales;
-//	nodo->wl += cantTemporales/2;
-//	if(cantTemporales%2 != 0){
-//		nodo->wl++;
-//	}
+	pthread_mutex_unlock(&semNodosSistema);
 }
 
 //BALANCEO LA REDUCCION GLOBAL
@@ -161,12 +163,14 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	}
 	for(posicion = 0; posicion < list_size(listaDeBalanceo); posicion++){
 		nodoBalanceado = list_get(listaDeBalanceo, posicion);
+		pthread_mutex_lock(&semNodosSistema);
 		nodoSistema* nodoAChequear = list_find(nodosSistema, (void*)esNodo);
 		if(nodoAChequear->wl < minimoWL || minimoWL == -1){
 			minimoWL = nodoAChequear->wl;
 			string_append(&nodoElegido->nombreNodo, nodoAChequear->nombreNodo);
 			nodoElegido->wl = nodoAChequear->wl;
 		}
+		pthread_mutex_unlock(&semNodosSistema);
 	}
 	char* nombreNodo = string_new();
 	string_append(&nombreNodo, nodoElegido->nombreNodo);
@@ -178,11 +182,16 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 void eliminarTrabajosLocales(t_list* listaTransformaciones){
   uint32_t posicion;
   for(posicion = 0; posicion < list_size(listaTransformaciones); posicion++){
+	  char* nombreNodo = string_new();
+	  pthread_mutex_lock(&semTablaEstados);
     administracionYAMA * admin = list_get(listaTransformaciones, posicion);
+    string_append(&nombreNodo, admin->nombreNodo);
+    	pthread_mutex_unlock(&semTablaEstados);
     //UNA POR TRANSFORMACION
-    reducirWL(admin->nombreNodo);
+    reducirWL(nombreNodo);
     //UNA POR REDUCCION LOCAL
-    reducirWL(admin->nombreNodo);
+    reducirWL(nombreNodo);
+    free(nombreNodo);
   }
 }
 
@@ -202,9 +211,11 @@ void actualizarWLRGlobal(char* nombreNodo, int cantidadReducs){
 	bool esNodo(nodoSistema* nodo){
 		return strcmp(nodo->nombreNodo, nombreNodo) == 0;
 	}
+	pthread_mutex_lock(&semNodosSistema);
 	nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 	nodo->wl += cantidadReducs/2;
 	if(cantidadReducs % 2 != 0){
 		nodo->wl++;
 	}
+	pthread_mutex_unlock(&semNodosSistema);
 }

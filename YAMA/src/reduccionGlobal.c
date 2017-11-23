@@ -7,8 +7,10 @@ bool sePuedeHacerReduccionGlobal(int nroMaster){
 	bool esReduccionTerminada(administracionYAMA* admin){
 		return admin->estado == FINALIZADO && admin->etapa == REDUCCION_LOCAL;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	t_list* listaDeNodos = list_filter(tablaDeEstados, (void*) esDeNodoYEsRedu);
 	int sePuede = list_all_satisfy(listaDeNodos, (void*) esReduccionTerminada);
+	pthread_mutex_unlock(&semTablaEstados);
 	list_destroy(listaDeNodos);
 	return sePuede;
 }
@@ -56,7 +58,9 @@ int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
 	log_info(loggerYAMA, "Se enviaron los datos para llevar a cabo la reduccion global al master %d.", nroMaster);
+	//SEM_WAIT
 	list_add(tablaDeEstados, nuevaReduccionG);
+	//SEM_POST
 	free(infoGlobalSerializada);
 	list_destroy_and_destroy_elements(listaDeConexiones, (void*)liberarConexion);
 	return 1;
@@ -66,8 +70,10 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 	bool esReduGlobalMaster(administracionYAMA* admin){
 		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_GLOBAL && admin->estado == EN_PROCESO;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduGlobalMaster);
 	admin->estado = FINALIZADO;
+	pthread_mutex_unlock(&semTablaEstados);
 }
 
 
@@ -100,10 +106,10 @@ void reestablecerWL(int nroMaster){
 	}
 	t_list* listaTransformaciones;
 	t_list* listaReduccionesLocales;
-
+	pthread_mutex_lock(&semNodosSistema);
 	listaTransformaciones = list_filter(tablaDeEstados, (void*)esTransformacion);
 	listaReduccionesLocales = list_filter(tablaDeEstados, (void*)esReduLocal);
-
+	pthread_mutex_unlock(&semNodosSistema);
 	eliminarTrabajosLocales(listaTransformaciones);
 	eliminarTrabajosGlobales(nroMaster, listaReduccionesLocales);
 
@@ -115,6 +121,8 @@ void fallaReduccionGlobal(int nroMaster){
 	bool esReduccionGlobal(administracionYAMA* admin){
 		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_GLOBAL;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionGlobal);
 	admin->estado = FALLO;
+	pthread_mutex_unlock(&semTablaEstados);
 }

@@ -15,8 +15,11 @@ void solicitarArchivo(char* nombreArchivo){
 t_list *recibirInfoArchivo(){
 	//RECV REMASTERIZADO CHEQUEAR POR ERROR, QUE SEA TODO LO QUE NECESITO
 	int tipoMsj = recvDeNotificacion(socketFS);
-	if(tipoMsj != INFO_ARCHIVO_FS){
+	if(tipoMsj == 0){
 		log_error(loggerYAMA, "Error al recibir paquete con informacion de archivo de FileSystem");
+		estaFS = false;
+		return NULL;
+	}else if(tipoMsj == PATH_FILE_INCORRECTO){
 		return NULL;
 	}
 	t_list *listaInfoFs = list_create();
@@ -82,7 +85,9 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		if(informacionDeNodo == NULL){
 			return -1;
 		}
+		pthread_mutex_lock(&semTablaEstados);
 		list_add(tablaDeEstados, nuevaAdministracion);
+		pthread_mutex_unlock(&semTablaEstados);
 		list_add(listaDatosPMaster, informacionDeNodo);
 		liberarInfoFS(infoDeBloque);
 		log_info(loggerYAMA, "Se agrego la operacion a la tabla de estados.");
@@ -102,8 +107,10 @@ void terminarTransformacion(int nroMaster, int socketMaster, char* nombreNodo){
 	int buscarNodo(administracionYAMA* adminAChequear){
 		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && !strcmp(adminAChequear->nombreNodo, nombreNodo)  && adminAChequear->etapa == TRANSFORMACION);
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA *adminAModificar = list_find(tablaDeEstados, (void*)buscarNodo);
 	adminAModificar->estado = FINALIZADO;
+	pthread_mutex_unlock(&semTablaEstados);
 	log_info(loggerYAMA, "Se actualizo la tabla de estados, finalizando la transformacion del nodo %s sobre el bloque %d.", nombreNodo, nroBloque);
 }
 
@@ -111,15 +118,21 @@ t_list* obtenerBloquesFallidos(uint32_t nroMaster, char* nodoFallido){
 	bool esFallido(administracionYAMA* admin){
 		return admin->nroMaster == nroMaster && strcmp(admin->nombreNodo, nodoFallido);
 	}
-	return list_filter(tablaDeEstados, (void*)esFallido);
+	//SEM_WAIT
+	t_list* listaFiltrada = list_filter(tablaDeEstados, (void*)esFallido);
+	//SEM_POST
+	return listaFiltrada;
 }
 
 void cargarFallo(uint32_t nroMaster, char* nodoFallido){
 	t_list* listaDeFallados = obtenerBloquesFallidos(nroMaster, nodoFallido);
 	uint32_t posicion;
+
 	for(posicion = 0; posicion < list_size(listaDeFallados); posicion++){
+		pthread_mutex_lock(&semTablaEstados);
 		administracionYAMA* admin = list_get(listaDeFallados, posicion);
 		admin->estado = FALLO;
+		pthread_mutex_unlock(&semTablaEstados);
 	}
 	list_destroy(listaDeFallados);
 }
@@ -128,7 +141,9 @@ t_list* filtrarTablaFallida(uint32_t nroMaster, char* nodoFallido){
 	bool esEntradaFallida(administracionYAMA* admin){
 		return nroMaster == admin->nroMaster || strcmp(admin->nombreNodo, nodoFallido) || admin->estado == FALLO;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	t_list* lista = list_filter(tablaDeEstados, (void*)esEntradaFallida);
+	pthread_mutex_unlock(&semTablaEstados);
 	return lista;
 }
 
@@ -215,7 +230,9 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 					return -1;
 				}
 				list_add(listaParaMaster, datoPMaster);
+				pthread_mutex_lock(&semTablaEstados);
 				list_add(tablaDeEstados, nuevaTransformacion);
+				pthread_mutex_unlock(&semTablaEstados);
 				list_add(listaParaWL, copiaACargar);
 				reducirWL(nodoFallido);
 			}

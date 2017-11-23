@@ -79,6 +79,7 @@ t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 t_bitarray * crearBitmap(char * nombreNodo, int cantBloques){
 
 
+
 	log_debug(loggerFileSystem,"Se procede a crear el archivo Bitmap.bin");
 	char * path = obtenerPathBitmap(nombreNodo); // Path bitmap
 	int file = open(path, O_RDWR | O_CREAT,S_IRUSR | S_IWUSR);
@@ -505,10 +506,10 @@ void almacenarArchivoWorker(int socket){
 	fputs(contenido,archivo);
 	fclose(archivo);
 	if(tipo==21){
-		almacenarArchivo(nombreArchivo,path,'B');
+		almacenarArchivo(nombreArchivo,path,"B");
 	}
 	if(tipo==22){
-		almacenarArchivo(nombreArchivo,path,'T');
+		almacenarArchivo(nombreArchivo,path,"T");
 	}
 }
 
@@ -516,8 +517,8 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	//chequearParametros(argc, 2);
-	//t_config* configuracionFS = generarTConfig(argv[1], 1);
+//	chequearParametros(argc, 2);
+//	t_config* configuracionFS = generarTConfig(argv[1], 1);
 	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
@@ -536,7 +537,6 @@ int main(int argc, char **argv) {
 
 	listaBitmap = list_create();
 	tablaGlobalArchivos = list_create();
-	listaConexionNodos=list_create();
 	listaConexionNodos=list_create();
 
 	hayNodos=0;

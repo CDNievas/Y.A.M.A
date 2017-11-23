@@ -28,6 +28,7 @@
 #define CORTO 0
 #define FALLO 16
 #define FINALIZO 17
+#define PATH_FILE_INCORRECTO 18
 
 //ESTRUCTURAS PARA ADMINISTRAR LA INFO QUE SE LE MANDA A MASTER
 typedef struct{
@@ -88,7 +89,10 @@ t_log* loggerYAMA;
 t_list* tablaDeEstados;
 uint32_t socketFS;
 bool estaFS;
-//pthread_mutex_t semConexionFS;
+
+//SEMAPHORE
+pthread_mutex_t semTablaEstados;
+pthread_mutex_t semNodosSistema;
 
 //DATOS CONFIG
 char* FS_IP;
