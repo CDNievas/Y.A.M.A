@@ -76,7 +76,17 @@ void terminarReduccionGlobal(uint32_t nroMaster){
 	pthread_mutex_unlock(&semTablaEstados);
 }
 
-
+char* obtenerNombreArchivoReduGlobal(int nroMaster){
+	bool esReduGlobal(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster && admin->etapa == REDUCCION_GLOBAL;
+	}
+	char* nombreArch = string_new();
+	pthread_mutex_lock(&semTablaEstados);
+	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduGlobal);
+	string_append(&nombreArch, admin->nameFile);
+	pthread_mutex_unlock(&semTablaEstados);
+	return nombreArch;
+}
 
 int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
@@ -88,12 +98,14 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	if(conect->nombreNodo == NULL && conect->puertoNodo == -1){
 		return -1;
 	}
+	char* nombreArchReduGlobal = obtenerNombreArchivoReduGlobal(nroMaster);
 	log_info(loggerYAMA, "Se prosigue a serializar la informacion para el almacenamiento final del master %d.", nroMaster);
-	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect);
+	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect, nombreArchReduGlobal);
 	sendRemasterizado(socketMaster, ALMACENAMIENTO_FINAL, obtenerTamanioInfoAlmacenamientoFinal(conect), infoAlmacenadoFinal);
 	log_info(loggerYAMA, "Se enviaron los datos para el almacenamiento final al master %d.", nroMaster);
 	free(infoAlmacenadoFinal);
 	liberarConexion(conect);
+	free(nombreArchReduGlobal);
 	return 1;
 }
 

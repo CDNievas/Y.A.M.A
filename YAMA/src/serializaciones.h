@@ -31,5 +31,5 @@ conexionNodo* obtenerConexionNodoEncargado(char*, t_list*);
 
 //ENVIO DE DATOS PARA ALMACENAMIENTO FINAL
 uint32_t obtenerTamanioInfoAlmacenamientoFinal(conexionNodo*);
-void* serializarInfoAlmacenamientoFinal(conexionNodo*);
+void* serializarInfoAlmacenamientoFinal(conexionNodo*, char*);
 #endif /* SERIALIZACIONES_H_ */
