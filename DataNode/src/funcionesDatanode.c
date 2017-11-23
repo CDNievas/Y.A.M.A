@@ -165,7 +165,7 @@ void enviarInfoNodo(uint32_t socket){
 
 void * recvDeBloque(u_int32_t socket, u_int32_t cantBytes){
 	void * bloque = miMalloc(cantBytes,loggerDatanode,"Fallo en recvDeBloque()");
-	if(recv(socket, &bloque, cantBytes, MSG_WAITALL)==-1){
+	if(recv(socket, bloque, cantBytes, MSG_WAITALL)==-1){
 		perror("Error al recibir la notificacion.");
 		exit(-1);
 	}

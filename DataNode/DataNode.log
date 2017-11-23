@@ -4,3 +4,15 @@
 [INFO] 21:54:07:386 DataNode/(14120:14120): Se cargo correctamente DataNode cuyo nombre es NODO1.
 [INFO] 21:54:08:866 DataNode/(14120:14120): Archivo binario de 1048576 bytes encontrado
 [INFO] 21:54:11:345 DataNode/(14120:14120): Conexion con FileSystem existosa.
+[INFO] 17:23:59:637 DataNode/(4567:4567): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 17:24:00:42 DataNode/(4567:4567): Archivo binario de 1048576 bytes encontrado
+[INFO] 17:24:02:180 DataNode/(4567:4567): Conexion con FileSystem existosa.
+[INFO] 17:24:03:478 DataNode/(4567:4567): Informacion de nodo enviada a FS.
+[INFO] 17:25:11:770 DataNode/(4670:4670): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 17:25:12:17 DataNode/(4670:4670): Archivo binario de 1048576 bytes encontrado
+[INFO] 17:25:12:370 DataNode/(4670:4670): Conexion con FileSystem existosa.
+[INFO] 17:25:12:565 DataNode/(4670:4670): Informacion de nodo enviada a FS.
+[INFO] 17:26:05:868 DataNode/(4814:4814): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 17:26:06:54 DataNode/(4814:4814): Archivo binario de 1048576 bytes encontrado
+[INFO] 17:26:06:400 DataNode/(4814:4814): Conexion con FileSystem existosa.
+[INFO] 17:26:07:112 DataNode/(4814:4814): Informacion de nodo enviada a FS.

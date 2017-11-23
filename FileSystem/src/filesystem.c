@@ -255,7 +255,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 	int tabajoOcioso=0;
 	int cont=0;
-	void* mensaje=malloc(sizeof(uint32_t)*2+string_length(contenidoAEnviar));
+	void* mensaje=malloc(sizeof(uint32_t)*3+string_length(contenidoAEnviar));
 	uint32_t posicionActual=0;
 	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
 	contenidoNodo* nodo1=malloc(sizeof(contenidoNodo));
@@ -289,12 +289,12 @@ void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 	if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
-	free(mensaje);
+//	free(mensaje);
 
-	mensaje=malloc(sizeof(uint32_t)*2+string_length(contenidoAEnviar));
+	mensaje=realloc(mensaje,sizeof(uint32_t)*3+string_length(contenidoAEnviar));
 
 	bloqueAsignado=asignarBloqueNodo(nodo1);
-
+	posicionActual = 0;
 	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
 	posicionActual+=sizeof(uint32_t);
 
@@ -321,17 +321,22 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
 	uint32_t posicionActual = 0;
 	void enviarNodoPorPosicion(int posicion) {
 		if (posicionActual == 0) {
-			char* contenidoAEnviar = malloc(posicion);
-			fread(contenidoAEnviar, posicion, 1, archivo);
+			void* contenido = malloc(posicion);
+			fread(contenido, posicion, 1, archivo);
+			char* contenidoAEnviar = string_substring_until(contenido, posicion);
+			printf("%s", contenidoAEnviar);
 			asignarEnviarANodo(contenidoAEnviar, posicion);
 			free(contenidoAEnviar);
+			free(contenido);
 		} else {
 			posicionActual--;
 			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual);
-			char* contenidoAEnviar = malloc(posicion - posicionAnterior);
-			fread(contenidoAEnviar, posicion - posicionAnterior, 1,archivo);
+			void* contenido = malloc(posicion - posicionAnterior);
+			fread(contenido, posicion - posicionAnterior, 1,archivo);
+			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
 			asignarEnviarANodo(contenidoAEnviar,posicion - posicionAnterior);
 			free(contenidoAEnviar);
+			free(contenido);
 		}
 		posicionActual++;
 	}
@@ -567,9 +572,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-//	chequearParametros(argc, 2);
-//	t_config* configuracionFS = generarTConfig(argv[1], 1);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 1);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
