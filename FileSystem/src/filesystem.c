@@ -122,6 +122,46 @@ int cantBloquesLibres(t_bitarray* bitarray) {
 	return cont;
 }
 
+void persistirTablaNodo(){
+	//FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
+	FILE* archivoNodos=fopen("asd.txt","w");
+
+	fputs("TAMANIO=",archivoNodos);
+	fputs(string_itoa(tablaGlobalNodos->tamanio),archivoNodos);
+	fputc('\n',archivoNodos);
+	fputs("BLOQUES=[",archivoNodos);
+	int i=0;
+	while(i<list_size(tablaGlobalNodos->nodo)){
+		fputs(list_get(tablaGlobalNodos->nodo,i),archivoNodos);
+		fputc(',',archivoNodos);
+		i++;
+	}
+	fputc(']',archivoNodos);
+	fputc('\n',archivoNodos);
+
+	int s=0;
+	char* nodoSeleccionado=string_new();
+	while(s<list_size(tablaGlobalNodos->nodo)){
+		nodoSeleccionado=list_get(tablaGlobalNodos->nodo,s);
+		fputs(nodoSeleccionado,archivoNodos);
+		fputs("TOTAL=",archivoNodos);
+		bool esNodo(contenidoNodo* contenidoDeUnNodo){
+			return(strcmp(contenidoDeUnNodo->nodo,nodoSeleccionado)==0);
+		}
+		contenidoNodo* nodoElegido=list_find(tablaGlobalNodos->contenidoXNodo ,(void*)esNodo);
+		fputs(string_itoa(nodoElegido->total),archivoNodos);
+		fputc('\n',archivoNodos);
+
+		fputs(nodoSeleccionado,archivoNodos);
+		fputs("LIBRE=",archivoNodos);
+		fputs(string_itoa(nodoElegido->libre),archivoNodos);
+		fputc('\n',archivoNodos);
+
+		s++;
+	}
+	fclose(archivoNodos);
+
+}
 
 void registrarNodo(int socket) {
 
@@ -180,8 +220,12 @@ void registrarNodo(int socket) {
 //	string_append(&datosConexion->ip, ip);
 //	datosConexion->puerto=puerto;
 //	list_add(listaConexionNodos,datosConexion);
+
+	persistirTablaNodo();
+
 	}
 	hayNodos++;
+
 	//free(ip);
 	//free(nombreNodo);
 }
@@ -208,28 +252,31 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	return 0;
 }
 
-void asignarEnviarANodo(char* contenidoAEnviar,int tamanio){
+void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 	int tabajoOcioso=0;
 	int cont=0;
 	void* mensaje=malloc(sizeof(uint32_t)*2+string_length(contenidoAEnviar));
 	uint32_t posicionActual=0;
 	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
 	contenidoNodo* nodo1=malloc(sizeof(contenidoNodo));
-	for(;cont<list_size(tablaGlobalNodos->nodo);cont++){
-		bool nodoMasOciosoCopia0(contenidoNodo* contenidoDelNodo){
-			return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso);
-		}
-		nodo0=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia0);
 
-		bool nodoMasOciosoCopia1(contenidoNodo* contenidoDelNodo){
-			return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo)==0);
-		}
-		nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
+	bool nodoMasOciosoCopia0(contenidoNodo* contenidoDelNodo){
+		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso);
 	}
+	nodo0=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia0);
 
-	int bloqueAsignado=asignarBloqueNodo(nodo0);
+	bool nodoMasOciosoCopia1(contenidoNodo* contenidoDelNodo){
+		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo)!=0);
+	}
+	nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
+
+
+	uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
 
 	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
 	posicionActual+=sizeof(uint32_t);
 
 	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
@@ -238,7 +285,7 @@ void asignarEnviarANodo(char* contenidoAEnviar,int tamanio){
 	memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
 	posicionActual+=tamanio;
 
-	sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,tamanio,mensaje);
+	sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,posicionActual,mensaje);
 	if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
@@ -254,11 +301,14 @@ void asignarEnviarANodo(char* contenidoAEnviar,int tamanio){
 	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
 	posicionActual+=sizeof(uint32_t);
 
+	memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+	posicionActual+=sizeof(uint32_t);
+
 	memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
 	posicionActual+=tamanio;
 
 
-	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,tamanio,mensaje);
+	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicionActual,mensaje);
 
 	if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
@@ -466,10 +516,8 @@ void enviarDatoArchivo(int socket){
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 	if(entradaArchivo==NULL){
 		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
-	}else{
-		enviarTablaAYama(socket,entradaArchivo);
 	}
-
+	enviarTablaAYama(socket,entradaArchivo);
 }
 
 //ENVIAR IP Y PUERTO
@@ -519,9 +567,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc, 2);
-	t_config* configuracionFS = generarTConfig(argv[1], 1);
-//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+//	chequearParametros(argc, 2);
+//	t_config* configuracionFS = generarTConfig(argv[1], 1);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -534,6 +582,8 @@ int main(int argc, char **argv) {
 	pthread_create(&hiloConsolaFS, NULL, (void*) consolaFS, NULL);
 
 	tablaGlobalNodos = malloc(sizeof(tablaNodos));
+	tablaGlobalNodos->libres=0;
+	tablaGlobalNodos->tamanio=0;
 	tablaGlobalNodos->nodo = list_create();
 	tablaGlobalNodos->contenidoXNodo = list_create();
 

@@ -38,7 +38,7 @@ int corte; // Corta el while
 void cargarDataNode(t_config*);
 void realizarHandshakeFS(u_int32_t);
 void cargarBin();
-int escribirBloque(uint32_t, void*, uint32_t);
+int escribirBloque(uint32_t, char *, uint32_t);
 void * leerBloque(uint32_t, uint32_t);
 void enviarInfoNodo(u_int32_t);
 void * recvDeBloque(u_int32_t, u_int32_t);

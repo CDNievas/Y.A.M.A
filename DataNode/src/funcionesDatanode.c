@@ -93,7 +93,7 @@ void cargarBin(){
 
 }
 
-int escribirBloque(uint32_t nroBloque, void * dataBloque, uint32_t cantBytes){
+int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
 
 	if(nroBloque >= cantBloques){
 
@@ -165,7 +165,7 @@ void enviarInfoNodo(uint32_t socket){
 
 void * recvDeBloque(u_int32_t socket, u_int32_t cantBytes){
 	void * bloque = miMalloc(cantBytes,loggerDatanode,"Fallo en recvDeBloque()");
-	if(recv(socket, &bloque, cantBytes, 0)==-1){
+	if(recv(socket, &bloque, cantBytes, MSG_WAITALL)==-1){
 		perror("Error al recibir la notificacion.");
 		exit(-1);
 	}

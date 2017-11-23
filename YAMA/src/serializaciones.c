@@ -246,7 +246,7 @@ uint32_t obtenerTamanioInfoAlmacenamientoFinal(conexionNodo* conect){
 void* serializarInfoAlmacenamientoFinal(conexionNodo* conect, char* nombreArch){
 	uint32_t posicionActual = 0;
 	void* serializacionAFinal = malloc(obtenerTamanioInfoAlmacenamientoFinal(conect));
-	uint32_t tamanioNombre = string_length(nombreaArch);
+	uint32_t tamanioNombre = string_length(nombreArch);
 	uint32_t tamanioIP = string_length(conect->ipNodo);
 	memcpy(serializacionAFinal+posicionActual, &tamanioIP, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
