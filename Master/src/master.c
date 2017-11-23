@@ -12,28 +12,13 @@
 #define REDUCCION_GLOBAL 9
 #define ABORTAR 10
 #define EN_PROCESO 11
-#define DATOS_NODO 12 //CON ESTO LE PIDO A FS LOS DATOS DE CONEXION DEL NODO
-#define INFO_ARCHIVO_FS 13 //CON ESTO LE PIDO A FS LA INFO DEL ARCHIVO
+#define DATOS_NODO 12
+#define INFO_ARCHIVO_FS 13
 #define FINALIZADO 14
 #define ALMACENADO_FINAL 15
 #define CORTO 0
 #define ALMACENADO_FINAL_TERMINADO 16
 #define ERROR_ALMACENADO_FINAL 18
-
-char* YAMA_IP;
-char* WORKER_IP;
-int YAMA_PUERTO;
-int WORKER_PUERTO;
-t_log* loggerMaster;
-t_list* listaInfoNodos;
-t_list* listaTemporales;
-t_list* listaHilosTransformacion;
-t_list* listaHilosReduccion;
-uint32_t cantidadNodos;
-bool avisoCargaTemporal;
-pthread_mutex_t mutexNodos;
-pthread_mutex_t mutexReducciones;
-pthread_mutex_t mutexTemporales;
 
 typedef struct{
 	char* nombreNodo;
@@ -76,6 +61,61 @@ typedef struct{
 	conexionNodo conexion;
 	char* temporalReduccion;
 }infoReduccionGlobal;
+
+typedef struct{
+	int hora;
+	int minuto;
+	int segundo;
+}tiempo;
+
+char* YAMA_IP;
+char* WORKER_IP;
+int YAMA_PUERTO;
+int WORKER_PUERTO;
+t_log* loggerMaster;
+t_list* listaInfoNodos;
+t_list* listaTemporales;
+t_list* listaHilosTransformacion;
+t_list* listaHilosReduccion;
+uint32_t cantidadNodos;
+bool avisoCargaTemporal;
+pthread_mutex_t mutexNodos;
+pthread_mutex_t mutexReducciones;
+pthread_mutex_t mutexTemporales;
+tiempo tiempoI;
+
+tiempo obtenerTiempo()
+{
+	char* unTiempo = temporal_get_string_time();
+	tiempo t;
+	int i;
+
+	char** tiempov = string_split(unTiempo, ":");
+
+	t.hora = atoi(tiempov[0]);
+	t.minuto = atoi(tiempov[1]);
+	t.segundo = atoi(tiempov[2]);
+
+	for (i=0; i<=3; i++) {
+	    free(tiempov[i]);
+	}
+
+	free(tiempov);
+	free(unTiempo);
+
+	return t;
+}
+
+tiempo get_tiempo_total(tiempo in, tiempo fin)
+{
+	tiempo aux;
+	aux.hora = fin.hora - in.hora;
+	aux.minuto = fin.minuto - in.minuto;
+	aux.segundo = fin.segundo - in.segundo;
+	aux.segundo=fabs(aux.segundo);
+
+	return aux;
+}
 
 void cargarMaster(t_config* configuracionMaster){
     if(!config_has_property(configuracionMaster, "YAMA_IP")){
@@ -806,6 +846,13 @@ char* obtenerResultante(char* rutaCompleta,uint32_t valor){
 	}
 }
 
+void mostrarMetricas(){
+	tiempo tiempoF = obtenerTiempo();
+	tiempo tiempoDuracion = get_tiempo_total(tiempoI,tiempoF);
+	printf("El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
+	log_info(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
+}
+
 void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 	char* ipWorker = recibirString(socketYAMA);
 	uint32_t puertoWorker = recibirUInt(socketYAMA);
@@ -850,6 +897,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 		free(YAMA_IP);
 		free(WORKER_IP);
 		close(socketYAMA);
+		mostrarMetricas();
 		exit(0);
 	}
 	else{
@@ -860,6 +908,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
+	tiempoI = obtenerTiempo();
 	chequearParametros(argc,6);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
 	cargarMaster(configuracionMaster);

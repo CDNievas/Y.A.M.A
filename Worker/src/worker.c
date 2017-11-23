@@ -198,13 +198,15 @@ void eliminarArchivo(char* nombreScript){
 	free(nombreScript);
 }
 
-char* realizarApareoGlobal(t_list* listaInfoApareo, FILE* miTemporal){
+char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 	int posicion;
 	char* archivoApareado = string_new();
 	string_append(&archivoApareado,"archivoApareoGlobal");
 	crearArchivoTemporal(archivoApareado);
 
 	FILE* archivoGlobalApareado = fopen(archivoApareado,"w");
+	FILE* miTemporal = fopen(temporalEncargado,"r");
+	free(temporalEncargado);
 
 	if(archivoGlobalApareado==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo global apareado.\n");
@@ -646,10 +648,7 @@ void crearProcesoHijo(int socketMaster){
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
 
-			FILE* miTemporal = fopen(temporalEncargado,"r");
-			free(temporalEncargado);
-
-			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,miTemporal);
+			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,temporalEncargado);
 
 			guardarScript(script,nombreScript);
 
