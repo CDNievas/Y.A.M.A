@@ -69,11 +69,11 @@ int main(int argc, char **argv) {
 				int resultado = escribirBloque(nroBloque,bloque,cantBytes);
 				if(resultado<0){
 					// Bloque inexistente
-					sendDeNotificacion(socketServerFS, ESC_CORRECTA);
+					sendDeNotificacion(socketServerFS, ESC_INCORRECTA);
 					exit(-98);
 				}
 
-				sendDeNotificacion(socketServerFS, ESC_INCORRECTA);
+				sendDeNotificacion(socketServerFS, ESC_CORRECTA);
 				free(bloque);
 				break;
 

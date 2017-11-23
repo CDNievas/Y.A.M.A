@@ -84,6 +84,7 @@ typedef struct
 } datosConexionNodo;
 
 int PUERTO_ESCUCHA;
+char * PATH_METADATA;
 
 t_log* loggerFileSystem;
 int hayNodos;

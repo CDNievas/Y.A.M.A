@@ -7,12 +7,18 @@
 //---------------------------------------------------BITMAP---------------------------------------------------------
 
 char * obtenerPathBitmap(char * nombreNodo){
-	// Path
 	char * path = string_new();
-	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/bitmap/");
-//	path= "/metadata/bitmap/";
+	string_append(&path, PATH_METADATA);
+	string_append(&path, "bitmap/");
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
+	return path;
+}
+
+char * obtenerPathTablaNodo(){
+	char * path = string_new();
+	string_append(&path, PATH_METADATA);
+	string_append(&path, "nodos.bin");
 	return path;
 }
 
@@ -94,6 +100,12 @@ void cargarFileSystem(t_config* configuracionFS) {
 		PUERTO_ESCUCHA = config_get_int_value(configuracionFS,
 				"PUERTO_ESCUCHA");
 	}
+	if(!config_has_property(configuracionFS, "PATH_METADATA")){
+		log_error(loggerFileSystem, "No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
+		exit(-1);
+	}
+	PATH_METADATA = string_new();
+	string_append(&PATH_METADATA, config_get_string_value(configuracionFS, "PATH_METADATA"));
 	config_destroy(configuracionFS);
 }
 
@@ -111,7 +123,10 @@ int cantBloquesLibres(t_bitarray* bitarray) {
 }
 
 void persistirTablaNodo(){
+
+
 	//FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
+	char * path = obtenerPathTablaNodo();
 	FILE* archivoNodos=fopen("asd.txt","w");
 
 	fputs("TAMANIO=",archivoNodos);
