@@ -273,7 +273,6 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 					char* menorString = string_new();
 					string_append(&menorString,unaInfoArchivo->bloqueLeido);
 					free(unaInfoArchivo->bloqueLeido);
-					unaInfoArchivo->bloqueLeido = string_new();
 					unaInfoArchivo->bloqueLeido = NULL;
 					list_add(listaInfoApareo,unaInfoArchivo);
 				}
