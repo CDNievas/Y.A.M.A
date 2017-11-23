@@ -466,8 +466,10 @@ void enviarDatoArchivo(int socket){
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 	if(entradaArchivo==NULL){
 		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
+	}else{
+		enviarTablaAYama(socket,entradaArchivo);
 	}
-	enviarTablaAYama(socket,entradaArchivo);
+
 }
 
 //ENVIAR IP Y PUERTO

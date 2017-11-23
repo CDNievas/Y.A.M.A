@@ -48,7 +48,8 @@ void manejadorMaster(void* socketMasterCliente){
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
 				}else if(listaDeBloquesDeArchivo == NULL && estaFS){
-					log_error("El archivo %s solicitado por el master %d no existe en el FileSystem.", nombreArchivoPeticion, nroMaster);
+					log_error(loggerYAMA, "El archivo %s solicitado por el master %d no existe en el FileSystem.", nombreArchivoPeticion, nroMaster);
+					sigueProcesando = 0;
 				}
 				free(nombreArchivoPeticion);
 				break;
@@ -161,15 +162,20 @@ void manejadorMaster(void* socketMasterCliente){
 //		usleep(20000);
 		exit(0);
 	}
+	if(!sigueProcesando){
+		sendDeNotificacion(socketMaster, ABORTAR);
+		log_info(loggerYAMA, "Se le informo al master %d que debe abortar.", nroMaster);
+		pthread_cancel(pthread_self());
+	}
 }
 
 int main(int argc, char *argv[])
 {
 	signal(SIGUSR1, chequeameLaSignal);
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
-	chequearParametros(argc,2);
-	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
-//	t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 6);
+//	chequearParametros(argc,2);
+//	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
+	t_config* configuracionYAMA = generarTConfig("Debug/yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
 	log_info(loggerYAMA, "Se cargo exitosamente YAMA.");
 	nodosSistema = list_create();
