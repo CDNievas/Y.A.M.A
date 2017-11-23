@@ -26,6 +26,7 @@ int PUERTO_WORKER;
 typedef struct{
 	uint32_t socketParaRecibir;
 	char* bloqueLeido;
+	char* nombreNodo;
 }infoApareoArchivo;
 
 void sigchld_handler(int s){
@@ -77,6 +78,32 @@ void cargarWorker(t_config* configuracionWorker){
         string_append(&RUTA_DATABIN, config_get_string_value(configuracionWorker, "RUTA_DATABIN"));
     }
     config_destroy(configuracionWorker);
+}
+
+char* leerLinea(FILE* unArchivo){
+	char* lineaLeida = string_new();
+
+	while(!feof(unArchivo))
+	{
+		char cadenaLeida[2] = "\0";
+		cadenaLeida[0] = fgetc(unArchivo);
+
+		if (cadenaLeida[0] != '\n')
+		{
+			string_append(&lineaLeida,cadenaLeida);
+		}
+		else{
+			break;
+		}
+	}
+
+	if(feof(unArchivo)){
+		string_append(&lineaLeida,"\0");
+	}
+
+	log_info(loggerWorker, "Se obtuvo la siguiente linea del archivo.\n");
+
+	return lineaLeida;
 }
 
 void darPermisosAScripts(char* script){
@@ -171,7 +198,7 @@ void eliminarArchivo(char* nombreScript){
 	free(nombreScript);
 }
 
-char* realizarApareoGlobal(t_list* listaInfoApareo){
+char* realizarApareoGlobal(t_list* listaInfoApareo, FILE* miTemporal){
 	int posicion;
 	char* archivoApareado = string_new();
 	string_append(&archivoApareado,"archivoApareoGlobal");
@@ -192,7 +219,13 @@ char* realizarApareoGlobal(t_list* listaInfoApareo){
 		for(posicion=0;posicion<cantidad;posicion++){
 			infoApareoArchivo* unaInfoArchivo = list_remove(listaInfoApareo, 0);
 			if((unaInfoArchivo->bloqueLeido)==NULL){
-				char* unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
+				char* unPedacitoArchivo;
+				if(strcmp(unaInfoArchivo->nombreNodo,NOMBRE_NODO)!=0){
+					unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
+				}
+				else{
+					unPedacitoArchivo = leerLinea(miTemporal);
+				}
 
 				if(strcmp(unPedacitoArchivo,"\0")!=0){
 					string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
@@ -201,6 +234,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo){
 				else{
 					free(unPedacitoArchivo);
 					free(unaInfoArchivo->bloqueLeido);
+					free(unaInfoArchivo->nombreNodo);
 					close(unaInfoArchivo->socketParaRecibir);
 					free(unaInfoArchivo);
 				}
@@ -264,6 +298,12 @@ char* realizarApareoGlobal(t_list* listaInfoApareo){
 	}
 
 	log_info(loggerWorker, "Se cerro correctamente el archivo global apareado.\n");
+
+	if(fclose(miTemporal)==EOF){
+		log_error(loggerWorker,"No se pudo cerrar mi archivo de reduccion local.\n");
+	}
+
+	log_info(loggerWorker, "Se cerro correctamente mi archivo de reduccion local.\n");
 
 	list_destroy(listaInfoApareo);
 
@@ -430,28 +470,6 @@ uint32_t asignarStreamADatosParaEnviar(uint32_t tamanioPrevio, char* streamAEnvi
 	return tamanioPrevio;
 }
 
-char* leerLinea(FILE* unArchivo){
-	char* lineaLeida = string_new();
-
-	while(!feof(unArchivo))
-	{
-		char cadenaLeida[2] = "\0";
-		cadenaLeida[0] = fgetc(unArchivo);
-
-		if (cadenaLeida[0] != '\n')
-		{
-			string_append(&lineaLeida,cadenaLeida);
-		}
-		else{
-			break;
-		}
-	}
-
-	log_info(loggerWorker, "Se obtuvo la siguiente linea del archivo.\n");
-
-	return lineaLeida;
-}
-
 void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
 	FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
 	void* datosAEnviar;
@@ -463,8 +481,6 @@ void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal)
 		tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
 	}
 
-	streamAEnviar = string_new();
-	string_append(&streamAEnviar,"\0");
 	tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
 	log_info(loggerWorker, "Todos los datos del archivo temporal reducido del worker fueron serializados\n");
 	sendRemasterizado(socketAceptado,APAREO_GLOBAL,tamanioPrevio,datosAEnviar);
@@ -599,14 +615,16 @@ void crearProcesoHijo(int socketMaster){
 		}
 		case REDUCCION_GLOBAL:{
 			char* script = recibirString(socketMaster);
-			char* pathDestino = recibirString(socketMaster);
 			char* nombreScript = recibirString(socketMaster);
+			char* pathDestino = recibirString(socketMaster);
+			char* temporalEncargado = recibirString(socketMaster);
 			uint32_t cantidadWorkers = recibirUInt(socketMaster);
 			uint32_t posicionWorker;
 			t_list* listaInfoApareo = list_create();
 			for(posicionWorker = 0; posicionWorker < cantidadWorkers; posicionWorker++){
 				char* archivoTemporal = recibirString(socketMaster);
 				char* ipWorker = recibirString(socketMaster);
+				char* nombreNodo = recibirString(socketMaster);
 				uint32_t puertoWorker = recibirUInt(socketMaster);
 				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
 				log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
@@ -617,14 +635,21 @@ void crearProcesoHijo(int socketMaster){
 					exit(-10);
 				}
 				unaInfoArchivo->socketParaRecibir = unSocketWorker;
+				unaInfoArchivo->nombreNodo = string_new();
 				unaInfoArchivo->bloqueLeido = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
+				string_append(&(unaInfoArchivo->nombreNodo),nombreNodo);
 				list_add(listaInfoApareo,unaInfoArchivo);
+				free(ipWorker);
+				free(nombreNodo);
 			}
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
 
-			char* archivoApareado = realizarApareoGlobal(listaInfoApareo);
+			FILE* miTemporal = fopen(temporalEncargado,"r");
+			free(temporalEncargado);
+
+			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,miTemporal);
 
 			guardarScript(script,nombreScript);
 
