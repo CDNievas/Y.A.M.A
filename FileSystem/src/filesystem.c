@@ -2,19 +2,7 @@
 #include "structFS.h"
 #include <math.h>
 
-#define PARAMETROS {"PUERTO_ESCUCHA"}
 
-int PUERTO_ESCUCHA;
-
-t_log* loggerFileSystem;
-int hayNodos;
-bool esEstadoSeguro;
-tablaNodos* tablaGlobalNodos;
-t_list* listaBitmap;
-t_list* tablaGlobalArchivos;
-bool hayEstadoAnterior;
-t_list* listaConexionNodos;
-t_list* listaConexionNodos;
 
 //---------------------------------------------------BITMAP---------------------------------------------------------
 
@@ -163,6 +151,14 @@ void persistirTablaNodo(){
 
 }
 
+int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
+	int numero = (bloquesLibres*100)/cantBloques;
+	if((bloquesLibres*100)%cantBloques != 0){
+	 numero++;
+	}
+	return numero;
+}
+
 void registrarNodo(int socket) {
 
 	char * nombreNodo;
@@ -175,8 +171,8 @@ void registrarNodo(int socket) {
 
 	cantBloques = recibirUInt(socket);
 
-	//ip=recibirString(socket);
-	//puerto=recibirUInt(socket);
+	ip=recibirString(socket);
+	puerto=recibirUInt(socket);
 
 
 	// Checkeo estado anterior
@@ -192,11 +188,7 @@ void registrarNodo(int socket) {
 	string_append(&bloque->nodo, nombreNodo);
 	bloque->total = cantBloques;
 	bloque->libre = cantBloquesLibres(bitarray);
-	int numero = (bloque->libre*100)/cantBloques;
-	if((bloque->libre*100)%cantBloques != 0){
-	 numero++;
-	}
-	bloque->porcentajeOcioso=numero;
+	bloque->porcentajeOcioso=sacarPorcentajeOcioso(bloque->libre,cantBloques);
 	bloque->socket=socket;
 
 	// Aniado a la tabla de info de nodos
@@ -213,21 +205,21 @@ void registrarNodo(int socket) {
 	list_add(listaBitmap, bitmapNodo);
 
 	//Aniado los datos de conexion del nodo
-//	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
-//	datosConexion->nodo=string_new();
-//	string_append(&datosConexion->nodo, nombreNodo);
-//	datosConexion->ip=string_new();
-//	string_append(&datosConexion->ip, ip);
-//	datosConexion->puerto=puerto;
-//	list_add(listaConexionNodos,datosConexion);
+	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
+	datosConexion->nodo=string_new();
+	string_append(&datosConexion->nodo, nombreNodo);
+	datosConexion->ip=string_new();
+	string_append(&datosConexion->ip, ip);
+	datosConexion->puerto=puerto;
+	list_add(listaConexionNodos,datosConexion);
 
 	persistirTablaNodo();
 
 	}
 	hayNodos++;
 
-	//free(ip);
-	//free(nombreNodo);
+	free(ip);
+	free(nombreNodo);
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -246,6 +238,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	int tamaniobitarray = (bitarray_get_max_bit(nodoConbitarray->bitarray)/8);
 	for(;posicion<tamaniobitarray;posicion++){
 		if (!bitarray_test_bit(nodoConbitarray->bitarray, posicion)) {
+			bitarray_set_bit(nodoConbitarray->bitarray,posicion);
 			return posicion;
 		}
 	}
@@ -254,7 +247,6 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 
 void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 	int tabajoOcioso=0;
-	int cont=0;
 	void* mensaje=malloc(sizeof(uint32_t)*3+string_length(contenidoAEnviar));
 	uint32_t posicionActual=0;
 	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
@@ -264,12 +256,19 @@ void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso);
 	}
 	nodo0=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia0);
+	nodo0->libre--;
+	nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
+	tablaGlobalNodos->libres--;
 
 	bool nodoMasOciosoCopia1(contenidoNodo* contenidoDelNodo){
 		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo)!=0);
 	}
 	nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
+	nodo1->libre--;
+	nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
+	tablaGlobalNodos->libres--;
 
+	persistirTablaNodo();
 
 	uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
 
@@ -396,8 +395,11 @@ void leerArchivo(char* ruta,char* nombreArchivo){
 	}
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 
+	void* contenidoArchivo=malloc(entradaArchivo->tamanio);
+
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+
 
 	}
 
@@ -595,6 +597,7 @@ int main(int argc, char **argv) {
 	listaBitmap = list_create();
 	tablaGlobalArchivos = list_create();
 	listaConexionNodos=list_create();
+	listaDirectorios = list_create();
 
 	hayNodos=0;
 	esEstadoSeguro=true;

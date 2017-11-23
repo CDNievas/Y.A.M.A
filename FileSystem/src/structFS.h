@@ -18,6 +18,8 @@
 #define DATOS_NODO 12
 #define ALMACENADO_FINAL 15
 
+#define PARAMETROS {"PUERTO_ESCUCHA"}
+
 //------------------DIRECOTORIO------------------------
 typedef struct t_directory {
 	int index;
@@ -80,4 +82,18 @@ typedef struct
 	uint32_t puerto;
 	char* ip;
 } datosConexionNodo;
+
+int PUERTO_ESCUCHA;
+
+t_log* loggerFileSystem;
+int hayNodos;
+bool esEstadoSeguro;
+tablaNodos* tablaGlobalNodos;
+t_list* listaBitmap;
+t_list* tablaGlobalArchivos;
+bool hayEstadoAnterior;
+t_list* listaConexionNodos;
+t_list* listaConexionNodos;
+t_list* listaDirectorios;
+
 #endif /* STRUCTFS_H_ */
