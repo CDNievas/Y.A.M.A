@@ -395,7 +395,8 @@ void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* n
 	uint32_t tamanioContenidoArchivoReduccionGlobal= string_length(contenidoArchivoReduccionGlobal);
 	uint32_t tamanionombreResultante= string_length(nombreResultante);
 	uint32_t tamaniorutaResultante= string_length(rutaResultante);
-	uint32_t tamanioTotalAEnviar = tamanioContenidoArchivoReduccionGlobal+tamaniorutaResultante+tamanionombreResultante+(sizeof(uint32_t)*3);
+	uint32_t tamanioTotalAEnviar = tamanioContenidoArchivoReduccionGlobal+tamaniorutaResultante+tamanionombreResultante+(sizeof(uint32_t)*4);
+	uint32_t tipoTexto = 22;
 
 	void* datosAEnviar = malloc(tamanioTotalAEnviar);
 
@@ -410,6 +411,7 @@ void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* n
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+sizeof(uint32_t)*2,nombreResultante,tamanionombreResultante);
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+sizeof(uint32_t)*2,&tamaniorutaResultante,sizeof(uint32_t));
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+sizeof(uint32_t)*3,rutaResultante,tamaniorutaResultante);
+	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+tamaniorutaResultante+sizeof(uint32_t)*3,&tipoTexto,sizeof(uint32_t));
 
 	log_info(loggerWorker, "Datos serializados correctamente para ser enviados al FileSystem\n");
 	sendRemasterizado(socketFS,ALMACENADO_FINAL,tamanioTotalAEnviar,datosAEnviar);
@@ -433,11 +435,12 @@ char* leerLinea(FILE* unArchivo){
 
 	while(!feof(unArchivo))
 	{
-		int cadenaLeida = fgetc(unArchivo);
+		char cadenaLeida[2] = "\0";
+		cadenaLeida[0] = fgetc(unArchivo);
 
-		if (cadenaLeida != '\n')
+		if (cadenaLeida[0] != '\n')
 		{
-			string_append(&lineaLeida,&cadenaLeida);
+			string_append(&lineaLeida,cadenaLeida);
 		}
 		else{
 			break;
@@ -528,8 +531,8 @@ void crearProcesoHijo(int socketMaster){
 		log_error(loggerWorker, "No se pudo crear el proceso hijo\n");
 		close(socketMaster);
 		exit(-1);
+		break;
 	}
-	break;
 	case 0:{
 		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
@@ -545,10 +548,10 @@ void crearProcesoHijo(int socketMaster){
 
 		switch(tipoEtapa){
 		case TRANSFORMACION:{
-			char* script = recibirString(socketMaster);
-			char* nombreScript = recibirString(socketMaster);
 			uint32_t nroBloque = recibirUInt(socketMaster);
 			uint32_t bytesOcupados = recibirUInt(socketMaster);
+			char* script = recibirString(socketMaster);
+			char* nombreScript = recibirString(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
@@ -563,12 +566,12 @@ void crearProcesoHijo(int socketMaster){
 
 			eliminarArchivo(nombreScript);
 
+			break;
 		}
-		break;
 		case REDUCCION_LOCAL:{
 			char* script = recibirString(socketMaster);
-			char* pathDestino = recibirString(socketMaster);
 			char* nombreScript = recibirString(socketMaster);
+			char* pathDestino = recibirString(socketMaster);
 			uint32_t cantidadTemporales = recibirUInt(socketMaster);
 			uint32_t posicion;
 			t_list* archivosTemporales = list_create();
@@ -592,8 +595,8 @@ void crearProcesoHijo(int socketMaster){
 			eliminarArchivo(nombreScript);
 			eliminarArchivo(archivoApareado);
 
+			break;
 		}
-		break;
 		case REDUCCION_GLOBAL:{
 			char* script = recibirString(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
@@ -606,6 +609,7 @@ void crearProcesoHijo(int socketMaster){
 				char* ipWorker = recibirString(socketMaster);
 				uint32_t puertoWorker = recibirUInt(socketMaster);
 				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
+				log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
 				realizarHandshakeWorker(archivoTemporal,unSocketWorker);
 				infoApareoArchivo* unaInfoArchivo = malloc(sizeof(infoApareoArchivo));
 				if(unaInfoArchivo==NULL){
@@ -632,8 +636,9 @@ void crearProcesoHijo(int socketMaster){
 
 			eliminarArchivo(nombreScript);
 			eliminarArchivo(archivoApareado);
+
+			break;
 		}
-		break;
 		case ALMACENADO_FINAL:{
 			char* nombreArchivoReduccionGlobal = recibirString(socketMaster);
 			char* nombreResultante = recibirString(socketMaster);
@@ -659,19 +664,22 @@ void crearProcesoHijo(int socketMaster){
 				sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
 				close(socketFS);
 			}
+
+			break;
 		}
-		break;
-		default:
+		default:{
 			log_error(loggerWorker, "Error al recibir paquete de Master\n");
 			exit(-1);
+		}
 		}
 
 		close(socketMaster);
 
 		exit(1);
+
+		break;
 	}
-	break;
-	default:
+	default:{
 		close(socketMaster);
 
 		log_info(loggerWorker,"Soy el proceso padre con pid: %d y mi hijo tiene el pid %d \n ",getpid(),pid);
@@ -680,6 +688,7 @@ void crearProcesoHijo(int socketMaster){
 		close(pipe_hijoAPadre[1]);
 		close(pipe_padreAHijo[1]);
 		close(pipe_hijoAPadre[0]);
+	}
 	}
 }
 
@@ -693,7 +702,7 @@ int main(int argc, char **argv) {
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
-	log_info(loggerWorker, "Procesos muertos eliminados del sistema.\n");
+	log_info(loggerWorker, "Procesos hijos muertos eliminados del sistema.\n");
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
@@ -703,19 +712,20 @@ int main(int argc, char **argv) {
 			log_info(loggerWorker, "Se recibio una conexion de master.\n");
 			sendDeNotificacion(socketAceptado, ES_WORKER);
 			crearProcesoHijo(socketAceptado);
+			break;
 		}
-		break;
 		case ES_WORKER:{
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
 			sendDeNotificacion(socketAceptado, ES_OTRO_WORKER);
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
 			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
 			close(socketAceptado);
+			break;
 		}
-		break;
-		default:
+		default:{
 			log_error(loggerWorker, "La conexion recibida es erronea.\n");
 			close(socketAceptado);
+		}
 		}
 	}
 	close(socketEscuchaWorker);
