@@ -224,21 +224,34 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 				char* unPedacitoArchivo;
 				if(strcmp(unaInfoArchivo->nombreNodo,NOMBRE_NODO)!=0){
 					unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
+
+					if(strcmp(unPedacitoArchivo,"\0")!=0){
+						unaInfoArchivo->bloqueLeido = string_new();
+						string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
+						list_add(listaInfoApareo,unaInfoArchivo);
+					}
+					else{
+						free(unPedacitoArchivo);
+						free(unaInfoArchivo->bloqueLeido);
+						free(unaInfoArchivo->nombreNodo);
+						close(unaInfoArchivo->socketParaRecibir);
+						free(unaInfoArchivo);
+					}
 				}
 				else{
 					unPedacitoArchivo = leerLinea(miTemporal);
-				}
 
-				if(strcmp(unPedacitoArchivo,"\0")!=0){
-					string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
-					list_add(listaInfoApareo,unaInfoArchivo);
-				}
-				else{
-					free(unPedacitoArchivo);
-					free(unaInfoArchivo->bloqueLeido);
-					free(unaInfoArchivo->nombreNodo);
-					close(unaInfoArchivo->socketParaRecibir);
-					free(unaInfoArchivo);
+					if(strcmp(unPedacitoArchivo,"\0")!=0){
+						unaInfoArchivo->bloqueLeido = string_new();
+						string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
+						list_add(listaInfoApareo,unaInfoArchivo);
+					}
+					else{
+						free(unPedacitoArchivo);
+						free(unaInfoArchivo->bloqueLeido);
+						free(unaInfoArchivo->nombreNodo);
+						free(unaInfoArchivo);
+					}
 				}
 			}
 			else{
@@ -249,8 +262,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 		log_info(loggerWorker, "Se recibio un set de stream de los workers.\n");
 
 		cantidad = list_size(listaInfoApareo);
-		char* menorString = string_new();
-		menorString = NULL;
+		char* menorString = NULL;
 
 		for(posicion=0;posicion<cantidad;posicion++){
 			infoApareoArchivo* unaInfoArchivo = list_remove(listaInfoApareo, 0);
@@ -259,7 +271,6 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivo->bloqueLeido,menorString);
 					free(menorString);
 					char* menorString = string_new();
-					menorString = NULL;
 					string_append(&menorString,unaInfoArchivo->bloqueLeido);
 					free(unaInfoArchivo->bloqueLeido);
 					unaInfoArchivo->bloqueLeido = string_new();
@@ -272,9 +283,9 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
 				}
 			}
 			else{
+				menorString = string_new();
 				string_append(&menorString,unaInfoArchivo->bloqueLeido);
 				free(unaInfoArchivo->bloqueLeido);
-				unaInfoArchivo->bloqueLeido = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
 				list_add(listaInfoApareo,unaInfoArchivo);
 			}
@@ -623,6 +634,11 @@ void crearProcesoHijo(int socketMaster){
 			uint32_t cantidadWorkers = recibirUInt(socketMaster);
 			uint32_t posicionWorker;
 			t_list* listaInfoApareo = list_create();
+			infoApareoArchivo* infoEncargado = malloc(sizeof(infoApareoArchivo));
+			infoEncargado->nombreNodo = string_new();
+			infoEncargado->bloqueLeido = NULL;
+			string_append(&(infoEncargado->nombreNodo),NOMBRE_NODO);
+			list_add(listaInfoApareo,infoEncargado);
 			for(posicionWorker = 0; posicionWorker < cantidadWorkers; posicionWorker++){
 				char* archivoTemporal = recibirString(socketMaster);
 				char* ipWorker = recibirString(socketMaster);
@@ -638,7 +654,6 @@ void crearProcesoHijo(int socketMaster){
 				}
 				unaInfoArchivo->socketParaRecibir = unSocketWorker;
 				unaInfoArchivo->nombreNodo = string_new();
-				unaInfoArchivo->bloqueLeido = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
 				string_append(&(unaInfoArchivo->nombreNodo),nombreNodo);
 				list_add(listaInfoApareo,unaInfoArchivo);
