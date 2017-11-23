@@ -257,10 +257,10 @@ int obtenerWLMax(){
 
 int calculoAvailability(char* nombreNodo){
 	bool esNodo(nodoSistema* nodoAChequear){
-		return strcmp(nombreNodo, nodoAChequear->nombreNodo);
+		return strcmp(nombreNodo, nodoAChequear->nombreNodo) == 0;
 	}
 	uint32_t availability = 0;
-	if(strcmp(ALGORITMO_BALANCEO, "Clock")){
+	if(strcmp(ALGORITMO_BALANCEO, "Clock") == 0){
 		availability = BASE_AVAILABILITY;
 	}else{
 		int wlMax = obtenerWLMax();
