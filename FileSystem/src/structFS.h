@@ -45,8 +45,7 @@ typedef struct
 typedef struct
 	__attribute__((packed)) {
 	char* bloque;
-	copia * copia1;
-	copia * copia2;
+	t_list* copias;
 	uint32_t bytes;
 } copiasXBloque;
 

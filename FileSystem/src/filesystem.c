@@ -186,8 +186,8 @@ void registrarNodo(int socket) {
 
 	cantBloques = recibirUInt(socket);
 
-	ip=recibirString(socket);
-	puerto=recibirUInt(socket);
+	//ip=recibirString(socket);
+	//puerto=recibirUInt(socket);
 
 
 	// Checkeo estado anterior
@@ -233,8 +233,8 @@ void registrarNodo(int socket) {
 	}
 	hayNodos++;
 
-	free(ip);
-	free(nombreNodo);
+	//free(ip);
+	//free(nombreNodo);
 }
 
 //-----------------------------------------------FUNCION ALAMACENAR----------------------------------------------------
@@ -363,43 +363,52 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	//FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
-	fseek(archivo,0,SEEK_SET);
-	if (strcmp(tipo,"B")==0) {
-		while (tamanio >= 0) {
-			if (tamanio < 1048576) {
-				list_add(posicionBloquesAGuardar,tamanio);
-				tamanio-=tamanio;
+
+	if(tablaGlobalNodos->libres*1024>=(tamanio*2)){
+		if(tamanio!=0){
+			if (strcmp(tipo,"B")==0) {
+				while (tamanio >= 0) {
+					if (tamanio < 1048576) {
+						list_add(posicionBloquesAGuardar,tamanio);
+						tamanio-=tamanio;
+					} else {
+						list_add(posicionBloquesAGuardar,1048576);
+						tamanio -= 1048576;
+					}
+				}
 			} else {
-				list_add(posicionBloquesAGuardar,1048576);
-				tamanio -= 1048576;
+				int digito;
+				uint32_t ultimoBarraN = 0;
+				uint32_t registroAntesMega = 0;
+				uint32_t ultimaPosicion = 0;
+
+				while (!feof(archivo)) {
+					digito = fgetc(archivo);
+
+					if (digito == '\n') {
+						ultimoBarraN = ftell(archivo);
+					}
+
+					if (ftell(archivo) == 1048576 + registroAntesMega) {
+						registroAntesMega = ultimoBarraN;
+						list_add(posicionBloquesAGuardar,ultimoBarraN);
+					}
+				}
+
+				fseek(archivo, 0, SEEK_END);
+				ultimaPosicion = ftell(archivo);
+				list_add(posicionBloquesAGuardar, ultimaPosicion);
+				fseek(archivo, 0, SEEK_SET);
 			}
+			enviarDatosANodo(posicionBloquesAGuardar,archivo);
+		}else{
+			log_error(loggerFileSystem,"El archivo se encuentra vacio");
 		}
-	} else {
-		int digito;
-		uint32_t ultimoBarraN = 0;
-		uint32_t registroAntesMega = 0;
-		uint32_t ultimaPosicion = 0;
 
-		while (!feof(archivo)) {
-			digito = fgetc(archivo);
-
-			if (digito == '\n') {
-				ultimoBarraN = ftell(archivo);
-			}
-
-			if (ftell(archivo) == 1048576 + registroAntesMega) {
-				registroAntesMega = ultimoBarraN;
-				list_add(posicionBloquesAGuardar,ultimoBarraN);
-			}
-		}
-
-		fseek(archivo, 0, SEEK_END);
-		ultimaPosicion = ftell(archivo);
-		list_add(posicionBloquesAGuardar, ultimaPosicion);
-		fseek(archivo, 0, SEEK_SET);
+	}else{
+		log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
 	}
 
-	enviarDatosANodo(posicionBloquesAGuardar,archivo);
 }
 
 //------------------------------------------------LEER-------------------------------------------------------------
@@ -414,7 +423,11 @@ void leerArchivo(char* ruta,char* nombreArchivo){
 
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-
+		bool esNodo(contenidoNodo* nodoElegido){
+			//return(strcmp(nodoElegido->nodo,copiaBloque->copia1->nodo)==0);
+		}
+		contenidoNodo* nodoSeleccionado=list_find(tablaGlobalNodos->contenidoXNodo,(void*)esNodo);
+		//sendRemasterizado(nodoSeleccionado->socket,ENV_LEER,copiaBloque->)
 
 	}
 
@@ -457,44 +470,44 @@ void enviarListaNodos(int socket) {
 
 //ENVIAR DATOS
 
-int tamanioStruct(copiasXBloque* contenido){
-	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
-}
+//int tamanioStruct(copiasXBloque* contenido){
+//	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
+//}
+//
+//void* serializarCopiaBloque(copiasXBloque* contenido){
+//	int posicionActual = 0;
+//
+//	void* datosSerializados = malloc(tamanioStruct(contenido));
+//
+//	// serializo bloque
+//	uint32_t tamanioBloque = string_length(contenido->bloque);
+//	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
+//	posicionActual += tamanioBloque;
+//	//serializo copia1
+//	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
+//	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
+//	posicionActual += tamanioCopia1;
+//	memcpy(datosSerializados + posicionActual, &contenido->copia1->bloque, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//	// serializo copia2
+//	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
+//	memcpy(datosSerializados + posicionActual, &tamanioCopia2, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
+//	posicionActual += tamanioCopia2;
+//	memcpy(datosSerializados + posicionActual, &contenido->copia2->bloque, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//	//serializo bytes
+//	memcpy(datosSerializados + posicionActual, &contenido->bytes, sizeof(uint32_t));
+//	posicionActual += sizeof(uint32_t);
+//
+//	return datosSerializados;
 
-void* serializarCopiaBloque(copiasXBloque* contenido){
-	int posicionActual = 0;
-
-	void* datosSerializados = malloc(tamanioStruct(contenido));
-
-	// serializo bloque
-	uint32_t tamanioBloque = string_length(contenido->bloque);
-	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
-	posicionActual += tamanioBloque;
-	//serializo copia1
-	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
-	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
-	posicionActual += tamanioCopia1;
-	memcpy(datosSerializados + posicionActual, &contenido->copia1->bloque, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-	// serializo copia2
-	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
-	memcpy(datosSerializados + posicionActual, &tamanioCopia2, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
-	posicionActual += tamanioCopia2;
-	memcpy(datosSerializados + posicionActual, &contenido->copia2->bloque, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-	//serializo bytes
-	memcpy(datosSerializados + posicionActual, &contenido->bytes, sizeof(uint32_t));
-	posicionActual += sizeof(uint32_t);
-
-	return datosSerializados;
-
-}
+//}
 
 int sacarTamanio(tablaArchivos* entradaArchivo){
 	uint32_t cont=0;
@@ -502,7 +515,7 @@ int sacarTamanio(tablaArchivos* entradaArchivo){
 	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-		posicionActual+=tamanioStruct(copiaBloque);
+		//posicionActual+=tamanioStruct(copiaBloque);
 	}
 	free(copiaBloque);
 	return posicionActual;
@@ -522,8 +535,8 @@ void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-		memcpy(mensaje+posicionActual,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
-		posicionActual+=tamanioStruct(copiaBloque);
+//		memcpy(mensaje+posicionActual,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
+//		posicionActual+=tamanioStruct(copiaBloque);
 	}
 
 	sendRemasterizado(socket, INFO_ARCHIVO_FS, posicionActual, mensaje);
