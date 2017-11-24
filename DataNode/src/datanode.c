@@ -19,13 +19,13 @@ int main(int argc, char **argv) {
 	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
 	cargarDataNode(configuracionDataNode);
 
-	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", nombreNodo);
+	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
 	// Cargo binario
 	cargarBin(mapArchivo);
 
 	// Conexion con FS
-	int socketServerFS = conectarAServer(ipFilesystem, puertoFilesystem);
+	int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	realizarHandshakeFS(socketServerFS);
 
 	// Envio nombre de nodo y cantidad de bloques al FS

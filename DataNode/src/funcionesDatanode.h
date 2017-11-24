@@ -22,11 +22,11 @@
 #define REC_ESCRIBIR 105
 
 // ARCHIVO DE CONFIGURACION
-u_int32_t puertoFilesystem;
-char* ipFilesystem;
-char* rutaDatabin;
-char* nombreNodo;
-u_int32_t puertoDatanode;
+char* IP_FILESYSTEM;
+u_int32_t PUERTO_FILESYSTEM;
+char* NOMBRE_NODO;
+u_int32_t PUERTO_DATANODE;
+char* RUTA_DATABIN;
 
 t_log * loggerDatanode; // Logger
 u_int32_t sizeDataBin; // Guarda el tamaño del Databin
