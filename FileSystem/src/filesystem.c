@@ -223,9 +223,9 @@ void registrarNodo(int socket) {
 	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
 	datosConexion->nodo=string_new();
 	string_append(&datosConexion->nodo, nombreNodo);
-	datosConexion->ip=string_new();
-	string_append(&datosConexion->ip, ip);
-	datosConexion->puerto=puerto;
+//	datosConexion->ip=string_new();
+//	string_append(&datosConexion->ip, ip);
+//	datosConexion->puerto=puerto;
 	list_add(listaConexionNodos,datosConexion);
 
 	persistirTablaNodo();
@@ -260,9 +260,9 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	return 0;
 }
 
-void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
+void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio){
 	int tabajoOcioso=0;
-	void* mensaje=malloc(sizeof(uint32_t)*3+string_length(contenidoAEnviar));
+	void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
 	uint32_t posicionActual=0;
 	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
 	contenidoNodo* nodo1=malloc(sizeof(contenidoNodo));
@@ -305,7 +305,7 @@ void asignarEnviarANodo(char* contenidoAEnviar,uint32_t tamanio){
 	}
 //	free(mensaje);
 
-	mensaje=realloc(mensaje,sizeof(uint32_t)*3+string_length(contenidoAEnviar));
+	mensaje=realloc(mensaje,sizeof(uint32_t)*3+tamanio);
 
 	bloqueAsignado=asignarBloqueNodo(nodo1);
 	posicionActual = 0;
@@ -337,10 +337,10 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
 		if (posicionActual == 0) {
 			void* contenido = malloc(posicion);
 			fread(contenido, posicion, 1, archivo);
-			char* contenidoAEnviar = string_substring_until(contenido, posicion);
-			printf("%s", contenidoAEnviar);
-			asignarEnviarANodo(contenidoAEnviar, posicion);
-			free(contenidoAEnviar);
+//			char* contenidoAEnviar = string_substring_until(contenido, posicion);
+//			printf("%s", contenidoAEnviar);
+			asignarEnviarANodo(contenido, posicion);
+//			free(contenidoAEnviar);
 			free(contenido);
 		} else {
 			posicionActual--;
@@ -364,10 +364,10 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
 
-	if(tablaGlobalNodos->libres*1024>=(tamanio*2)){
+	if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
 		if(tamanio!=0){
 			if (strcmp(tipo,"B")==0) {
-				while (tamanio >= 0) {
+				while (tamanio > 0) {
 					if (tamanio < 1048576) {
 						list_add(posicionBloquesAGuardar,tamanio);
 						tamanio-=tamanio;
@@ -602,9 +602,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc, 2);
-	t_config* configuracionFS = generarTConfig(argv[1], 1);
-//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 1);
+//	chequearParametros(argc, 2);
+//	t_config* configuracionFS = generarTConfig(argv[1], 2);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);

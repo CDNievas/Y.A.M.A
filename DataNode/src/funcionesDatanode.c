@@ -95,7 +95,7 @@ void cargarBin(){
 
 int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
 
-	if(nroBloque >= cantBloques){
+	if(nroBloque > cantBloques){
 
 		log_warning(loggerDatanode,"Escritura en bloque inexistente numero: %d de %d.",nroBloque, cantBloques);
 		return -1;
