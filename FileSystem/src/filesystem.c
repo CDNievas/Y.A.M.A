@@ -1,10 +1,41 @@
 #include "consolaFS.h"
 #include "structFS.h"
 #include <math.h>
-
+#include "../../Biblioteca/src/genericas.c"
 
 
 //---------------------------------------------------BITMAP---------------------------------------------------------
+
+void pedirBloque(int socketNodo, uint32_t nroBloque, uint32_t cantBytes){
+
+	 // PRUEBA LECTURA
+	int tamanioMsg = sizeof(uint32_t) + sizeof(uint32_t);
+	void * msg = miMalloc(tamanioMsg,loggerFileSystem,"Fallo en pedirBloque()");
+
+	memcpy(msg+sizeof(uint32_t), &nroBloque, sizeof(uint32_t));
+	memcpy(msg+sizeof(uint32_t)+sizeof(uint32_t), &cantBytes, sizeof(uint32_t));
+
+	sendRemasterizado(socketNodo,ENV_LEER,tamanioMsg,msg);
+
+	free(msg);
+
+}
+
+void recibirBloque(int socketNodo){
+
+	uint32_t cantBytes = recibirUInt(socketNodo);
+	void * bloque = miMalloc(cantBytes,loggerFileSystem,"Fallo en recibirBloque()");
+	if(recv(socket, bloque, cantBytes, MSG_WAITALL) == -1){
+		perror("Error al recibir el bloque.");
+		exit(-1);
+	}
+	char* bloqueRecibido = string_substring_until(bloque, cantBytes);
+
+	printf("%s",bloqueRecibido);
+
+	free(bloque);
+
+}
 
 char * obtenerPathBitmap(char * nombreNodo){
 	char * path = string_new();
@@ -667,10 +698,12 @@ int main(int argc, char **argv) {
 					case REC_INFONODO:
 						registrarNodo(socketClienteChequeado);
 						break;
+					case REC_BLOQUE:
+						recibirBloque(socketClienteChequeado);
+						break;
 					case INFO_ARCHIVO_FS:
 						enviarDatoArchivo(socketClienteChequeado);
 						break;
-
 					case DATOS_NODO:
 						enviarDatosConexionNodo(socketClienteChequeado);
 						break;

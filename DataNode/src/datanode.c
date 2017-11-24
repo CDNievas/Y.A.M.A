@@ -41,6 +41,12 @@ int main(int argc, char **argv) {
 
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
 				u_int32_t cantBytes = recibirUInt(socketServerFS);
+
+				if(cantBytes > SIZEBLOQUE){
+					log_error(loggerDatanode, "Se estan tratando de leer %d bytes.",cantBytes);
+					exit(-96);
+				}
+
 				//Leo el bloque
 				void * bloque = leerBloque(nroBloque,cantBytes);
 
@@ -61,6 +67,11 @@ int main(int argc, char **argv) {
 
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
 				u_int32_t cantBytes = recibirUInt(socketServerFS);
+
+				if(cantBytes > SIZEBLOQUE){
+					log_warning(loggerDatanode, "Se estan escribiendo %d bytes.",cantBytes);
+				}
+
 				char * bloque = recvDeBloque(socketServerFS);
 
 				// Escribo bloque
@@ -68,6 +79,7 @@ int main(int argc, char **argv) {
 				if(resultado<0){
 					// Bloque inexistente
 					sendDeNotificacion(socketServerFS, ESC_INCORRECTA);
+					log_error(loggerDatanode, "Se trato de escribir en el bloque %d que es inexistente.",nroBloque);
 					exit(-98);
 				}
 
