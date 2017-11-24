@@ -16,3 +16,6 @@
 [INFO] 17:26:06:54 DataNode/(4814:4814): Archivo binario de 1048576 bytes encontrado
 [INFO] 17:26:06:400 DataNode/(4814:4814): Conexion con FileSystem existosa.
 [INFO] 17:26:07:112 DataNode/(4814:4814): Informacion de nodo enviada a FS.
+[INFO] 00:49:49:86 DataNode/(7154:7154): Se cargo correctamente DataNode cuyo nombre es NODO1.
+[INFO] 00:49:50:698 DataNode/(7154:7154): Archivo binario de 62914560 bytes encontrado
+[INFO] 00:49:52:290 DataNode/(7154:7154): Conexion con FileSystem existosa.

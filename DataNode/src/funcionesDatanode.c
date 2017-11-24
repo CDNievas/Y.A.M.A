@@ -152,15 +152,15 @@ void enviarInfoNodo(uint32_t socket){
 
 	int offset = 0;
 	memcpy(mensaje + offset, &tamNombreNodo, sizeof(uint32_t));
-	offset =+ sizeof(uint32_t);
+	offset += sizeof(uint32_t);
 	memcpy(mensaje + offset, NOMBRE_NODO, tamNombreNodo);
-	offset =+ tamNombreNodo;
+	offset += tamNombreNodo;
 	memcpy(mensaje + offset, &bloques, sizeof(uint32_t));
-	offset =+ sizeof(uint32_t);
+	offset += sizeof(uint32_t);
 	memcpy(mensaje + offset, &tamIp, sizeof(uint32_t));
-	offset =+ sizeof(uint32_t);
+	offset += sizeof(uint32_t);
 	memcpy(mensaje + offset, IP_FILESYSTEM, tamIp);
-	offset =+ tamIp;
+	offset += tamIp;
 	memcpy(mensaje + offset, &PUERTO_FILESYSTEM, sizeof(uint32_t));
 
 	sendRemasterizado(socket, ENV_INFONODO, tamanioMsg, mensaje);

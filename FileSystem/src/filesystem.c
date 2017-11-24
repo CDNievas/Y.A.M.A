@@ -250,7 +250,6 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 void registrarNodo(int socket) {
 
 	char * nombreNodo;
-	//provisorio para probar: agregar string_new();
 	char* ip;
 	int cantBloques,puerto;
 	t_bitarray * bitarray;
@@ -259,8 +258,8 @@ void registrarNodo(int socket) {
 
 	cantBloques = recibirUInt(socket);
 
-	//ip=recibirString(socket);
-	//puerto=recibirUInt(socket);
+	ip=recibirString(socket);
+	puerto=recibirUInt(socket);
 
 
 	// Checkeo estado anterior
@@ -296,9 +295,9 @@ void registrarNodo(int socket) {
 	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
 	datosConexion->nodo=string_new();
 	string_append(&datosConexion->nodo, nombreNodo);
-//	datosConexion->ip=string_new();
-//	string_append(&datosConexion->ip, ip);
-//	datosConexion->puerto=puerto;
+	datosConexion->ip=string_new();
+	string_append(&datosConexion->ip, ip);
+	datosConexion->puerto=puerto;
 	list_add(listaConexionNodos,datosConexion);
 
 	persistirTablaNodo();
@@ -306,7 +305,7 @@ void registrarNodo(int socket) {
 	}
 	hayNodos++;
 
-	//free(ip);
+	free(ip);
 	//free(nombreNodo);
 }
 
@@ -466,19 +465,21 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	archivoAGuardar->tipo=tipo;
 	archivoAGuardar->directorioPadre=obtenerNombreDirectorio(ruta);
 
-
-	if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
-		if(tamanio!=0){
-			if (strcmp(tipo,"B")==0) {
-				while (tamanio > 0) {
-					if (tamanio < 1048576) {
-						list_add(posicionBloquesAGuardar,tamanio);
-						tamanio-=tamanio;
-					} else {
-						list_add(posicionBloquesAGuardar,1048576);
-						tamanio -= 1048576;
+	uint32_t tamAux = 0;
+		if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
+			if(tamanio!=0){
+				if (strcmp(tipo,"B")==0) {
+					while (tamanio > 0) {
+						if (tamanio < 1048576) {
+							tamAux += tamanio;
+							list_add(posicionBloquesAGuardar,tamAux);
+							tamanio-=tamanio;
+						} else {
+							tamAux += 1048576;
+							list_add(posicionBloquesAGuardar,tamAux);
+							tamanio -= 1048576;
+						}
 					}
-				}
 			} else {
 				int digito;
 				uint32_t ultimoBarraN = 0;
