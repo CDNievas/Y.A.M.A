@@ -1,0 +1,10 @@
+1. En la carpeta de Debug de FS:
+
+mkdir yamfs:/
+
+2. cd Escritorio/
+	mkdir metadata
+	cd metadata
+	mkdir bitmap
+
+3. Copiar archivo transformador, reductor y archivo a modificar en Debug de Master
