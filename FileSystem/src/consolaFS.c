@@ -244,7 +244,7 @@ void consolaFS(){
     }
 
     analizarComando(linea); 
-    free(linea);
+    //free(linea);
   }
 
 }

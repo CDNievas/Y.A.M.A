@@ -586,7 +586,7 @@ void enviarListaNodos(int socket) {
 //ENVIAR DATOS
 
 int tamanioStruct(copiasXBloque* contenido){
-	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
+	return sizeof(uint32_t)*6 + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
 }
 
 void* serializarCopiaBloque(copiasXBloque* contenido){
@@ -595,11 +595,9 @@ void* serializarCopiaBloque(copiasXBloque* contenido){
 	void* datosSerializados = malloc(tamanioStruct(contenido));
 
 	// serializo bloque
-	uint32_t tamanioBloque = string_length(contenido->bloque);
-	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
+	uint32_t nroBloque = atoi(contenido->bloque);
+	memcpy(datosSerializados + posicionActual, &nroBloque, sizeof(uint32_t));
 	posicionActual += sizeof(uint32_t);
-	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
-	posicionActual += tamanioBloque;
 	//serializo copia1
 	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
 	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
@@ -627,12 +625,13 @@ void* serializarCopiaBloque(copiasXBloque* contenido){
 int sacarTamanio(tablaArchivos* entradaArchivo){
 	uint32_t cont=0;
 	uint32_t posicionActual=0;
-	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
+	copiasXBloque* copiaBloque;
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
 		posicionActual+=tamanioStruct(copiaBloque);
+		cont++;
 	}
-	free(copiaBloque);
+//	free(copiaBloque);
 	return posicionActual;
 }
 
@@ -640,7 +639,6 @@ int sacarTamanio(tablaArchivos* entradaArchivo){
 void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 	uint32_t cont=0;
 	uint32_t posicionActual=0;
-	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
 
 	void* mensaje= malloc(sizeof(uint32_t)+sacarTamanio(entradaArchivo));
 
@@ -649,9 +647,13 @@ void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 	posicionActual += sizeof(uint32_t);
 
 	while(cont<list_size(entradaArchivo->bloques)){
-		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-//		memcpy(mensaje+posicionActual,serializarCopiaBloque(copiaBloque),tamanioStruct(copiaBloque));
-//		posicionActual+=tamanioStruct(copiaBloque);
+		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+		void* espacioASerializar = serializarCopiaBloque(copiaBloque);
+		memcpy(mensaje+posicionActual,espacioASerializar,tamanioStruct(copiaBloque));
+		posicionActual+=tamanioStruct(copiaBloque);
+		free(espacioASerializar);
+
+		cont++;
 	}
 
 	sendRemasterizado(socket, INFO_ARCHIVO_FS, posicionActual, mensaje);
@@ -717,9 +719,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-//	chequearParametros(argc, 2);
-//	t_config* configuracionFS = generarTConfig(argv[1], 2);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 2);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
