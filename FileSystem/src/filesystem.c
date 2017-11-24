@@ -424,8 +424,8 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 
 void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAGuardar) {
 	uint32_t posicionActual = 0;
-	copiasXBloque* copia=malloc(sizeof(copiasXBloque));
 	void enviarNodoPorPosicion(int posicion) {
+		copiasXBloque* copia=malloc(sizeof(copiasXBloque));
 		if (posicionActual == 0) {
 			void* contenido = malloc(posicion);
 			fread(contenido, posicion, 1, archivo);
