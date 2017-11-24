@@ -166,6 +166,7 @@ int obtenerDirectorioPadre(char** rutaDesmembrada){
         string_append(&fathersName, rutaDesmembrada[posicion]);
         t_directory* directory = list_find(listaDirectorios, (void*)isMyFather);
         if(directory == NULL){
+        	free(fathersName);
           return -1;
         }
         free(fathersName);
@@ -199,11 +200,13 @@ void persistirTablaNodo(){
 
 
 	//FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
-	char * path = obtenerPathTablaNodo();
+//	char * path = obtenerPathTablaNodo();
 	FILE* archivoNodos=fopen("asd.txt","w");
 
 	fputs("TAMANIO=",archivoNodos);
-	fputs(string_itoa(tablaGlobalNodos->tamanio),archivoNodos);
+	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
+	fputs(tamanioCadena,archivoNodos);
+	free(tamanioCadena);
 	fputc('\n',archivoNodos);
 	fputs("BLOQUES=[",archivoNodos);
 	int i=0;
@@ -216,7 +219,7 @@ void persistirTablaNodo(){
 	fputc('\n',archivoNodos);
 
 	int s=0;
-	char* nodoSeleccionado=string_new();
+	char* nodoSeleccionado;
 	while(s<list_size(tablaGlobalNodos->nodo)){
 		nodoSeleccionado=list_get(tablaGlobalNodos->nodo,s);
 		fputs(nodoSeleccionado,archivoNodos);
@@ -225,12 +228,16 @@ void persistirTablaNodo(){
 			return(strcmp(contenidoDeUnNodo->nodo,nodoSeleccionado)==0);
 		}
 		contenidoNodo* nodoElegido=list_find(tablaGlobalNodos->contenidoXNodo ,(void*)esNodo);
-		fputs(string_itoa(nodoElegido->total),archivoNodos);
+		char* totalNodoElegido = string_itoa(nodoElegido->total);
+		fputs(totalNodoElegido,archivoNodos);
+		free(totalNodoElegido);
 		fputc('\n',archivoNodos);
 
 		fputs(nodoSeleccionado,archivoNodos);
 		fputs("LIBRE=",archivoNodos);
-		fputs(string_itoa(nodoElegido->libre),archivoNodos);
+		char* totalNodoLibre = string_itoa(nodoElegido->libre);
+		fputs(totalNodoLibre ,archivoNodos);
+		free(totalNodoLibre);
 		fputc('\n',archivoNodos);
 
 		s++;
@@ -336,8 +343,8 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	int tabajoOcioso=0;
 	void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
 	uint32_t posicionActual=0;
-	contenidoNodo* nodo0=malloc(sizeof(contenidoNodo));
-	contenidoNodo* nodo1=malloc(sizeof(contenidoNodo));
+	contenidoNodo* nodo0;
+	contenidoNodo* nodo1;
 
 	bool nodoMasOciosoCopia0(contenidoNodo* contenidoDelNodo){
 		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso);
@@ -360,7 +367,6 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
 
 	copiaBloque->copia1=malloc(sizeof(copia));
-	copiaBloque->copia1->nodo=string_new();
 
 	copiaBloque->copia1->nodo=nodo0->nodo;
 	copiaBloque->copia1->bloque=bloqueAsignado;
@@ -404,7 +410,6 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicionActual,mensaje);
 
 	copiaBloque->copia2=malloc(sizeof(copia));
-	copiaBloque->copia2->nodo=string_new();
 
 	copiaBloque->copia2->nodo=nodo1->nodo;
 	copiaBloque->copia2->bloque=bloqueAsignado;
@@ -426,24 +431,31 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 			fread(contenido, posicion, 1, archivo);
 //			char* contenidoAEnviar = string_substring_until(contenido, posicion);
 //			printf("%s", contenidoAEnviar);
-			copia->bloque=string_itoa(posicionActual);
+			copia->bloque = string_new();
+			char* numeroBloque = string_itoa(posicionActual);
+			string_append(&copia->bloque, numeroBloque);
 			copia->bytes=posicion;
 			asignarEnviarANodo(contenido, posicion,copia);
 //			free(contenidoAEnviar);
 			free(contenido);
+			free(numeroBloque);
 		} else {
 //			posicionActual--;
 			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual-1);
-			copia->bloque=string_itoa(posicionActual);
+			char* numeroBloque = string_itoa(posicionActual);
+			copia->bloque = string_new();
+			string_append(&copia->bloque, numeroBloque);
 			copia->bytes=posicion- posicionAnterior;
 			void* contenido = malloc(posicion - posicionAnterior);
 			fread(contenido, posicion - posicionAnterior, 1,archivo);
 //			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
 			asignarEnviarANodo(contenido,posicion - posicionAnterior,copia);
 			free(contenido);
+			free(numeroBloque);
 		}
 		posicionActual++;
 		list_add(archivoAGuardar->bloques,copia);
+		list_add(tablaGlobalArchivos, archivoAGuardar);
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
@@ -456,15 +468,13 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	t_list* posicionBloquesAGuardar=list_create();
 
 	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
-	archivoAGuardar->nombreArchivo=string_new();
-	archivoAGuardar->tipo=string_new();
 	archivoAGuardar->bloques=list_create();
 
 	char** ruta = string_split(pathArchivo,"/");
 	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(ruta);
 	archivoAGuardar->tipo=tipo;
-	archivoAGuardar->directorioPadre=obtenerNombreDirectorio(ruta);
-
+	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(ruta);
+	liberarComandoDesarmado(ruta);
 	uint32_t tamAux = 0;
 		if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
 			if(tamanio!=0){
@@ -505,6 +515,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 				fseek(archivo, 0, SEEK_SET);
 			}
 			enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
+			list_destroy(posicionBloquesAGuardar);
 		}else{
 			log_error(loggerFileSystem,"El archivo se encuentra vacio");
 		}
@@ -574,44 +585,44 @@ void enviarListaNodos(int socket) {
 
 //ENVIAR DATOS
 
-//int tamanioStruct(copiasXBloque* contenido){
-//	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
-//}
-//
-//void* serializarCopiaBloque(copiasXBloque* contenido){
-//	int posicionActual = 0;
-//
-//	void* datosSerializados = malloc(tamanioStruct(contenido));
-//
-//	// serializo bloque
-//	uint32_t tamanioBloque = string_length(contenido->bloque);
-//	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
-//	posicionActual += tamanioBloque;
-//	//serializo copia1
-//	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
-//	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
-//	posicionActual += tamanioCopia1;
-//	memcpy(datosSerializados + posicionActual, &contenido->copia1->bloque, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//	// serializo copia2
-//	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
-//	memcpy(datosSerializados + posicionActual, &tamanioCopia2, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
-//	posicionActual += tamanioCopia2;
-//	memcpy(datosSerializados + posicionActual, &contenido->copia2->bloque, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//	//serializo bytes
-//	memcpy(datosSerializados + posicionActual, &contenido->bytes, sizeof(uint32_t));
-//	posicionActual += sizeof(uint32_t);
-//
-//	return datosSerializados;
+int tamanioStruct(copiasXBloque* contenido){
+	return sizeof(uint32_t)*6 + string_length(contenido->bloque) + string_length(contenido->copia1->nodo) + string_length(contenido->copia2->nodo);
+}
 
-//}
+void* serializarCopiaBloque(copiasXBloque* contenido){
+	int posicionActual = 0;
+
+	void* datosSerializados = malloc(tamanioStruct(contenido));
+
+	// serializo bloque
+	uint32_t tamanioBloque = string_length(contenido->bloque);
+	memcpy(datosSerializados + posicionActual, &tamanioBloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->bloque, tamanioBloque);
+	posicionActual += tamanioBloque;
+	//serializo copia1
+	uint32_t tamanioCopia1 = string_length(contenido->copia1->nodo);
+	memcpy(datosSerializados + posicionActual, &tamanioCopia1, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->copia1->nodo, tamanioCopia1);
+	posicionActual += tamanioCopia1;
+	memcpy(datosSerializados + posicionActual, &contenido->copia1->bloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	// serializo copia2
+	uint32_t tamanioCopia2 = string_length(contenido->copia2->nodo);
+	memcpy(datosSerializados + posicionActual, &tamanioCopia2, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	memcpy(datosSerializados + posicionActual, contenido->copia2->nodo, tamanioCopia2);
+	posicionActual += tamanioCopia2;
+	memcpy(datosSerializados + posicionActual, &contenido->copia2->bloque, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+	//serializo bytes
+	memcpy(datosSerializados + posicionActual, &contenido->bytes, sizeof(uint32_t));
+	posicionActual += sizeof(uint32_t);
+
+	return datosSerializados;
+
+}
 
 int sacarTamanio(tablaArchivos* entradaArchivo){
 	uint32_t cont=0;
@@ -619,7 +630,7 @@ int sacarTamanio(tablaArchivos* entradaArchivo){
 	copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
 	while(cont<list_size(entradaArchivo->bloques)){
 		copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-		//posicionActual+=tamanioStruct(copiaBloque);
+		posicionActual+=tamanioStruct(copiaBloque);
 	}
 	free(copiaBloque);
 	return posicionActual;
