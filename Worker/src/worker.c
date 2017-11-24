@@ -120,32 +120,62 @@ void darPermisosAScripts(char* script){
 	}
 }
 
+char* obtenerResultante(char* rutaCompleta,uint32_t valor){
+	uint32_t posicion;
+	uint32_t posicionMaxima = 0;
+
+	for(posicion=0;rutaCompleta[posicion]!='\0';posicion++){
+		if(rutaCompleta[posicion]=='/'){
+			posicionMaxima = posicion;
+		}
+	}
+
+	if(valor==1){
+		return string_substring_until(rutaCompleta,posicionMaxima);
+	}
+	else{
+		return string_substring_from(rutaCompleta,posicionMaxima+1);
+	}
+}
+
 char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados){
 	char* command = string_new();
+	char* ruta = obtenerResultante(nombreScript,1);
+	char* nombreEjecutable = obtenerResultante(nombreScript,0);
 	string_append(&command, "head -n ");
 	string_append(&command,string_itoa((nroBloque*1048576)+bytesOcupados));
 	string_append(&command," ");
 	string_append(&command,RUTA_DATABIN);
 	string_append(&command," | tail -n ");
 	string_append(&command,string_itoa(bytesOcupados));
-	string_append(&command," | sh ");
-	string_append(&command,nombreScript);
+	string_append(&command," | ");
+	string_append(&command,ruta);
+	string_append(&command,"./");
+	string_append(&command,nombreEjecutable);
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
+	free(ruta);
+	free(nombreEjecutable);
 	log_info(loggerWorker, "Se creo correctamente el comando del script transformador\n");
 	return command;
 }
 
 char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* pathDestino){
 	char* command = string_new();
+	char* ruta = obtenerResultante(nombreScript,1);
+	char* nombreEjecutable = obtenerResultante(nombreScript,0);
 	string_append(&command,archivoApareado);
-	string_append(&command," | sh ");
-	string_append(&command,nombreScript);
+	string_append(&command," | ");
+	string_append(&command,ruta);
+	string_append(&command,"./");
+	string_append(&command,nombreEjecutable);
 	string_append(&command," > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
 	free(archivoApareado);
+	free(ruta);
+	free(nombreEjecutable);
 	log_info(loggerWorker, "Se creo correctamente el comando del script reductor\n");
 	return command;
 }
@@ -763,6 +793,7 @@ int main(int argc, char **argv) {
 		default:{
 			log_error(loggerWorker, "La conexion recibida es erronea.\n");
 			close(socketAceptado);
+			exit(-1);
 		}
 		}
 	}

@@ -1,31 +1,35 @@
 #include "Socket.h"
 #include <commons/string.h>
 
-void verificarErrorSocket(int socket) {
+void verificarErrorSocket(int unSocket) {
 	if (socket == -1) {
 		perror("Error de socket");
+		close(unSocket);
 		exit(-1);
 	}
 }
 
-void verificarErrorSetsockopt(int socket) {
+void verificarErrorSetsockopt(int unSocket) {
 	int yes = 1;
 	if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		perror("Error de setsockopt");
+		close(unSocket);
 		exit(-1);
 	}
 }
 
-void verificarErrorBind(int socket, struct sockaddr_in mySocket) {
+void verificarErrorBind(int unSocket, struct sockaddr_in mySocket) {
 	if (bind(socket, (struct sockaddr *) &mySocket, sizeof(mySocket)) == -1) {
 		perror("Error de bind");
+		close(unSocket);
 		exit(-1);
 	}
 }
 
-void verificarErrorListen(int socket) {
+void verificarErrorListen(int unSocket) {
 	if (listen(socket, BACKLOG) == -1) {
 		perror("Error de listen");
+		close(unSocket);
 		exit(-1);
 	}
 }
@@ -52,6 +56,7 @@ int aceptarConexionDeCliente(int socketListener) {
 
 	if ((socketAceptador = accept(socketListener, (struct sockaddr *) &su_addr,&sin_size)) == -1) {
 		perror("Error al aceptar conexion");
+		close(socketListener);
 		exit(-1);
 	}
 
@@ -67,6 +72,7 @@ int conectarAServer(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
 	//Obtengo info del server
 	if ((infoDelServer = gethostbyname(ip)) == NULL) {
 		perror("Error al obtener datos del server.");
+		close(socket_server);
 		exit(-1);
 	}
 
@@ -87,6 +93,33 @@ int conectarAServer(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
 
 }
 
+int conectarAWorker(char *ip, int puerto) { //Recibe ip y puerto, devuelve socket que se conecto
+
+	int socket_server = socket(AF_INET, SOCK_STREAM, 0);
+	struct hostent *infoDelServer;
+	struct sockaddr_in direccion_server; // información del server
+
+	//Obtengo info del server
+	if ((infoDelServer = gethostbyname(ip)) == NULL) {
+		perror("Error al obtener datos del server.");
+		socket_server = -1;
+	}
+
+	//Guardo datos del server
+	direccion_server.sin_family = AF_INET;
+	direccion_server.sin_port = htons(puerto);
+	direccion_server.sin_addr = *(struct in_addr *) infoDelServer->h_addr; //h_addr apunta al primer elemento h_addr_lista
+	memset(&(direccion_server.sin_zero), 0, 8);
+
+	//Conecto con servidor, si hay error finalizo
+	if (connect(socket_server, (struct sockaddr *) &direccion_server,sizeof(struct sockaddr)) == -1) {
+		perror("Error al conectar con el servidor.");
+		socket_server = -1;
+	}
+
+	return socket_server;
+
+}
 
 int calcularSocketMaximo(int socketNuevo, int socketMaximoPrevio){
 	if(socketNuevo>socketMaximoPrevio){
