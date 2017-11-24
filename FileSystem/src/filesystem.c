@@ -140,6 +140,48 @@ void cargarFileSystem(t_config* configuracionFS) {
 	config_destroy(configuracionFS);
 }
 
+//---------------------------------Directorios------------------------------
+char* obtenerNombreDirectorio(char** rutaDesmembrada){
+  int posicion = 0;
+  char* nombreArchivo = string_new();
+  while(1){
+    if(rutaDesmembrada[posicion+1] == NULL){
+      string_append(&nombreArchivo, rutaDesmembrada[posicion]);
+      break;
+    }
+    posicion++;
+  }
+  return nombreArchivo;
+}
+
+int obtenerDirectorioPadre(char** rutaDesmembrada){
+  char* fathersName = string_new();
+  bool isMyFather(t_directory* directory){
+    return strcmp(fathersName, directory->nombre) == 0;
+  }
+  int posicion = 0;
+  while(1){
+    if(rutaDesmembrada[posicion+1]!=NULL){
+      if(rutaDesmembrada[posicion+2] == NULL){
+        string_append(&fathersName, rutaDesmembrada[posicion]);
+        t_directory* directory = list_find(listaDirectorios, (void*)isMyFather);
+        if(directory == NULL){
+          return -1;
+        }
+        free(fathersName);
+        return directory->index;
+      }
+    }else if(rutaDesmembrada[posicion+1]==NULL){
+      return 0;
+    }
+    posicion++;
+  }
+}
+
+
+
+
+
 //--------------------------------Nodos---------------------------------------
 int cantBloquesLibres(t_bitarray* bitarray) {
 	int i = 0;
@@ -291,7 +333,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	return 0;
 }
 
-void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio){
+void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* copiaBloque){
 	int tabajoOcioso=0;
 	void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
 	uint32_t posicionActual=0;
@@ -317,6 +359,13 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio){
 	persistirTablaNodo();
 
 	uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
+
+	copiaBloque->copia1=malloc(sizeof(copia));
+	copiaBloque->copia1->nodo=string_new();
+
+	copiaBloque->copia1->nodo=nodo0->nodo;
+	copiaBloque->copia1->bloque=bloqueAsignado;
+
 
 	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
 	posicionActual+=sizeof(uint32_t);
@@ -355,6 +404,13 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio){
 
 	sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicionActual,mensaje);
 
+	copiaBloque->copia2=malloc(sizeof(copia));
+	copiaBloque->copia2->nodo=string_new();
+
+	copiaBloque->copia2->nodo=nodo1->nodo;
+	copiaBloque->copia2->bloque=bloqueAsignado;
+
+
 	if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
@@ -362,27 +418,33 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio){
 
 }
 
-void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
+void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAGuardar) {
 	uint32_t posicionActual = 0;
+	copiasXBloque* copia=malloc(sizeof(copiasXBloque));
 	void enviarNodoPorPosicion(int posicion) {
 		if (posicionActual == 0) {
 			void* contenido = malloc(posicion);
 			fread(contenido, posicion, 1, archivo);
 //			char* contenidoAEnviar = string_substring_until(contenido, posicion);
 //			printf("%s", contenidoAEnviar);
-			asignarEnviarANodo(contenido, posicion);
+			copia->bloque=string_itoa(posicionActual);
+			copia->bytes=posicion;
+			asignarEnviarANodo(contenido, posicion,copia);
 //			free(contenidoAEnviar);
 			free(contenido);
 		} else {
 //			posicionActual--;
 			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual-1);
+			copia->bloque=string_itoa(posicionActual);
+			copia->bytes=posicion- posicionAnterior;
 			void* contenido = malloc(posicion - posicionAnterior);
 			fread(contenido, posicion - posicionAnterior, 1,archivo);
 //			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
-			asignarEnviarANodo(contenido,posicion - posicionAnterior);
+			asignarEnviarANodo(contenido,posicion - posicionAnterior,copia);
 			free(contenido);
 		}
 		posicionActual++;
+		list_add(archivoAGuardar->bloques,copia);
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
@@ -393,6 +455,17 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	//FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
+
+	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
+	archivoAGuardar->nombreArchivo=string_new();
+	archivoAGuardar->tipo=string_new();
+	archivoAGuardar->bloques=list_create();
+
+	char** ruta = string_split(pathArchivo,"/");
+	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(ruta);
+	archivoAGuardar->tipo=tipo;
+	archivoAGuardar->directorioPadre=obtenerNombreDirectorio(ruta);
+
 
 	if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
 		if(tamanio!=0){
@@ -430,7 +503,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 				list_add(posicionBloquesAGuardar, ultimaPosicion);
 				fseek(archivo, 0, SEEK_SET);
 			}
-			enviarDatosANodo(posicionBloquesAGuardar,archivo);
+			enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
 		}else{
 			log_error(loggerFileSystem,"El archivo se encuentra vacio");
 		}

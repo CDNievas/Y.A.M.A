@@ -22,10 +22,10 @@
 
 //------------------DIRECOTORIO------------------------
 typedef struct t_directory {
-	int index;
-	char nombre[255];
-	int padre;
-} directorio;
+  int index;
+  char* nombre;
+  int padre;
+} t_directory;
 
 //------------------TABLA ARCHIVOS------------------------
 typedef struct
@@ -33,6 +33,7 @@ typedef struct
 	char* nombreArchivo;
 	uint32_t tamanio;
 	char* tipo;
+	int directorioPadre;
 	t_list* bloques;
 } tablaArchivos;
 
@@ -45,7 +46,8 @@ typedef struct
 typedef struct
 	__attribute__((packed)) {
 	char* bloque;
-	t_list* copias;
+	copia* copia1;
+	copia* copia2;
 	uint32_t bytes;
 } copiasXBloque;
 
