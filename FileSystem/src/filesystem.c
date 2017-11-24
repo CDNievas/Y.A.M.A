@@ -343,13 +343,12 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo) {
 //			free(contenidoAEnviar);
 			free(contenido);
 		} else {
-			posicionActual--;
-			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual);
+//			posicionActual--;
+			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual-1);
 			void* contenido = malloc(posicion - posicionAnterior);
 			fread(contenido, posicion - posicionAnterior, 1,archivo);
-			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
-			asignarEnviarANodo(contenidoAEnviar,posicion - posicionAnterior);
-			free(contenidoAEnviar);
+//			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
+			asignarEnviarANodo(contenido,posicion - posicionAnterior);
 			free(contenido);
 		}
 		posicionActual++;
@@ -381,7 +380,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 				uint32_t ultimoBarraN = 0;
 				uint32_t registroAntesMega = 0;
 				uint32_t ultimaPosicion = 0;
-
+				fseek(archivo, 0, SEEK_SET);
 				while (!feof(archivo)) {
 					digito = fgetc(archivo);
 
@@ -602,9 +601,9 @@ void almacenarArchivoWorker(int socket){
 //--------------------------------Main----------------------------------------
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-//	chequearParametros(argc, 2);
-//	t_config* configuracionFS = generarTConfig(argv[1], 2);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 2);
+//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
