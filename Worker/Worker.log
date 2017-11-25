@@ -6,3 +6,487 @@
 [INFO] 04:17:00:592 Worker/(8184:8184): Se recibio nueva actividad de los clientes
 [INFO] 04:17:28:448 Worker/(8184:8184): Se recibio nueva actividad de los clientes
 [INFO] 04:17:32:680 Worker/(8184:8184): La conexion recibida es erronea.
+[INFO] 00:16:36:321 Worker/(7203:7203): Se cargo correctamente Worker.
+
+[INFO] 00:16:37:720 Worker/(7203:7203): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 00:17:14:88 Worker/(7203:7203): Se ha recibido una nueva conexion.
+
+[INFO] 00:17:16:272 Worker/(7203:7203): Se recibio una conexion de master.
+
+[INFO] 00:17:22:180 Worker/(7203:7203): Se recibio un job del socket de master 5.
+
+[INFO] 00:17:23:793 Worker/(7203:7203): Pipes creados
+
+[INFO] 00:17:24:571 Worker/(7203:7274): Soy el hijo con el pid 7274 y mi padre tiene el pid: 7203 
+
+[ERROR] 00:27:13:19 Worker/(7203:7274): Error al recibir paquete de Master
+
+[INFO] 00:27:24:531 Worker/(7203:7203): Soy el proceso padre con pid: 7203 y mi hijo tiene el pid 7274 
+ 
+[INFO] 00:27:31:173 Worker/(7203:7203): Se ha recibido una nueva conexion.
+
+[ERROR] 00:27:33:170 Worker/(7203:7203): La conexion recibida es erronea.
+
+[INFO] 00:31:34:670 Worker/(7586:7586): Se cargo correctamente Worker.
+
+[INFO] 00:31:35:653 Worker/(7586:7586): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 00:31:46:127 Worker/(7586:7586): Se ha recibido una nueva conexion.
+
+[INFO] 00:31:47:494 Worker/(7586:7586): Se recibio una conexion de master.
+
+[INFO] 00:31:48:647 Worker/(7586:7586): Se recibio un job del socket de master 5.
+
+[INFO] 00:31:49:861 Worker/(7586:7586): Pipes creados
+
+[INFO] 00:31:50:557 Worker/(7586:7654): Soy el hijo con el pid 7654 y mi padre tiene el pid: 7586 
+
+[INFO] 00:35:55:817 Worker/(7827:7827): Se cargo correctamente Worker.
+
+[INFO] 00:35:56:697 Worker/(7827:7827): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 00:36:15:781 Worker/(7827:7827): Se ha recibido una nueva conexion.
+
+[INFO] 00:36:16:938 Worker/(7827:7827): Se recibio una conexion de master.
+
+[INFO] 00:36:18:322 Worker/(7827:7827): Se recibio un job del socket de master 5.
+
+[INFO] 00:36:19:353 Worker/(7827:7827): Pipes creados
+
+[INFO] 00:36:19:986 Worker/(7827:7893): Soy el hijo con el pid 7893 y mi padre tiene el pid: 7827 
+
+[INFO] 00:40:10:533 Worker/(8093:8093): Se cargo correctamente Worker.
+
+[INFO] 00:40:11:780 Worker/(8093:8093): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 00:40:20:785 Worker/(8093:8093): Se ha recibido una nueva conexion.
+
+[INFO] 00:40:22:37 Worker/(8093:8093): Se recibio una conexion de master.
+
+[INFO] 00:40:23:29 Worker/(8093:8093): Se recibio un job del socket de master 5.
+
+[INFO] 00:40:23:942 Worker/(8093:8093): Pipes creados
+
+[INFO] 00:40:24:478 Worker/(8093:8155): Soy el hijo con el pid 8155 y mi padre tiene el pid: 8093 
+
+[INFO] 01:16:56:370 Worker/(9256:9256): Se cargo correctamente Worker.
+
+[INFO] 01:16:57:393 Worker/(9256:9256): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:17:18:218 Worker/(9256:9256): Se ha recibido una nueva conexion.
+
+[INFO] 01:17:19:697 Worker/(9256:9256): Se recibio una conexion de master.
+
+[INFO] 01:17:34:482 Worker/(9256:9256): Se recibio un job del socket de master 5.
+
+[INFO] 01:17:36:394 Worker/(9256:9256): Pipes creados
+
+[INFO] 01:17:37:142 Worker/(9256:9337): Soy el hijo con el pid 9337 y mi padre tiene el pid: 9256 
+
+[INFO] 01:20:19:69 Worker/(9496:9496): Se cargo correctamente Worker.
+
+[INFO] 01:20:19:917 Worker/(9496:9496): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:20:26:316 Worker/(9496:9496): Se ha recibido una nueva conexion.
+
+[INFO] 01:20:28:405 Worker/(9496:9496): Se recibio una conexion de master.
+
+[INFO] 01:20:29:710 Worker/(9496:9496): Se recibio un job del socket de master 5.
+
+[INFO] 01:20:30:653 Worker/(9496:9496): Pipes creados
+
+[INFO] 01:20:31:254 Worker/(9496:9563): Soy el hijo con el pid 9563 y mi padre tiene el pid: 9496 
+
+[INFO] 01:26:20:706 Worker/(9715:9715): Se cargo correctamente Worker.
+
+[INFO] 01:26:21:707 Worker/(9715:9715): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:26:28:43 Worker/(9715:9715): Se ha recibido una nueva conexion.
+
+[INFO] 01:26:29:179 Worker/(9715:9715): Se recibio una conexion de master.
+
+[INFO] 01:26:30:799 Worker/(9715:9715): Se recibio un job del socket de master 5.
+
+[INFO] 01:26:31:819 Worker/(9715:9715): Pipes creados
+
+[INFO] 01:26:32:945 Worker/(9715:9781): Soy el hijo con el pid 9781 y mi padre tiene el pid: 9715 
+
+[INFO] 01:27:27:588 Worker/(9715:9781): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:27:29:36 Worker/(9715:9781): Se creo correctamente un archivo temporal con nombre: transformador.shEXgilR.
+
+[INFO] 01:27:29:36 Worker/(9715:9781): Se pudo abrir el archivo donde se guardara el script: transformador.shEXgilR.
+
+[INFO] 01:27:29:36 Worker/(9715:9781): Se pudo escribir en el archivo donde se guarda el script: transformador.shEXgilR.
+
+[INFO] 01:27:29:36 Worker/(9715:9781): Se pudo cerrar el archivo donde se guarda el script: transformador.shEXgilR.
+
+[INFO] 01:27:30:987 Worker/(9715:9781): Los permisos para el script son: 0000836d
+
+[INFO] 01:30:03:974 Worker/(9911:9911): Se cargo correctamente Worker.
+
+[INFO] 01:30:05:638 Worker/(9911:9911): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:31:41:399 Worker/(10025:10025): Se cargo correctamente Worker.
+
+[INFO] 01:31:42:264 Worker/(10025:10025): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:31:48:664 Worker/(10025:10025): Se ha recibido una nueva conexion.
+
+[INFO] 01:31:49:632 Worker/(10025:10025): Se recibio una conexion de master.
+
+[INFO] 01:31:50:544 Worker/(10025:10025): Se recibio un job del socket de master 5.
+
+[INFO] 01:31:51:688 Worker/(10025:10025): Pipes creados
+
+[INFO] 01:31:52:181 Worker/(10025:10092): Soy el hijo con el pid 10092 y mi padre tiene el pid: 10025 
+
+[INFO] 01:32:17:480 Worker/(10025:10092): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:32:26:161 Worker/(10025:10092): Se creo correctamente un archivo temporal con nombre: transformador.shDcgObb.
+
+[INFO] 01:32:31:657 Worker/(10025:10092): Se pudo abrir el archivo donde se guardara el script: transformador.shDcgObb.
+
+[INFO] 01:32:34:609 Worker/(10025:10092): Se pudo escribir en el archivo donde se guarda el script: transformador.shDcgObb.
+
+[INFO] 01:32:35:633 Worker/(10025:10092): Se pudo cerrar el archivo donde se guarda el script: transformador.shDcgObb.
+
+[INFO] 01:32:43:330 Worker/(10025:10025): Soy el proceso padre con pid: 10025 y mi hijo tiene el pid 10092 
+ 
+[INFO] 01:33:54:434 Worker/(10273:10273): Se cargo correctamente Worker.
+
+[INFO] 01:33:55:490 Worker/(10273:10273): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:34:01:842 Worker/(10273:10273): Se ha recibido una nueva conexion.
+
+[INFO] 01:34:04:34 Worker/(10273:10273): Se recibio una conexion de master.
+
+[INFO] 01:34:07:346 Worker/(10273:10273): Se recibio un job del socket de master 5.
+
+[INFO] 01:34:08:330 Worker/(10273:10273): Pipes creados
+
+[INFO] 01:34:08:848 Worker/(10273:10341): Soy el hijo con el pid 10341 y mi padre tiene el pid: 10273 
+
+[INFO] 01:34:13:698 Worker/(10273:10341): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:34:14:34 Worker/(10273:10341): Se creo correctamente un archivo temporal con nombre: transformador.shhxhb6X.
+
+[INFO] 01:34:14:34 Worker/(10273:10341): Se pudo abrir el archivo donde se guardara el script: transformador.shhxhb6X.
+
+[INFO] 01:34:14:34 Worker/(10273:10341): Se pudo escribir en el archivo donde se guarda el script: transformador.shhxhb6X.
+
+[INFO] 01:34:14:34 Worker/(10273:10341): Se pudo cerrar el archivo donde se guarda el script: transformador.shhxhb6X.
+
+[INFO] 01:34:14:746 Worker/(10273:10341): Los permisos para el script son: 0000836d
+
+[INFO] 01:45:01:439 Worker/(10695:10695): Se cargo correctamente Worker.
+
+[INFO] 01:45:02:108 Worker/(10695:10695): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:45:07:604 Worker/(10695:10695): Se ha recibido una nueva conexion.
+
+[INFO] 01:45:08:628 Worker/(10695:10695): Se recibio una conexion de master.
+
+[INFO] 01:45:09:852 Worker/(10695:10695): Se recibio un job del socket de master 5.
+
+[INFO] 01:45:10:660 Worker/(10695:10695): Pipes creados
+
+[INFO] 01:45:11:136 Worker/(10695:10755): Soy el hijo con el pid 10755 y mi padre tiene el pid: 10695 
+
+[INFO] 01:45:15:660 Worker/(10695:10755): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:45:15:948 Worker/(10695:10755): Se creo correctamente un archivo temporal con nombre: transformador.shQ47mo6.
+
+[INFO] 01:45:15:948 Worker/(10695:10755): Se pudo abrir el archivo donde se guardara el script: `¤û·:948.
+
+[INFO] 01:45:15:948 Worker/(10695:10755): Se pudo escribir en el archivo donde se guarda el script: .
+
+[INFO] 01:45:15:948 Worker/(10695:10755): Se pudo cerrar el archivo donde se guarda el script: `¤û·:948.
+
+[ERROR] 01:45:16:308 Worker/(10695:10755): Error al otorgar permisos al script.
+
+[INFO] 01:45:16:757 Worker/(10695:10755): Se creo correctamente el comando del script transformador
+
+[INFO] 01:52:25:259 Worker/(10930:10930): Se cargo correctamente Worker.
+
+[INFO] 01:52:26:691 Worker/(10930:10930): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:52:33:892 Worker/(10930:10930): Se ha recibido una nueva conexion.
+
+[INFO] 01:52:35:108 Worker/(10930:10930): Se recibio una conexion de master.
+
+[INFO] 01:52:36:820 Worker/(10930:10930): Se recibio un job del socket de master 5.
+
+[INFO] 01:52:37:764 Worker/(10930:10930): Pipes creados
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Soy el hijo con el pid 10993 y mi padre tiene el pid: 10930 
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:52:38:335 Worker/(10930:10993): Se creo correctamente un archivo temporal con nombre: transformador.shGUk0Az.
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Se pudo abrir el archivo donde se guardara el script: transformador.shGUk0Az.
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Se pudo escribir en el archivo donde se guarda el script: transformador.shGUk0Az.
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Se pudo cerrar el archivo donde se guarda el script: transformador.shGUk0Az.
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Los permisos para el script son: 0000836d
+
+[INFO] 01:52:38:335 Worker/(10930:10993): Se creo correctamente el comando del script transformador
+
+[INFO] 01:54:46:38 Worker/(11090:11090): Se cargo correctamente Worker.
+
+[INFO] 01:54:46:822 Worker/(11090:11090): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:55:07:623 Worker/(11090:11090): Se ha recibido una nueva conexion.
+
+[INFO] 01:55:09:222 Worker/(11090:11090): Se recibio una conexion de master.
+
+[INFO] 01:55:10:686 Worker/(11090:11090): Se recibio un job del socket de master 5.
+
+[INFO] 01:55:11:951 Worker/(11090:11090): Pipes creados
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Soy el hijo con el pid 11153 y mi padre tiene el pid: 11090 
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:55:12:621 Worker/(11090:11153): Se creo correctamente un archivo temporal con nombre: transformador.shgMmLSh.
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Se pudo abrir el archivo donde se guardara el script: transformador.shgMmLSh.
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Se pudo escribir en el archivo donde se guarda el script: transformador.shgMmLSh.
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Se pudo cerrar el archivo donde se guarda el script: transformador.shgMmLSh.
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Los permisos para el script son: 0000836d
+
+[INFO] 01:55:12:621 Worker/(11090:11153): Se creo correctamente el comando del script transformador
+
+[INFO] 01:58:37:758 Worker/(11392:11392): Se cargo correctamente Worker.
+
+[INFO] 01:58:39:130 Worker/(11392:11392): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 01:58:46:234 Worker/(11392:11392): Se ha recibido una nueva conexion.
+
+[INFO] 01:58:47:634 Worker/(11392:11392): Se recibio una conexion de master.
+
+[INFO] 01:58:48:826 Worker/(11392:11392): Se recibio un job del socket de master 5.
+
+[INFO] 01:58:50:450 Worker/(11392:11392): Pipes creados
+
+[INFO] 01:58:51:211 Worker/(11392:11458): Soy el hijo con el pid 11458 y mi padre tiene el pid: 11392 
+
+[INFO] 01:59:01:594 Worker/(11392:11458): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 01:59:04:570 Worker/(11392:11458): Se creo correctamente un archivo temporal con nombre: transformador.shs6VOKV.
+
+[INFO] 01:59:04:570 Worker/(11392:11458): Se pudo abrir el archivo donde se guardara el script: transformador.shs6VOKV.
+
+[INFO] 01:59:04:571 Worker/(11392:11458): Se pudo escribir en el archivo donde se guarda el script: transformador.shs6VOKV.
+
+[INFO] 01:59:04:571 Worker/(11392:11458): Se pudo cerrar el archivo donde se guarda el script: transformador.shs6VOKV.
+
+[INFO] 01:59:12:114 Worker/(11392:11458): Los permisos para el script son: 0000836d
+
+[INFO] 01:59:33:306 Worker/(11392:11458): Se creo correctamente el comando del script transformador
+
+[INFO] 02:04:34:237 Worker/(11722:11722): Se cargo correctamente Worker.
+
+[INFO] 02:04:47:32 Worker/(11763:11763): Se cargo correctamente Worker.
+
+[INFO] 02:06:06:409 Worker/(11868:11868): Se cargo correctamente Worker.
+
+[INFO] 02:08:42:292 Worker/(12106:12106): Se cargo correctamente Worker.
+
+[INFO] 02:08:46:380 Worker/(12106:12106): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:08:51:108 Worker/(12106:12106): Se ha recibido una nueva conexion.
+
+[INFO] 02:08:52:252 Worker/(12106:12106): Se recibio una conexion de master.
+
+[INFO] 02:08:55:428 Worker/(12106:12106): Se recibio un job del socket de master 5.
+
+[INFO] 02:08:56:948 Worker/(12106:12106): Pipes creados
+
+[INFO] 02:08:57:662 Worker/(12106:12171): Soy el hijo con el pid 12171 y mi padre tiene el pid: 12106 
+
+[INFO] 02:09:05:28 Worker/(12106:12171): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:09:05:828 Worker/(12106:12171): Se creo correctamente un archivo temporal con nombre: transformador.shI5aUq3.
+
+[INFO] 02:09:05:828 Worker/(12106:12171): Se pudo abrir el archivo donde se guardara el script: transformador.shI5aUq3.
+
+[INFO] 02:09:05:828 Worker/(12106:12171): Se pudo escribir en el archivo donde se guarda el script: transformador.shI5aUq3.
+
+[INFO] 02:09:10:708 Worker/(12106:12171): Los permisos para el script son: 0000836d
+
+[INFO] 02:09:14:909 Worker/(12106:12171): Se creo correctamente el comando del script transformador
+
+[INFO] 02:16:49:668 Worker/(12412:12412): Se cargo correctamente Worker.
+
+[INFO] 02:17:13:364 Worker/(12470:12470): Se cargo correctamente Worker.
+
+[INFO] 02:17:15:892 Worker/(12470:12470): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:17:22:936 Worker/(12470:12470): Se ha recibido una nueva conexion.
+
+[INFO] 02:17:24:484 Worker/(12470:12470): Se recibio una conexion de master.
+
+[INFO] 02:17:26:957 Worker/(12470:12470): Se recibio un job del socket de master 5.
+
+[INFO] 02:17:28:476 Worker/(12470:12470): Pipes creados
+
+[INFO] 02:17:30:123 Worker/(12470:12535): Soy el hijo con el pid 12535 y mi padre tiene el pid: 12470 
+
+[INFO] 02:17:36:620 Worker/(12470:12535): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:17:36:877 Worker/(12470:12535): Se creo correctamente un archivo temporal con nombre: transformador.shVfIZ2W.
+
+[INFO] 02:17:36:877 Worker/(12470:12535): Se pudo abrir el archivo donde se guardara el script: transformador.shVfIZ2W.
+
+[INFO] 02:17:36:877 Worker/(12470:12535): Se pudo escribir en el archivo donde se guarda el script: transformador.shVfIZ2W.
+
+[INFO] 02:17:37:116 Worker/(12470:12535): Los permisos para el script son: 0000836d
+
+[INFO] 02:17:37:654 Worker/(12470:12535): Se creo correctamente el comando del script transformador
+
+[INFO] 02:19:31:964 Worker/(12678:12678): Se cargo correctamente Worker.
+
+[INFO] 02:19:33:366 Worker/(12678:12678): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:19:37:279 Worker/(12678:12678): Se ha recibido una nueva conexion.
+
+[INFO] 02:19:38:326 Worker/(12678:12678): Se recibio una conexion de master.
+
+[INFO] 02:19:39:783 Worker/(12678:12678): Se recibio un job del socket de master 5.
+
+[INFO] 02:19:41:910 Worker/(12678:12678): Pipes creados
+
+[INFO] 02:19:42:759 Worker/(12678:12743): Soy el hijo con el pid 12743 y mi padre tiene el pid: 12678 
+
+[INFO] 02:19:46:471 Worker/(12678:12743): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:19:46:639 Worker/(12678:12743): Se creo correctamente un archivo temporal con nombre: transformador.shuqmu8L.
+
+[INFO] 02:19:46:639 Worker/(12678:12743): Se pudo abrir el archivo donde se guardara el script: transformador.shuqmu8L.
+
+[INFO] 02:19:46:639 Worker/(12678:12743): Se pudo escribir en el archivo donde se guarda el script: transformador.shuqmu8L.
+
+[INFO] 02:19:46:870 Worker/(12678:12743): Los permisos para el script son: 0000836d
+
+[INFO] 02:19:47:295 Worker/(12678:12743): Se creo correctamente el comando del script transformador
+
+[INFO] 02:42:08:747 Worker/(13035:13035): Se cargo correctamente Worker.
+
+[INFO] 02:42:09:895 Worker/(13035:13035): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:42:15:486 Worker/(13035:13035): Se ha recibido una nueva conexion.
+
+[INFO] 02:42:16:863 Worker/(13035:13035): Se recibio una conexion de master.
+
+[INFO] 02:42:18:47 Worker/(13035:13035): Se recibio un job del socket de master 5.
+
+[INFO] 02:42:19:767 Worker/(13035:13035): Pipes creados
+
+[INFO] 02:42:20:627 Worker/(13035:13101): Soy el hijo con el pid 13101 y mi padre tiene el pid: 13035 
+
+[INFO] 02:42:30:199 Worker/(13035:13101): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:42:30:519 Worker/(13035:13101): Se creo correctamente un archivo temporal con nombre: transformador.shhmGww4.
+
+[INFO] 02:42:30:519 Worker/(13035:13101): Se pudo abrir el archivo donde se guardara el script: transformador.shhmGww4.
+
+[INFO] 02:42:30:519 Worker/(13035:13101): Se pudo escribir en el archivo donde se guarda el script: transformador.shhmGww4.
+
+[INFO] 02:42:30:894 Worker/(13035:13101): Los permisos para el script son: 0000836d
+
+[INFO] 02:42:31:232 Worker/(13035:13101): Se creo correctamente el comando del script transformador
+
+[INFO] 02:46:38:659 Worker/(13321:13321): Se cargo correctamente Worker.
+
+[INFO] 02:46:39:859 Worker/(13321:13321): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:46:43:988 Worker/(13321:13321): Se ha recibido una nueva conexion.
+
+[INFO] 02:46:45:491 Worker/(13321:13321): Se recibio una conexion de master.
+
+[INFO] 02:46:46:883 Worker/(13321:13321): Se recibio un job del socket de master 5.
+
+[INFO] 02:46:48:123 Worker/(13321:13321): Pipes creados
+
+[INFO] 02:46:48:951 Worker/(13321:13385): Soy el hijo con el pid 13385 y mi padre tiene el pid: 13321 
+
+[INFO] 02:46:53:563 Worker/(13321:13385): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:46:53:796 Worker/(13321:13385): Se creo correctamente un archivo temporal con nombre: transformador.shrcu0WN.
+
+[INFO] 02:46:53:796 Worker/(13321:13385): Se pudo abrir el archivo donde se guardara el script: transformador.shrcu0WN.
+
+[INFO] 02:46:53:796 Worker/(13321:13385): Se pudo escribir en el archivo donde se guarda el script: transformador.shrcu0WN.
+
+[INFO] 02:46:54:66 Worker/(13321:13385): Los permisos para el script son: 0000836d
+
+[INFO] 02:46:54:348 Worker/(13321:13385): Se creo correctamente el comando del script transformador
+
+[INFO] 02:53:36:792 Worker/(13632:13632): Se cargo correctamente Worker.
+
+[INFO] 02:53:37:841 Worker/(13632:13632): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 02:53:41:378 Worker/(13632:13632): Se ha recibido una nueva conexion.
+
+[INFO] 02:53:42:922 Worker/(13632:13632): Se recibio una conexion de master.
+
+[INFO] 02:53:43:970 Worker/(13632:13632): Se recibio un job del socket de master 5.
+
+[INFO] 02:53:44:538 Worker/(13632:13632): Pipes creados
+
+[INFO] 02:53:44:937 Worker/(13632:13693): Soy el hijo con el pid 13693 y mi padre tiene el pid: 13632 
+
+[INFO] 02:53:48:674 Worker/(13632:13693): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 02:53:48:858 Worker/(13632:13693): Se creo correctamente un archivo temporal con nombre: transformador.shGAc2jw.
+
+[INFO] 02:53:48:858 Worker/(13632:13693): Se pudo abrir el archivo donde se guardara el script: 3:48:858.
+
+[INFO] 02:53:48:858 Worker/(13632:13693): Se pudo escribir en el archivo donde se guarda el script: .
+
+[ERROR] 02:53:49:602 Worker/(13632:13693): Error al otorgar permisos al script.
+
+[INFO] 02:53:50:99 Worker/(13632:13693): Se creo correctamente el comando del script transformador
+
+[ERROR] 02:55:21:244 Worker/(13632:13693): Error al ejecutar el script con system.
+
+[ERROR] 02:55:21:244 Worker/(13632:13693): La llamada al sistema termino con la senial 9
+
+[INFO] 04:38:00:649 Worker/(14289:14289): Se cargo correctamente Worker.
+
+[INFO] 04:38:02:536 Worker/(14289:14289): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 04:38:11:152 Worker/(14289:14289): Se ha recibido una nueva conexion.
+
+[INFO] 04:38:12:489 Worker/(14289:14289): Se recibio una conexion de master.
+
+[INFO] 04:38:14:48 Worker/(14289:14289): Se recibio un job del socket de master 5.
+
+[INFO] 04:38:15:657 Worker/(14289:14289): Pipes creados
+
+[INFO] 04:38:16:433 Worker/(14289:14357): Soy el hijo con el pid 14357 y mi padre tiene el pid: 14289 
+
+[INFO] 04:53:38:299 Worker/(14563:14563): Se cargo correctamente Worker.
+
+[INFO] 04:53:38:299 Worker/(14563:14563): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 04:54:58:656 Worker/(14658:14658): Se cargo correctamente Worker.
+
+[INFO] 04:55:00:424 Worker/(14658:14658): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 04:55:07:683 Worker/(14658:14658): Se ha recibido una nueva conexion.
+
+[INFO] 04:55:09:209 Worker/(14658:14658): Se recibio una conexion de master.
+
+[INFO] 04:55:10:801 Worker/(14658:14658): Se recibio un job del socket de master 5.
+
+[INFO] 04:55:13:546 Worker/(14658:14747): Soy el hijo con el pid 14747 y mi padre tiene el pid: 14658 
+
+[INFO] 04:56:52:850 Worker/(14658:14747): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 04:56:53:859 Worker/(14658:14747): Se creo correctamente un archivo temporal con nombre: transformador.shxmgnTA.
+
+[INFO] 04:56:53:859 Worker/(14658:14747): Se pudo abrir el archivo donde se guardara el script: transformador.shxmgnTA.
+
+[INFO] 04:56:53:859 Worker/(14658:14747): Se pudo escribir en el archivo donde se guarda el script: transformador.shxmgnTA.
+
+[INFO] 04:56:53:859 Worker/(14658:14747): Se pudo cerrar el archivo donde se guarda el script: transformador.shxmgnTA.
+
+[INFO] 04:56:54:738 Worker/(14658:14747): Los permisos para el script son: 0000836d
+
+[INFO] 04:56:55:267 Worker/(14658:14747): Se creo correctamente el comando del script transformador
+

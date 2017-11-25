@@ -19,7 +19,10 @@
 #include <commons/string.h>
 #include <commons/log.h>
 #include <commons/collections/list.h>
-
+#include <commons/collections/queue.h>
+#include <commons/collections/dictionary.h>
+#include <math.h>
+#include <semaphore.h>
 
 
 #ifndef FUNCIONESGENERICAS_H_

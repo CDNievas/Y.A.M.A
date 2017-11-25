@@ -1,0 +1,624 @@
+[INFO] 23:51:28:553 Master/(5767:5767): Se cargo exitosamente Master.
+
+[INFO] 23:51:30:522 Master/(5767:5767): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 23:51:31:225 Master/(5767:5767): Handshake con YAMA realizado exitosamente.
+
+[INFO] 23:51:31:562 Master/(5767:5767): Datos serializados para ser enviados a YAMA.
+
+[INFO] 23:51:31:905 Master/(5767:5767): Envio de archivo realizado con exito.
+
+[ERROR] 23:51:37:297 Master/(5767:5767): Error al otorgar permisos al script.
+
+[ERROR] 23:51:37:977 Master/(5767:5767): Error al otorgar permisos al script.
+
+[INFO] 23:55:18:349 Master/(5910:5910): Se cargo exitosamente Master.
+
+[INFO] 23:55:18:878 Master/(5910:5910): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 23:55:19:256 Master/(5910:5910): Handshake con YAMA realizado exitosamente.
+
+[INFO] 23:55:19:389 Master/(5910:5910): Datos serializados para ser enviados a YAMA.
+
+[INFO] 23:55:19:573 Master/(5910:5910): Envio de archivo realizado con exito.
+
+[INFO] 23:55:21:701 Master/(5910:5910): Los permisos para el script son: 0000836d
+
+[ERROR] 23:55:22:516 Master/(5910:5910): Error al otorgar permisos al script.
+
+[INFO] 23:56:49:361 Master/(5910:6172): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:361 Master/(5910:6172): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:361 Master/(5910:6172): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:361 Master/(5910:6172): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:361 Master/(5910:6172): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:361 Master/(5910:6172): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:363 Master/(5910:6173): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:364 Master/(5910:6173): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:364 Master/(5910:6173): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:364 Master/(5910:6173): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:364 Master/(5910:6173): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:364 Master/(5910:6173): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:366 Master/(5910:6175): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:368 Master/(5910:6175): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:368 Master/(5910:6175): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:368 Master/(5910:6175): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:368 Master/(5910:6175): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:368 Master/(5910:6175): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:369 Master/(5910:6177): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:369 Master/(5910:6177): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:369 Master/(5910:6177): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:369 Master/(5910:6177): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:369 Master/(5910:6177): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:370 Master/(5910:6177): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:372 Master/(5910:6179): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:377 Master/(5910:6181): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:377 Master/(5910:6181): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:377 Master/(5910:6181): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6179): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:377 Master/(5910:6181): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6179): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6179): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6181): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6179): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:377 Master/(5910:6181): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:377 Master/(5910:6179): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:379 Master/(5910:6182): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:379 Master/(5910:6182): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:379 Master/(5910:6182): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:379 Master/(5910:6182): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:379 Master/(5910:6182): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:379 Master/(5910:6182): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:381 Master/(5910:6185): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:381 Master/(5910:6185): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:381 Master/(5910:6185): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:381 Master/(5910:6185): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:381 Master/(5910:6185): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:381 Master/(5910:6185): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:384 Master/(5910:6187): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:386 Master/(5910:6189): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:386 Master/(5910:6187): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:386 Master/(5910:6187): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6187): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6187): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6187): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:386 Master/(5910:6189): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:386 Master/(5910:6189): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6189): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6189): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:386 Master/(5910:6189): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:389 Master/(5910:6191): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:56:49:390 Master/(5910:6191): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:390 Master/(5910:6191): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:390 Master/(5910:6191): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:390 Master/(5910:6191): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:390 Master/(5910:6191): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:49:516 Master/(5910:6193): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:56:49:616 Master/(5910:6193): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:56:49:616 Master/(5910:6193): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:616 Master/(5910:6193): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:616 Master/(5910:6193): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:56:49:616 Master/(5910:6193): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:56:51:747 Master/(5910:6185): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:56:51:747 Master/(5910:6185): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:56:51:747 Master/(5910:6185): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:56:51:747 Master/(5910:6185): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:56:51:747 Master/(5910:6185): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[ERROR] 23:56:51:747 Master/(5910:6185): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[INFO] 23:57:58:499 Master/(6285:6285): Se cargo exitosamente Master.
+
+[INFO] 23:57:58:864 Master/(6285:6285): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 23:57:59:207 Master/(6285:6285): Handshake con YAMA realizado exitosamente.
+
+[INFO] 23:57:59:383 Master/(6285:6285): Datos serializados para ser enviados a YAMA.
+
+[INFO] 23:57:59:519 Master/(6285:6285): Envio de archivo realizado con exito.
+
+[INFO] 23:58:01:975 Master/(6285:6285): Los permisos para el script son: 0000836d
+
+[ERROR] 23:58:02:351 Master/(6285:6285): Error al otorgar permisos al script.
+
+[INFO] 23:59:08:944 Master/(6285:6381): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:08:946 Master/(6285:6381): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:08:946 Master/(6285:6388): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:59:09:775 Master/(6285:6388): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:09:775 Master/(6285:6388): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6388): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6388): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6388): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:08:776 Master/(6285:6381): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6381): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6381): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:09:776 Master/(6285:6381): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:11:511 Master/(6285:6389): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:11:512 Master/(6285:6389): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:11:512 Master/(6285:6389): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:11:512 Master/(6285:6389): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:11:512 Master/(6285:6389): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:11:513 Master/(6285:6389): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:15:979 Master/(6285:6396): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:59:15:980 Master/(6285:6396): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:15:981 Master/(6285:6396): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:15:981 Master/(6285:6396): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:15:981 Master/(6285:6396): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:15:981 Master/(6285:6396): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:18:112 Master/(6285:6404): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:18:113 Master/(6285:6404): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:18:113 Master/(6285:6404): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:18:113 Master/(6285:6404): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:18:113 Master/(6285:6404): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:18:113 Master/(6285:6404): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:18:864 Master/(6285:6418): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:19:272 Master/(6285:6418): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:19:272 Master/(6285:6418): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:19:272 Master/(6285:6418): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:19:272 Master/(6285:6418): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:19:272 Master/(6285:6418): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:19:865 Master/(6285:6419): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:59:20:991 Master/(6285:6419): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:20:992 Master/(6285:6419): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:21:632 Master/(6285:6414): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:59:20:992 Master/(6285:6419): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:21:632 Master/(6285:6419): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:21:632 Master/(6285:6414): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:21:633 Master/(6285:6414): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:21:632 Master/(6285:6419): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:22:872 Master/(6285:6414): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:22:872 Master/(6285:6414): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:22:872 Master/(6285:6414): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:23:840 Master/(6285:6425): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:24:368 Master/(6285:6425): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:24:368 Master/(6285:6425): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:24:369 Master/(6285:6425): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:24:369 Master/(6285:6425): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:24:369 Master/(6285:6425): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:25:608 Master/(6285:6433): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 23:59:25:608 Master/(6285:6433): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:25:608 Master/(6285:6433): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:25:608 Master/(6285:6433): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:25:608 Master/(6285:6433): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:25:608 Master/(6285:6433): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:28:464 Master/(6285:6438): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 23:59:28:823 Master/(6285:6438): Handshake con Worker realizado exitosamente.
+
+[INFO] 23:59:28:823 Master/(6285:6438): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 23:59:28:824 Master/(6285:6438): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:28:824 Master/(6285:6438): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 23:59:28:824 Master/(6285:6438): Datos serializados para ser enviados a Worker.
+
+[INFO] 23:59:28:837 Master/(6285:6425): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 8 
+
+[INFO] 23:59:28:837 Master/(6285:6425): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 8 
+
+[INFO] 23:59:28:837 Master/(6285:6425): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 8 
+
+[INFO] 23:59:28:837 Master/(6285:6425): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 8 
+
+[INFO] 23:59:28:837 Master/(6285:6425): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 8 
+
+[ERROR] 23:59:28:837 Master/(6285:6425): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[INFO] 23:59:28:837 Master/(6285:6419): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:59:28:837 Master/(6285:6419): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:59:28:837 Master/(6285:6419): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:59:28:837 Master/(6285:6419): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[INFO] 23:59:28:837 Master/(6285:6419): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 7 
+
+[ERROR] 23:59:28:837 Master/(6285:6419): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:838 Master/(6285:6433): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:838 Master/(6285:6438): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:838 Master/(6285:6414): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:838 Master/(6285:6396): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:839 Master/(6285:6404): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:839 Master/(6285:6389): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:839 Master/(6285:6381): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:839 Master/(6285:6418): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[ERROR] 23:59:28:839 Master/(6285:6285): Se abortara el job.
+
+[INFO] 00:02:19:107 Master/(6582:6582): Se cargo exitosamente Master.
+
+[INFO] 00:02:19:508 Master/(6582:6582): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 00:02:19:861 Master/(6582:6582): Handshake con YAMA realizado exitosamente.
+
+[INFO] 00:02:20:23 Master/(6582:6582): Datos serializados para ser enviados a YAMA.
+
+[INFO] 00:02:20:195 Master/(6582:6582): Envio de archivo realizado con exito.
+
+[INFO] 00:02:22:818 Master/(6582:6582): Los permisos para el script son: 0000836d
+
+[ERROR] 00:02:23:10 Master/(6582:6582): Error al otorgar permisos al script.
+
+[INFO] 00:02:35:191 Master/(6582:6651): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:02:37:671 Master/(6582:6651): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:02:37:671 Master/(6582:6651): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:02:37:671 Master/(6582:6651): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:02:37:671 Master/(6582:6651): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:02:37:671 Master/(6582:6651): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:02:37:998 Master/(6582:6661): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:02:39:107 Master/(6582:6661): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:02:39:107 Master/(6582:6661): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:02:39:107 Master/(6582:6661): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:02:39:107 Master/(6582:6661): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:02:39:107 Master/(6582:6661): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:02:39:168 Master/(6582:6666): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:05:00:656 Master/(6699:6699): Se cargo exitosamente Master.
+
+[INFO] 00:05:00:660 Master/(6699:6699): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 00:05:00:661 Master/(6699:6699): Handshake con YAMA realizado exitosamente.
+
+[INFO] 00:05:00:661 Master/(6699:6699): Datos serializados para ser enviados a YAMA.
+
+[INFO] 00:05:00:661 Master/(6699:6699): Envio de archivo realizado con exito.
+
+[INFO] 00:05:00:661 Master/(6699:6699): Los permisos para el script son: 0000836d
+
+[ERROR] 00:05:00:661 Master/(6699:6699): Error al otorgar permisos al script.
+
+[INFO] 00:05:00:666 Master/(6699:6705): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:05:00:666 Master/(6699:6705): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:05:00:666 Master/(6699:6705): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:667 Master/(6699:6706): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:05:00:667 Master/(6699:6705): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:667 Master/(6699:6707): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:05:00:667 Master/(6699:6705): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:667 Master/(6699:6705): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:05:00:668 Master/(6699:6707): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:05:00:668 Master/(6699:6708): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:05:00:668 Master/(6699:6707): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:668 Master/(6699:6707): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:669 Master/(6699:6709): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:05:00:669 Master/(6699:6710): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:05:00:669 Master/(6699:6705): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 0 
+
+[INFO] 00:05:00:669 Master/(6699:6705): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 0 
+
+[INFO] 00:05:00:669 Master/(6699:6707): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:05:00:669 Master/(6699:6705): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 0 
+
+[INFO] 00:05:00:669 Master/(6699:6705): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 0 
+
+[INFO] 00:05:00:669 Master/(6699:6705): Se finalizo correctamente el hilo del nodo: NODO2 y numero de bloque: 0 
+
+[ERROR] 00:05:00:669 Master/(6699:6705): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[INFO] 00:05:00:669 Master/(6699:6707): Datos serializados para ser enviados a Worker.
+
+[ERROR] 00:05:00:670 Master/(6699:6707): Datos de replanificacion para ser enviados a YAMA serializados con exito.
+
+[INFO] 00:05:00:670 Master/(6699:6711): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[ERROR] 00:05:00:670 Master/(6699:6699): Se abortara el job.
+
+[INFO] 00:05:00:670 Master/(6699:6699): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 1 
+
+[ERROR] 00:05:00:670 Master/(6699:6699): No se pudo matar el hilo del nodo: NODO1 y numero de bloque: 3 
+
+[INFO] 00:05:00:670 Master/(6699:6699): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 5 
+
+[INFO] 00:05:00:670 Master/(6699:6699): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 7 
+
+[INFO] 00:05:00:670 Master/(6699:6699): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 9 
+
+[INFO] 00:05:00:670 Master/(6699:6699): Se finalizo correctamente el hilo del nodo: NODO1 y numero de bloque: 11 
+
+[INFO] 00:05:04:784 Master/(6730:6730): Se cargo exitosamente Master.
+
+[INFO] 00:07:03:47 Master/(6781:6781): Se cargo exitosamente Master.
+
+[INFO] 00:07:04:256 Master/(6781:6781): Se ha conectado con YAMA. IP: 127.0.0.1 - PUERTO: 5050 
+
+[INFO] 00:07:04:663 Master/(6781:6781): Handshake con YAMA realizado exitosamente.
+
+[INFO] 00:07:04:862 Master/(6781:6781): Datos serializados para ser enviados a YAMA.
+
+[INFO] 00:07:05:66 Master/(6781:6781): Envio de archivo realizado con exito.
+
+[INFO] 00:07:07:558 Master/(6781:6781): Los permisos para el script son: 0000836d
+
+[ERROR] 00:07:07:806 Master/(6781:6781): Error al otorgar permisos al script.
+
+[INFO] 00:07:18:539 Master/(6781:6867): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:07:22:247 Master/(6781:6867): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:07:22:248 Master/(6781:6867): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:07:22:248 Master/(6781:6867): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:07:22:248 Master/(6781:6867): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:07:22:248 Master/(6781:6867): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:07:24:270 Master/(6781:6883): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:07:24:271 Master/(6781:6883): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:07:24:271 Master/(6781:6883): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:07:24:271 Master/(6781:6883): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:07:24:271 Master/(6781:6883): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:07:24:271 Master/(6781:6883): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:07:28:383 Master/(6781:6884): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:08:33:345 Master/(6781:6873): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:08:33:346 Master/(6781:6873): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:08:33:346 Master/(6781:6873): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:08:33:346 Master/(6781:6873): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:08:33:346 Master/(6781:6873): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:08:33:346 Master/(6781:6873): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:08:48:560 Master/(6781:6884): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:08:48:560 Master/(6781:6884): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:08:48:561 Master/(6781:6884): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:08:48:561 Master/(6781:6884): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:08:48:561 Master/(6781:6884): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:26:57 Master/(6781:6893): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:09:26:608 Master/(6781:6893): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:26:608 Master/(6781:6893): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:26:608 Master/(6781:6893): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:26:608 Master/(6781:6893): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:26:608 Master/(6781:6893): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:33:759 Master/(6781:6901): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:09:33:759 Master/(6781:6904): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:09:33:760 Master/(6781:6904): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:33:760 Master/(6781:6904): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:33:761 Master/(6781:6904): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:33:761 Master/(6781:6904): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:33:761 Master/(6781:6904): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:42:87 Master/(6781:6885): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:09:42:87 Master/(6781:6921): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 5030 
+
+[INFO] 00:09:42:87 Master/(6781:6923): Se ha conectado con WORKER. IP: 127.0.0.1 - PUERTO: 6900 
+
+[INFO] 00:09:42:89 Master/(6781:6885): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:42:89 Master/(6781:6885): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6885): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6885): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6885): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:42:89 Master/(6781:6923): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:42:89 Master/(6781:6921): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:42:89 Master/(6781:6923): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6921): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6923): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6921): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6923): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6921): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:89 Master/(6781:6923): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:42:89 Master/(6781:6921): Datos serializados para ser enviados a Worker.
+
+[INFO] 00:09:42:90 Master/(6781:6901): Handshake con Worker realizado exitosamente.
+
+[INFO] 00:09:42:90 Master/(6781:6901): Se pudo abrir el archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:90 Master/(6781:6901): Se pudo obtener el tamanio del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:91 Master/(6781:6901): Se pudo obtener el contenido del archivo: Debug/transformador.sh.
+
+[INFO] 00:09:42:91 Master/(6781:6901): Datos serializados para ser enviados a Worker.
+

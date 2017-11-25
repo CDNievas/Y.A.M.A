@@ -1028,7 +1028,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 void darPermisosAScripts(char* script){
 	struct stat infoScript;
 
-	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)!=0){
+	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)==-1){
 		log_error(loggerMaster,"Error al otorgar permisos al script.\n");
 	}
 	else if(stat(script,&infoScript)!=0){
@@ -1044,6 +1044,7 @@ int main(int argc, char **argv) {
 	tiempoI = obtenerTiempo();
 	chequearParametros(argc,6);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
+	//t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
 	cargarMaster(configuracionMaster);
 	log_info(loggerMaster,"Se cargo exitosamente Master.\n");
     int socketYAMA = conectarAServer(YAMA_IP, YAMA_PUERTO);
