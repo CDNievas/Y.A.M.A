@@ -1,10 +1,23 @@
-#include "../../Biblioteca/src/configParser.c"
-#include "../../Biblioteca/src/Socket.c"
+/*
+ * Estructuras.h
+ *
+ *  Created on: 25/11/2017
+ *      Author: utnso
+ */
+
+//#include "../../Biblioteca/src/genericas.h"
+//#include "../../Biblioteca/src/Socket.h"
 #include <commons/bitarray.h>
 #include <sys/mman.h>
+#include "../../Biblioteca/src/configParser.h"
+#include <readline/chardefs.h>
+#include <readline/history.h>
 
-#ifndef STRUCTFS_H_
-#define STRUCTFS_H_
+
+
+#ifndef ESTRUCTURAS_H_
+#define ESTRUCTURAS_H_
+
 
 // PROTOCOLO
 #define REC_INFONODO 100
@@ -99,4 +112,5 @@ t_list* listaConexionNodos;
 t_list* listaConexionNodos;
 t_list* listaDirectorios;
 
-#endif /* STRUCTFS_H_ */
+
+#endif /* ESTRUCTURAS_H_ */

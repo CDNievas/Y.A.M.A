@@ -1,11 +1,18 @@
+/*
+ * Consola.c
+ *
+ *  Created on: 25/11/2017
+ *      Author: utnso
+ */
 
-#include "consolaFS.h"
+
+#include "Consola.h"
 
 
 #define maxSize 256
 
 typedef struct {
-  int flag; 
+  int flag;
   char *nombre;     /* Nombre de la funcion */
 } command;
 
@@ -25,15 +32,6 @@ command comandos[] = {
  { 12,"info"}
 };
 
-
-void liberarComandoDesarmado(char** comandoDesarmado){
-	int i = 0;
-	while(comandoDesarmado[i]!=NULL){
-		free(comandoDesarmado[i]);
-		i++;
-	}
-	free(comandoDesarmado);
-}
 
 void imprimirComandos(){
   puts("\n");
@@ -56,7 +54,7 @@ void imprimirComandos(){
   puts("md5: Solicitar MD5 de un archivo del yamafs. \n");
   puts("ls Listar los archivos de un directorio. \n");
   puts("info: Mostrar información de un archivo. \n");
-  
+
 }
 
 
@@ -68,7 +66,7 @@ void analizarComando(char * linea){
   int limite = (sizeof(comandos)/sizeof(comandos[0]));
   command comandoAux;
 
-  char ** comandoDesarmado = string_split(linea," "); 
+  char ** comandoDesarmado = string_split(linea," ");
   char * primerPos = comandoDesarmado[0];
 
   for(i=0; i < limite; i++){
@@ -95,9 +93,9 @@ void analizarComando(char * linea){
         printf("\n");
         free(comandoNuevo);
         break;
-      } 
+      }
 
-      case 2:{ 
+      case 2:{
         if(strcmp(comandoDesarmado[1], "-d")==0){
         	//BORRO DIRECTORIO
         }else if(strcmp(comandoDesarmado[1], "-b")==0){
@@ -127,19 +125,19 @@ void analizarComando(char * linea){
         string_append(&comandoNuevo," ");
         string_append(&comandoNuevo,nombreArchivoNuevo);
 
-        system(comandoNuevo); 
+        system(comandoNuevo);
         printf("\n");
         free(comandoNuevo);
       }
-      break; 
+      break;
 
       case 4:{
-        system(linea); 
+        system(linea);
         printf("\n");
       }
       break;
 
-      case 5:{  
+      case 5:{
         system(linea);
         printf("\n");
       }
@@ -247,7 +245,7 @@ void consolaFS(){
   imprimirComandos();
 
   printf("\n");
-        
+
   while(1) {
     linea = readline(">");
 
@@ -259,8 +257,9 @@ void consolaFS(){
        break;
     }
 
-    analizarComando(linea); 
+    analizarComando(linea);
     //free(linea);
   }
 
 }
+
