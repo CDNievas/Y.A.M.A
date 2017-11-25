@@ -88,7 +88,7 @@ void analizarComando(char * linea){
         printf("Formateando FileSystem.\n");
 
         string_append(&comandoNuevo,"rm -r ");
-        string_append(&comandoNuevo,"yamafs:"); // Abro esto porque no se donde vamos a guardar yamafs
+        string_append(&comandoNuevo,"yamafs:/"); // Abro esto porque no se donde vamos a guardar yamafs
 
         system(comandoNuevo);
         system("mkdir yamafs:"); //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
@@ -98,7 +98,15 @@ void analizarComando(char * linea){
       } 
 
       case 2:{ 
-        printf("Comando en arreglo! Todavia no se puede ejecutar! (2)\n");  
+        if(strcmp(comandoDesarmado[1], "-d")==0){
+        	//BORRO DIRECTORIO
+        }else if(strcmp(comandoDesarmado[1], "-b")==0){
+        	//BORRO BLOQUE
+        }else if(comandoDesarmado[1]!=NULL){
+        	//BORRO ARCHIVO
+        }else{
+        	//log_error
+        }
       }
       break;
 
@@ -138,8 +146,14 @@ void analizarComando(char * linea){
       break;
 
       case 6:{
-        system(linea);
-        printf("\n");
+    	  char* nuevoDirectorio = comandoDesarmado[1];
+    	  if(nuevoDirectorio != NULL){
+    		  system(linea);
+    		  printf("\n");
+    	  }else{
+    		  //log_Error
+    	  }
+
       }
       break;
 
@@ -147,10 +161,12 @@ void analizarComando(char * linea){
     	   char * nombreArchivoViejo = comandoDesarmado[1];
     	   char * nombreArchivoNuevo = comandoDesarmado[2];
     	   char * flag = comandoDesarmado[3];
+    	   if(nombreArchivoViejo != NULL && nombreArchivoNuevo != NULL && flag != NULL){
+    		   almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
+    	   }else{
+    		   //log_error
+    	   }
 
-    	   almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
-
-        printf("Comando en arreglo! Todavia no se puede ejecutar! (7)\n");
       }
       break;
 
@@ -216,7 +232,7 @@ void analizarComando(char * linea){
       break;
 
       default:
-            //log_error(loggerFileSystem, "Comando no reconocido.");
+//            log_error(loggerFileSystem, "Comando no reconocido.");
             break;
 
     }

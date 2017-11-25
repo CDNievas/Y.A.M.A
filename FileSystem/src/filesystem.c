@@ -461,7 +461,6 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 }
 
 void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
-
 	FILE* archivo = fopen(pathArchivo, "r+");//CACHEAR ERROR ARCHIVO
 	//FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
@@ -472,6 +471,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
 	char** ruta = string_split(pathArchivo,"/");
 	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(ruta);
+	log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 	archivoAGuardar->tipo=tipo;
 	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(ruta);
 	liberarComandoDesarmado(ruta);
