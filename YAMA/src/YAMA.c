@@ -117,27 +117,35 @@ void manejadorMaster(void* socketMasterCliente){
 			case FINALIZO:
 				reestablecerWL(nroMaster);
 				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
-				pthread_detach(pthread_self());
 				sigueProcesando = 0;
 				close(socketMaster);
+				pthread_detach(pthread_self());
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				fallaReduccionLocal(nroMaster);
 				log_error(loggerYAMA, "Error de reduccion local.");
 				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
-				pthread_cancel(pthread_self());
 				sigueProcesando = 0;
 				close(socketMaster);
+				pthread_cancel(pthread_self());
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
 				log_error(loggerYAMA, "Error de reduccion global.");
 				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
-				pthread_cancel(pthread_self());
 				sigueProcesando = 0;
 				close(socketMaster);
+				pthread_cancel(pthread_self());
+				break;
+			case ERROR_ALMACENAMIENTO_FINAL:
+				log_error(loggerYAMA, "El master %d fallo a la hora de llevar a cabo el almacenamiento final.");
+				log_error(loggerYAMA, "Abortando Job.");
+				sendDeNotificacion(socketMaster, ABORTAR);
+				sigueProcesando = 0;
+				close(socketMaster);
+				pthread_cancel(pthread_self());
 				break;
 			case CORTO:
 				log_info(loggerYAMA, "El master %d corto.", nroMaster);

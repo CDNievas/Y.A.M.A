@@ -49,8 +49,10 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 		}
 		nodo = list_get(listaDeBalanceo, posicionIncial);
 		if(tieneAvailability(nodo) && tieneBloqueBuscado(nodo, bloque)){
+			usleep(RETARDO_PLANIFICACION);
 			break;
 		}else{
+			usleep(RETARDO_PLANIFICACION);
 			posicionActual++;
 		}
 	}
@@ -65,6 +67,7 @@ bool laTieneOtroNodo(infoDeFs* bloqueABuscar, t_list* listaDeBalanceo){
 	bool tieneBloqueYEstaDisponible(datosBalanceo* nodo){
 		return list_any_satisfy(nodo->bloques, (void*)esElBloque) && nodo->availability>0;
 	}
+	usleep(RETARDO_PLANIFICACION);
 	return list_any_satisfy(listaDeBalanceo, (void*)tieneBloqueYEstaDisponible);
 }
 
@@ -117,6 +120,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				list_add(copiasElegidas, copiaElegida);
 				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", copiaElegida->nombreNodo, bloqueABuscar->nroBloque);
 				cantidadAsignados++;
+				usleep(RETARDO_PLANIFICACION);
 				//paso a buscar el bloque con un puntero auxiliar
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
 				log_info(loggerYAMA, "El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.");
@@ -125,12 +129,14 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 				cantidadAsignados++;
+				usleep(RETARDO_PLANIFICACION);
 			}else{
 				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion - Cerrando YAMA.");
 				exit(-1);
 			}
 		}else{
 			posicion++;
+			usleep(RETARDO_PLANIFICACION);
 		}
 		log_info(loggerYAMA, "Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.");
 		actualizarWLTransformacion(copiasElegidas);
