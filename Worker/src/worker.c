@@ -417,7 +417,7 @@ void realizarHandshakeFS(uint32_t socketFS){
 long int obtenerTamanioArchivo(FILE* unArchivo){
 	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
 
-	if(retornoSeek==0){
+	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
 		exit(-1);
 	}
@@ -436,7 +436,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 {
 	int retornoSeek = fseek(unArchivo, 0, SEEK_SET);
 
-	if(retornoSeek==0){
+	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
 		exit(-1);
 	}

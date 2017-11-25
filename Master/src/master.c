@@ -159,7 +159,7 @@ uint32_t realizarHandshakeWorker(int unSocket, int proceso){
 long int obtenerTamanioArchivo(FILE* unArchivo){
 	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
 
-	if(retornoSeek==0){
+	if(retornoSeek!=0){
 		log_error(loggerMaster,"Error de fseek.\n");
 		exit(-1);
 	}
@@ -178,7 +178,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 {
 	int retornoSeek = fseek(unArchivo, 0, SEEK_SET);
 
-	if(retornoSeek==0){
+	if(retornoSeek!=0){
 		log_error(loggerMaster,"Error de fseek.\n");
 		exit(-1);
 	}
@@ -1025,6 +1025,20 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 	free(archivoReduxGlobal);
 }
 
+void darPermisosAScripts(char* script){
+	struct stat infoScript;
+
+	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)!=0){
+		log_error(loggerMaster,"Error al otorgar permisos al script.\n");
+	}
+	else if(stat(script,&infoScript)!=0){
+		log_error(loggerMaster,"No se pudo obtener informacion del script.\n");
+	}
+	else{
+		log_info(loggerMaster,"Los permisos para el script son: %08x\n",infoScript.st_mode);
+	}
+}
+
 int main(int argc, char **argv) {
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	tiempoI = obtenerTiempo();
@@ -1048,6 +1062,8 @@ int main(int argc, char **argv) {
     pthread_mutex_init(&mutexNodos,NULL);
     pthread_mutex_init(&mutexReducciones,NULL);
     pthread_mutex_init(&mutexTemporales,NULL);
+    darPermisosAScripts(argv[2]);
+    darPermisosAScripts(argv[3]);
     while(1){
     	int operacion = recvDeNotificacion(socketYAMA);
     	switch(operacion){
