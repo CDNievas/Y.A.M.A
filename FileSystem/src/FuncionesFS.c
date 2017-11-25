@@ -49,12 +49,14 @@ int obtenerDirectorioPadre(char** rutaDesmembrada){
         string_append(&fathersName, rutaDesmembrada[posicion]);
         t_directory* directory = list_find(listaDirectorios, (void*)isMyFather);
         if(directory == NULL){
-          return -1;
+        	free(fathersName);
+        	return -1;
         }
         free(fathersName);
         return directory->index;
       }
     }else if(rutaDesmembrada[posicion+1]==NULL){
+    	free(fathersName);
       return 0;
     }
     posicion++;
@@ -104,7 +106,7 @@ bool existeDirectory(char* ruta){
   char** rutaDesmembrada = string_split(ruta, "/");
   char* nombreDirectory = obtenerNombreDirectorio(rutaDesmembrada);
   bool esDirectorio(t_directory* directory){
-    return strcmp(directory->nombre, nombreDirectory);
+    return strcmp(directory->nombre, nombreDirectory)==0;
   }
   bool yaExiste = list_any_satisfy(listaDirectorios, (void*)esDirectorio);
   //AVERIGUAR SI HAY QUE VERIFICAR TAMBIEN EL PADRE
@@ -120,8 +122,9 @@ int crearDirectorio(char* ruta){
       uint32_t indexDir = list_size(listaDirectorios);
       t_directory* newDirectory = createDirectory();
       char** rutaDesmembrada = string_split(ruta, "/");
-      string_append(&newDirectory->nombre, obtenerNombreDirectorio(rutaDesmembrada));
+      newDirectory->nombre = obtenerNombreDirectorio(rutaDesmembrada);
       newDirectory->padre = obtenerDirectorioPadre(rutaDesmembrada);
+      newDirectory->index = indexDir;
       if(newDirectory->padre == -1){
     	  liberarComandoDesarmado(rutaDesmembrada);
         liberarDirectorio(newDirectory);
@@ -130,7 +133,6 @@ int crearDirectorio(char* ruta){
       }
       list_add(listaDirectorios, newDirectory);
       liberarComandoDesarmado(rutaDesmembrada);
-      free(ruta);
       log_info(loggerFileSystem,"Se creo correctamente el directorio");
       return 1;
   }else{

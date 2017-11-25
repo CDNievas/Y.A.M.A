@@ -74,9 +74,10 @@ int main(int argc, char **argv) {
 						sendDeNotificacion(socketClienteChequeado, ES_FS);
 						break;
 					case ES_YAMA:
-						if (hayNodos==2 && esEstadoSeguro) {
+						if (hayNodos>=2 && esEstadoSeguro) {
 							enviarListaNodos(socketClienteChequeado);
 						} else {
+							log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");
 							FD_CLR(socketClienteChequeado, &socketClientes);
 							close(socketClienteChequeado);
 						}

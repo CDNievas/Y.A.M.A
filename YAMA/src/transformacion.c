@@ -160,8 +160,8 @@ bool hayQueReplanificar(administracionYAMA* admin, t_list* lista){
 
 infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBloques){
 	bool buscarDatoAReplanificar(infoDeFs* info){
-		return (admin->nroBloque == info->copia1->nroBloque && strcmp(admin->nombreNodo, info->copia1->nombreNodo))
-				|| (admin->nroBloque == info->copia2->nroBloque && strcmp(admin->nombreNodo, info->copia2->nombreNodo));
+		return (admin->nroBloque == info->copia1->nroBloque && strcmp(admin->nombreNodo, info->copia1->nombreNodo)==0)
+				|| (admin->nroBloque == info->copia2->nroBloque && strcmp(admin->nombreNodo, info->copia2->nombreNodo)==0);
 	}
 	return list_find(listaDeBloques, (void*)buscarDatoAReplanificar);
 }
@@ -184,7 +184,9 @@ bool chequearOtraCopia(char* nodoFallido, infoDeFs* info, t_list* listaDeEntrada
   }else{
     nodoPorChequear = info->copia1->nombreNodo;
   }
-  return list_any_satisfy(listaDeEntradas, (void*)esNodoYFallo);
+  bool pudo = list_any_satisfy(listaDeEntradas, (void*)esNodoYFallo);
+  free(nodoPorChequear);
+  return pudo;
 }
 
 bool puedoReplanificar(uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){
@@ -227,10 +229,10 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 				nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
 				infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
 				if(datoPMaster == NULL){
-					free(listaParaMaster);
-					free(listaBloquesAReplanificar);
-					free(listaEntradasAReplanificar);
-					free(listaParaWL);
+					list_destroy(listaParaMaster);
+					list_destroy(listaBloquesAReplanificar);
+					list_destroy(listaEntradasAReplanificar);
+					list_destroy(listaParaWL);
 					return -1;
 				}
 				list_add(listaParaMaster, datoPMaster);
@@ -245,14 +247,14 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
 		sendRemasterizado(socketMaster, REPLANIFICAR, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
 		free(infoReplanificacionSerializada);
-		free(listaParaMaster);
-		free(listaBloquesAReplanificar);
-		free(listaEntradasAReplanificar);
-		free(listaParaWL);
+		list_destroy(listaParaMaster);
+		list_destroy(listaBloquesAReplanificar);
+		list_destroy(listaEntradasAReplanificar);
+		list_destroy(listaParaWL);
 		return 1;
 	}else{
-		free(listaBloquesAReplanificar);
-		free(listaEntradasAReplanificar);
+		list_destroy(listaBloquesAReplanificar);
+		list_destroy(listaEntradasAReplanificar);
 		return 0;
 	}
 }

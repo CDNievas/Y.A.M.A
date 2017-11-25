@@ -74,6 +74,7 @@ void analizarComando(char * linea){
 
     if( strcmp(primerPos, comandoAux.nombre) == 0){
       comandoNativo = comandoAux.flag;
+      break;
       }
   }
 
@@ -146,12 +147,19 @@ void analizarComando(char * linea){
       case 6:{
     	  char* nuevoDirectorio = comandoDesarmado[1];
     	  if(nuevoDirectorio != NULL){
-    		  system(linea);
-    		  printf("\n");
+    		  if(!existeDirectory(nuevoDirectorio)){
+    			  if(crearDirectorio(nuevoDirectorio) == 1){
+    				  system(linea);
+    			      printf("\n");
+    			  }else{
+    			  	  log_error(loggerFileSystem, "No se pudo crear el directorio. Por favor vuelva a intentarlo");
+    	  		  }
+    		  }else{
+    			  log_error(loggerFileSystem, "No se pudo crear el directorio. El directorio ya existe.");
+    		  }
     	  }else{
-    		  //log_Error
-    	  }
-
+      		  log_error(loggerFileSystem, "Asegurese de ingresar el nombre del directorio. Por favor vuelva a intentarlo");
+      	  }
       }
       break;
 
