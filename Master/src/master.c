@@ -77,7 +77,10 @@ t_list* listaInfoNodos;
 t_list* listaTemporales;
 t_list* listaHilosTransformacion;
 t_list* listaHilosReduccion;
+uint32_t transformacionesRealizadas;
+uint32_t reduccionesLocalesRealizadas;
 uint32_t cantidadNodos;
+uint32_t cantidadFallos;
 bool avisoCargaTemporal;
 pthread_mutex_t mutexNodos;
 pthread_mutex_t mutexReducciones;
@@ -379,6 +382,7 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 			int resultadoTransformacion = recvDeNotificacionMaster(socketWorker);
 
 			if(resultadoTransformacion==TRANSFORMACION_TERMINADA){
+				transformacionesRealizadas++;
 				void* datosAEnviarAYAMA = malloc(tamanioNombreNodo+(sizeof(uint32_t)*2));
 
 				memcpy(datosAEnviarAYAMA,&tamanioNombreNodo,sizeof(uint32_t));
@@ -405,11 +409,13 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 				pthread_detach(pthread_self());
 			}
 			else{
+				cantidadFallos++;
 				replanificarTransformacion(datoNodoTransformacion,tamanioNombreNodo);
 			}
 		}
 		else{
 			log_error(loggerMaster,"Falla al realizar handshake con Worker.\n");
+			cantidadFallos++;
 			replanificarTransformacion(datoNodoTransformacion,tamanioNombreNodo);
 		}
 
@@ -417,6 +423,7 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 	}
 	else{
 		log_error(loggerMaster,"No se pudo conectar con el WORKER. IP: %s - PUERTO: %d \n",datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
+		cantidadFallos++;
 		replanificarTransformacion(datoNodoTransformacion,tamanioNombreNodo);
 	}
 }
@@ -619,6 +626,8 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 			close(socketWorker);
 
 			if(resultadoReduccion==REDUCCION_LOCAL_TERMINADA){
+				reduccionesLocalesRealizadas++;
+
 				void* datosAEnviarAYAMA = malloc(tamanioNombreNodo+sizeof(uint32_t));
 
 				memcpy(datosAEnviarAYAMA,&tamanioNombreNodo,sizeof(uint32_t));
@@ -936,6 +945,12 @@ void mostrarMetricas(){
 	tiempo tiempoDuracion = get_tiempo_total(tiempoI,tiempoF);
 	printf("El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
 	log_info(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
+	printf("La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
+	log_info(loggerMaster,"La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
+	printf("La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
+	log_info(loggerMaster,"La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
+	printf("La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
+	log_info(loggerMaster,"La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
 }
 
 void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
@@ -986,6 +1001,9 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 				free(WORKER_IP);
 				close(socketYAMA);
 				mostrarMetricas();
+				pthread_mutex_destroy(&mutexNodos);
+				pthread_mutex_destroy(&mutexReducciones);
+				pthread_mutex_destroy(&mutexTemporales);
 				exit(0);
 			}
 			else{
@@ -1020,6 +1038,9 @@ int main(int argc, char **argv) {
     log_info(loggerMaster,"Handshake con YAMA realizado exitosamente.\n");
     enviarArchivoAYAMA(argv[4],socketYAMA);
     log_info(loggerMaster,"Envio de archivo realizado con exito.\n");
+    cantidadFallos = 0;
+    transformacionesRealizadas = 0;
+    reduccionesLocalesRealizadas = 0;
     listaInfoNodos = list_create();
     listaHilosTransformacion = list_create();
     listaTemporales = list_create();
@@ -1056,6 +1077,9 @@ int main(int argc, char **argv) {
     		free(YAMA_IP);
     		free(WORKER_IP);
     		close(socketYAMA);
+    		pthread_mutex_destroy(&mutexNodos);
+    		pthread_mutex_destroy(&mutexReducciones);
+    		pthread_mutex_destroy(&mutexTemporales);
     		exit(-1);
     		break;
     	}
