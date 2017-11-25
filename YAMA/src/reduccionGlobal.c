@@ -44,6 +44,7 @@ t_list* obtenerConexionesDeNodos(t_list* listaDeMaster, char* nodoEncargado){
 int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster){
 	administracionYAMA* nuevaReduccionG = generarAdministracion(obtenerJobDeNodo(listaDeMaster),nroMaster, REDUCCION_GLOBAL, obtenerNombreTemporalGlobal());
 	nuevaReduccionG->nroBloque = 0;
+	nuevaReduccionG->nroBloqueFile = -1;
 	log_info(loggerYAMA, "Se prosigue a aplicar el algoritmo de balanceo para elegir el nodo encargado de la reduccion global");
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
 	log_info(loggerYAMA, "El nodo elegido para llevar a cabo la reduccion global es %s.", nuevaReduccionG->nombreNodo);

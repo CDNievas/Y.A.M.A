@@ -17,6 +17,7 @@ bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
+	admin->nroBloqueFile = 0;
 	log_info(loggerYAMA, "Se prosigue a hacer la reduccion local en el nodo %s.", admin->nombreNodo);
 	//FALTA NRO DE BLOQUE, PQ NO TENGO LA MAS PALIDA IDEA DE QUE TENGO QUE PONER xd
 	admin->nroBloque = 0;

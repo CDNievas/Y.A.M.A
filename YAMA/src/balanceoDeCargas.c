@@ -135,7 +135,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				exit(-1);
 			}
 		}else{
-			posicion++;
+			nodoAChequear->availability = BASE_AVAILABILITY;
 			usleep(RETARDO_PLANIFICACION);
 		}
 		log_info(loggerYAMA, "Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.");

@@ -48,6 +48,7 @@ typedef struct{
 
 //ESTRUCTURA DE ADMINISTRACION DE YAMA
 typedef struct{ //AL INICIALIZAR YAMA, CREAR ESTA ESTRUCTURA VACIA (TABLA DE ESTADOS)
+	uint32_t nroBloqueFile; // NRO DE BLOQUE EN EL ARCHIVO
 	uint32_t nroJob;
 	uint32_t nroMaster;
 	char* nombreNodo;

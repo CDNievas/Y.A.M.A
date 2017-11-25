@@ -322,10 +322,10 @@ char* buscarNodoEncargado(uint32_t nroMaster){
 	bool esReduccionFinalizada(administracionYAMA* admin){
 		return admin->nroMaster == nroMaster && admin->estado == FINALIZADO && admin->etapa == REDUCCION_GLOBAL;
 	}
-	//SEM_WAIT
+	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReduccionFinalizada);
 	char* nodoEncargado = admin->nombreNodo;
-	//SEM_POST
+	pthread_mutex_unlock(&semTablaEstados);
 	return nodoEncargado;
 }
 
