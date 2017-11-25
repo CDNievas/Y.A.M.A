@@ -22,7 +22,6 @@ char* RUTA_DATABIN;
 char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
-sem_t semaforoScripts;
 
 typedef struct{
 	uint32_t socketParaRecibir;
@@ -129,7 +128,7 @@ char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint
 	string_append(&command,RUTA_DATABIN);
 	string_append(&command," | tail -n ");
 	string_append(&command,string_itoa(bytesOcupados));
-	string_append(&command," | ./");
+	string_append(&command," | sh ");
 	string_append(&command,nombreScript);
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
@@ -151,7 +150,34 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	return command;
 }
 
+char* obtenerSinExtension(char* rutaCompleta){
+	uint32_t posicion;
+	uint32_t posicionMaxima = 0;
+
+	for(posicion=0;rutaCompleta[posicion]!='\0';posicion++){
+		if(rutaCompleta[posicion]=='.'){
+			posicionMaxima = posicion;
+		}
+	}
+	char* nombreSinExtension = string_substring_until(rutaCompleta,posicionMaxima);
+	free(rutaCompleta);
+	return nombreSinExtension;
+}
+
+void crearArchivoTemporal(char* nombreScript){
+	string_append(&nombreScript,"XXXXXX");
+	int resultado = mkstemp(nombreScript);
+
+	if(resultado==-1){
+		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
+		exit(-1);
+	}
+	log_info(loggerWorker, "Se creo correctamente un archivo temporal con nombre: %s.\n",nombreScript);
+}
+
 void guardarScript(char* script,char* nombreScript){
+	crearArchivoTemporal(nombreScript);
+
 	FILE* archivoScript = fopen(nombreScript,"w");
 
 	if(archivoScript==NULL){
@@ -184,17 +210,6 @@ void eliminarArchivo(char* nombreScript){
 		log_info(loggerWorker,"El script se elimino correctamente.\n");
 	}
 	free(nombreScript);
-}
-
-void crearArchivoTemporal(char* nombreScript){
-	string_append(&nombreScript,"XXXXXX");
-	int resultado = mkstemp(nombreScript);
-
-	if(resultado==-1){
-		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
-		exit(-1);
-	}
-	log_info(loggerWorker, "Se creo correctamente un archivo temporal con nombre: %s.\n",nombreScript);
 }
 
 char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
@@ -563,20 +578,19 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			char* pathDestino = recibirString(socketMaster);
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
+			printf("Todos los datos fueron recibidos de master para realizar la transformacion");
 
-			sem_wait(&semaforoScripts);
-			guardarScript(script,nombreScript);
-			sem_post(&semaforoScripts);
+			char* nombreSinExtension = obtenerSinExtension(nombreScript);
 
-			darPermisosAScripts(nombreScript);
+			guardarScript(script,nombreSinExtension);
 
-			char* command = crearComandoScriptTransformador(nombreScript,pathDestino,nroBloque,bytesOcupados);
+			darPermisosAScripts(nombreSinExtension);
+
+			char* command = crearComandoScriptTransformador(nombreSinExtension,pathDestino,nroBloque,bytesOcupados);
 
 			ejecutarPrograma(command,socketMaster,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA);
 
-			sem_wait(&semaforoScripts);
-			eliminarArchivo(nombreScript);
-			sem_post(&semaforoScripts);
+			eliminarArchivo(nombreSinExtension);
 
 			break;
 		}
@@ -596,19 +610,17 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			char* archivoApareado = aparearArchivos(archivosTemporales);
 
-			sem_wait(&semaforoScripts);
-			guardarScript(script,nombreScript);
-			sem_post(&semaforoScripts);
+			char* nombreSinExtension = obtenerSinExtension(nombreScript);
 
-			darPermisosAScripts(nombreScript);
+			guardarScript(script,nombreSinExtension);
 
-			char* command = crearComandoScriptReductor(archivoApareado,nombreScript,pathDestino);
+			darPermisosAScripts(nombreSinExtension);
+
+			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
 
 			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA);
 
-			sem_wait(&semaforoScripts);
-			eliminarArchivo(nombreScript);
-			sem_post(&semaforoScripts);
+			eliminarArchivo(nombreSinExtension);
 
 			eliminarArchivo(archivoApareado);
 
@@ -654,19 +666,17 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,temporalEncargado);
 
-			sem_wait(&semaforoScripts);
-			guardarScript(script,nombreScript);
-			sem_post(&semaforoScripts);
+			char* nombreSinExtension = obtenerSinExtension(nombreScript);
 
-			darPermisosAScripts(nombreScript);
+			guardarScript(script,nombreSinExtension);
 
-			char* command = crearComandoScriptReductor(archivoApareado,nombreScript,pathDestino);
+			darPermisosAScripts(nombreSinExtension);
+
+			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
 
 			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_GLOBAL,REDUCCION_GLOBAL_TERMINADA);
 
-			sem_wait(&semaforoScripts);
-			eliminarArchivo(nombreScript);
-			sem_post(&semaforoScripts);
+			eliminarArchivo(nombreSinExtension);
 
 			eliminarArchivo(archivoApareado);
 
@@ -726,7 +736,6 @@ int main(int argc, char **argv) {
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
 	log_info(loggerWorker, "Procesos hijos muertos eliminados del sistema.\n");
-	sem_init(&semaforoScripts,1,0);
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
