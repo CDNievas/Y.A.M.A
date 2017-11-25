@@ -657,6 +657,7 @@ void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 	}
 
 	sendRemasterizado(socket, INFO_ARCHIVO_FS, posicionActual, mensaje);
+	free(mensaje);
 }
 
 
@@ -670,11 +671,12 @@ void enviarDatoArchivo(int socket){
 		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
 	}
 	enviarTablaAYama(socket,entradaArchivo);
+	free(archivoABuscar);
 }
 
 //ENVIAR IP Y PUERTO
 void enviarDatosConexionNodo(int socket){
-	char* nodo=string_new();
+	char* nodo;
 	nodo=recibirString(socket);
 	bool esNodo(datosConexionNodo* nodoSeleccionado){
 		return(string_equals_ignore_case(nodoSeleccionado->nodo,nodo));
@@ -692,7 +694,8 @@ void enviarDatosConexionNodo(int socket){
 	posicionActual+=tamanioIp;
 
 	sendRemasterizado(socket,DATOS_NODO,posicionActual,mensaje);
-
+	free(mensaje);
+	free(nodo);
 }
 //--------------------------------Worker----------------------------------------
 void almacenarArchivoWorker(int socket){
@@ -796,6 +799,11 @@ int main(int argc, char **argv) {
 						break;
 					case ALMACENADO_FINAL:
 						almacenarArchivoWorker(socketClienteChequeado);
+						break;
+					case CORTO:
+						log_error(loggerFileSystem, "El socket %d corto la conexion.", socketClienteChequeado);
+						FD_CLR(socketClienteChequeado, &socketClientes);
+						close(socketClienteChequeado);
 						break;
 					default:
 						log_error(loggerFileSystem,

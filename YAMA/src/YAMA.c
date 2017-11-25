@@ -141,8 +141,9 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case CORTO:
 				log_info(loggerYAMA, "El master %d corto.", nroMaster);
-				pthread_cancel(pthread_self());
 				sigueProcesando = 0;
+				close(socketMaster);
+				pthread_cancel(pthread_self());
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
