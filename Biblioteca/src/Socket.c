@@ -2,7 +2,7 @@
 #include <commons/string.h>
 
 void verificarErrorSocket(int unSocket) {
-	if (socket == -1) {
+	if (unSocket == -1) {
 		perror("Error de socket");
 		close(unSocket);
 		exit(-1);
@@ -11,7 +11,7 @@ void verificarErrorSocket(int unSocket) {
 
 void verificarErrorSetsockopt(int unSocket) {
 	int yes = 1;
-	if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+	if (setsockopt(unSocket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		perror("Error de setsockopt");
 		close(unSocket);
 		exit(-1);
@@ -19,7 +19,7 @@ void verificarErrorSetsockopt(int unSocket) {
 }
 
 void verificarErrorBind(int unSocket, struct sockaddr_in mySocket) {
-	if (bind(socket, (struct sockaddr *) &mySocket, sizeof(mySocket)) == -1) {
+	if (bind(unSocket, (struct sockaddr *) &mySocket, sizeof(mySocket)) == -1) {
 		perror("Error de bind");
 		close(unSocket);
 		exit(-1);
@@ -27,7 +27,7 @@ void verificarErrorBind(int unSocket, struct sockaddr_in mySocket) {
 }
 
 void verificarErrorListen(int unSocket) {
-	if (listen(socket, BACKLOG) == -1) {
+	if (listen(unSocket, BACKLOG) == -1) {
 		perror("Error de listen");
 		close(unSocket);
 		exit(-1);

@@ -27,6 +27,8 @@ u_int32_t PUERTO_FILESYSTEM;
 char* NOMBRE_NODO;
 u_int32_t PUERTO_DATANODE;
 char* RUTA_DATABIN;
+uint32_t PUERTO_WORKER;
+char* IP_WORKER;
 
 t_log * loggerDatanode; // Logger
 u_int32_t sizeDataBin; // Guarda el tamaño del Databin

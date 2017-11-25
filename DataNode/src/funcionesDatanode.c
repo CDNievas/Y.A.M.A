@@ -37,6 +37,19 @@ void cargarDataNode(t_config* configuracionDN){
     	RUTA_DATABIN = string_new();
         string_append(&RUTA_DATABIN, config_get_string_value(configuracionDN, "RUTA_DATABIN"));
     }
+    if(!config_has_property(configuracionDN, "PUERTO_WORKER")){
+    	log_error(loggerDatanode, "El archivo de configuracion no contiene PUERTO_WORKER");
+    	exit(-1);
+    }else{
+    	PUERTO_WORKER = config_get_int_value(configuracionDN, "PUERTO_WORKER");
+    }
+    if(!config_has_property(configuracionDN, "IP_WORKER")){
+    	log_error(loggerDatanode, "El archivo de configuracion no contiene IP_WORKER");
+    	exit(-1);
+    }else{
+    	IP_WORKER = string_new();
+    	string_append(&IP_WORKER, config_get_string_value(configuracionDN, "IP_WORKER"));
+    }
     config_destroy(configuracionDN);
 }
 
@@ -144,7 +157,7 @@ void enviarInfoNodo(uint32_t socket){
 
 	u_int32_t tamNombreNodo = string_length(NOMBRE_NODO);
 	u_int32_t bloques = cantBloques;
-	u_int32_t tamIp = string_length(IP_FILESYSTEM);
+	u_int32_t tamIp = string_length(IP_WORKER);
 
 	int tamanioMsg =sizeof(uint32_t) + tamNombreNodo + sizeof(uint32_t) + sizeof(uint32_t) + tamIp + sizeof(uint32_t);
 
@@ -159,9 +172,9 @@ void enviarInfoNodo(uint32_t socket){
 	offset += sizeof(uint32_t);
 	memcpy(mensaje + offset, &tamIp, sizeof(uint32_t));
 	offset += sizeof(uint32_t);
-	memcpy(mensaje + offset, IP_FILESYSTEM, tamIp);
+	memcpy(mensaje + offset, IP_WORKER, tamIp);
 	offset += tamIp;
-	memcpy(mensaje + offset, &PUERTO_FILESYSTEM, sizeof(uint32_t));
+	memcpy(mensaje + offset, &PUERTO_WORKER, sizeof(uint32_t));
 
 	sendRemasterizado(socket, ENV_INFONODO, tamanioMsg, mensaje);
 

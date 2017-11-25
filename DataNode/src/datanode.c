@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 //	t_config* configuracionDataNode = generarTConfig("src/datanode.ini", 6);
 
 	// Run consola
-	t_config* configuracionDataNode = generarTConfig(argv[1], 6);
+	t_config* configuracionDataNode = generarTConfig(argv[1], 7);
 	cargarDataNode(configuracionDataNode);
 
 	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
