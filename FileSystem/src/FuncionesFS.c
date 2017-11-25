@@ -175,7 +175,7 @@ int obtenerIndexDirectorio(char* nombre){
   bool esDirectorio(t_directory* direct){
     return strcmp(nombre, direct->nombre);
   }
-  t_directory* directorio = list_find(listaDirectorios, esDirectorio);
+  t_directory* directorio = list_find(listaDirectorios,(void*) esDirectorio);
   if(directorio != NULL){
     return directorio->index;
   }
@@ -233,6 +233,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 			return posicion;
 		}
 	}
+	persistirBitmap(nodoConbitarray);
 	return 0;
 }
 
@@ -243,18 +244,18 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	contenidoNodo* nodo0;
 	contenidoNodo* nodo1;
 
-	bool nodoMasOciosoCopia0(contenidoNodo* contenidoDelNodo){
-		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso);
+	bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
+		return(nodoSeleccionado1->porcentajeOcioso > nodoSeleccionado2->porcentajeOcioso);
 	}
-	nodo0=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia0);
+	list_sort(tablaGlobalNodos->contenidoXNodo,(void*)ordenarPorPorcentajeOcioso);
+
+	nodo0=list_get(tablaGlobalNodos->contenidoXNodo,0);
+
 	nodo0->libre--;
 	nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
 	tablaGlobalNodos->libres--;
 
-	bool nodoMasOciosoCopia1(contenidoNodo* contenidoDelNodo){
-		return (contenidoDelNodo->porcentajeOcioso>tabajoOcioso && strcmp(contenidoDelNodo->nodo,nodo0->nodo)!=0);
-	}
-	nodo1=list_find(tablaGlobalNodos->contenidoXNodo,(void*)nodoMasOciosoCopia1);
+	nodo1=list_get(tablaGlobalNodos->contenidoXNodo,1);
 	nodo1->libre--;
 	nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
 	tablaGlobalNodos->libres--;
@@ -285,7 +286,6 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
-//	free(mensaje);
 
 	mensaje=realloc(mensaje,sizeof(uint32_t)*3+tamanio);
 

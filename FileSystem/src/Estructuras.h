@@ -111,6 +111,7 @@ bool hayEstadoAnterior;
 t_list* listaConexionNodos;
 t_list* listaConexionNodos;
 t_list* listaDirectorios;
+t_list* registroArchivos;
 
 
 #endif /* ESTRUCTURAS_H_ */

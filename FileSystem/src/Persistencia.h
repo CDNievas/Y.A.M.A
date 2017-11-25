@@ -6,12 +6,15 @@
  */
 
 #include "Estructuras.h"
+#include "BitarrayConfiguraciones.h"
 
 #ifndef PERSISTENCIA_H_
 #define PERSISTENCIA_H_
 
 void persistirTablaNodo();
-void persistirTablaArchivo(tablaArchivos* entradaArchivo);
+void persistirRegistroArchivo();
+void persistirTablaArchivo(tablaArchivos* );
+void persistirBitmap(tablaBitmapXNodos* );
 
 
 #endif /* PERSISTENCIA_H_ */

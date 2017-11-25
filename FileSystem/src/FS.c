@@ -54,8 +54,6 @@ int main(int argc, char **argv) {
 			log_error(loggerFileSystem, "No se pudo llevar a cabo el select.");
 			exit(-1);
 		}
-		log_info(loggerFileSystem,
-				"Se recibio nueva actividad de los clientes");
 		for (socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo;
 				socketClienteChequeado++) {
 			if (FD_ISSET(socketClienteChequeado, &socketClientesAuxiliares)) {
@@ -64,8 +62,7 @@ int main(int argc, char **argv) {
 					FD_SET(socketAceptado, &socketClientes);
 					socketMaximo = calcularSocketMaximo(socketAceptado,
 							socketMaximo);
-					log_info(loggerFileSystem,
-							"Se ha recibido una nueva conexion.");
+					log_info(loggerFileSystem,"Se ha recibido una nueva conexion.");
 				} else {
 					int notificacion = recvDeNotificacion(
 							socketClienteChequeado);
@@ -84,6 +81,7 @@ int main(int argc, char **argv) {
 						break;
 					case REC_INFONODO:
 						registrarNodo(socketClienteChequeado);
+						log_info(loggerFileSystem,"Se ha registrado un nodo nuevo al sistema");
 						break;
 					case REC_BLOQUE:
 						recibirBloque(socketClienteChequeado);

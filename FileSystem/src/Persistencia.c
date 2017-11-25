@@ -9,10 +9,9 @@
 
 void persistirTablaNodo(){
 
-
-	//FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
+	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
 //	char * path = obtenerPathTablaNodo();
-	FILE* archivoNodos=fopen("asd.txt","w");
+//	FILE* archivoNodos=fopen("asd.txt","w");
 
 	fputs("TAMANIO=",archivoNodos);
 	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
@@ -57,10 +56,28 @@ void persistirTablaNodo(){
 
 }
 
+void persistirRegistroArchivo(){
+
+	FILE* archivoRegistro=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/archivos/registro.dat","r+");
+	int cont=0;
+	int cantTotal=list_size(registroArchivos);
+	while(cont<=cantTotal){
+		fputs("ARCHIVO",archivoRegistro);
+		fputs(string_itoa(cont),archivoRegistro);
+		fputs("=",archivoRegistro);
+		char* pathArchivo=list_get(registroArchivos,cont);
+		fputs(pathArchivo,archivoRegistro);
+		fputc('\n',archivoRegistro);
+	}
+	fclose(archivoRegistro);
+
+}
+
+
 void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	char* path=string_new();
 	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/archivos/");
-	string_append(&path,entradaArchivo->directorioPadre);
+	string_append(&path,string_itoa(entradaArchivo->directorioPadre));
 	string_append(&path,"/");
 	string_append(&path,entradaArchivo->nombreArchivo);
 	FILE* archivo=fopen(path,"r+");
@@ -79,7 +96,7 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 		copiasXBloque* copia=list_get(tablaGlobalNodos->nodo,i);
 		fputs(copia->bloque,archivo);
 		fputs("COPIA0=[",archivo);
-		fputc(copia->copia1->nodo,archivo);
+		fputs(copia->copia1->nodo,archivo);
 		fputc(',',archivo);
 		fputs(string_itoa(copia->copia1->bloque),archivo);
 		fputc(']',archivo);
@@ -88,7 +105,7 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 		fputs("BLOQUE",archivo);
 		fputs(copia->bloque,archivo);
 		fputs("COPIA1=[",archivo);
-		fputc(copia->copia2->nodo,archivo);
+		fputs(copia->copia2->nodo,archivo);
 		fputc(',',archivo);
 		fputs(string_itoa(copia->copia2->bloque),archivo);
 		fputc(']',archivo);
@@ -106,9 +123,37 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 
 	fclose(archivo);
 
-	FILE* archivoRegistro=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/archivos/registroArchivos.dat","r+");
-	fputs(entradaArchivo->nombreArchivo,archivoRegistro);
-	fputs("=",archivoRegistro);
+	list_add(registroArchivos,path);
+	persistirRegistroArchivo();
 
 }
 
+
+void persistirBitmap(tablaBitmapXNodos* nodo){
+	char* pathBitmap=obtenerPathBitmap(nodo->nodo);
+	FILE* archivoBitmapNodo=fopen(pathBitmap,"r+");
+	fputs(nodo->bitarray->bitarray,archivoBitmapNodo);
+	fclose(archivoBitmapNodo);
+}
+
+void persistirDirectorio(){
+	FILE* archivoDirectorio=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/directorios.dat","r+");
+	int cont=0;
+	int cantTotal=list_size(listaDirectorios);
+
+	while(cont<=cantTotal){
+		fputs("DIRECTORIO",archivoDirectorio);
+		fputs(string_itoa(cont),archivoDirectorio);
+		fputs("=[",archivoDirectorio);
+		t_directory* directorioSeleccionado=list_get(listaDirectorios,cont);
+		fputs(string_itoa(directorioSeleccionado->index),archivoDirectorio);
+		fputc(',',archivoDirectorio);
+		fputs(directorioSeleccionado->nombre,archivoDirectorio);
+		fputc(',',archivoDirectorio);
+		fputs(string_itoa(directorioSeleccionado->padre),archivoDirectorio);
+		fputc(']',archivoDirectorio);
+		fputc('\n',archivoDirectorio);
+	}
+	fclose(archivoDirectorio);
+
+}
