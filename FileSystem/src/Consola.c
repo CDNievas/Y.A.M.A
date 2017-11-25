@@ -98,7 +98,18 @@ void analizarComando(char * linea){
 
       case 2:{
         if(strcmp(comandoDesarmado[1], "-d")==0){
-        	//BORRO DIRECTORIO
+        	int pudoBorrar = deleteDirectory(comandoDesarmado[1]);
+        	if(pudoBorrar == 0){
+        		log_error(loggerFileSystem, "El directorio a borrar no existe.");
+        	}else if(pudoBorrar == -1){
+        		log_error(loggerFileSystem, "El directorio a borrar tiene subdirectorios. No se puede borrar.");
+        	}else{
+        		char* comandoPConsola = string_new();
+        		string_append(&comandoPConsola, "rmdir ");
+        		string_append(&comandoPConsola, comandoDesarmado[2]);
+        		system(comandoPConsola);
+        		log_info(loggerFileSystem, "Directorio borrado exitosamente.");
+        	}
         }else if(strcmp(comandoDesarmado[1], "-b")==0){
         	//BORRO BLOQUE
         }else if(comandoDesarmado[1]!=NULL){

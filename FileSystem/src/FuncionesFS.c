@@ -50,14 +50,14 @@ int obtenerDirectorioPadre(char** rutaDesmembrada){
         t_directory* directory = list_find(listaDirectorios, (void*)isMyFather);
         if(directory == NULL){
         	free(fathersName);
-        	return -1;
+        	return -2;
         }
         free(fathersName);
         return directory->index;
       }
     }else if(rutaDesmembrada[posicion+1]==NULL){
     	free(fathersName);
-      return 0;
+      return -1;
     }
     posicion++;
   }
@@ -65,7 +65,6 @@ int obtenerDirectorioPadre(char** rutaDesmembrada){
 
 t_directory* createDirectory(){
   t_directory* newDirectory = malloc(sizeof(t_directory));
-  newDirectory->nombre = string_new();
   return newDirectory;
 }
 
@@ -125,7 +124,7 @@ int crearDirectorio(char* ruta){
       newDirectory->nombre = obtenerNombreDirectorio(rutaDesmembrada);
       newDirectory->padre = obtenerDirectorioPadre(rutaDesmembrada);
       newDirectory->index = indexDir;
-      if(newDirectory->padre == -1){
+      if(newDirectory->padre == -2){
     	  liberarComandoDesarmado(rutaDesmembrada);
         liberarDirectorio(newDirectory);
         log_info(loggerFileSystem,"Error de directorio padre de la ruta elegida");
@@ -180,7 +179,7 @@ int obtenerIndexDirectorio(char* nombre){
   if(directorio != NULL){
     return directorio->index;
   }
-  return -1;
+  return -2;
 
 }
 
@@ -190,7 +189,7 @@ int deleteDirectory(char* directoryToDelete){
   char** rutaDesmembrada = string_split(directoryToDelete, "/");
   char* directoryName = obtenerNombreDirectorio(rutaDesmembrada);
   int indexToDelete = obtenerIndexDirectorio(directoryName);
-  if(indexToDelete == -1){
+  if(indexToDelete == -2){
     free(directoryName);
     liberarComandoDesarmado(rutaDesmembrada);
     return 0; //NO EXISTE DIRECTORIO
