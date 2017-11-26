@@ -9,9 +9,9 @@
 
 void persistirTablaNodo(){
 
-	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
-//	char * path = obtenerPathTablaNodo();
-//	FILE* archivoNodos=fopen("asd.txt","w");
+//	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
+	char * path = obtenerPathTablaNodo();
+	FILE* archivoNodos=fopen(path,"w+");
 
 	fputs("TAMANIO=",archivoNodos);
 	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
@@ -58,7 +58,7 @@ void persistirTablaNodo(){
 
 void persistirRegistroArchivo(){
 
-	FILE* archivoRegistro=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/archivos/registro.dat","r+");
+	FILE* archivoRegistro=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos/registro.dat","w+");
 	int cont=0;
 	int cantTotal=list_size(registroArchivos);
 	while(cont<=cantTotal){
@@ -76,11 +76,11 @@ void persistirRegistroArchivo(){
 
 void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	char* path=string_new();
-	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/archivos/");
+	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos");
 	string_append(&path,string_itoa(entradaArchivo->directorioPadre));
 	string_append(&path,"/");
 	string_append(&path,entradaArchivo->nombreArchivo);
-	FILE* archivo=fopen(path,"r+");
+	FILE* archivo=fopen(path,"w+");
 
 	fputs("TAMANIO=",archivo);
 	char* tamanioCadena = string_itoa(entradaArchivo->tamanio);
@@ -131,13 +131,14 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 
 void persistirBitmap(tablaBitmapXNodos* nodo){
 	char* pathBitmap=obtenerPathBitmap(nodo->nodo);
-	FILE* archivoBitmapNodo=fopen(pathBitmap,"r+");
+	FILE* archivoBitmapNodo=fopen(pathBitmap,"w+");
+
 	fputs(nodo->bitarray->bitarray,archivoBitmapNodo);
 	fclose(archivoBitmapNodo);
 }
 
 void persistirDirectorio(){
-	FILE* archivoDirectorio=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/directorios.dat","r+");
+	FILE* archivoDirectorio=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/directorios.dat","w+");
 	int cont=0;
 	int cantTotal=list_size(listaDirectorios);
 

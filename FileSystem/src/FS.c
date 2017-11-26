@@ -97,6 +97,7 @@ int main(int argc, char **argv) {
 						break;
 					case CORTO:
 						log_error(loggerFileSystem, "El socket %d corto la conexion.", socketClienteChequeado);
+						//verificarQueNodo(socketClienteChequeado);
 						FD_CLR(socketClienteChequeado, &socketClientes);
 						close(socketClienteChequeado);
 						break;

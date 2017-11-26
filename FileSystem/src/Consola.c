@@ -109,6 +109,7 @@ void analizarComando(char * linea){
         		string_append(&comandoPConsola, comandoDesarmado[2]);
         		system(comandoPConsola);
         		log_info(loggerFileSystem, "Directorio borrado exitosamente.");
+        		free(comandoPConsola);
         	}
         }else if(strcmp(comandoDesarmado[1], "-b")==0){
         	//BORRO BLOQUE

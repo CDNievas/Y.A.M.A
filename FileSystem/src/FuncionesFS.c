@@ -238,7 +238,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 }
 
 void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* copiaBloque){
-	int tabajoOcioso=0;
+
 	void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
 	uint32_t posicionActual=0;
 	contenidoNodo* nodo0;
@@ -283,6 +283,8 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	posicionActual+=tamanio;
 
 	sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,posicionActual,mensaje);
+
+
 	if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
@@ -412,6 +414,13 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 				fseek(archivo, 0, SEEK_SET);
 			}
 			enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
+			char* comandoCopiarArchivo = string_new();
+			string_append(&comandoCopiarArchivo, "cp -a ");
+			string_append(&comandoCopiarArchivo, pathArchivo);
+			string_append(&comandoCopiarArchivo, " ");
+			string_append(&comandoCopiarArchivo, pathDirectorio);
+			system(comandoCopiarArchivo);
+
 			list_destroy(posicionBloquesAGuardar);
 		}else{
 			log_error(loggerFileSystem,"El archivo se encuentra vacio");
@@ -424,26 +433,26 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 }
 
 //------------------------------------------------LEER
-void leerArchivo(char* ruta,char* nombreArchivo){
-	int cont=0;
-	bool esArchivo(tablaArchivos* archivo){
-		return(string_equals_ignore_case(archivo->nombreArchivo,nombreArchivo));
-	}
-	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
-
-	void* contenidoArchivo=malloc(entradaArchivo->tamanio);
-
-	while(cont<list_size(entradaArchivo->bloques)){
-		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
-		bool esNodo(contenidoNodo* nodoElegido){
-			//return(strcmp(nodoElegido->nodo,copiaBloque->copia1->nodo)==0);
-		}
-		contenidoNodo* nodoSeleccionado=list_find(tablaGlobalNodos->contenidoXNodo,(void*)esNodo);
-		//sendRemasterizado(nodoSeleccionado->socket,ENV_LEER,copiaBloque->)
-
-	}
-
-}
+//void leerArchivo(char* ruta,char* nombreArchivo){
+//	int cont=0;
+//	bool esArchivo(tablaArchivos* archivo){
+//		return(string_equals_ignore_case(archivo->nombreArchivo,nombreArchivo));
+//	}
+//	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
+//
+//	void* contenidoArchivo=malloc(entradaArchivo->tamanio);
+//
+//	while(cont<list_size(entradaArchivo->bloques)){
+//		copiasXBloque* copiaBloque=(copiasXBloque*)list_get(entradaArchivo->bloques,cont);
+//		bool esNodo(contenidoNodo* nodoElegido){
+//			return(strcmp(nodoElegido->nodo,copiaBloque->copia1->nodo)==0);
+//		}
+//		contenidoNodo* nodoSeleccionado=list_find(tablaGlobalNodos->contenidoXNodo,(void*)esNodo);
+//		//sendRemasterizado(nodoSeleccionado->socket,ENV_LEER,copiaBloque->)
+//
+//	}
+//
+//}
 
 
 
