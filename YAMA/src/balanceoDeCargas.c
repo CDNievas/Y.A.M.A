@@ -47,7 +47,7 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 		if(posicionActual >= list_size(listaDeBalanceo)){
 			posicionActual = 0;
 		}
-		nodo = list_get(listaDeBalanceo, posicionIncial);
+		nodo = list_get(listaDeBalanceo, posicionActual);
 		if(tieneAvailability(nodo) && tieneBloqueBuscado(nodo, bloque)){
 			usleep(RETARDO_PLANIFICACION);
 			break;
@@ -125,7 +125,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
 				log_info(loggerYAMA, "El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.");
 				log_info(loggerYAMA, "Se prosigue a buscar que otro nodo lo tiene.");
-				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion+1);
+				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion);
 				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 				cantidadAsignados++;
