@@ -73,7 +73,7 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 	t_list* listaDatosPMaster = list_create();
 	int posicion;
 	for(posicion = 0; posicion<list_size(listaDeBloques); posicion++){
-		administracionYAMA* nuevaAdministracion = generarAdministracion(numeroDeJobPTarea, nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
+		administracionYAMA* nuevaAdministracion = generarAdministracion(numeroDeJobPTarea, nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion(nroMaster, numeroDeJobPTarea));
 		//CREE LA BASE DE LA ESTRUCTURA DE TRANSFORMACION
 		//PASO A ELEGIR LOS NODOS Y CARGARLOS EN LA ESTRUCTURA
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
@@ -265,10 +265,3 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		return 0;
 	}
 }
-
-
-
-
-
-
-

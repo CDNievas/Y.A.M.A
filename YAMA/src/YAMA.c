@@ -51,7 +51,6 @@ void manejadorMaster(void* socketMasterCliente){
 					log_error(loggerYAMA, "El archivo %s solicitado por el master %d no existe en el FileSystem.", nombreArchivoPeticion, nroMaster);
 					sigueProcesando = 0;
 				}
-				free(nombreArchivoPeticion);
 				break;
 			case TRANSFORMACION_TERMINADA:
 				log_info(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
@@ -200,14 +199,23 @@ int main(int argc, char *argv[])
 	FD_ZERO(&socketMastersAuxiliares);
 	FD_ZERO(&socketsMasterCPeticion);
 	FD_SET(socketEscuchaMasters, &socketsMasterCPeticion);
- 	pthread_t hiloManejadorMaster;
+ 	//HILOS
+	pthread_t hiloManejadorMaster;
  	pthread_attr_t attr;
  	pthread_attr_init(&attr);
  	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   	tablaDeEstados = list_create();
+  	//FIN HILOS
   	//INICIALIZO SEMAFOROS PARA VAR COMPARTIDAS.
   	pthread_mutex_init(&semNodosSistema, NULL);
   	pthread_mutex_init(&semTablaEstados, NULL);
+  	pthread_mutex_init(&semContMaster, NULL);
+  	pthread_mutex_init(&semContJobs, NULL);
+  	pthread_mutex_init(&semReducGlobales, NULL);
+  	pthread_mutex_init(&semReducLocales, NULL);
+  	pthread_mutex_init(&semTransformaciones, NULL);
+  	//FIN DE SEMAFOROS
+
 	while(estaFS){
 		socketMastersAuxiliares = socketsMasterCPeticion;
 		if((select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1)){

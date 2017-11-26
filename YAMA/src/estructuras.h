@@ -95,6 +95,11 @@ bool estaFS;
 //SEMAPHORE
 pthread_mutex_t semTablaEstados;
 pthread_mutex_t semNodosSistema;
+pthread_mutex_t semContMaster;
+pthread_mutex_t semContJobs;
+pthread_mutex_t semTransformaciones;
+pthread_mutex_t semReducLocales;
+pthread_mutex_t semReducGlobales;
 
 //DATOS CONFIG
 char* FS_IP;

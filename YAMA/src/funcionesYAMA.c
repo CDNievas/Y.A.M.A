@@ -67,42 +67,68 @@ void liberarNodoSistema(nodoSistema* nodo){
 //RANDOM NAMES
 char* obtenerNombreTemporalLocal(){
 	char* nombreArchivo = string_new();
-	string_append(&nombreArchivo, "tempFileLocal");
-	char* numero = string_itoa(numeroDeTemporalLocal);
-	string_append(&nombreArchivo, numero);
+
+	pthread_mutex_lock(&semReducLocales);
+	int nro = numeroDeTemporalLocal;
 	numeroDeTemporalLocal++;
+	pthread_mutex_unlock(&semReducLocales);
+
+	string_append(&nombreArchivo, "tempFileLocal");
+	char* numero = string_itoa(nro);
+	string_append(&nombreArchivo, numero);
+
 	free(numero);
 	return nombreArchivo;
 }
 
 char* obtenerNombreTemporalGlobal(){
 	char* nombreArchivo = string_new();
-	string_append(&nombreArchivo, "tempFileGlobal");
-	char* numero = string_itoa(numeroDeTemporalGlobal);
-	string_append(&nombreArchivo, numero);
+
+	pthread_mutex_lock(&semReducGlobales);
+	int nro = numeroDeTemporalGlobal;
 	numeroDeTemporalGlobal++;
+	pthread_mutex_unlock(&semReducGlobales);
+
+	string_append(&nombreArchivo, "tempFileGlobal");
+	char* numero = string_itoa(nro);
+	string_append(&nombreArchivo, numero);
 	free(numero);
 	return nombreArchivo;
 }
 
 char* obtenerNombreTemporalTransformacion(){
 	char* nombreArchivo = string_new();
-	char* numero = string_itoa(numeroDeTemporalTransformacion);
+
+	pthread_mutex_lock(&semTransformaciones);
+	int nro = numeroDeTemporalTransformacion;
+	numeroDeTemporalTransformacion++;
+	pthread_mutex_unlock(&semTransformaciones);
+
+	char* numero = string_itoa(nro);
 	string_append(&nombreArchivo, "tempFileTransformacion");
 	string_append(&nombreArchivo, numero);
-	numeroDeTemporalTransformacion++;
 	free(numero);
 	return nombreArchivo;
 }
 
 int obtenerNumeroDeJob(){
+
+	pthread_mutex_lock(&semContJobs);
 	contadorDeJobs++;
-	return contadorDeJobs;
+	int nroCont = contadorDeJobs;
+	pthread_mutex_unlock(&semContJobs);
+
+	return nroCont;
 }
 
 int obtenerNumeroDeMaster(){
+
+	pthread_mutex_lock(&semContMaster);
 	contadorDeMasters++;
-	return contadorDeMasters;
+	int nroCont = contadorDeMasters;
+	pthread_mutex_unlock(&semContMaster);
+
+	return nroCont;
 }
 
 //OBTENER DATOS DE CONEXION CON NODO
