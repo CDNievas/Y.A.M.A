@@ -64,6 +64,12 @@ void liberarNodoSistema(nodoSistema* nodo){
 	free(nodo);
 }
 
+void liberarAdminYAMA(administracionYAMA* admin){
+	free(admin->nameFile);
+	free(admin->nombreNodo);
+	free(admin);
+}
+
 //RANDOM NAMES
 char* obtenerNombreTemporalLocal(){
 	char* nombreArchivo = string_new();
@@ -235,6 +241,23 @@ void chequeameLaSignal(int signal){
 		log_info(loggerYAMA, "Se ha actualizado el valor de ALGORITMO_BALANCEO a %s", ALGORITMO_BALANCEO);
 	}
 	config_destroy(configuracionNueva);
+}
+
+void laParca(int signal){
+	//Se prosigue a morir elegantemente
+	log_info(loggerYAMA, "Se recibio SIGINT.");
+	log_info(loggerYAMA, "Mueriendo con estilo.");
+	list_destroy_and_destroy_elements(nodosSistema, (void*)liberarNodoSistema);
+	list_destroy_and_destroy_elements(tablaDeEstados, (void*)liberarAdminYAMA);
+	free(FS_IP);
+	free(ALGORITMO_BALANCEO);
+	log_info(loggerYAMA, "Todas las estructuras liberadas.");
+	log_info(loggerYAMA, "Cerrando sockets.");
+	close(socketEscuchaMasters);
+	close(socketFS);
+	log_info(loggerYAMA, "Muriendo...");
+	log_destroy(loggerYAMA);
+	exit(0);
 }
 
 //ENVIO DE MENSAJES

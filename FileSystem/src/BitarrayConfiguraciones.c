@@ -29,7 +29,7 @@ void recibirBloque(int socketNodo){
 
 	uint32_t cantBytes = recibirUInt(socketNodo);
 	void * bloque = miMalloc(cantBytes,loggerFileSystem,"Fallo en recibirBloque()");
-	if(recv(socket, bloque, cantBytes, MSG_WAITALL) == -1){
+	if(recv(socketNodo, bloque, cantBytes, MSG_WAITALL) == -1){
 		perror("Error al recibir el bloque.");
 		exit(-1);
 	}

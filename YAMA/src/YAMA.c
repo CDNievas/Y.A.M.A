@@ -117,8 +117,6 @@ void manejadorMaster(void* socketMasterCliente){
 				reestablecerWL(nroMaster);
 				log_info(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
 				sigueProcesando = 0;
-				close(socketMaster);
-				pthread_detach(pthread_self());
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				fallaReduccionLocal(nroMaster);
@@ -126,8 +124,6 @@ void manejadorMaster(void* socketMasterCliente){
 				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
-				close(socketMaster);
-				pthread_cancel(pthread_self());
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
@@ -135,26 +131,20 @@ void manejadorMaster(void* socketMasterCliente){
 				log_error(loggerYAMA,"Abortando el Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
-				close(socketMaster);
-				pthread_cancel(pthread_self());
 				break;
 			case ERROR_ALMACENAMIENTO_FINAL:
 				log_error(loggerYAMA, "El master %d fallo a la hora de llevar a cabo el almacenamiento final.");
 				log_error(loggerYAMA, "Abortando Job.");
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
-				close(socketMaster);
-				pthread_cancel(pthread_self());
 				break;
 			case CORTO:
 				log_info(loggerYAMA, "El master %d corto.", nroMaster);
 				sigueProcesando = 0;
-				close(socketMaster);
-				pthread_cancel(pthread_self());
 				break;
 			default:
 				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
-				pthread_cancel(pthread_self());
+				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
 				break;
 		}
@@ -171,8 +161,9 @@ void manejadorMaster(void* socketMasterCliente){
 		exit(0);
 	}
 	if(!sigueProcesando){
-		sendDeNotificacion(socketMaster, ABORTAR);
-		log_info(loggerYAMA, "Se le informo al master %d que debe abortar.", nroMaster);
+		log_info(loggerYAMA, "Se le informo al master %d que debe cortar la conexion.", nroMaster);
+		free(nombreArchivoPeticion);
+		close(socketMaster);
 		pthread_cancel(pthread_self());
 	}
 }
@@ -180,6 +171,7 @@ void manejadorMaster(void* socketMasterCliente){
 int main(int argc, char *argv[])
 {
 	signal(SIGUSR1, chequeameLaSignal);
+	signal(SIGINT, laParca);
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
@@ -192,7 +184,7 @@ int main(int argc, char *argv[])
 	handshakeFS();
 	estaFS = true;
 	log_info(loggerYAMA, "Handshake con FileSystem realizado.");
-	int socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
+	socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
  	log_info(loggerYAMA, "Escuchando clientes...");
 	int socketMaximo = socketEscuchaMasters, socketClienteChequeado, socketAceptado;
 	fd_set socketsMasterCPeticion, socketMastersAuxiliares;

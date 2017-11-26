@@ -40,6 +40,7 @@ void cargarYAMA(t_config*);
 
 //SIGNAL
 void chequeameLaSignal(int);
+void laParca(int);
 /*
  * ENVIO LA NUEVA COPIA A MASTER TRAS LA REPLANIFICACION
  */

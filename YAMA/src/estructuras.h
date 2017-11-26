@@ -90,6 +90,7 @@ typedef struct{
 t_log* loggerYAMA;
 t_list* tablaDeEstados;
 uint32_t socketFS;
+int socketEscuchaMasters;
 bool estaFS;
 
 //SEMAPHORE
