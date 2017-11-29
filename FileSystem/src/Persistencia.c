@@ -18,11 +18,22 @@ void persistirTablaNodo(){
 	fputs(tamanioCadena,archivoNodos);
 	free(tamanioCadena);
 	fputc('\n',archivoNodos);
-	fputs("BLOQUES=[",archivoNodos);
+
+	//modificar
+	fputs("LIBRE=",archivoNodos);
+	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
+	fputs(tamanioCadena,archivoNodos);
+	free(tamanioCadena);
+	fputc('\n',archivoNodos);
+
+	fputs("NODOS=[",archivoNodos);
 	int i=0;
 	while(i<list_size(tablaGlobalNodos->nodo)){
 		fputs(list_get(tablaGlobalNodos->nodo,i),archivoNodos);
-		fputc(',',archivoNodos);
+		if(i<list_size(tablaGlobalNodos->nodo)){
+			fputc(',',archivoNodos);
+		}
+
 		i++;
 	}
 	fputc(']',archivoNodos);
@@ -71,6 +82,7 @@ void persistirRegistroArchivo(){
 		char* pathArchivo=list_get(registroArchivos,cont);
 		fputs(pathArchivo,archivoRegistro);
 		fputc('\n',archivoRegistro);
+		cont++;
 	}
 	fclose(archivoRegistro);
 

@@ -263,3 +263,49 @@
 [DEBUG] 15:53:47:184 FileSystem/(4691:4691): Se procede a crear el archivo Bitmap.bin
 [INFO] 15:53:47:187 FileSystem/(4691:4691): Se ha registrado un nodo nuevo al sistema
 [INFO] 15:55:28:174 FileSystem/(4691:4696): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 16:26:37:92 FileSystem/(6623:6623): Se ha recibido una nueva conexion.
+[DEBUG] 16:26:37:93 FileSystem/(6623:6623): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:26:37:93 FileSystem/(6623:6623): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:27:06:394 FileSystem/(6725:6725): Se ha recibido una nueva conexion.
+[DEBUG] 16:27:06:394 FileSystem/(6725:6725): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:27:06:395 FileSystem/(6725:6725): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:27:23:149 FileSystem/(6725:6725): Se ha recibido una nueva conexion.
+[DEBUG] 16:27:23:149 FileSystem/(6725:6725): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:27:23:149 FileSystem/(6725:6725): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:27:26:24 FileSystem/(6725:6725): Se ha recibido una nueva conexion.
+[DEBUG] 16:27:26:24 FileSystem/(6725:6725): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:27:26:24 FileSystem/(6725:6725): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:28:56:917 FileSystem/(6725:6730): Se creo correctamente el directorio
+[INFO] 16:32:26:256 FileSystem/(6865:6865): Se ha recibido una nueva conexion.
+[DEBUG] 16:32:26:256 FileSystem/(6865:6865): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:32:26:258 FileSystem/(6865:6865): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:32:28:408 FileSystem/(6865:6865): Se ha recibido una nueva conexion.
+[DEBUG] 16:32:28:409 FileSystem/(6865:6865): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:32:28:409 FileSystem/(6865:6865): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:32:32:592 FileSystem/(6865:6865): Se ha recibido una nueva conexion.
+[DEBUG] 16:32:32:593 FileSystem/(6865:6865): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:32:32:593 FileSystem/(6865:6865): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:32:59:322 FileSystem/(6865:6872): Se creo correctamente el directorio
+[INFO] 16:33:59:577 FileSystem/(6865:6872): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[ERROR] 16:34:03:319 FileSystem/(6865:6865): La conexion recibida es erronea.
+[INFO] 16:35:41:372 FileSystem/(6943:6943): Se ha recibido una nueva conexion.
+[DEBUG] 16:35:41:372 FileSystem/(6943:6943): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:35:41:372 FileSystem/(6943:6943): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:35:44:149 FileSystem/(6943:6943): Se ha recibido una nueva conexion.
+[DEBUG] 16:35:44:149 FileSystem/(6943:6943): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:35:44:149 FileSystem/(6943:6943): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:35:46:101 FileSystem/(6943:6943): Se ha recibido una nueva conexion.
+[DEBUG] 16:35:46:101 FileSystem/(6943:6943): Se procede a crear el archivo Bitmap.bin
+[INFO] 16:35:46:101 FileSystem/(6943:6943): Se ha registrado un nodo nuevo al sistema
+[INFO] 16:36:25:689 FileSystem/(6943:6957): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASDnombres.csv.
+[INFO] 17:06:35:228 FileSystem/(7991:7991): Se ha recibido una nueva conexion.
+[DEBUG] 17:06:35:228 FileSystem/(7991:7991): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:06:35:228 FileSystem/(7991:7991): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:06:37:834 FileSystem/(7991:7991): Se ha recibido una nueva conexion.
+[DEBUG] 17:06:37:834 FileSystem/(7991:7991): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:06:37:834 FileSystem/(7991:7991): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:06:40:94 FileSystem/(7991:7991): Se ha recibido una nueva conexion.
+[DEBUG] 17:06:40:94 FileSystem/(7991:7991): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:06:40:94 FileSystem/(7991:7991): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:07:03:887 FileSystem/(7991:8000): Se creo correctamente el directorio
+[INFO] 17:07:40:17 FileSystem/(7991:8000): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASDnombres.csv.

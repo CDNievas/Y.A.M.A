@@ -114,7 +114,6 @@ t_list* listaBitmap;
 t_list* tablaGlobalArchivos;
 bool hayEstadoAnterior;
 t_list* listaConexionNodos;
-t_list* listaConexionNodos;
 t_list* listaDirectorios;
 t_list* registroArchivos;
 

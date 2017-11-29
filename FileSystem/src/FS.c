@@ -18,6 +18,7 @@
 #include "../../Biblioteca/src/configParser.c"
 
 int main(int argc, char **argv) {
+	signal(SIGINT, killMe);
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
 	//chequearParametros(argc, 2);
 	//t_config* configuracionFS = generarTConfig(argv[1], 5);

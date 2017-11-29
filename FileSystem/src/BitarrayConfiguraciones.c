@@ -10,6 +10,55 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.h"
 
+void liberarCopiasXBloque(copiasXBloque* copiaBloque){
+	free(copiaBloque->bloque);
+	free(copiaBloque->copia1->nodo);
+	free(copiaBloque->copia2->nodo);
+}
+
+void liberarArchivo(tablaArchivos* entradaArchivo){
+	list_destroy_and_destroy_elements(entradaArchivo->bloques,(void*)liberarCopiasXBloque);
+	free(entradaArchivo->nombreArchivo);
+	free(entradaArchivo->tipo);
+}
+
+void liberarListaNodos(char* nodo){
+	free(nodo);
+}
+
+void liberarContenidoNodo(contenidoNodo* contenidoDelNodo){
+	free(contenidoDelNodo->nodo);
+}
+
+void liberarBitmaps(tablaBitmapXNodos* entradaBitmap){
+	bitarray_destroy(entradaBitmap->bitarray);
+	free(entradaBitmap->nodo);
+}
+
+void liberarDirectorios(t_directory* entradaDirectorio){
+	free(entradaDirectorio->nombre);
+}
+
+void liberarConexionNodo(datosConexionNodo* entradaConexionNodo){
+	free(entradaConexionNodo->ip);
+	free(entradaConexionNodo->nodo);
+}
+
+void liberarRegistroArchivos(char* nombre){
+	free(nombre);
+}
+
+void killMe(int signal){
+	list_destroy_and_destroy_elements(tablaGlobalArchivos, (void*)liberarArchivo);
+	list_destroy_and_destroy_elements(tablaGlobalNodos->nodo,(void*)liberarListaNodos);
+	list_destroy_and_destroy_elements(tablaGlobalNodos->contenidoXNodo,(void*)liberarContenidoNodo);
+	list_destroy_and_destroy_elements(listaBitmap,(void*)liberarBitmaps);
+	list_destroy_and_destroy_elements(listaDirectorios,(void*)liberarDirectorios);
+	list_destroy_and_destroy_elements(listaConexionNodos,(void*)liberarConexionNodo);
+	list_destroy_and_destroy_elements(registroArchivos,(void*)liberarRegistroArchivos);
+}
+
+
 void pedirBloque(int socketNodo, uint32_t nroBloque, uint32_t cantBytes){
 
 	 // PRUEBA LECTURA
@@ -43,7 +92,7 @@ void recibirBloque(int socketNodo){
 
 char * obtenerPathBitmap(char * nombreNodo){
 	char * path = string_new();
-	string_append(&path, PATH_METADATA);
+	string_append(&path, PATH_BITMAPS);
 	//string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/bitmap/");
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");

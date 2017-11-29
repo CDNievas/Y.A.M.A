@@ -10,6 +10,8 @@
 #ifndef BITARRAYCONFIGURACIONES_H_
 #define BITARRAYCONFIGURACIONES_H_
 
+
+void killMe(int);
 void pedirBloque(int , uint32_t , uint32_t );
 void recibirBloque(int );
 
