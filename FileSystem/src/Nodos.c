@@ -40,10 +40,11 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 //		while(contNodo<cantidadDeBloques){
 //			copiasXBloque* entradaDelBloque=list_get(entradaArchivos.bloques,contNodo);
 //
-//			bool esElNodo(contenidoNodo* nodo){
-//				return(strcmp(nodo->nodo,nombreNodo)==0);
+//			bool estaDisponibleLaCopia (contenidoNodo* nodo){
+//				return (nodo->disponible==1 && (strcmp(entradaDelBloque->copia1->nodo,nodo->nodo)==0 || strcmp(entradaDelBloque->copia2->nodo,nodo->nodo)==0));
 //			}
-//			contenidoNodo* nodoElegido =list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodo);
+//			bool hayUnaCopia=list_any_satisfy(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponibleLaCopia );
+//
 //
 //		}
 //
@@ -51,11 +52,10 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 //
 //	}
 //
-//
 //}
-
-
-
+//
+//
+//
 //
 //void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto){
 //
@@ -79,7 +79,7 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 //
 //
 //}
-
+//
 
 
 
