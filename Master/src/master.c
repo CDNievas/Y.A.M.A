@@ -19,6 +19,7 @@
 #define CORTO 0
 #define ALMACENADO_FINAL_TERMINADO 16
 #define ERROR_ALMACENADO_FINAL 18
+#define NO_REDU_LOCAL 19
 
 typedef struct{
 	char* nombreNodo;
@@ -1101,6 +1102,9 @@ int main(int argc, char **argv) {
     	}
     	case ALMACENADO_FINAL:{
     		recibirSolicitudAlmacenamiento(socketYAMA,argv[5]);
+    		break;
+    	}
+    	case NO_REDU_LOCAL:{
     		break;
     	}
     	case ABORTAR:{

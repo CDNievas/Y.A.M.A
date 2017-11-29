@@ -21,7 +21,6 @@ t_log* loggerWorker;
 char* IP_FILESYSTEM;
 char* RUTA_DATABIN;
 char* NOMBRE_NODO;
-void* dataBinBloque;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
 
@@ -241,28 +240,6 @@ void* dataBinMapear() {
 	return puntero;
 }
 
-double calcularBloques() {
-	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDWR);
-	if (descriptorArchivo<0) {
-			log_error(loggerWorker,"No se pudo abrir el data.bin \n");
-			exit(-1);
-	}
-	struct stat estadoArchivo;
-	if (fstat(descriptorArchivo, &estadoArchivo) == -1) {
-		log_error(loggerWorker,"Fallo el fstat \n");
-		exit(-1);
-	}
-	size_t dataBinTamanio = estadoArchivo.st_size;
-	double tamanioBloque = 1048576;
-	double dataBinBloques = ceil((double)dataBinTamanio/tamanioBloque);
-	return dataBinBloques;
-}
-
-void* bloqueBuscar(uint32_t numeroBloque) {
-	void* dataBin = dataBinMapear();
-	return (dataBin + (1048576 * numeroBloque));
-}
-
 char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,int casoError){
 	char* comandoAEjecutar = string_new();
 	char* nombreBloque = string_new();
@@ -281,6 +258,8 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	else{
 		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el bloque: %s.\n",nombreBloque);
 	}
+
+	void* dataBinBloque = dataBinMapear();
 
 	if(fwrite(dataBinBloque+(1048576*nroBloque),sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
@@ -318,6 +297,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	free(comandoAEjecutar);
 	free(numeroBloque);
 	free(numeroPID);
+	free(dataBinBloque);
 	return nombreBloque;
 }
 
@@ -678,6 +658,9 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 		if(WIFSIGNALED(resultado)){
 			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
 		}
+
+		sendDeNotificacion(socketMaster,casoError);
+
 	}
 	else{
 		log_info(loggerWorker, "System para aparear archivos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
@@ -690,7 +673,7 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 	return nombreArchivoApareado;
 }
 
-char* obtenerNombreScript(char* nombreScript,uint32_t nroBloque){
+char* obtenerNombreScriptTransformador(char* nombreScript,uint32_t nroBloque){
 	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
 	char* numeroBloque = string_itoa(nroBloque);
 	char* numeroPID = string_itoa((int)getpid());
@@ -701,6 +684,19 @@ char* obtenerNombreScript(char* nombreScript,uint32_t nroBloque){
 	free(nombreScript);
 	free(extensionScript);
 	free(numeroBloque);
+	free(numeroPID);
+	return nombreScriptSinExtension;
+}
+
+char* obtenerNombreScriptReductor(char* nombreScript,char* archivoApareado){
+	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
+	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreScriptSinExtension,numeroPID);
+	string_append(&nombreScriptSinExtension,archivoApareado);
+	char* extensionScript = obtenerParteScript(nombreScript,1);
+	string_append(&nombreScriptSinExtension,extensionScript);
+	free(nombreScript);
+	free(extensionScript);
 	free(numeroPID);
 	return nombreScriptSinExtension;
 }
@@ -726,7 +722,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
 
-			char* nombreScriptRemasterizado = obtenerNombreScript(nombreScript,nroBloque);
+			char* nombreScriptRemasterizado = obtenerNombreScriptTransformador(nombreScript,nroBloque);
 
 			guardarScript(script,nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketMaster);
 
@@ -760,17 +756,17 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			char* archivoApareado = aparearArchivos(archivosTemporales,socketMaster,ERROR_REDUCCION_LOCAL);
 
-			char* nombreSinExtension = obtenerParteScript(nombreScript,0);
+			char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
 
-			guardarScript(script,nombreSinExtension,ERROR_REDUCCION_LOCAL,socketMaster);
+			guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketMaster);
 
-			darPermisosAScripts(nombreSinExtension,ERROR_REDUCCION_LOCAL,socketMaster);
+			darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketMaster);
 
-			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
+			char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
 
 			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA);
 
-			eliminarArchivo(nombreSinExtension);
+			eliminarArchivo(nombreScriptRemasterizado);
 
 			eliminarArchivo(archivoApareado);
 
@@ -816,17 +812,17 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,temporalEncargado,ERROR_REDUCCION_GLOBAL,socketMaster);
 
-			char* nombreSinExtension = obtenerParteScript(nombreScript,0);
+			char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
 
-			guardarScript(script,nombreSinExtension,ERROR_REDUCCION_GLOBAL,socketMaster);
+			guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketMaster);
 
-			darPermisosAScripts(nombreSinExtension,ERROR_REDUCCION_GLOBAL,socketMaster);
+			darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketMaster);
 
-			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
+			char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
 
 			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_GLOBAL,REDUCCION_GLOBAL_TERMINADA);
 
-			eliminarArchivo(nombreSinExtension);
+			eliminarArchivo(nombreScriptRemasterizado);
 
 			eliminarArchivo(archivoApareado);
 
@@ -880,7 +876,6 @@ void laMardita(int signal){
 	free(IP_FILESYSTEM);
 	free(RUTA_DATABIN);
 	free(NOMBRE_NODO);
-	free(dataBinBloque);
 	log_info(loggerWorker, "¡¡Adios logger!! \n");
 	log_destroy(loggerWorker);
 	exit(0);
@@ -898,7 +893,6 @@ int main(int argc, char **argv) {
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
 	log_info(loggerWorker, "Procesos hijos muertos eliminados del sistema.\n");
-	dataBinBloque = dataBinMapear();
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
