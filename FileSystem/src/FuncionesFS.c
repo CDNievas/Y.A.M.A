@@ -368,12 +368,17 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
 	archivoAGuardar->bloques=list_create();
 
-	char** ruta = string_split(pathArchivo,"/");
-	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(ruta);
+
+	string_append(&pathDirectorio, archivoAGuardar->nombreArchivo);
+
+	char** rutaArchivo = string_split(pathArchivo,"/");
+	char** rutaDirectorio = string_split(pathDirectorio,"/");
+	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
 	log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 	archivoAGuardar->tipo=tipo;
-	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(ruta);
-	liberarComandoDesarmado(ruta);
+	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(rutaDirectorio);
+	liberarComandoDesarmado(rutaArchivo);
+	liberarComandoDesarmado(rutaDirectorio);
 	uint32_t tamAux = 0;
 		if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
 			if(tamanio!=0){
@@ -422,7 +427,6 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			string_append(&comandoCopiarArchivo, pathArchivo);
 			string_append(&comandoCopiarArchivo, " ");
 			string_append(&comandoCopiarArchivo, pathDirectorio);
-			string_append(&comandoCopiarArchivo, archivoAGuardar->nombreArchivo);
 			system(comandoCopiarArchivo);
 
 			list_destroy(posicionBloquesAGuardar);

@@ -76,10 +76,16 @@ void persistirRegistroArchivo(){
 
 void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	char* path=string_new();
-	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos");
+	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos/");
 	string_append(&path,string_itoa(entradaArchivo->directorioPadre));
 	string_append(&path,"/");
+	char* comando=string_new();
+	string_append(&comando,"mkdir ");
+	string_append(&comando,path);
+	system(comando);
 	string_append(&path,entradaArchivo->nombreArchivo);
+
+
 	FILE* archivo=fopen(path,"w+");
 
 	fputs("TAMANIO=",archivo);

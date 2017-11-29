@@ -49,12 +49,12 @@ int main(int argc, char **argv) {
 	hayNodos=0;
 //	if(!hayUnEstadoAnterior()){
 //		esEstadoSeguro=true;
-//		t_directory* directorioPadre = malloc(sizeof(t_directory));
-//		directorioPadre->nombre=string_new();
-//		directorioPadre->index=0;
-//		directorioPadre->nombre="root";
-//		directorioPadre->padre=-1;
-//		list_add(listaDirectorios,directorioPadre);
+		t_directory* directorioPadre = malloc(sizeof(t_directory));
+		directorioPadre->nombre=string_new();
+		directorioPadre->index=0;
+		directorioPadre->nombre="yamafs:";
+		directorioPadre->padre=-1;
+		list_add(listaDirectorios,directorioPadre);
 //	}
 
 	esEstadoSeguro=true;
