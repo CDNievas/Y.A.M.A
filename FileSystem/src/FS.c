@@ -45,15 +45,13 @@ int main(int argc, char **argv) {
 
 
 	listaDirectorios = list_create();
+	registroArchivos=list_create();
 
 	hayNodos=0;
-//	if(!hayUnEstadoAnterior()){
-//		esEstadoSeguro=true;
+	if(!hayUnEstadoAnterior()){
+		esEstadoSeguro=true;
 		inicializarDirectoriosPrincipales();
-
-
-
-//	}
+	}
 
 	esEstadoSeguro=true;
 

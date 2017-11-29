@@ -159,3 +159,107 @@
 [INFO] 01:41:57:692 FileSystem/(7524:7524): Se ha recibido una nueva conexion.
 [DEBUG] 01:41:57:697 FileSystem/(7524:7524): Se procede a crear el archivo Bitmap.bin
 [INFO] 01:41:57:698 FileSystem/(7524:7524): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:05:53:493 FileSystem/(2875:2875): Se ha recibido una nueva conexion.
+[DEBUG] 15:05:53:503 FileSystem/(2875:2875): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:05:53:503 FileSystem/(2875:2875): No se pudo crear el archivo
+[ERROR] 15:05:53:504 FileSystem/(2875:2875): Error al tratar de abrir el archivo.
+[INFO] 15:06:39:622 FileSystem/(3196:3196): Se ha recibido una nueva conexion.
+[DEBUG] 15:06:39:632 FileSystem/(3196:3196): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:06:39:633 FileSystem/(3196:3196): No se pudo crear el archivo
+[ERROR] 15:06:39:633 FileSystem/(3196:3196): Error al tratar de abrir el archivo.
+[INFO] 15:07:15:836 FileSystem/(3243:3243): Se ha recibido una nueva conexion.
+[DEBUG] 15:07:34:357 FileSystem/(3243:3243): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:07:34:358 FileSystem/(3243:3243): No se pudo crear el archivo
+[ERROR] 15:07:34:358 FileSystem/(3243:3243): Error al tratar de abrir el archivo.
+[INFO] 15:08:17:204 FileSystem/(3417:3417): Se ha recibido una nueva conexion.
+[DEBUG] 15:08:20:578 FileSystem/(3417:3417): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:08:34:77 FileSystem/(3417:3417): No se pudo crear el archivo
+[INFO] 15:09:59:874 FileSystem/(3524:3524): Se ha recibido una nueva conexion.
+[DEBUG] 15:10:02:253 FileSystem/(3524:3524): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:10:04:207 FileSystem/(3524:3524): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:10:11:34 FileSystem/(3524:3524): Se ha recibido una nueva conexion.
+[DEBUG] 15:10:23:361 FileSystem/(3524:3524): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:10:23:414 FileSystem/(3524:3524): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:10:23:420 FileSystem/(3524:3524): Se ha recibido una nueva conexion.
+[DEBUG] 15:10:24:658 FileSystem/(3524:3524): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:10:24:698 FileSystem/(3524:3524): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:15:16:847 FileSystem/(3524:3532): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:19:42:586 FileSystem/(3790:3790): Se ha recibido una nueva conexion.
+[DEBUG] 15:19:48:678 FileSystem/(3790:3790): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:19:48:783 FileSystem/(3790:3790): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:19:52:591 FileSystem/(3790:3790): Se ha recibido una nueva conexion.
+[DEBUG] 15:19:52:599 FileSystem/(3790:3790): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:19:52:664 FileSystem/(3790:3790): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:19:55:119 FileSystem/(3790:3790): Se ha recibido una nueva conexion.
+[DEBUG] 15:19:55:130 FileSystem/(3790:3790): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:19:55:200 FileSystem/(3790:3790): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:20:14:801 FileSystem/(3790:3797): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:26:22:453 FileSystem/(4009:4009): Se ha recibido una nueva conexion.
+[DEBUG] 15:26:22:474 FileSystem/(4009:4009): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:26:22:543 FileSystem/(4009:4009): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:26:24:491 FileSystem/(4009:4009): Se ha recibido una nueva conexion.
+[DEBUG] 15:26:24:498 FileSystem/(4009:4009): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:26:24:502 FileSystem/(4009:4009): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:26:26:722 FileSystem/(4009:4009): Se ha recibido una nueva conexion.
+[DEBUG] 15:26:26:727 FileSystem/(4009:4009): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:26:26:760 FileSystem/(4009:4009): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:27:31:636 FileSystem/(4009:4017): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:32:05:131 FileSystem/(4133:4133): Se ha recibido una nueva conexion.
+[DEBUG] 15:32:05:148 FileSystem/(4133:4133): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:32:05:205 FileSystem/(4133:4133): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:32:07:681 FileSystem/(4133:4133): Se ha recibido una nueva conexion.
+[DEBUG] 15:32:07:700 FileSystem/(4133:4133): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:32:07:727 FileSystem/(4133:4133): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:32:10:340 FileSystem/(4133:4133): Se ha recibido una nueva conexion.
+[DEBUG] 15:32:10:349 FileSystem/(4133:4133): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:32:10:381 FileSystem/(4133:4133): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:32:59:874 FileSystem/(4133:4145): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:36:28:609 FileSystem/(4233:4233): Se ha recibido una nueva conexion.
+[DEBUG] 15:36:28:612 FileSystem/(4233:4233): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:36:28:627 FileSystem/(4233:4233): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:36:30:907 FileSystem/(4233:4233): Se ha recibido una nueva conexion.
+[DEBUG] 15:36:30:913 FileSystem/(4233:4233): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:36:30:938 FileSystem/(4233:4233): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:36:33:446 FileSystem/(4233:4233): Se ha recibido una nueva conexion.
+[DEBUG] 15:36:33:462 FileSystem/(4233:4233): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:36:33:513 FileSystem/(4233:4233): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:37:27:431 FileSystem/(4233:4239): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:42:29:660 FileSystem/(4379:4379): Se ha recibido una nueva conexion.
+[DEBUG] 15:42:29:670 FileSystem/(4379:4379): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:42:29:697 FileSystem/(4379:4379): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:42:32:668 FileSystem/(4379:4379): Se ha recibido una nueva conexion.
+[DEBUG] 15:42:32:677 FileSystem/(4379:4379): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:42:32:704 FileSystem/(4379:4379): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:42:35:401 FileSystem/(4379:4379): Se ha recibido una nueva conexion.
+[DEBUG] 15:42:35:412 FileSystem/(4379:4379): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:42:35:446 FileSystem/(4379:4379): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:43:21:478 FileSystem/(4379:4390): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:50:03:359 FileSystem/(4550:4550): Se ha recibido una nueva conexion.
+[DEBUG] 15:50:03:369 FileSystem/(4550:4550): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:50:03:396 FileSystem/(4550:4550): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:50:05:105 FileSystem/(4550:4550): Se ha recibido una nueva conexion.
+[DEBUG] 15:50:05:113 FileSystem/(4550:4550): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:50:05:146 FileSystem/(4550:4550): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:50:07:167 FileSystem/(4550:4550): Se ha recibido una nueva conexion.
+[DEBUG] 15:50:07:180 FileSystem/(4550:4550): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:50:07:204 FileSystem/(4550:4550): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:50:48:64 FileSystem/(4550:4556): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.
+[INFO] 15:52:49:715 FileSystem/(4641:4641): Se ha recibido una nueva conexion.
+[DEBUG] 15:52:49:722 FileSystem/(4641:4641): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:52:49:757 FileSystem/(4641:4641): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:52:51:681 FileSystem/(4641:4641): Se ha recibido una nueva conexion.
+[DEBUG] 15:52:51:689 FileSystem/(4641:4641): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:52:51:699 FileSystem/(4641:4641): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:52:53:512 FileSystem/(4641:4641): Se ha recibido una nueva conexion.
+[DEBUG] 15:52:53:519 FileSystem/(4641:4641): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:52:53:523 FileSystem/(4641:4641): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:53:41:156 FileSystem/(4691:4691): Se ha recibido una nueva conexion.
+[DEBUG] 15:53:41:162 FileSystem/(4691:4691): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:53:41:171 FileSystem/(4691:4691): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:53:44:203 FileSystem/(4691:4691): Se ha recibido una nueva conexion.
+[DEBUG] 15:53:44:210 FileSystem/(4691:4691): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:53:44:213 FileSystem/(4691:4691): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:53:47:166 FileSystem/(4691:4691): Se ha recibido una nueva conexion.
+[DEBUG] 15:53:47:184 FileSystem/(4691:4691): Se procede a crear el archivo Bitmap.bin
+[INFO] 15:53:47:187 FileSystem/(4691:4691): Se ha registrado un nodo nuevo al sistema
+[INFO] 15:55:28:174 FileSystem/(4691:4696): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/nombres.csv.

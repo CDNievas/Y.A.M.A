@@ -43,8 +43,8 @@ void recibirBloque(int socketNodo){
 
 char * obtenerPathBitmap(char * nombreNodo){
 	char * path = string_new();
-	//string_append(&path, PATH_METADATA);
-	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/bitmap/");
+	string_append(&path, PATH_METADATA);
+	//string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/bitmap/");
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
 	return path;

@@ -229,6 +229,7 @@ int deleteDirectory(char* directoryToDelete){
   if(indexToDelete == -2){
     free(directoryName);
     liberarComandoDesarmado(rutaDesmembrada);
+
     return 0; //NO EXISTE DIRECTORIO
   }
   bool esDirectorio(t_directory* directorio){
@@ -246,6 +247,7 @@ int deleteDirectory(char* directoryToDelete){
   }else{
     free(directoryName);
     liberarComandoDesarmado(rutaDesmembrada);
+
     return -1; //EL DIRECTORIO TIENE SUBDIRECTORIOS
   }
 }
@@ -404,6 +406,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
 	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
 	archivoAGuardar->bloques=list_create();
+	archivoAGuardar->tamanio=tamanio;
 
 	//OBTENGO NOMBRE DEL ARCHIVO
 	char** rutaArchivo = string_split(pathArchivo,"/");

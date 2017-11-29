@@ -64,7 +64,7 @@ void persistirRegistroArchivo(){
 	FILE* archivoRegistro=fopen(path,"w+");
 	int cont=0;
 	int cantTotal=list_size(registroArchivos);
-	while(cont<=cantTotal){
+	while(cont<cantTotal){
 		fputs("ARCHIVO",archivoRegistro);
 		fputs(string_itoa(cont),archivoRegistro);
 		fputs("=",archivoRegistro);
@@ -92,17 +92,18 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	FILE* archivo=fopen(path,"w+");
 
 	fputs("TAMANIO=",archivo);
-	char* tamanioCadena = string_itoa(entradaArchivo->tamanio);
+	char* tamanioCadena = string_new();
+	tamanioCadena=string_itoa(entradaArchivo->tamanio);
 	fputs(tamanioCadena,archivo);
 	free(tamanioCadena);
 	fputc('\n',archivo);
-	fputs("TIPO=[",archivo);
+	fputs("TIPO=",archivo);
 	fputs(entradaArchivo->tipo,archivo);
 	fputc('\n',archivo);
 	int i=0;
 	while(i<list_size(entradaArchivo->bloques)){
 		fputs("BLOQUE",archivo);
-		copiasXBloque* copia=list_get(tablaGlobalNodos->nodo,i);
+		copiasXBloque* copia=list_get(entradaArchivo->bloques,i);
 		fputs(copia->bloque,archivo);
 		fputs("COPIA0=[",archivo);
 		fputs(copia->copia1->nodo,archivo);
@@ -124,7 +125,6 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 		fputs(copia->bloque,archivo);
 		fputs("BYTES=",archivo);
 		fputs(string_itoa(copia->bytes),archivo);
-		fputc(']',archivo);
 		fputc('\n',archivo);
 
 		i++;
@@ -155,7 +155,7 @@ void persistirDirectorio(){
 	int cont=0;
 	int cantTotal=list_size(listaDirectorios);
 
-	while(cont<=cantTotal){
+	while(cont<cantTotal){
 		fputs("DIRECTORIO",archivoDirectorio);
 		fputs(string_itoa(cont),archivoDirectorio);
 		fputs("=[",archivoDirectorio);
