@@ -297,7 +297,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	free(comandoAEjecutar);
 	free(numeroBloque);
 	free(numeroPID);
-	free(dataBinBloque);
+	//free(dataBinBloque);
 	return nombreBloque;
 }
 
