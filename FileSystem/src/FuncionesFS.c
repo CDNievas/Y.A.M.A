@@ -7,6 +7,43 @@
 
 #include "FuncionesFS.h"
 
+//------------------------------INICIALIZACION
+
+void inicializarDirectoriosPrincipales(){
+
+	char* comandoPathDirectorioRaiz=string_new();
+	string_append(&comandoPathDirectorioRaiz,"mkdir ");
+	string_append(&comandoPathDirectorioRaiz,PATH_PADRE);
+	system(comandoPathDirectorioRaiz);
+	free(comandoPathDirectorioRaiz);
+
+	comandoPathDirectorioRaiz=string_new();
+	string_append(&comandoPathDirectorioRaiz,"mkdir ");
+	string_append(&comandoPathDirectorioRaiz,PATH_METADATA);
+	system(comandoPathDirectorioRaiz);
+	free(comandoPathDirectorioRaiz);
+
+	comandoPathDirectorioRaiz=string_new();
+	string_append(&comandoPathDirectorioRaiz,"mkdir ");
+	string_append(&comandoPathDirectorioRaiz,PATH_ARCHIVOS);
+	system(comandoPathDirectorioRaiz);
+	free(comandoPathDirectorioRaiz);
+
+	comandoPathDirectorioRaiz=string_new();
+	string_append(&comandoPathDirectorioRaiz,"mkdir ");
+	string_append(&comandoPathDirectorioRaiz,PATH_BITMAPS);
+	system(comandoPathDirectorioRaiz);
+	free(comandoPathDirectorioRaiz);
+
+	t_directory* directorioPadre = malloc(sizeof(t_directory));
+	directorioPadre->nombre=string_new();
+	directorioPadre->index=0;
+	directorioPadre->nombre="yamafs:";
+	directorioPadre->padre=-1;
+	list_add(listaDirectorios,directorioPadre);
+}
+
+
 //------------------------FUNCIONES DIRECTORIOS
 
 void liberarComandoDesarmado(char** comandoDesarmado){
@@ -368,12 +405,14 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
 	archivoAGuardar->bloques=list_create();
 
-
+	//OBTENGO NOMBRE DEL ARCHIVO
+	char** rutaArchivo = string_split(pathArchivo,"/");
+	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
 	string_append(&pathDirectorio, archivoAGuardar->nombreArchivo);
 
-	char** rutaArchivo = string_split(pathArchivo,"/");
+
 	char** rutaDirectorio = string_split(pathDirectorio,"/");
-	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
+
 	log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 	archivoAGuardar->tipo=tipo;
 	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(rutaDirectorio);

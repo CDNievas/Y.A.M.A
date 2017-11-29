@@ -102,6 +102,9 @@ typedef struct
 
 int PUERTO_ESCUCHA;
 char * PATH_METADATA;
+char * PATH_BITMAPS;
+char * PATH_ARCHIVOS;
+char * PATH_PADRE;
 
 t_log* loggerFileSystem;
 int hayNodos;

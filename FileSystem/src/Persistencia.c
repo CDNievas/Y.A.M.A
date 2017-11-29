@@ -57,8 +57,11 @@ void persistirTablaNodo(){
 }
 
 void persistirRegistroArchivo(){
+	char* path=string_new();
+	string_append(&path,PATH_ARCHIVOS);
+	string_append(&path,"registro.dat");
 
-	FILE* archivoRegistro=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos/registro.dat","w+");
+	FILE* archivoRegistro=fopen(path,"w+");
 	int cont=0;
 	int cantTotal=list_size(registroArchivos);
 	while(cont<=cantTotal){
@@ -76,7 +79,7 @@ void persistirRegistroArchivo(){
 
 void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	char* path=string_new();
-	string_append(&path,"/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/archivos/");
+	string_append(&path,PATH_ARCHIVOS);
 	string_append(&path,string_itoa(entradaArchivo->directorioPadre));
 	string_append(&path,"/");
 	char* comando=string_new();
@@ -144,7 +147,11 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 //}
 
 void persistirDirectorio(){
-	FILE* archivoDirectorio=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/directorios.dat","w+");
+	char* path=string_new();
+	string_append(&path,PATH_METADATA);
+	string_append(&path,"directorios.dat");
+
+	FILE* archivoDirectorio=fopen(path,"w+");
 	int cont=0;
 	int cantTotal=list_size(listaDirectorios);
 

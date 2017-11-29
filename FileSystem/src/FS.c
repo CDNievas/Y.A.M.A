@@ -20,8 +20,8 @@
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
 	//chequearParametros(argc, 2);
-	//t_config* configuracionFS = generarTConfig(argv[1], 2);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
+	//t_config* configuracionFS = generarTConfig(argv[1], 5);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -49,12 +49,10 @@ int main(int argc, char **argv) {
 	hayNodos=0;
 //	if(!hayUnEstadoAnterior()){
 //		esEstadoSeguro=true;
-		t_directory* directorioPadre = malloc(sizeof(t_directory));
-		directorioPadre->nombre=string_new();
-		directorioPadre->index=0;
-		directorioPadre->nombre="yamafs:";
-		directorioPadre->padre=-1;
-		list_add(listaDirectorios,directorioPadre);
+		inicializarDirectoriosPrincipales();
+
+
+
 //	}
 
 	esEstadoSeguro=true;

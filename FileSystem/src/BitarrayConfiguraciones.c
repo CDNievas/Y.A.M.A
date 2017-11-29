@@ -52,8 +52,8 @@ char * obtenerPathBitmap(char * nombreNodo){
 
 char * obtenerPathTablaNodo(){
 	char * path = string_new();
-	//string_append(&path, PATH_METADATA);
-	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/");
+	string_append(&path, PATH_METADATA);
+	//string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/");
 	string_append(&path, "nodos.bin");
 	return path;
 }
@@ -132,15 +132,48 @@ void cargarFileSystem(t_config* configuracionFS) {
 		log_error(loggerFileSystem,
 				"No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
 		exit(-1);
-	} else {
-		PUERTO_ESCUCHA = config_get_int_value(configuracionFS,
-				"PUERTO_ESCUCHA");
 	}
-	if(!config_has_property(configuracionFS, "PATH_METADATA")){
-		log_error(loggerFileSystem, "No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
+	PUERTO_ESCUCHA = config_get_int_value(configuracionFS,"PUERTO_ESCUCHA");
+
+
+	if(!config_has_property(configuracionFS, "PATH_PADRE")){
+		log_error(loggerFileSystem, "No se encuentra el parametro PATH_PADRE en el archivo de configuracion");
 		exit(-1);
 	}
+
+	PATH_PADRE = string_new();
+	string_append(&PATH_PADRE, config_get_string_value(configuracionFS, "PATH_PADRE"));
+
+
+
+	if (!config_has_property(configuracionFS, "PATH_METADATA")) {
+		log_error(loggerFileSystem,"No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
+		exit(-1);
+	}
+
 	PATH_METADATA = string_new();
 	string_append(&PATH_METADATA, config_get_string_value(configuracionFS, "PATH_METADATA"));
+
+
+
+
+	if (!config_has_property(configuracionFS, "PATH_ARCHIVOS")) {
+		log_error(loggerFileSystem,"No se encuentra el parametro PATH_ARCHIVOS en el archivo de configuracion");
+		exit(-1);
+	}
+	PATH_ARCHIVOS = string_new();
+	string_append(&PATH_ARCHIVOS, config_get_string_value(configuracionFS, "PATH_ARCHIVOS"));
+
+
+
+	if (!config_has_property(configuracionFS, "PATH_BITMAPS")) {
+		log_error(loggerFileSystem,"No se encuentra el parametro PATH_BITMAPS en el archivo de configuracion");
+		exit(-1);
+	}
+	PATH_BITMAPS = string_new();
+	string_append(&PATH_BITMAPS,  config_get_string_value(configuracionFS, "PATH_BITMAPS"));
+
+
 	config_destroy(configuracionFS);
+
 }
