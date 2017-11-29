@@ -1,5 +1,6 @@
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
+#include <sys/mman.h>
 
 #define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
 #define TRANSFORMACION 1
@@ -20,6 +21,7 @@ t_log* loggerWorker;
 char* IP_FILESYSTEM;
 char* RUTA_DATABIN;
 char* NOMBRE_NODO;
+void* dataBinBloque;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
 
@@ -106,29 +108,224 @@ char* leerLinea(FILE* unArchivo){
 	return lineaLeida;
 }
 
-void darPermisosAScripts(char* script){
+void darPermisosAScripts(char* script, int casoError, int socketMaster){
 	struct stat infoScript;
 
-	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)!=0){
+	char* comandoAEjecutar = string_new();
+	string_append(&comandoAEjecutar,"chmod 0777 ");
+	string_append(&comandoAEjecutar,script);
+
+	int resultado = system(comandoAEjecutar);
+
+	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker,"Error al otorgar permisos al script.\n");
+
+		if(WIFSIGNALED(resultado)){
+			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
+		}
+
+		sendDeNotificacion(socketMaster,casoError);
 	}
-	else if(stat(script,&infoScript)!=0){
+	else{
+		log_info(loggerWorker, "System para permisos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
+	}
+
+	if(stat(script,&infoScript)!=0){
 		log_error(loggerWorker,"No se pudo obtener informacion del script.\n");
 	}
 	else{
 		log_info(loggerWorker,"Los permisos para el script son: %08x\n",infoScript.st_mode);
 	}
+
+	free(comandoAEjecutar);
 }
 
-char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados){
+void crearArchivoTemporal(char* nombreScript,int casoError,int socketMaster){
+	string_append(&nombreScript,"XXXXXX");
+	int resultado = mkstemp(nombreScript);
+
+	if(resultado==-1){
+		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
+		sendDeNotificacion(socketMaster,casoError);
+		exit(-1);
+	}
+	else{
+		log_info(loggerWorker, "Se creo correctamente un archivo temporal con nombre: %s.\n",nombreScript);
+	}
+}
+
+long int obtenerTamanioArchivo(FILE* unArchivo){
+	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
+
+	if(retornoSeek!=0){
+		log_error(loggerWorker,"Error de fseek.\n");
+		exit(-1);
+	}
+
+	long int tamanioArchivo = ftell(unArchivo);
+
+	if(tamanioArchivo==-1){
+		log_error(loggerWorker,"Error de ftell.\n");
+		exit(-1);
+	}
+
+	return tamanioArchivo;
+}
+
+char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
+{
+	int retornoSeek = fseek(unArchivo, 0, SEEK_SET);
+
+	if(retornoSeek!=0){
+		log_error(loggerWorker,"Error de fseek.\n");
+		exit(-1);
+	}
+
+	char* contenidoArchivo = malloc(tamanioArchivo+1);
+
+	if(contenidoArchivo==NULL){
+		log_error(loggerWorker,"Error al asignar memoria para leer el archivo.\n");
+		exit(-10);
+	}
+
+	fread(contenidoArchivo, tamanioArchivo, 1, unArchivo);
+	contenidoArchivo[tamanioArchivo] = '\0';
+	return contenidoArchivo;
+}
+
+char* obtenerContenido(char* unPath){
+	FILE* archivoALeer = fopen(unPath, "r");
+
+	if(archivoALeer==NULL){
+		log_error(loggerWorker,"No se pudo abrir el archivo: %s.\n",unPath);
+		exit(-1);
+	}
+
+	log_info(loggerWorker,"Se pudo abrir el archivo: %s.\n",unPath);
+
+	long int tamanioArchivo = obtenerTamanioArchivo(archivoALeer);
+	log_info(loggerWorker, "Se pudo obtener el tamanio del archivo: %s.\n",unPath);
+	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
+	log_info(loggerWorker, "Se pudo obtener el contenido del archivo: %s.\n",unPath);
+	return contenidoArchivo;
+}
+
+void eliminarArchivo(char* nombreScript){
+	if(remove(nombreScript)!=0){
+		log_error(loggerWorker,"No se pudo eliminar el script.\n");
+	}
+	else{
+		log_info(loggerWorker,"El script se elimino correctamente.\n");
+	}
+	free(nombreScript);
+}
+
+void* dataBinMapear() {
+	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDWR);
+	if (descriptorArchivo<0) {
+		log_error(loggerWorker,"No se pudo abrir el data.bin \n");
+		exit(-1);
+	}
+	struct stat estadoArchivo;
+	if (fstat(descriptorArchivo, &estadoArchivo) == -1) {
+		log_error(loggerWorker,"Fallo el fstat \n");
+		exit(-1);
+	}
+	size_t dataBinTamanio = estadoArchivo.st_size;
+	void* puntero = mmap(0, dataBinTamanio, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, descriptorArchivo, 0);
+	if (puntero == MAP_FAILED) {
+		log_error(loggerWorker,"Fallo el mmap \n");
+		exit(-1);
+	}
+	close(descriptorArchivo);
+	return puntero;
+}
+
+double calcularBloques() {
+	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDWR);
+	if (descriptorArchivo<0) {
+			log_error(loggerWorker,"No se pudo abrir el data.bin \n");
+			exit(-1);
+	}
+	struct stat estadoArchivo;
+	if (fstat(descriptorArchivo, &estadoArchivo) == -1) {
+		log_error(loggerWorker,"Fallo el fstat \n");
+		exit(-1);
+	}
+	size_t dataBinTamanio = estadoArchivo.st_size;
+	double tamanioBloque = 1048576;
+	double dataBinBloques = ceil((double)dataBinTamanio/tamanioBloque);
+	return dataBinBloques;
+}
+
+void* bloqueBuscar(uint32_t numeroBloque) {
+	void* dataBin = dataBinMapear();
+	return (dataBin + (1048576 * numeroBloque));
+}
+
+char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,int casoError){
+	char* comandoAEjecutar = string_new();
+	char* nombreBloque = string_new();
+	char* numeroBloque = string_itoa(nroBloque);
+	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreBloque,"temporalBloque");
+	string_append(&nombreBloque,numeroBloque);
+	string_append(&nombreBloque,numeroPID);
+	FILE* archivoScript = fopen(nombreBloque,"w");
+
+	if(archivoScript==NULL){
+		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el bloque.\n");
+		sendDeNotificacion(socketMaster,casoError);
+		exit(-1);
+	}
+	else{
+		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el bloque: %s.\n",nombreBloque);
+	}
+
+	if(fwrite(dataBinBloque+(1048576*nroBloque),sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
+		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
+		sendDeNotificacion(socketMaster,casoError);
+		exit(-1);
+	}
+	else{
+		log_info(loggerWorker, "Se pudo escribir en el archivo donde se guarda el bloque: %s.\n",nombreBloque);
+	}
+
+	if(fclose(archivoScript)==EOF){
+		log_error(loggerWorker,"No se pudo cerrar el archivo donde se guarda el bloque.\n");
+		sendDeNotificacion(socketMaster,casoError);
+		exit(-1);
+	}
+	else{
+		log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el bloque: %s.\n",nombreBloque);
+	}
+
+	int resultado = system(comandoAEjecutar);
+
+	if(!WIFEXITED(resultado)){
+		log_error(loggerWorker,"Error al guardar el bloque a transformar del databin.\n");
+
+		if(WIFSIGNALED(resultado)){
+			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
+		}
+
+		sendDeNotificacion(socketMaster,ERROR_TRANSFORMACION);
+	}
+	else{
+		log_info(loggerWorker, "System para obtener bloque ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
+	}
+
+	free(comandoAEjecutar);
+	free(numeroBloque);
+	free(numeroPID);
+	return nombreBloque;
+}
+
+char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint32_t nroBloque, uint32_t bytesOcupados,int socketMaster,char* bloque){
 	char* command = string_new();
-	string_append(&command, "head -n ");
-	string_append(&command,string_itoa((nroBloque*1048576)+bytesOcupados));
-	string_append(&command," ");
-	string_append(&command,RUTA_DATABIN);
-	string_append(&command," | tail -n ");
-	string_append(&command,string_itoa(bytesOcupados));
-	string_append(&command," | sh ");
+	string_append(&command,"cat ");
+	string_append(&command,bloque);
+	string_append(&command," | ./");
 	string_append(&command,nombreScript);
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
@@ -150,73 +347,64 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	return command;
 }
 
-char* obtenerSinExtension(char* rutaCompleta){
+char* obtenerParteScript(char* rutaCompleta,uint32_t valor){
 	uint32_t posicion;
 	uint32_t posicionMaxima = 0;
+	char* parteScript;
 
 	for(posicion=0;rutaCompleta[posicion]!='\0';posicion++){
 		if(rutaCompleta[posicion]=='.'){
 			posicionMaxima = posicion;
 		}
 	}
-	char* nombreSinExtension = string_substring_until(rutaCompleta,posicionMaxima);
-	free(rutaCompleta);
-	return nombreSinExtension;
-}
-
-void crearArchivoTemporal(char* nombreScript){
-	string_append(&nombreScript,"XXXXXX");
-	int resultado = mkstemp(nombreScript);
-
-	if(resultado==-1){
-		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
-		exit(-1);
+	if(valor==1){
+		parteScript = string_substring_from(rutaCompleta,posicionMaxima);
 	}
-	log_info(loggerWorker, "Se creo correctamente un archivo temporal con nombre: %s.\n",nombreScript);
+	else{
+		parteScript = string_substring_until(rutaCompleta,posicionMaxima);
+	}
+
+	return parteScript;
 }
 
-void guardarScript(char* script,char* nombreScript){
-	crearArchivoTemporal(nombreScript);
-
+void guardarScript(char* script,char* nombreScript,int casoError,int socketMaster){
 	FILE* archivoScript = fopen(nombreScript,"w");
 
 	if(archivoScript==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el script.\n");
+		sendDeNotificacion(socketMaster,casoError);
 		exit(-1);
 	}
-	log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el script: %s.\n",nombreScript);
+	else{
+		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el script: %s.\n",nombreScript);
+	}
 
 	if(fputs(script,archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo escribir en el archivo del script.\n");
+		sendDeNotificacion(socketMaster,casoError);
 		exit(-1);
 	}
-
-	log_info(loggerWorker, "Se pudo escribir en el archivo donde se guarda el script: %s.\n",nombreScript);
+	else{
+		log_info(loggerWorker, "Se pudo escribir en el archivo donde se guarda el script: %s.\n",nombreScript);
+	}
 
 	if(fclose(archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo cerrar el archivo del script.\n");
+		sendDeNotificacion(socketMaster,casoError);
+		exit(-1);
 	}
-
-	log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el script: %s.\n",nombreScript);
+	else{
+		log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el script: %s.\n",nombreScript);
+	}
 
 	free(script);
 }
 
-void eliminarArchivo(char* nombreScript){
-	if(remove(nombreScript)!=0){
-		log_error(loggerWorker,"No se pudo eliminar el script.\n");
-	}
-	else{
-		log_info(loggerWorker,"El script se elimino correctamente.\n");
-	}
-	free(nombreScript);
-}
-
-char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado){
+char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int casoError, int socketMaster){
 	int posicion;
 	char* archivoApareado = string_new();
 	string_append(&archivoApareado,"archivoApareoGlobal");
-	crearArchivoTemporal(archivoApareado);
+	crearArchivoTemporal(archivoApareado,casoError,socketMaster);
 
 	FILE* archivoGlobalApareado = fopen(archivoApareado,"w");
 	FILE* miTemporal = fopen(temporalEncargado,"r");
@@ -398,62 +586,6 @@ void realizarHandshakeFS(uint32_t socketFS){
 	log_info(loggerWorker, "Se conecto con el FileSystem.\n");
 }
 
-long int obtenerTamanioArchivo(FILE* unArchivo){
-	int retornoSeek = fseek(unArchivo, 0, SEEK_END);
-
-	if(retornoSeek!=0){
-		log_error(loggerWorker,"Error de fseek.\n");
-		exit(-1);
-	}
-
-	long int tamanioArchivo = ftell(unArchivo);
-
-	if(tamanioArchivo==-1){
-		log_error(loggerWorker,"Error de ftell.\n");
-		exit(-1);
-	}
-
-	return tamanioArchivo;
-}
-
-char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
-{
-	int retornoSeek = fseek(unArchivo, 0, SEEK_SET);
-
-	if(retornoSeek!=0){
-		log_error(loggerWorker,"Error de fseek.\n");
-		exit(-1);
-	}
-
-	char* contenidoArchivo = malloc(tamanioArchivo+1);
-
-	if(contenidoArchivo==NULL){
-		log_error(loggerWorker,"Error al asignar memoria para leer el archivo.\n");
-		exit(-10);
-	}
-
-	fread(contenidoArchivo, tamanioArchivo, 1, unArchivo);
-	contenidoArchivo[tamanioArchivo] = '\0';
-	return contenidoArchivo;
-}
-
-char* obtenerContenido(char* unPath){
-	FILE* archivoALeer = fopen(unPath, "r");
-
-	if(archivoALeer==NULL){
-		log_error(loggerWorker,"No se pudo abrir el archivo: %s.\n",unPath);
-		exit(-1);
-	}
-
-	log_info(loggerWorker,"Se pudo abrir el archivo: %s.\n",unPath);
-
-	long int tamanioArchivo = obtenerTamanioArchivo(archivoALeer);
-	log_info(loggerWorker, "Se pudo obtener el tamanio del archivo: %s.\n",unPath);
-	char* contenidoArchivo = leerArchivo(archivoALeer,tamanioArchivo);
-	log_info(loggerWorker, "Se pudo obtener el contenido del archivo: %s.\n",unPath);
-	return contenidoArchivo;
-}
-
 void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* nombreResultante,char* rutaResultante){
 
 	char* contenidoArchivoReduccionGlobal = obtenerContenido(nombreArchivoReduccionGlobal);
@@ -517,10 +649,10 @@ void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal)
 	}
 }
 
-char* aparearArchivos(t_list* archivosTemporales){
+char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError){
 	char* nombreArchivoApareado = string_new();
 	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
-	crearArchivoTemporal(nombreArchivoApareado);
+	crearArchivoTemporal(nombreArchivoApareado,casoError,socketMaster);
 	char* comandoOrdenacionArchivos = string_new();
 	string_append(&comandoOrdenacionArchivos,"sort -m ");
 	int posicion;
@@ -558,6 +690,21 @@ char* aparearArchivos(t_list* archivosTemporales){
 	return nombreArchivoApareado;
 }
 
+char* obtenerNombreScript(char* nombreScript,uint32_t nroBloque){
+	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
+	char* numeroBloque = string_itoa(nroBloque);
+	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreScriptSinExtension,numeroBloque);
+	string_append(&nombreScriptSinExtension,numeroPID);
+	char* extensionScript = obtenerParteScript(nombreScript,1);
+	string_append(&nombreScriptSinExtension,extensionScript);
+	free(nombreScript);
+	free(extensionScript);
+	free(numeroBloque);
+	free(numeroPID);
+	return nombreScriptSinExtension;
+}
+
 void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 	log_info(loggerWorker, "Se recibio un job del socket de master %d.\n",socketMaster);
 
@@ -578,19 +725,22 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			char* pathDestino = recibirString(socketMaster);
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
-			printf("Todos los datos fueron recibidos de master para realizar la transformacion");
 
-			char* nombreSinExtension = obtenerSinExtension(nombreScript);
+			char* nombreScriptRemasterizado = obtenerNombreScript(nombreScript,nroBloque);
 
-			guardarScript(script,nombreSinExtension);
+			guardarScript(script,nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketMaster);
 
-			darPermisosAScripts(nombreSinExtension);
+			darPermisosAScripts(nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketMaster);
 
-			char* command = crearComandoScriptTransformador(nombreSinExtension,pathDestino,nroBloque,bytesOcupados);
+			char* bloque = obtenerBloque(nroBloque,bytesOcupados,socketMaster,ERROR_TRANSFORMACION);
+
+			char* command = crearComandoScriptTransformador(nombreScriptRemasterizado,pathDestino,nroBloque,bytesOcupados,socketMaster,bloque);
 
 			ejecutarPrograma(command,socketMaster,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA);
 
-			eliminarArchivo(nombreSinExtension);
+			eliminarArchivo(nombreScriptRemasterizado);
+
+			eliminarArchivo(bloque);
 
 			break;
 		}
@@ -608,13 +758,13 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
 
-			char* archivoApareado = aparearArchivos(archivosTemporales);
+			char* archivoApareado = aparearArchivos(archivosTemporales,socketMaster,ERROR_REDUCCION_LOCAL);
 
-			char* nombreSinExtension = obtenerSinExtension(nombreScript);
+			char* nombreSinExtension = obtenerParteScript(nombreScript,0);
 
-			guardarScript(script,nombreSinExtension);
+			guardarScript(script,nombreSinExtension,ERROR_REDUCCION_LOCAL,socketMaster);
 
-			darPermisosAScripts(nombreSinExtension);
+			darPermisosAScripts(nombreSinExtension,ERROR_REDUCCION_LOCAL,socketMaster);
 
 			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
 
@@ -664,13 +814,13 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
 
-			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,temporalEncargado);
+			char* archivoApareado = realizarApareoGlobal(listaInfoApareo,temporalEncargado,ERROR_REDUCCION_GLOBAL,socketMaster);
 
-			char* nombreSinExtension = obtenerSinExtension(nombreScript);
+			char* nombreSinExtension = obtenerParteScript(nombreScript,0);
 
-			guardarScript(script,nombreSinExtension);
+			guardarScript(script,nombreSinExtension,ERROR_REDUCCION_GLOBAL,socketMaster);
 
-			darPermisosAScripts(nombreSinExtension);
+			darPermisosAScripts(nombreSinExtension,ERROR_REDUCCION_GLOBAL,socketMaster);
 
 			char* command = crearComandoScriptReductor(archivoApareado,nombreSinExtension,pathDestino);
 
@@ -725,7 +875,19 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 	log_info(loggerWorker,"Soy el proceso padre con pid: %d \n ",getpid());
 }
 
+void laMardita(int signal){
+	log_info(loggerWorker, "Se recibio la senial SIGINT, muriendo con estilo... \n");
+	free(IP_FILESYSTEM);
+	free(RUTA_DATABIN);
+	free(NOMBRE_NODO);
+	free(dataBinBloque);
+	log_info(loggerWorker, "¡¡Adios logger!! \n");
+	log_destroy(loggerWorker);
+	exit(0);
+}
+
 int main(int argc, char **argv) {
+	signal(SIGINT, laMardita);
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionWorker = generarTConfig(argv[1], 5);
@@ -736,6 +898,7 @@ int main(int argc, char **argv) {
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
 	log_info(loggerWorker, "Procesos hijos muertos eliminados del sistema.\n");
+	dataBinBloque = dataBinMapear();
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");

@@ -1028,15 +1028,31 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 void darPermisosAScripts(char* script){
 	struct stat infoScript;
 
-	if(chmod(script,S_IXUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH|S_ISVTX)==-1){
+	char* comandoAEjecutar = string_new();
+	string_append(&comandoAEjecutar,"chmod 0777 ");
+	string_append(&comandoAEjecutar,script);
+
+	int resultado = system(comandoAEjecutar);
+
+	if(!WIFEXITED(resultado)){
 		log_error(loggerMaster,"Error al otorgar permisos al script.\n");
+
+		if(WIFSIGNALED(resultado)){
+			log_error(loggerMaster, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
+		}
 	}
-	else if(stat(script,&infoScript)!=0){
+	else{
+		log_info(loggerMaster, "Script ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
+	}
+
+	if(stat(script,&infoScript)!=0){
 		log_error(loggerMaster,"No se pudo obtener informacion del script.\n");
 	}
 	else{
 		log_info(loggerMaster,"Los permisos para el script son: %08x\n",infoScript.st_mode);
 	}
+
+	free(comandoAEjecutar);
 }
 
 int main(int argc, char **argv) {
