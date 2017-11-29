@@ -13,14 +13,15 @@
 #include "Persistencia.h"
 #include "YAMA.h"
 #include "Worker.h"
+#include "EstadoAnterior.h"
 #include "../../Biblioteca/src/Socket.c"
 #include "../../Biblioteca/src/configParser.c"
 
 int main(int argc, char **argv) {
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	chequearParametros(argc, 2);
-	t_config* configuracionFS = generarTConfig(argv[1], 2);
-//	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
+	//chequearParametros(argc, 2);
+	//t_config* configuracionFS = generarTConfig(argv[1], 2);
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 2);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
@@ -41,9 +42,21 @@ int main(int argc, char **argv) {
 	listaBitmap = list_create();
 	tablaGlobalArchivos = list_create();
 	listaConexionNodos=list_create();
+
+
 	listaDirectorios = list_create();
 
 	hayNodos=0;
+//	if(!hayUnEstadoAnterior()){
+//		esEstadoSeguro=true;
+//		t_directory* directorioPadre = malloc(sizeof(t_directory));
+//		directorioPadre->nombre=string_new();
+//		directorioPadre->index=0;
+//		directorioPadre->nombre="root";
+//		directorioPadre->padre=-1;
+//		list_add(listaDirectorios,directorioPadre);
+//	}
+
 	esEstadoSeguro=true;
 
 

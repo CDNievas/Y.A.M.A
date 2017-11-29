@@ -53,7 +53,7 @@ void persistirTablaNodo(){
 		s++;
 	}
 	fclose(archivoNodos);
-	free(path);
+
 }
 
 void persistirRegistroArchivo(){
@@ -129,13 +129,13 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 }
 
 
-void persistirBitmap(tablaBitmapXNodos* nodo){
-	char* pathBitmap=obtenerPathBitmap(nodo->nodo);
-	FILE* archivoBitmapNodo=fopen(pathBitmap,"w+");
-
-	fputs(nodo->bitarray->bitarray,archivoBitmapNodo);
-	fclose(archivoBitmapNodo);
-}
+//void persistirBitmap(tablaBitmapXNodos* nodo){
+//	char* pathBitmap=obtenerPathBitmap(nodo->nodo);
+//	FILE* archivoBitmapNodo=fopen(pathBitmap,"w+");
+//
+//	fputs(nodo->bitarray->bitarray,archivoBitmapNodo);
+//	fclose(archivoBitmapNodo);
+//}
 
 void persistirDirectorio(){
 	FILE* archivoDirectorio=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/directorios.dat","w+");

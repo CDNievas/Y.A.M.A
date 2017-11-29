@@ -212,7 +212,7 @@ int deleteDirectory(char* directoryToDelete){
     return -1; //EL DIRECTORIO TIENE SUBDIRECTORIOS
   }
 }
-
+//------------------------------------------------------------------------------
 //--------------------------------------FUNCION ALMACENAR
 int sacarTamanioArchivo(FILE* archivo) {
 	fseek(archivo, 0, SEEK_END);
@@ -233,7 +233,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 			return posicion;
 		}
 	}
-	persistirBitmap(nodoConbitarray);
+	//persistirBitmap(nodoConbitarray); NOD DEBERIA PORQUE POR EL MMAP YA LO HACE
 	return 0;
 }
 
@@ -413,14 +413,17 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 				list_add(posicionBloquesAGuardar, ultimaPosicion);
 				fseek(archivo, 0, SEEK_SET);
 			}
+			archivoAGuardar->disponible=1;
 			enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
+			persistirTablaArchivo(archivoAGuardar);
+
 			char* comandoCopiarArchivo = string_new();
 			string_append(&comandoCopiarArchivo, "cp -a ");
 			string_append(&comandoCopiarArchivo, pathArchivo);
 			string_append(&comandoCopiarArchivo, " ");
 			string_append(&comandoCopiarArchivo, pathDirectorio);
+			string_append(&comandoCopiarArchivo, archivoAGuardar->nombreArchivo);
 			system(comandoCopiarArchivo);
-			free(comandoCopiarArchivo);
 
 			list_destroy(posicionBloquesAGuardar);
 		}else{
@@ -430,8 +433,10 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	}else{
 		log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
 	}
+
 }
 
+//-------------------------------------------------------------------------------------
 //------------------------------------------------LEER
 //void leerArchivo(char* ruta,char* nombreArchivo){
 //	int cont=0;

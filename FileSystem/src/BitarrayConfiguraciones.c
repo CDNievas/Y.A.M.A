@@ -29,7 +29,7 @@ void recibirBloque(int socketNodo){
 
 	uint32_t cantBytes = recibirUInt(socketNodo);
 	void * bloque = miMalloc(cantBytes,loggerFileSystem,"Fallo en recibirBloque()");
-	if(recv(socketNodo, bloque, cantBytes, MSG_WAITALL) == -1){
+	if(recv(socket, bloque, cantBytes, MSG_WAITALL) == -1){
 		perror("Error al recibir el bloque.");
 		exit(-1);
 	}
@@ -44,7 +44,7 @@ void recibirBloque(int socketNodo){
 char * obtenerPathBitmap(char * nombreNodo){
 	char * path = string_new();
 	//string_append(&path, PATH_METADATA);
-	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/bitmap");
+	string_append(&path, "/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/bitmap/");
 	string_append(&path, nombreNodo);
 	string_append(&path, ".dat");
 	return path;

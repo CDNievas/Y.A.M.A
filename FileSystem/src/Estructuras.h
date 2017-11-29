@@ -47,6 +47,7 @@ typedef struct
 	char* nombreArchivo;
 	uint32_t tamanio;
 	char* tipo;
+	uint32_t disponible;
 	int directorioPadre;
 	t_list* bloques;
 } tablaArchivos;
@@ -77,6 +78,7 @@ typedef struct
 typedef struct
 	__attribute__((packed)) {
 	char* nodo;
+	uint32_t disponible;
 	uint32_t total;
 	uint32_t libre;
 	uint32_t porcentajeOcioso;

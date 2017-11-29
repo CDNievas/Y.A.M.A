@@ -28,6 +28,61 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 	return numero;
 }
 
+//void hayUnEstadoEstable(){
+//	uint32_t cantidadDeArchivos=list_size(tablaGlobalArchivos);
+//	uint32_t cont=0;
+//	while(cont<cantidadDeArchivos){
+//		tablaArchivos* entradaArchivos=list_get(tablaGlobalArchivos,cont);
+//
+//		uint32_t cantidadDeBloques=list_size(entradaArchivos->bloques);
+//		uint32_t contNodo=0;
+//
+//		while(contNodo<cantidadDeBloques){
+//			copiasXBloque* entradaDelBloque=list_get(entradaArchivos.bloques,contNodo);
+//
+//			bool esElNodo(contenidoNodo* nodo){
+//				return(strcmp(nodo->nodo,nombreNodo)==0);
+//			}
+//			contenidoNodo* nodoElegido =list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodo);
+//
+//		}
+//
+//
+//
+//	}
+//
+//
+//}
+
+
+
+//
+//void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto){
+//
+//	bool estaEnElSistema(char* nodoSeleccionado){
+//		return(strcmp(nodoSeleccionado,nombreNodo)==0);
+//	}
+//	bool estabaEnElEstadoAnterior=list_any_satisfy(tablaGlobalNodos->nodo,(void*)estaEnElSistema);
+//	if(estabaEnElEstadoAnterior){
+//		bool esElNodo(contenidoNodo* nodo){
+//			return(strcmp(nodo->nodo,nombreNodo)==0);
+//		}
+//		contenidoNodo* nodoElegido =list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodo);
+//
+//		nodoElegido->disponible=1;
+//		nodoElegido->socket=socket;
+//
+//		hayUnEstadoEstable();
+//
+//	}
+//
+//
+//
+//}
+
+
+
+
 void registrarNodo(int socket) {
 
 	char * nombreNodo;
@@ -45,33 +100,39 @@ void registrarNodo(int socket) {
 
 	// Checkeo estado anterior
 	if(hayEstadoAnterior){
-		//bitarray = abrirBitmap(nombreNodo,cantBloques);
+//		perteneceAlSistema(nombreNodo,socket,ip,puerto);
 
 	} else {
 		bitarray = crearBitmap(nombreNodo,cantBloques);
 
-	// Creo el bloque de info del nodo
-	contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
-	bloque->nodo = string_new();
-	string_append(&bloque->nodo, nombreNodo);
-	bloque->total = cantBloques;
-	bloque->libre = cantBloquesLibres(bitarray);
-	bloque->porcentajeOcioso=sacarPorcentajeOcioso(bloque->libre,cantBloques);
-	bloque->socket=socket;
+		// Creo el bloque de info del nodo
+		contenidoNodo* bloque = malloc(sizeof(contenidoNodo));
+		bloque->nodo = string_new();
+		string_append(&bloque->nodo, nombreNodo);
+		bloque->disponible=1;
+		bloque->total = cantBloques;
+		bloque->libre = cantBloquesLibres(bitarray);
+		bloque->porcentajeOcioso=sacarPorcentajeOcioso(bloque->libre,cantBloques);
+		bloque->socket=socket;
 
-	// Aniado a la tabla de info de nodos
-	tablaGlobalNodos->tamanio += bloque->total;
-	tablaGlobalNodos->libres += bloque->libre;
-	list_add(tablaGlobalNodos->nodo, nombreNodo);
-	list_add(tablaGlobalNodos->contenidoXNodo, bloque);
+		// Aniado a la tabla de info de nodos
+		tablaGlobalNodos->tamanio += bloque->total;
+		tablaGlobalNodos->libres += bloque->libre;
+		list_add(tablaGlobalNodos->nodo, nombreNodo);
+		list_add(tablaGlobalNodos->contenidoXNodo, bloque);
 
-	// Aniado a la tala de bitmaps
-	tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
-	bitmapNodo->nodo=string_new();
-	string_append(&bitmapNodo->nodo, nombreNodo);
-	bitmapNodo->bitarray = bitarray;
-	list_add(listaBitmap, bitmapNodo);
+		// Aniado a la tala de bitmaps
+		tablaBitmapXNodos* bitmapNodo = malloc(sizeof(tablaBitmapXNodos));
+		bitmapNodo->nodo=string_new();
+		string_append(&bitmapNodo->nodo, nombreNodo);
+		bitmapNodo->bitarray = bitarray;
+		list_add(listaBitmap, bitmapNodo);
 
+
+
+		persistirTablaNodo();
+
+	}
 	//Aniado los datos de conexion del nodo
 	datosConexionNodo* datosConexion=malloc(sizeof(datosConexionNodo));
 	datosConexion->nodo=string_new();
@@ -81,9 +142,7 @@ void registrarNodo(int socket) {
 	datosConexion->puerto=puerto;
 	list_add(listaConexionNodos,datosConexion);
 
-	persistirTablaNodo();
 
-	}
 	hayNodos++;
 
 	free(ip);
