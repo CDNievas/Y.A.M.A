@@ -65,6 +65,7 @@ void manejadorMaster(void* socketMasterCliente){
 					}
 				}else{
 					log_info(loggerYAMA, "No se puede llevar a cabo la reduccion local aun.");
+					sendDeNotificacion(socketMaster, NO_REDU_LOCAL);
 				}
 				free(nombreNodo);
 				list_destroy(listaDelJob);
