@@ -246,7 +246,7 @@ void chequeameLaSignal(int signal){
 void laParca(int signal){
 	//Se prosigue a morir elegantemente
 	log_info(loggerYAMA, "Se recibio SIGINT.");
-	log_info(loggerYAMA, "Mueriendo con estilo.");
+	log_info(loggerYAMA, "Muriendo con estilo.");
 	list_destroy_and_destroy_elements(nodosSistema, (void*)liberarNodoSistema);
 	list_destroy_and_destroy_elements(tablaDeEstados, (void*)liberarAdminYAMA);
 	free(FS_IP);

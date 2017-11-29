@@ -53,7 +53,7 @@ void persistirTablaNodo(){
 		s++;
 	}
 	fclose(archivoNodos);
-
+	free(path);
 }
 
 void persistirRegistroArchivo(){

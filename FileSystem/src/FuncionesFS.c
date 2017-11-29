@@ -420,6 +420,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			string_append(&comandoCopiarArchivo, " ");
 			string_append(&comandoCopiarArchivo, pathDirectorio);
 			system(comandoCopiarArchivo);
+			free(comandoCopiarArchivo);
 
 			list_destroy(posicionBloquesAGuardar);
 		}else{
@@ -429,7 +430,6 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	}else{
 		log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
 	}
-
 }
 
 //------------------------------------------------LEER
