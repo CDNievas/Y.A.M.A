@@ -141,7 +141,11 @@ void darPermisosAScripts(char* script, int casoError, int socketMaster){
 
 void crearArchivoTemporal(char* nombreScript,int casoError,int socketMaster){
 	string_append(&nombreScript,"XXXXXX");
+	log_info(loggerWorker,"nombre: %s \n",nombreScript);
+	log_info(loggerWorker,"nombre: %d \n",strlen(nombreScript));
 	int resultado = mkstemp(nombreScript);
+	log_info(loggerWorker,"nombrePosmkstemp: %s \n",nombreScript);
+	log_info(loggerWorker,"nombrePosmkstemp: %d \n",strlen(nombreScript));
 
 	if(resultado==-1){
 		log_error(loggerWorker,"No se pudo crear un archivo temporal para guardar el script.\n");
@@ -322,7 +326,6 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	string_append(&command," > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
-	free(archivoApareado);
 	log_info(loggerWorker, "Se creo correctamente el comando del script reductor\n");
 	return command;
 }
@@ -632,7 +635,9 @@ void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal)
 char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError){
 	char* nombreArchivoApareado = string_new();
 	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
-	crearArchivoTemporal(nombreArchivoApareado,casoError,socketMaster);
+	//crearArchivoTemporal(nombreArchivoApareado,casoError,socketMaster);
+	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreArchivoApareado,numeroPID);
 	char* comandoOrdenacionArchivos = string_new();
 	string_append(&comandoOrdenacionArchivos,"sort -m ");
 	int posicion;
@@ -886,7 +891,7 @@ int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionWorker = generarTConfig(argv[1], 5);
-	//t_config* configuracionWorker = generarTConfig("Debug/worker.ini", 5);
+	//t_config* configuracionWorker = generarTConfig("Debug/worker1.ini", 5);
 	cargarWorker(configuracionWorker);
 	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;

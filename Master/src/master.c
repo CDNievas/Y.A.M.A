@@ -487,6 +487,7 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(int socketYAMA, char* scriptR
 		unaInfoTemporalNodo->conexion.ipNodo = string_new();
 		unaInfoTemporalNodo->conexion.nombreNodo = string_new();
 		unaInfoTemporalNodo->infoGeneral.scriptTransformacion = string_new();
+		unaInfoTemporalNodo->infoGeneral.socketYAMA = socketYAMA;
 
 		string_append(&(unaInfoTemporalNodo->temporalReduccionLocal),temporalReduccionLocal);
 		string_append(&(unaInfoTemporalNodo->conexion.ipNodo),ipNodo);
@@ -508,10 +509,11 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(int socketYAMA, char* scriptR
 
 uint32_t obtenerTamanioArchivoTemporales(t_list* listaArchivosTemporales,uint32_t cantidadTemporales){
 	uint32_t posicion;
-	uint32_t tamanio = cantidadTemporales;
+	uint32_t tamanio = 0;
 	for(posicion=0;posicion<cantidadTemporales;posicion++){
 		char* unArchivoTemporal = list_get(listaArchivosTemporales,posicion);
 		tamanio += string_length(unArchivoTemporal);
+		tamanio += sizeof(uint32_t);
 	}
 	return tamanio;
 }
@@ -556,9 +558,7 @@ void eliminarDatosTemporales(infoReduccionLocal* infoNodoReduccion){
 			list_destroy_and_destroy_elements(unaInfoTemporalNodo->archivosTemporales, free);
 			free(unaInfoTemporalNodo->temporalReduccionLocal);
 			free(unaInfoTemporalNodo->conexion.ipNodo);
-			free(unaInfoTemporalNodo->conexion.nombreNodo);
 			free(unaInfoTemporalNodo->infoGeneral.scriptTransformacion);
-			free(unaInfoTemporalNodo);
 			break;
 		}
 	}
@@ -586,7 +586,7 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 			uint32_t tamanioNombreScript = string_length(infoNodoReduccion->infoGeneral.scriptTransformacion);
 			uint32_t tamanioPathDestino = string_length(infoNodoReduccion->temporalReduccionLocal);
 			uint32_t cantidadTemporales = list_size(infoNodoReduccion->archivosTemporales);
-			uint32_t tamanioAEnviar = tamanioScript+tamanioNombreScript+tamanioPathDestino+cantidadTemporales+(sizeof(uint32_t)*4)+obtenerTamanioArchivoTemporales(infoNodoReduccion->archivosTemporales,cantidadTemporales);
+			uint32_t tamanioAEnviar = tamanioScript+tamanioNombreScript+tamanioPathDestino+(sizeof(uint32_t)*4)+obtenerTamanioArchivoTemporales(infoNodoReduccion->archivosTemporales,cantidadTemporales);
 			void* datosAEnviar = malloc(tamanioAEnviar);
 
 			memcpy(datosAEnviar,&tamanioScript,sizeof(uint32_t));
@@ -615,15 +615,11 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 
 			free(datosAEnviar);
 			free(codigoScript);
-			list_destroy(infoNodoReduccion->archivosTemporales);
 
 			int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
 
 			uint32_t tamanioNombreNodo = string_length(infoNodoReduccion->conexion.nombreNodo);
 
-			free(infoNodoReduccion->conexion.ipNodo);
-			free(infoNodoReduccion->temporalReduccionLocal);
-			free(infoNodoReduccion->infoGeneral.scriptTransformacion);
 			close(socketWorker);
 
 			if(resultadoReduccion==REDUCCION_LOCAL_TERMINADA){
@@ -1068,8 +1064,8 @@ int main(int argc, char **argv) {
     log_info(loggerMaster,"Se ha conectado con YAMA. IP: %s - PUERTO: %d \n",YAMA_IP,YAMA_PUERTO);
     realizarHandshake(socketYAMA,ES_YAMA);
     log_info(loggerMaster,"Handshake con YAMA realizado exitosamente.\n");
-    enviarArchivoAYAMA("nombres.csv",socketYAMA);
-    //enviarArchivoAYAMA(argv[4],socketYAMA);
+    //enviarArchivoAYAMA("nombres.csv",socketYAMA);
+    enviarArchivoAYAMA(argv[4],socketYAMA);
     log_info(loggerMaster,"Envio de archivo realizado con exito.\n");
     cantidadFallos = 0;
     transformacionesRealizadas = 0;
@@ -1081,23 +1077,23 @@ int main(int argc, char **argv) {
     pthread_mutex_init(&mutexNodos,NULL);
     pthread_mutex_init(&mutexReducciones,NULL);
     pthread_mutex_init(&mutexTemporales,NULL);
-    darPermisosAScripts("Debug/transformador.py");
-    darPermisosAScripts("Debug/reductor.py");
-//    darPermisosAScripts(argv[2]);
-//    darPermisosAScripts(argv[3]);
+    //darPermisosAScripts("transformador.py");
+    //darPermisosAScripts("reductor.py");
+    darPermisosAScripts(argv[2]);
+    darPermisosAScripts(argv[3]);
     while(1){
     	int operacion = recvDeNotificacion(socketYAMA);
     	switch(operacion){
     	case TRANSFORMACION:{
     		recibirSolicitudTransformacion(socketYAMA);
-    		//inicializarTransformacionEnNodos(argv[2],socketYAMA);
-    		inicializarTransformacionEnNodos("transformador.py",socketYAMA);
+    		inicializarTransformacionEnNodos(argv[2],socketYAMA);
+    		//inicializarTransformacionEnNodos("transformador.py",socketYAMA);
     		break;
     	}
     	case REDUCCION_LOCAL:{
     		avisoCargaTemporal = true;
-    		//infoReduccionLocal* unaInfoReduccionLocal = recibirSolicitudReduccionLocal(socketYAMA,argv[3]);
-    		infoReduccionLocal* unaInfoReduccionLocal = recibirSolicitudReduccionLocal(socketYAMA,"reductor.py");
+    		infoReduccionLocal* unaInfoReduccionLocal = recibirSolicitudReduccionLocal(socketYAMA,argv[3]);
+    		//infoReduccionLocal* unaInfoReduccionLocal = recibirSolicitudReduccionLocal(socketYAMA,"reductor.py");
     		inicializarReduccionEnNodos(unaInfoReduccionLocal);
     		break;
     	}
