@@ -107,16 +107,16 @@ t_directory* createDirectory(){
 
 //MOVER DIRECTORIO
 
-int moveDirectory(char* oldPath, char* newPath){
+void moveDirectory(char* oldPath, char* newPath){
   char** rutaDesmembradaVieja = string_split(oldPath, "/");
   char** rutaDesmembradaNueva = string_split(newPath, "/");
   char* nombreDirectorio = obtenerNombreDirectorio(rutaDesmembradaVieja);
   int indexPadreNuevo = obtenerDirectorioPadre(rutaDesmembradaNueva);
-  if(indexPadreNuevo == -1){
+  if(indexPadreNuevo == -1 || indexPadreNuevo==-2){
 	  liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
     free(nombreDirectorio);
-    return -1;
+    log_error(loggerFileSystem,"Error al encontrar el directorio padre del path final");
   }
   bool esDirectorio(t_directory* directorio){
     return strcmp(directorio->nombre, nombreDirectorio) == 0;
@@ -127,13 +127,13 @@ int moveDirectory(char* oldPath, char* newPath){
 	  liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
     free(nombreDirectorio);
-    return -1;
+    log_error(loggerFileSystem,"No se ha encontrar el directorio en el sistema");
   }
   directorioAModificar->padre = indexPadreNuevo;
+  persistirDirectorio();
   liberarComandoDesarmado(rutaDesmembradaNueva);
   liberarComandoDesarmado(rutaDesmembradaVieja);
   free(nombreDirectorio);
-  return 1;
 }
 
 //EXISTE DIRECTORIO
@@ -169,6 +169,7 @@ int crearDirectorio(char* ruta){
       }
       list_add(listaDirectorios, newDirectory);
       liberarComandoDesarmado(rutaDesmembrada);
+      persistirDirectorio();
       log_info(loggerFileSystem,"Se creo correctamente el directorio");
       return 1;
   }else{
@@ -179,7 +180,7 @@ int crearDirectorio(char* ruta){
 
 //RENOMBRAR DIRECTORIO
 
-int renameDirectory(char* oldName, char* newName){
+void renameDirectory(char* oldName, char* newName){
   char** rutaDesmembradaVieja = string_split(oldName, "/");
   char** rutaDesmembradaNueva = string_split(newName, "/");
   char* viejoNombre = obtenerNombreDirectorio(rutaDesmembradaVieja);
@@ -194,15 +195,18 @@ int renameDirectory(char* oldName, char* newName){
     string_append(&directoryToChange->nombre, nuevoNombre);
     liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
+
+    persistirDirectorio();
+
     free(viejoNombre);
     free(nuevoNombre);
-    return 1;
+    log_info(loggerFileSystem,"Se ha renombrado exitosamente el directori/archivo.");
   }else{
 	  liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
     free(viejoNombre);
     free(nuevoNombre);
-    return -1; //SI EL DIRECTORIO QUE TE PIDEN ELIMINAR NO EXISTE
+    log_error(loggerFileSystem,"El directorio que se pide renombrar no existe.");
   }
 }
 
@@ -240,6 +244,9 @@ int deleteDirectory(char* directoryToDelete){
   }
   if(!list_any_satisfy(listaDirectorios, (void*)tieneHijos)){
     t_directory* directoryToRemove = list_remove_by_condition(listaDirectorios, (void*)esDirectorio);
+
+    persistirDirectorio();
+
     liberarDirectorio(directoryToRemove);
     liberarComandoDesarmado(rutaDesmembrada);
     free(directoryName);
@@ -265,7 +272,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 		return(string_equals_ignore_case(nodoConBitmap->nodo,nodo->nodo));
 	}
 	tablaBitmapXNodos* nodoConbitarray = list_find(listaBitmap,(void*)esNodo);
-	int tamaniobitarray = (bitarray_get_max_bit(nodoConbitarray->bitarray)/8);
+	int tamaniobitarray = bitarray_get_max_bit(nodoConbitarray->bitarray);
 	for(;posicion<tamaniobitarray;posicion++){
 		if (!bitarray_test_bit(nodoConbitarray->bitarray, posicion)) {
 			bitarray_set_bit(nodoConbitarray->bitarray,posicion);

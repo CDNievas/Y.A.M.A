@@ -105,9 +105,11 @@ void analizarComando(char * linea){
         		log_error(loggerFileSystem, "El directorio a borrar tiene subdirectorios. No se puede borrar.");
         	}else{
         		char* comandoPConsola = string_new();
+
         		string_append(&comandoPConsola, "rmdir ");
         		string_append(&comandoPConsola, comandoDesarmado[2]);
         		system(comandoPConsola);
+        		persistirDirectorio();
         		log_info(loggerFileSystem, "Directorio borrado exitosamente.");
         		free(comandoPConsola);
         	}
@@ -123,31 +125,52 @@ void analizarComando(char * linea){
 
 
       case 3:{
-        char * comandoNuevo = string_new();
+    	  char * comandoNuevo = string_new();
 
-        char * nombreArchivoViejo = comandoDesarmado[1];
-        char * nombreArchivoNuevo = comandoDesarmado[2];
+    	  char * nombreArchivoViejo = comandoDesarmado[1];
+    	  char * nombreArchivoNuevo = comandoDesarmado[2];
 
-        if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
-        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
-        	break;
-        }
+    	  if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
+    	  	  log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando rename");
+    	  	  break;
+    	  }
 
-        string_append(&comandoNuevo,"mv ");
-        string_append(&comandoNuevo,nombreArchivoViejo);
-        string_append(&comandoNuevo," ");
-        string_append(&comandoNuevo,nombreArchivoNuevo);
+    	  renameDirectory(nombreArchivoViejo,nombreArchivoNuevo);
 
-        system(comandoNuevo);
-        printf("\n");
-        free(comandoNuevo);
+    	  string_append(&comandoNuevo,"rename ");
+    	  string_append(&comandoNuevo,nombreArchivoViejo);
+    	  string_append(&comandoNuevo," ");
+    	  string_append(&comandoNuevo,nombreArchivoNuevo);
+
+    	  system(comandoNuevo);
+    	  printf("\n");
       }
       break;
 
       case 4:{
-        system(linea);
-        printf("\n");
+    	  char * comandoNuevo = string_new();
+
+    	  char * pathOriginal = comandoDesarmado[1];
+    	  char * pathFinal = comandoDesarmado[2];
+
+    	  if(pathOriginal == NULL || pathFinal == NULL){
+    		  log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
+    		  break;
+    	  }
+
+    	  moveDirectory(pathOriginal,pathFinal);
+
+    	  string_append(&comandoNuevo,"mv ");
+    	  string_append(&comandoNuevo,pathOriginal);
+    	  string_append(&comandoNuevo," ");
+    	  string_append(&comandoNuevo,pathFinal);
+
+    	  system(comandoNuevo);
+    	  printf("\n");
+    	  free(comandoNuevo);
       }
+
+
       break;
 
       case 5:{
@@ -181,8 +204,9 @@ void analizarComando(char * linea){
     	   char * flag = comandoDesarmado[3];
     	   if(nombreArchivoViejo != NULL && nombreArchivoNuevo != NULL && flag != NULL){
     		   almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
+    		   log_info(loggerFileSystem,"El archivo ha sido copiado exitosamente.");
     	   }else{
-    		   //log_error
+    		   log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando cpfrom");
     	   }
 
       }
@@ -210,7 +234,7 @@ void analizarComando(char * linea){
         char * nombreArchivoViejo = comandoDesarmado[1];
 
         if(nombreArchivoViejo == NULL){
-        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando md5sum");
+        	log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando md5sum");
         	break;
         }
 
@@ -235,7 +259,7 @@ void analizarComando(char * linea){
         char * nombreArchivoViejo = string_new();
         string_append(&nombreArchivoViejo, comandoDesarmado[1]);
         if(nombreArchivoViejo == NULL){
-        	//log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando info.");
+        	log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando info.");
         	break;
         }
 

@@ -10,7 +10,7 @@
 int cantBloquesLibres(t_bitarray* bitarray) {
 	int i = 0;
 	int cont = 0;
-	int tamaniobitarray = (bitarray_get_max_bit(bitarray)/8);
+	int tamaniobitarray = bitarray_get_max_bit(bitarray);
 	for (; i < tamaniobitarray; i++) {
 		if (!bitarray_test_bit(bitarray, i)) {
 			cont++;
@@ -85,8 +85,8 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 
 void registrarNodo(int socket) {
 
-	char * nombreNodo;
-	char* ip;
+	char * nombreNodo=string_new();
+	char* ip=string_new();
 	int cantBloques,puerto;
 	t_bitarray * bitarray;
 
@@ -95,6 +95,7 @@ void registrarNodo(int socket) {
 	cantBloques = recibirUInt(socket);
 
 	ip=recibirString(socket);
+
 	puerto=recibirUInt(socket);
 
 
@@ -146,6 +147,6 @@ void registrarNodo(int socket) {
 	hayNodos++;
 
 	free(ip);
-	//free(nombreNodo);
+	free(nombreNodo);
 }
 

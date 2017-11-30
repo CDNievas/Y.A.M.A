@@ -137,12 +137,12 @@ t_bitarray * abrirBitmap(char * nombreNodo,int cantBloques){
 				close(archivo);
 	}
 
-//	int tamanioBitarray=cantBloques/2;
-//	 if(cantBloques % 2 != 0){
-//	  tamanioBitarray++;
-//	 }
+	int tamanioBitarray=cantBloques/2;
+	 if(cantBloques % 2 != 0){
+	  tamanioBitarray++;
+	 }
 
-	int tamanioBitarray=cantBloques;
+	//int tamanioBitarray=cantBloques;
 
 	bitarray = bitarray_create_with_mode(mapArchivo,tamanioBitarray,MSB_FIRST);
 
