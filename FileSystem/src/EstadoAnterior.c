@@ -154,18 +154,26 @@ void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
 
 
 bool hayUnEstadoAnterior(){
-	//t_config * archivoDirectorios= config_create("home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/Debug/yamafs:/metadata/directorios.dat");
+	char* pathDirectorios=string_new();
+	string_append(&pathDirectorios,PATH_METADATA);
+	string_append(&pathDirectorios,"directorios.dat");
+	t_config * archivoDirectorios= config_create(pathDirectorios);
+
+
 	char* pathNodo=string_new();
 	string_append(&pathNodo,PATH_METADATA);
 	string_append(&pathNodo,"nodos.bin");
 	t_config* archivoNodos=config_create(pathNodo);
+
+
 	char* pathRegistroArchivos=string_new();
 	string_append(&pathRegistroArchivos,PATH_ARCHIVOS);
 	string_append(&pathNodo,"registro.dat");
 	t_config* archivoRegistroArchivos=config_create(pathRegistroArchivos);
 
-	if( !(archivoNodos==NULL) && !(archivoRegistroArchivos==NULL)){
-		//cargarEstructuraDirectorio(archivoDirectorios);
+
+	if(!(archivoDirectorios==NULL) && !(archivoNodos==NULL) && !(archivoRegistroArchivos==NULL)){
+		cargarEstructuraDirectorio(archivoDirectorios);
 		cargarEstructuraNodos(archivoNodos);
 		cargarEstructuraArchivos(archivoRegistroArchivos);
 		cargarEstructuraBitmap();

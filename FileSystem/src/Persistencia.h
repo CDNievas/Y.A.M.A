@@ -15,6 +15,7 @@ void persistirTablaNodo();
 void persistirRegistroArchivo();
 void persistirTablaArchivo(tablaArchivos* );
 void persistirBitmap(tablaBitmapXNodos* );
+void persistirDirectorio();
 
 
 #endif /* PERSISTENCIA_H_ */

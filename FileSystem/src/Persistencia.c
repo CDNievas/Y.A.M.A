@@ -14,16 +14,15 @@ void persistirTablaNodo(){
 	FILE* archivoNodos=fopen(path,"w+");
 
 	fputs("TAMANIO=",archivoNodos);
-	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
-	fputs(tamanioCadena,archivoNodos);
-	free(tamanioCadena);
-	fputc('\n',archivoNodos);
-
-	//modificar
-	fputs("LIBRE=",archivoNodos);
 	char* tamanio = string_itoa(tablaGlobalNodos->tamanio);
 	fputs(tamanio,archivoNodos);
 	free(tamanio);
+	fputc('\n',archivoNodos);
+
+	fputs("LIBRE=",archivoNodos);
+	char* libre = string_itoa(tablaGlobalNodos->libres);
+	fputs(libre,archivoNodos);
+	free(libre);
 	fputc('\n',archivoNodos);
 
 	fputs("NODOS=[",archivoNodos);

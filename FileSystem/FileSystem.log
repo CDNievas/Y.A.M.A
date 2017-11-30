@@ -309,3 +309,25 @@
 [INFO] 17:06:40:94 FileSystem/(7991:7991): Se ha registrado un nodo nuevo al sistema
 [INFO] 17:07:03:887 FileSystem/(7991:8000): Se creo correctamente el directorio
 [INFO] 17:07:40:17 FileSystem/(7991:8000): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASDnombres.csv.
+[INFO] 23:20:48:954 FileSystem/(5514:5514): Se ha recibido una nueva conexion.
+[DEBUG] 23:20:48:959 FileSystem/(5514:5514): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:20:48:960 FileSystem/(5514:5514): Se ha registrado un nodo nuevo al sistema
+[INFO] 23:20:50:795 FileSystem/(5514:5514): Se ha recibido una nueva conexion.
+[DEBUG] 23:20:50:804 FileSystem/(5514:5514): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:27:52:133 FileSystem/(6071:6071): Se ha recibido una nueva conexion.
+[DEBUG] 23:28:00:880 FileSystem/(6071:6071): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:28:00:883 FileSystem/(6071:6071): Se ha registrado un nodo nuevo al sistema
+[INFO] 23:28:07:198 FileSystem/(6071:6071): Se ha recibido una nueva conexion.
+[DEBUG] 23:28:09:41 FileSystem/(6071:6071): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:29:19:746 FileSystem/(6203:6203): Se ha recibido una nueva conexion.
+[DEBUG] 23:29:33:806 FileSystem/(6203:6203): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:29:34:143 FileSystem/(6203:6203): Se ha registrado un nodo nuevo al sistema
+[INFO] 23:29:45:598 FileSystem/(6203:6203): Se ha recibido una nueva conexion.
+[DEBUG] 23:30:02:53 FileSystem/(6203:6203): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:33:31:555 FileSystem/(6601:6601): Se ha recibido una nueva conexion.
+[DEBUG] 23:33:39:13 FileSystem/(6601:6601): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:34:33:354 FileSystem/(6601:6601): Se ha registrado un nodo nuevo al sistema
+[INFO] 23:34:37:677 FileSystem/(6601:6601): Se ha recibido una nueva conexion.
+[DEBUG] 23:34:42:754 FileSystem/(6601:6601): Se procede a crear el archivo Bitmap.bin
+[INFO] 23:39:13:727 FileSystem/(6871:6871): Se ha recibido una nueva conexion.
+[DEBUG] 23:39:25:383 FileSystem/(6871:6871): Se procede a crear el archivo Bitmap.bin

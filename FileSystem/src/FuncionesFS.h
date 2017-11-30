@@ -16,15 +16,16 @@
 
 //------------------------FUNCIONES DIRECTORIOS
 
+void inicializarDirectoriosPrincipales();
 void liberarComandoDesarmado(char** );
 void liberarDirectorio(t_directory* );
 char* obtenerNombreDirectorio(char** );
 int obtenerDirectorioPadre(char** );
 t_directory* createDirectory();
-int moveDirectory(char* , char* );
+void moveDirectory(char* , char* );
 bool existeDirectory(char* );
 int crearDirectorio(char* );
-int renameDirectory(char* , char* );
+void renameDirectory(char* , char* );
 int obtenerIndexDirectorio(char* );
 int deleteDirectory(char* );
 
