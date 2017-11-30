@@ -146,7 +146,7 @@ void registrarNodo(int socket) {
 
 	hayNodos++;
 
-	free(ip);
-	free(nombreNodo);
+//	free(ip);
+//	free(nombreNodo);
 }
 

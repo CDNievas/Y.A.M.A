@@ -29,17 +29,18 @@ void cargarEstructuraBitmap(){
 void cargarEstructuraDirectorio(t_config* archivoDirectorio){
 	uint32_t cantidadDeDirectorio=config_keys_amount(archivoDirectorio);
 	uint32_t posicion=0;
-	while(posicion<=cantidadDeDirectorio){
+	while(posicion<cantidadDeDirectorio){
 		char* etiqueta=string_new();
 		string_append(&etiqueta,"DIRECTORIO");
 		string_append(&etiqueta,string_itoa(posicion));
 		char** arrayDirectorioPosicion = config_get_array_value(archivoDirectorio, etiqueta);
 		t_directory* entradaDirectorio=malloc(sizeof(t_directory));
 		entradaDirectorio->nombre=string_new();
-		entradaDirectorio->index=arrayDirectorioPosicion[0];
+		entradaDirectorio->index=atoi(arrayDirectorioPosicion[0]);
 		entradaDirectorio->nombre=arrayDirectorioPosicion[1];
-		entradaDirectorio->padre=arrayDirectorioPosicion[2];
+		entradaDirectorio->padre=atoi(arrayDirectorioPosicion[2]);
 		list_add(listaDirectorios,entradaDirectorio);
+		posicion++;
 	}
 }
 
@@ -53,7 +54,8 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 	char** arrayListaNodos = config_get_array_value(arhivoNodos, "NODOS");
 	uint32_t cont=0;
 	while(arrayListaNodos[cont]!=NULL){
-		list_add(tablaGlobalNodos->nodo,arrayListaNodos[cont]);
+		char* nodo=arrayListaNodos[cont];
+		list_add(tablaGlobalNodos->nodo,nodo);
 		cont++;
 	}
 
@@ -78,6 +80,7 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 		nodoSeleccionado->porcentajeOcioso=(nodoSeleccionado->libre*100)/nodoSeleccionado->total;
 
 		list_add(tablaGlobalNodos->contenidoXNodo,nodoSeleccionado);
+		cont++;
 	}
 
 }
@@ -85,15 +88,20 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 void cargarTablaArchivo(char* pathArchivo){
 	char** rutaDesmembrada = string_split(pathArchivo, "/");
 	char* nombreArchivo=obtenerNombreDirectorio(rutaDesmembrada);
-	int directorioPadre=obtenerDirectorioPadre(rutaDesmembrada);
+
+	uint32_t posicion=0;
+	while(rutaDesmembrada[posicion] != NULL){
+	   posicion++;
+	}
 
 	t_config* archivo=config_create(pathArchivo);
 	tablaArchivos* entradaArchivo=malloc(sizeof(tablaArchivos));
 	entradaArchivo->nombreArchivo=string_new();
 	entradaArchivo->tipo=string_new();
+	entradaArchivo->bloques=list_create();
 	string_append(&entradaArchivo->nombreArchivo,nombreArchivo);
 
-	entradaArchivo->directorioPadre=directorioPadre;
+	entradaArchivo->directorioPadre= atoi(rutaDesmembrada[posicion-2]);
 
 	entradaArchivo->disponible=0;
 
@@ -101,15 +109,19 @@ void cargarTablaArchivo(char* pathArchivo){
 	entradaArchivo->tamanio=tamanio;
 
 	char* tipo=config_get_string_value(archivo,"TIPO");
-	string_append(entradaArchivo->tipo,tipo);
+	string_append(&entradaArchivo->tipo,tipo);
 
 	uint32_t cantidadDeCopiasXBloque=config_keys_amount(archivo)-2;
 	uint32_t contBloque=0;
-	while(contBloque<=cantidadDeCopiasXBloque){
+	while(contBloque<cantidadDeCopiasXBloque){
 		copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
 		copiaBloque->bloque=string_new();
 		copiaBloque->copia1=malloc(sizeof(copia));
+		copiaBloque->copia1->nodo=string_new();
 		copiaBloque->copia2=malloc(sizeof(copia));
+		copiaBloque->copia2->nodo=string_new();
+
+		printf("%d",contBloque);
 
 		string_append(&copiaBloque->bloque,string_itoa(contBloque));
 
@@ -119,10 +131,12 @@ void cargarTablaArchivo(char* pathArchivo){
 		string_append(&etiqueta1,"COPIA0");
 		char** copia0=config_get_array_value(archivo,etiqueta1);
 
-		string_append(&copiaBloque->copia1->nodo,copia0[0]);
-		copiaBloque->copia1->bloque=copia0[1];
+		char* copia0Seleccionada=copia0[0];
+		string_append(&copiaBloque->copia1->nodo,copia0Seleccionada);
+		copiaBloque->copia1->bloque=atoi(copia0[1]);
 
 		free(etiqueta1);
+		liberarComandoDesarmado(copia0);
 
 		char* etiqueta2=string_new();
 		string_append(&etiqueta2,"BLOQUE");
@@ -130,12 +144,24 @@ void cargarTablaArchivo(char* pathArchivo){
 		string_append(&etiqueta2,"COPIA1");
 		char** copia1=config_get_array_value(archivo,etiqueta2);
 
-		string_append(&copiaBloque->copia2->nodo,copia1[0]);
-		copiaBloque->copia2->bloque=copia1[1];
+		char* copia1Seleccionada=copia1[0];
+		string_append(&copiaBloque->copia2->nodo,copia1Seleccionada);
+		copiaBloque->copia2->bloque=atoi(copia1[1]);
 
 		free(etiqueta2);
+		liberarComandoDesarmado(copia1);
+
+		char* etiqueta3=string_new();
+		string_append(&etiqueta3,"BLOQUE");
+		string_append(&etiqueta3,string_itoa(contBloque));
+		string_append(&etiqueta3,"BYTES");
+		copiaBloque->bytes=config_get_int_value(archivo,etiqueta3);
+
+		free(etiqueta3);
+
 
 		list_add(entradaArchivo->bloques,copiaBloque);
+		contBloque++;
 	}
 	list_add(tablaGlobalArchivos,entradaArchivo);
 }
@@ -143,12 +169,13 @@ void cargarTablaArchivo(char* pathArchivo){
 void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
 	uint32_t cantidadDeDirectorio=config_keys_amount(archivoRegistroArchivos);
 	uint32_t posicion=0;
-	while(posicion<=cantidadDeDirectorio){
+	while(posicion<cantidadDeDirectorio){
 		char* etiqueta=string_new();
 		string_append(&etiqueta,"ARCHIVO");
 		string_append(&etiqueta,string_itoa(posicion));
 		char* pathArchivoSeleccionado = config_get_string_value(archivoRegistroArchivos, etiqueta);
 		cargarTablaArchivo(pathArchivoSeleccionado);
+		posicion++;
 	}
 }
 
@@ -168,7 +195,7 @@ bool hayUnEstadoAnterior(){
 
 	char* pathRegistroArchivos=string_new();
 	string_append(&pathRegistroArchivos,PATH_ARCHIVOS);
-	string_append(&pathNodo,"registro.dat");
+	string_append(&pathRegistroArchivos,"registro.dat");
 	t_config* archivoRegistroArchivos=config_create(pathRegistroArchivos);
 
 

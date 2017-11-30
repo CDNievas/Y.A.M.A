@@ -29,11 +29,12 @@ void persistirTablaNodo(){
 	int i=0;
 	while(i<list_size(tablaGlobalNodos->nodo)){
 		fputs(list_get(tablaGlobalNodos->nodo,i),archivoNodos);
+		i++;
+
 		if(i<list_size(tablaGlobalNodos->nodo)){
 			fputc(',',archivoNodos);
 		}
 
-		i++;
 	}
 	fputc(']',archivoNodos);
 	fputc('\n',archivoNodos);
@@ -178,6 +179,7 @@ void persistirDirectorio(){
 		fputs(string_itoa(directorioSeleccionado->padre),archivoDirectorio);
 		fputc(']',archivoDirectorio);
 		fputc('\n',archivoDirectorio);
+		cont++;
 	}
 	fclose(archivoDirectorio);
 

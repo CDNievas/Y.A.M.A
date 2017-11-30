@@ -331,3 +331,56 @@
 [DEBUG] 23:34:42:754 FileSystem/(6601:6601): Se procede a crear el archivo Bitmap.bin
 [INFO] 23:39:13:727 FileSystem/(6871:6871): Se ha recibido una nueva conexion.
 [DEBUG] 23:39:25:383 FileSystem/(6871:6871): Se procede a crear el archivo Bitmap.bin
+[INFO] 00:44:50:13 FileSystem/(3304:3304): Se ha recibido una nueva conexion.
+[DEBUG] 00:44:55:554 FileSystem/(3304:3304): Se procede a crear el archivo Bitmap.bin
+[INFO] 00:45:03:293 FileSystem/(3304:3304): Se ha registrado un nodo nuevo al sistema
+[INFO] 00:45:16:866 FileSystem/(3304:3304): Se ha recibido una nueva conexion.
+[DEBUG] 00:45:20:542 FileSystem/(3304:3304): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:22:02:224 FileSystem/(2650:2658): Error de directorio padre de la ruta elegida
+[ERROR] 01:22:05:585 FileSystem/(2650:2658): No se pudo crear el directorio. Por favor vuelva a intentarlo
+[INFO] 01:24:21:728 FileSystem/(2650:2658): Error de directorio padre de la ruta elegida
+[ERROR] 01:24:22:659 FileSystem/(2650:2658): No se pudo crear el directorio. Por favor vuelva a intentarlo
+[INFO] 01:24:59:426 FileSystem/(2650:2658): Error de directorio padre de la ruta elegida
+[ERROR] 01:25:00:807 FileSystem/(2650:2658): No se pudo crear el directorio. Por favor vuelva a intentarlo
+[INFO] 01:27:24:119 FileSystem/(2886:2886): Se ha recibido una nueva conexion.
+[DEBUG] 01:27:24:121 FileSystem/(2886:2886): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:27:24:122 FileSystem/(2886:2886): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:28:40:62 FileSystem/(3037:3037): Se ha recibido una nueva conexion.
+[DEBUG] 01:28:42:512 FileSystem/(3037:3037): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:28:42:514 FileSystem/(3037:3037): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:28:46:381 FileSystem/(3037:3037): Se ha recibido una nueva conexion.
+[DEBUG] 01:28:48:186 FileSystem/(3037:3037): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:28:48:189 FileSystem/(3037:3037): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:28:51:21 FileSystem/(3037:3037): Se ha recibido una nueva conexion.
+[DEBUG] 01:28:52:754 FileSystem/(3037:3037): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:28:52:756 FileSystem/(3037:3037): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:46:25:668 FileSystem/(2508:2508): Se ha recibido una nueva conexion.
+[DEBUG] 01:46:28:19 FileSystem/(2508:2508): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:46:28:31 FileSystem/(2508:2508): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:46:41:746 FileSystem/(2508:2508): Se ha recibido una nueva conexion.
+[DEBUG] 01:46:44:432 FileSystem/(2508:2508): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:46:44:447 FileSystem/(2508:2508): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:47:03:968 FileSystem/(2508:2508): Se ha recibido una nueva conexion.
+[DEBUG] 01:47:12:52 FileSystem/(2508:2508): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:47:12:65 FileSystem/(2508:2508): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:49:31:316 FileSystem/(2694:2694): Se ha recibido una nueva conexion.
+[DEBUG] 01:49:33:219 FileSystem/(2694:2694): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:49:33:221 FileSystem/(2694:2694): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:49:35:761 FileSystem/(2694:2694): Se ha recibido una nueva conexion.
+[DEBUG] 01:49:37:715 FileSystem/(2694:2694): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:49:37:722 FileSystem/(2694:2694): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:49:40:625 FileSystem/(2694:2694): Se ha recibido una nueva conexion.
+[DEBUG] 01:49:42:132 FileSystem/(2694:2694): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:49:42:134 FileSystem/(2694:2694): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:51:31:289 FileSystem/(2851:2851): Se ha recibido una nueva conexion.
+[DEBUG] 01:51:33:133 FileSystem/(2851:2851): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:51:33:134 FileSystem/(2851:2851): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:51:35:235 FileSystem/(2851:2851): Se ha recibido una nueva conexion.
+[DEBUG] 01:51:36:440 FileSystem/(2851:2851): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:51:36:442 FileSystem/(2851:2851): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:51:38:634 FileSystem/(2851:2851): Se ha recibido una nueva conexion.
+[DEBUG] 01:51:39:870 FileSystem/(2851:2851): Se procede a crear el archivo Bitmap.bin
+[INFO] 01:51:39:879 FileSystem/(2851:2851): Se ha registrado un nodo nuevo al sistema
+[INFO] 01:52:19:771 FileSystem/(2851:2857): Se creo correctamente el directorio
+[INFO] 01:53:52:495 FileSystem/(2851:2857): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASD/nombres.csv.
+[INFO] 01:54:03:730 FileSystem/(2851:2857): El archivo ha sido copiado exitosamente.
