@@ -9,6 +9,8 @@
 
 int main(int argc, char **argv) {
 
+	signal(SIGINT, handlerSIGINT);
+
 	chequearParametros(argc,2);
 	loggerDatanode = log_create("DataNode.log", "DataNode", 1, 0);
 
@@ -25,7 +27,7 @@ int main(int argc, char **argv) {
 	cargarBin(mapArchivo);
 
 	// Conexion con FS
-	int socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
+	socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	realizarHandshakeFS(socketServerFS);
 
 	// Envio nombre de nodo y cantidad de bloques al FS
@@ -98,6 +100,7 @@ int main(int argc, char **argv) {
 	}
 
 	// LIBERO MEMORIA
+	close(socketServerFS);
 	munmap(mapArchivo,cantBloques);
 	log_destroy(loggerDatanode);
 

@@ -45,10 +45,11 @@ int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster
 	administracionYAMA* nuevaReduccionG = generarAdministracion(obtenerJobDeNodo(listaDeMaster),nroMaster, REDUCCION_GLOBAL, obtenerNombreTemporalGlobal());
 	nuevaReduccionG->nroBloque = 0;
 	nuevaReduccionG->nroBloqueFile = -1;
+	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster, nuevaReduccionG->nombreNodo);
+	uint32_t tamanioMensaje = obtenerTamanioReduGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	log_info(loggerYAMA, "Se prosigue a aplicar el algoritmo de balanceo para elegir el nodo encargado de la reduccion global");
 	nuevaReduccionG->nombreNodo = balancearReduccionGlobal(listaDeMaster);
 	log_info(loggerYAMA, "El nodo elegido para llevar a cabo la reduccion global es %s.", nuevaReduccionG->nombreNodo);
-	t_list* listaDeConexiones = obtenerConexionesDeNodos(listaDeMaster, nuevaReduccionG->nombreNodo);
 	if(listaDeConexiones == NULL){
 		log_error(loggerYAMA, "Se fallo al tratar de obtener los datos de conexion de los nodos.");
 		return -1;
@@ -57,7 +58,7 @@ int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster
 	actualizarWLRGlobal(nuevaReduccionG->nombreNodo, list_size(listaDeMaster));
 	log_info(loggerYAMA, "Se actualizo el WL del nodo %s.", nuevaReduccionG->nombreNodo);
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
-	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, obtenerTamanioReduGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster), infoGlobalSerializada);
+	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, tamanioMensaje, infoGlobalSerializada);
 	log_info(loggerYAMA, "Se enviaron los datos para llevar a cabo la reduccion global al master %d.", nroMaster);
 	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, nuevaReduccionG);

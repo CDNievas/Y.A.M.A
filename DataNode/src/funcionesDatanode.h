@@ -36,6 +36,7 @@ u_int32_t cantBloques; // Guarda cantidad de bloques
 void * mapArchivo; // Memoria del mmap
 struct stat infoDatabin; // Guarda informacion del archivo
 int corte; // Corta el while
+int socketServerFS; // Socket FS
 
 void cargarDataNode(t_config*);
 void realizarHandshakeFS(u_int32_t);
@@ -44,7 +45,7 @@ int escribirBloque(uint32_t, char *, uint32_t);
 void * leerBloque(uint32_t, uint32_t);
 void enviarInfoNodo(u_int32_t);
 char * recvDeBloque(u_int32_t);
-
+void handlerSIGINT(int);
 void gen_random(char *, const u_int32_t);
 
 #endif /* FUNCIONESDATANODE_H_ */

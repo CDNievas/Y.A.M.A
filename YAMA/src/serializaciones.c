@@ -171,7 +171,7 @@ conexionNodo* obtenerConexionNodoEncargado(char* nombreNodo, t_list* listaDeCone
 
 administracionYAMA* obtenerAdminNodoEncargado(char* nombreNodo, t_list* listaAdministracion){
 	bool esNodo(administracionYAMA* admin){
-		return strcmp(admin->nameFile, nombreNodo) == 0;
+		return strcmp(admin->nombreNodo, nombreNodo) == 0;
 	}
 	return list_remove_by_condition(listaAdministracion, (void*)esNodo);
 }
