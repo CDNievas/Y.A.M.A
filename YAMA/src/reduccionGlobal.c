@@ -59,9 +59,9 @@ int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
 	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
 	log_info(loggerYAMA, "Se enviaron los datos para llevar a cabo la reduccion global al master %d.", nroMaster);
-	//SEM_WAIT
+	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, nuevaReduccionG);
-	//SEM_POST
+	pthread_mutex_unlock(&semTablaEstados);
 	free(infoGlobalSerializada);
 	list_destroy_and_destroy_elements(listaDeConexiones, (void*)liberarConexion);
 	return 1;

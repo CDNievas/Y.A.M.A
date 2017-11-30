@@ -139,8 +139,8 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 			usleep(RETARDO_PLANIFICACION);
 		}
 		log_info(loggerYAMA, "Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.");
-		actualizarWLTransformacion(copiasElegidas);
 	}
+	actualizarWLTransformacion(copiasElegidas);
 	return copiasElegidas;
 }
 
@@ -173,14 +173,14 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 		nodoSistema* nodoAChequear = list_find(nodosSistema, (void*)esNodo);
 		if(nodoAChequear->wl < minimoWL || minimoWL == -1){
 			minimoWL = nodoAChequear->wl;
-			string_append(&nodoElegido->nombreNodo, nodoAChequear->nombreNodo);
+			nodoElegido->nombreNodo =  nodoAChequear->nombreNodo;
 			nodoElegido->wl = nodoAChequear->wl;
 		}
 		pthread_mutex_unlock(&semNodosSistema);
 	}
 	char* nombreNodo = string_new();
 	string_append(&nombreNodo, nodoElegido->nombreNodo);
-	liberarNodoSistema(nodoElegido);
+//	liberarNodoSistema(nodoElegido);
 	return nombreNodo;
 }
 
