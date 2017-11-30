@@ -196,3 +196,10 @@ char * recvDeBloque(u_int32_t socket){
 	return stringRecibido;
 }
 
+void handlerSIGINT(int signal){
+	log_info(loggerDatanode, "Se recibio SIGINT. Finalizando proceso");
+	munmap(mapArchivo,cantBloques);
+	log_destroy(loggerDatanode);
+	close(socketServerFS);
+	exit(0);
+}
