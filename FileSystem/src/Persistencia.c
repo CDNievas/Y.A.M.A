@@ -9,61 +9,61 @@
 
 void persistirTablaNodo(){
 
-//	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
-	char * path = obtenerPathTablaNodo();
-	FILE* archivoNodos=fopen(path,"w+");
-
-	fputs("TAMANIO=",archivoNodos);
-	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
-	fputs(tamanioCadena,archivoNodos);
-	free(tamanioCadena);
-	fputc('\n',archivoNodos);
-
-	//modificar
-	fputs("LIBRE=",archivoNodos);
-	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
-	fputs(tamanioCadena,archivoNodos);
-	free(tamanioCadena);
-	fputc('\n',archivoNodos);
-
-	fputs("NODOS=[",archivoNodos);
-	int i=0;
-	while(i<list_size(tablaGlobalNodos->nodo)){
-		fputs(list_get(tablaGlobalNodos->nodo,i),archivoNodos);
-		if(i<list_size(tablaGlobalNodos->nodo)){
-			fputc(',',archivoNodos);
-		}
-
-		i++;
-	}
-	fputc(']',archivoNodos);
-	fputc('\n',archivoNodos);
-
-	int s=0;
-	char* nodoSeleccionado;
-	while(s<list_size(tablaGlobalNodos->nodo)){
-		nodoSeleccionado=list_get(tablaGlobalNodos->nodo,s);
-		fputs(nodoSeleccionado,archivoNodos);
-		fputs("TOTAL=",archivoNodos);
-		bool esNodo(contenidoNodo* contenidoDeUnNodo){
-			return(strcmp(contenidoDeUnNodo->nodo,nodoSeleccionado)==0);
-		}
-		contenidoNodo* nodoElegido=list_find(tablaGlobalNodos->contenidoXNodo ,(void*)esNodo);
-		char* totalNodoElegido = string_itoa(nodoElegido->total);
-		fputs(totalNodoElegido,archivoNodos);
-		free(totalNodoElegido);
-		fputc('\n',archivoNodos);
-
-		fputs(nodoSeleccionado,archivoNodos);
-		fputs("LIBRE=",archivoNodos);
-		char* totalNodoLibre = string_itoa(nodoElegido->libre);
-		fputs(totalNodoLibre ,archivoNodos);
-		free(totalNodoLibre);
-		fputc('\n',archivoNodos);
-
-		s++;
-	}
-	fclose(archivoNodos);
+////	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
+//	char * path = obtenerPathTablaNodo();
+//	FILE* archivoNodos=fopen(path,"w+");
+//
+//	fputs("TAMANIO=",archivoNodos);
+//	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
+//	fputs(tamanioCadena,archivoNodos);
+//	free(tamanioCadena);
+//	fputc('\n',archivoNodos);
+//
+//	//modificar
+//	fputs("LIBRE=",archivoNodos);
+//	char* tamanioCadena = string_itoa(tablaGlobalNodos->tamanio);
+//	fputs(tamanioCadena,archivoNodos);
+//	free(tamanioCadena);
+//	fputc('\n',archivoNodos);
+//
+//	fputs("NODOS=[",archivoNodos);
+//	int i=0;
+//	while(i<list_size(tablaGlobalNodos->nodo)){
+//		fputs(list_get(tablaGlobalNodos->nodo,i),archivoNodos);
+//		if(i<list_size(tablaGlobalNodos->nodo)){
+//			fputc(',',archivoNodos);
+//		}
+//
+//		i++;
+//	}
+//	fputc(']',archivoNodos);
+//	fputc('\n',archivoNodos);
+//
+//	int s=0;
+//	char* nodoSeleccionado;
+//	while(s<list_size(tablaGlobalNodos->nodo)){
+//		nodoSeleccionado=list_get(tablaGlobalNodos->nodo,s);
+//		fputs(nodoSeleccionado,archivoNodos);
+//		fputs("TOTAL=",archivoNodos);
+//		bool esNodo(contenidoNodo* contenidoDeUnNodo){
+//			return(strcmp(contenidoDeUnNodo->nodo,nodoSeleccionado)==0);
+//		}
+//		contenidoNodo* nodoElegido=list_find(tablaGlobalNodos->contenidoXNodo ,(void*)esNodo);
+//		char* totalNodoElegido = string_itoa(nodoElegido->total);
+//		fputs(totalNodoElegido,archivoNodos);
+//		free(totalNodoElegido);
+//		fputc('\n',archivoNodos);
+//
+//		fputs(nodoSeleccionado,archivoNodos);
+//		fputs("LIBRE=",archivoNodos);
+//		char* totalNodoLibre = string_itoa(nodoElegido->libre);
+//		fputs(totalNodoLibre ,archivoNodos);
+//		free(totalNodoLibre);
+//		fputc('\n',archivoNodos);
+//
+//		s++;
+//	}
+//	fclose(archivoNodos);
 
 }
 

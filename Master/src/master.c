@@ -675,13 +675,13 @@ void inicializarReduccionEnNodos(infoReduccionLocal* unaInfoReduccionLocal){
 		avisoCargaTemporal = false;
 		identificadorHilo* unIdentificadorHilo = (identificadorHilo*)malloc(sizeof(identificadorHilo));
 		pthread_t hiloManejadorWorker;
-		unIdentificadorHilo->hiloManejadorReduccion = hiloManejadorWorker;
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		pthread_mutex_lock(&mutexReducciones);
-		list_add(listaHilosReduccion,unIdentificadorHilo);
 		pthread_create(&hiloManejadorWorker, &attr, (void*)manejadorReduccionWorker, (void*)unaInfoReduccionLocal);
+		unIdentificadorHilo->hiloManejadorReduccion = hiloManejadorWorker;
+		list_add(listaHilosReduccion,unIdentificadorHilo);
 		pthread_mutex_unlock(&mutexReducciones);
 	}
 	else{
@@ -715,10 +715,10 @@ void finalizarHilos(){
 		{
 			log_info(loggerMaster,"Se finalizo correctamente un hilo de reduccion local.\n");
 			pthread_join(unIdentificadorHilo->hiloManejadorReduccion, (void**) NULL);
-			free(unIdentificadorHilo);
 		}else{
 			log_error(loggerMaster,"No se pudo matar el hilo de reduccion local.\n");
 		}
+		free(unIdentificadorHilo);
 	}
 	list_destroy(listaHilosReduccion);
 	pthread_mutex_unlock(&mutexReducciones);

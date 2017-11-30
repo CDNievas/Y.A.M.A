@@ -66,7 +66,7 @@ void liberarNodoSistema(nodoSistema* nodo){
 
 void liberarAdminYAMA(administracionYAMA* admin){
 	free(admin->nameFile);
-	free(admin->nombreNodo);
+	//free(admin->nombreNodo);
 	free(admin);
 }
 

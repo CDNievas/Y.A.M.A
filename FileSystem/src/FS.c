@@ -20,9 +20,9 @@
 int main(int argc, char **argv) {
 	signal(SIGINT, killMe);
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	//chequearParametros(argc, 2);
-	//t_config* configuracionFS = generarTConfig(argv[1], 5);
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
+	chequearParametros(argc, 2);
+	t_config* configuracionFS = generarTConfig(argv[1], 5);
+	//t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
 	cargarFileSystem(configuracionFS);
 	int socketMaximo, socketClienteChequeado, socketAceptado;
 	int socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);

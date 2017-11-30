@@ -320,6 +320,7 @@ char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint
 
 char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* pathDestino){
 	char* command = string_new();
+	string_append(&command,"cat ");
 	string_append(&command,archivoApareado);
 	string_append(&command," | ./");
 	string_append(&command,nombreScript);
@@ -639,14 +640,14 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 	char* numeroPID = string_itoa((int)getpid());
 	string_append(&nombreArchivoApareado,numeroPID);
 	char* comandoOrdenacionArchivos = string_new();
-	string_append(&comandoOrdenacionArchivos,"sort -m ");
+	string_append(&comandoOrdenacionArchivos,"sort -m");
 	int posicion;
 	int cantidad = list_size(archivosTemporales);
 
 	for(posicion=0;posicion<cantidad;posicion++){
 		char* unArchivoTemporal = list_remove(archivosTemporales,0);
+		string_append(&comandoOrdenacionArchivos," | cat ");
 		string_append(&comandoOrdenacionArchivos,unArchivoTemporal);
-		string_append(&comandoOrdenacionArchivos," ");
 		free(unArchivoTemporal);
 	}
 
