@@ -179,7 +179,9 @@ t_list* obtenerListaDelNodo(int nroMaster, int socketMaster, char* nombreNodo){
 
 char* obtenerNombreNodo(t_list* listaDelNodo){
 	administracionYAMA* admin = list_get(listaDelNodo, 0);
-	return admin->nombreNodo;
+	char* nombreNodo = string_new();
+	string_append(&nombreNodo, admin->nombreNodo);
+	return nombreNodo;
 }
 
 //PUESTA EN MARCHA DE YAMA

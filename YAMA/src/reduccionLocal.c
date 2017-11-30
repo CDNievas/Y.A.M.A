@@ -6,10 +6,12 @@ bool sePuedeHacerReduccionLocal(t_list* listaDelNodo){
 	bool reduccionesLocalesTerminadas(administracionYAMA* admin){
 		return admin->estado == FINALIZADO || admin->estado == FALLO;
 	}
-	log_info(loggerYAMA, "Se prosigue a verificar si se puede llevar a cabo la reduccion local en el Nodo %s.", obtenerNombreNodo(listaDelNodo));
+	char* nombreNodo =  obtenerNombreNodo(listaDelNodo);
+	log_info(loggerYAMA, "Se prosigue a verificar si se puede llevar a cabo la reduccion local en el Nodo %s.", nombreNodo);
 	pthread_mutex_lock(&semTablaEstados);
 	int satisfacen = list_all_satisfy(listaDelNodo, (void*)reduccionesLocalesTerminadas);
 	pthread_mutex_unlock(&semTablaEstados);
+	free(nombreNodo);
 	return satisfacen;
 }
 
