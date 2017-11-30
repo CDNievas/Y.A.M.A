@@ -17,6 +17,7 @@ void *serializarInfoTransformacion(t_list*);
 uint32_t obtenerTamanioInfoTransformacion(t_list*);
 void* serializarInfoReduccionLocal(conexionNodo*, char*, t_list*);
 uint32_t obtenerTamanioInfoReduccionLocal(conexionNodo*, char*, t_list*);
+uint32_t obtenerTamanioReduGlobal(administracionYAMA*, t_list*, t_list*);
 /*
  * fila de reduccion global de la tabla de estados
  * Lista con las conexiones de los nodos

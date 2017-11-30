@@ -474,6 +474,7 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(int socketYAMA, char* scriptR
 			}
 			free(temporalReduccionLocal);
 			free(ipNodo);
+			free(nombreNodo);
 			return unaInfoTemporalNodo;
 		}
 	}
@@ -503,6 +504,7 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(int socketYAMA, char* scriptR
 		pthread_mutex_unlock(&mutexTemporales);
 		free(temporalReduccionLocal);
 		free(ipNodo);
+		free(nombreNodo);
 		return unaInfoTemporalNodo;
 	}
 }
@@ -793,6 +795,8 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 		log_info(loggerMaster,"Esperando a que terminen las reducciones locales... \n");
 	}
 
+	log_info(loggerMaster,"Reducciones locales terminadas, se procede a realizar la reduccion global... \n");
+
 	infoReduccionGlobal* unaInfoReduxGlobalEncargado = list_remove(listaInfoGlobal,0);
 
 	int socketWorker = conectarAWorker(unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
@@ -916,6 +920,7 @@ void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
 		string_append(&(unaInfoReduxGlobal->temporalReduccion),recibirString(socketYAMA));
 		list_add(listaInfoGlobal,unaInfoReduxGlobal);
 	}
+	log_info(loggerMaster,"Se recibio todos los datos de la reduccion global de YAMA. \n");
 	enviarDatosAWorker(listaInfoGlobal,cantidadReducciones+1,rutaReduccionGlobal,scriptReduccion,socketYAMA);
 }
 
@@ -1001,6 +1006,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 				pthread_mutex_destroy(&mutexNodos);
 				pthread_mutex_destroy(&mutexReducciones);
 				pthread_mutex_destroy(&mutexTemporales);
+				log_destroy(loggerMaster);
 				exit(0);
 			}
 			else{
@@ -1052,7 +1058,22 @@ void darPermisosAScripts(char* script){
 	free(comandoAEjecutar);
 }
 
+void laMardita(int signal){
+	log_info(loggerMaster, "Se recibio la senial SIGINT, muriendo con estilo... \n");
+	free(YAMA_IP);
+	free(WORKER_IP);
+	finalizarHilos();
+	liberarListas();
+	log_info(loggerMaster, "¡¡Adios logger!! \n");
+	log_destroy(loggerMaster);
+	pthread_mutex_destroy(&mutexNodos);
+	pthread_mutex_destroy(&mutexReducciones);
+	pthread_mutex_destroy(&mutexTemporales);
+	exit(0);
+}
+
 int main(int argc, char **argv) {
+	signal(SIGINT, laMardita);
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	tiempoI = obtenerTiempo();
 	chequearParametros(argc,6);
@@ -1098,7 +1119,9 @@ int main(int argc, char **argv) {
     		break;
     	}
     	case REDUCCION_GLOBAL:{
+    		log_info(loggerMaster,"Se recibio la solicitud de reduccion global de YAMA. \n");
     		recibirSolicitudReduccionGlobal(socketYAMA,argv[3]);
+    		//recibirSolicitudReduccionGlobal(socketYAMA,"reductor.py");
     		break;
     	}
     	case ALMACENADO_FINAL:{
@@ -1118,6 +1141,7 @@ int main(int argc, char **argv) {
     		pthread_mutex_destroy(&mutexNodos);
     		pthread_mutex_destroy(&mutexReducciones);
     		pthread_mutex_destroy(&mutexTemporales);
+    		log_destroy(loggerMaster);
     		exit(-1);
     		break;
     	}

@@ -674,6 +674,7 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 	}
 
 	free(comandoOrdenacionArchivos);
+	free(numeroPID);
 
 	list_destroy(archivosTemporales);
 

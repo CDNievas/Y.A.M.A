@@ -57,7 +57,7 @@ int cargarReduccionGlobal(int socketMaster, int nroMaster, t_list* listaDeMaster
 	actualizarWLRGlobal(nuevaReduccionG->nombreNodo, list_size(listaDeMaster));
 	log_info(loggerYAMA, "Se actualizo el WL del nodo %s.", nuevaReduccionG->nombreNodo);
 	void* infoGlobalSerializada = serializarInfoReduccionGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster);
-	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, 0, infoGlobalSerializada);
+	sendRemasterizado(socketMaster, REDUCCION_GLOBAL, obtenerTamanioReduGlobal(nuevaReduccionG, listaDeConexiones, listaDeMaster), infoGlobalSerializada);
 	log_info(loggerYAMA, "Se enviaron los datos para llevar a cabo la reduccion global al master %d.", nroMaster);
 	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, nuevaReduccionG);
