@@ -22,6 +22,8 @@ void cargarEstructuraBitmap(){
 		bitmapNodo->bitarray = bitarray;
 		list_add(listaBitmap, bitmapNodo);
 
+		cont++;
+
 	}
 }
 
@@ -54,14 +56,16 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 	char** arrayListaNodos = config_get_array_value(arhivoNodos, "NODOS");
 	uint32_t cont=0;
 	while(arrayListaNodos[cont]!=NULL){
-		char* nodo=arrayListaNodos[cont];
+		char* nodo=string_new();
+		string_append(&nodo,arrayListaNodos[cont]);
 		list_add(tablaGlobalNodos->nodo,nodo);
 		cont++;
 	}
 
 	cont=0;
 	while(cont<list_size(tablaGlobalNodos->nodo)){
-		char* nodo=list_get(tablaGlobalNodos->nodo,cont);
+		char* nodo=string_new();
+		string_append(&nodo,list_get(tablaGlobalNodos->nodo,cont));
 		contenidoNodo* nodoSeleccionado=malloc(sizeof(contenidoNodo));
 		nodoSeleccionado->nodo=string_new();
 		string_append(&nodoSeleccionado->nodo,nodo);
@@ -72,12 +76,15 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 		uint32_t totalBloques = config_get_int_value(arhivoNodos, nodo);
 		nodoSeleccionado->total=totalBloques;
 
-		char* nombreNodo=nodoSeleccionado->nodo;
+		char* nombreNodo=string_new();
+		string_append(&nombreNodo, nodoSeleccionado->nodo);
 		string_append(&nombreNodo,"LIBRE");
 		uint32_t bloquesLibres = config_get_int_value(arhivoNodos, nombreNodo);
 		nodoSeleccionado->libre=bloquesLibres;
 
 		nodoSeleccionado->porcentajeOcioso=(nodoSeleccionado->libre*100)/nodoSeleccionado->total;
+
+		nodoSeleccionado->socket=0;
 
 		list_add(tablaGlobalNodos->contenidoXNodo,nodoSeleccionado);
 		cont++;
@@ -111,7 +118,7 @@ void cargarTablaArchivo(char* pathArchivo){
 	char* tipo=config_get_string_value(archivo,"TIPO");
 	string_append(&entradaArchivo->tipo,tipo);
 
-	uint32_t cantidadDeCopiasXBloque=config_keys_amount(archivo)-2;
+	uint32_t cantidadDeCopiasXBloque=(config_keys_amount(archivo)-2)/3;
 	uint32_t contBloque=0;
 	while(contBloque<cantidadDeCopiasXBloque){
 		copiasXBloque* copiaBloque=malloc(sizeof(copiasXBloque));
@@ -120,8 +127,9 @@ void cargarTablaArchivo(char* pathArchivo){
 		copiaBloque->copia1->nodo=string_new();
 		copiaBloque->copia2=malloc(sizeof(copia));
 		copiaBloque->copia2->nodo=string_new();
+		copiaBloque->disponible=0;
+		copiaBloque->bytes=0;
 
-		printf("%d",contBloque);
 
 		string_append(&copiaBloque->bloque,string_itoa(contBloque));
 
@@ -158,7 +166,6 @@ void cargarTablaArchivo(char* pathArchivo){
 		copiaBloque->bytes=config_get_int_value(archivo,etiqueta3);
 
 		free(etiqueta3);
-
 
 		list_add(entradaArchivo->bloques,copiaBloque);
 		contBloque++;
@@ -204,6 +211,7 @@ bool hayUnEstadoAnterior(){
 		cargarEstructuraNodos(archivoNodos);
 		cargarEstructuraArchivos(archivoRegistroArchivos);
 		cargarEstructuraBitmap();
+		hayEstadoAnterior=true;
 		return true;
 	}else{
 		return false;

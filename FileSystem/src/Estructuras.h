@@ -64,6 +64,7 @@ typedef struct
 	copia* copia1;
 	copia* copia2;
 	uint32_t bytes;
+	uint32_t disponible;
 } copiasXBloque;
 
 //------------------TABLA NODOS------------------------

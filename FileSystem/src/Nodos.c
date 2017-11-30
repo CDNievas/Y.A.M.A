@@ -28,58 +28,99 @@ int sacarPorcentajeOcioso(int bloquesLibres, int cantBloques){
 	return numero;
 }
 
-//void hayUnEstadoEstable(){
-//	uint32_t cantidadDeArchivos=list_size(tablaGlobalArchivos);
-//	uint32_t cont=0;
-//	while(cont<cantidadDeArchivos){
-//		tablaArchivos* entradaArchivos=list_get(tablaGlobalArchivos,cont);
-//
-//		uint32_t cantidadDeBloques=list_size(entradaArchivos->bloques);
-//		uint32_t contNodo=0;
-//
-//		while(contNodo<cantidadDeBloques){
-//			copiasXBloque* entradaDelBloque=list_get(entradaArchivos.bloques,contNodo);
-//
-//			bool estaDisponibleLaCopia (contenidoNodo* nodo){
-//				return (nodo->disponible==1 && (strcmp(entradaDelBloque->copia1->nodo,nodo->nodo)==0 || strcmp(entradaDelBloque->copia2->nodo,nodo->nodo)==0));
-//			}
-//			bool hayUnaCopia=list_any_satisfy(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponibleLaCopia );
-//
-//
-//		}
-//
-//
-//
-//	}
-//
-//}
-//
-//
-//
-//
-//void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto){
-//
-//	bool estaEnElSistema(char* nodoSeleccionado){
-//		return(strcmp(nodoSeleccionado,nombreNodo)==0);
-//	}
-//	bool estabaEnElEstadoAnterior=list_any_satisfy(tablaGlobalNodos->nodo,(void*)estaEnElSistema);
-//	if(estabaEnElEstadoAnterior){
-//		bool esElNodo(contenidoNodo* nodo){
-//			return(strcmp(nodo->nodo,nombreNodo)==0);
-//		}
-//		contenidoNodo* nodoElegido =list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodo);
-//
-//		nodoElegido->disponible=1;
-//		nodoElegido->socket=socket;
-//
-//		hayUnEstadoEstable();
-//
-//	}
-//
-//
-//
-//}
-//
+void borrarNodosRegistradosNoDisponibles(){
+	uint32_t cantidadDeNodos=list_size(tablaGlobalNodos->nodo);
+	uint32_t cont=0;
+	while(cont<cantidadDeNodos){
+
+		bool noEstaDsponible(contenidoNodo* nodoSeleccionado){
+			return (nodoSeleccionado->disponible==0);
+		}
+		contenidoNodo* nodo=list_remove_by_condition(tablaGlobalNodos->contenidoXNodo,(void*)noEstaDsponible);
+
+		if(nodo!=NULL){
+
+			tablaGlobalNodos->tamanio-=nodo->total;
+			tablaGlobalNodos->libres-=nodo->libre;
+
+			free(nodo->nodo);
+			free(nodo);
+
+		}
+
+		cont++;
+
+	}
+	persistirTablaNodo();
+
+}
+
+
+void hayUnEstadoEstable(char* nombreNodo){
+	uint32_t cantidadDeArchivos=list_size(tablaGlobalArchivos);
+	uint32_t cont=0;
+	while(cont<cantidadDeArchivos){
+		tablaArchivos* entradaArchivos=list_get(tablaGlobalArchivos,cont);
+
+		uint32_t cantidadDeBloques=list_size(entradaArchivos->bloques);
+		uint32_t contNodo=0;
+
+		while(contNodo<cantidadDeBloques){
+			copiasXBloque* bloqueCopia=list_get(entradaArchivos->bloques,contNodo);
+
+			if((strcmp(bloqueCopia->copia1->nodo,nombreNodo)==0 ||strcmp(bloqueCopia->copia2->nodo,nombreNodo))){
+				bloqueCopia->disponible=1;
+			}
+			contNodo++;
+		}
+		cont++;
+
+		bool todosBloquesDisponibles(copiasXBloque* entradaBloqueCopia){
+			return(entradaBloqueCopia->disponible==1);
+		}
+
+		if(list_all_satisfy(entradaArchivos->bloques,(void*)todosBloquesDisponibles)){
+			entradaArchivos->disponible=1;
+		}
+	}
+
+	bool todosArchivosDisponibles(tablaArchivos* entradaArchivo){
+		return(entradaArchivo->disponible==1);
+	}
+
+	if(list_all_satisfy(tablaGlobalArchivos,(void*)todosArchivosDisponibles)){
+		esEstadoSeguro=true;
+		hayEstadoAnterior=false;
+		borrarNodosRegistradosNoDisponibles();
+	}
+
+
+
+}
+
+
+
+
+void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto){
+
+	bool estaEnElSistema(char* nodoSeleccionado){
+		return(strcmp(nodoSeleccionado,nombreNodo)==0);
+	}
+	bool estabaEnElEstadoAnterior=list_any_satisfy(tablaGlobalNodos->nodo,(void*)estaEnElSistema);
+	if(estabaEnElEstadoAnterior){
+		bool esElNodo(contenidoNodo* nodo){
+			return(strcmp(nodo->nodo,nombreNodo)==0);
+		}
+		contenidoNodo* nodoElegido =list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodo);
+
+		nodoElegido->disponible=1;
+		nodoElegido->socket=socket;
+
+		hayUnEstadoEstable(nombreNodo);
+
+	}
+}
+
 
 
 
@@ -87,7 +128,7 @@ void registrarNodo(int socket) {
 
 	char * nombreNodo=string_new();
 	char* ip=string_new();
-	int cantBloques,puerto;
+	uint32_t cantBloques,puerto;
 	t_bitarray * bitarray;
 
 	nombreNodo = recibirString(socket);
@@ -101,7 +142,7 @@ void registrarNodo(int socket) {
 
 	// Checkeo estado anterior
 	if(hayEstadoAnterior){
-//		perteneceAlSistema(nombreNodo,socket,ip,puerto);
+		perteneceAlSistema(nombreNodo,socket,ip,puerto);
 
 	} else {
 		bitarray = crearBitmap(nombreNodo,cantBloques);
@@ -146,7 +187,5 @@ void registrarNodo(int socket) {
 
 	hayNodos++;
 
-//	free(ip);
-//	free(nombreNodo);
 }
 

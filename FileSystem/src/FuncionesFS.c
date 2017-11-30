@@ -371,21 +371,18 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 	uint32_t posicionActual = 0;
 	void enviarNodoPorPosicion(int posicion) {
 		copiasXBloque* copia=malloc(sizeof(copiasXBloque));
+		copia->disponible=1;
 		if (posicionActual == 0) {
 			void* contenido = malloc(posicion);
 			fread(contenido, posicion, 1, archivo);
-//			char* contenidoAEnviar = string_substring_until(contenido, posicion);
-//			printf("%s", contenidoAEnviar);
 			copia->bloque = string_new();
 			char* numeroBloque = string_itoa(posicionActual);
 			string_append(&copia->bloque, numeroBloque);
 			copia->bytes=posicion;
 			asignarEnviarANodo(contenido, posicion,copia);
-//			free(contenidoAEnviar);
 			free(contenido);
 			free(numeroBloque);
 		} else {
-//			posicionActual--;
 			uint32_t posicionAnterior = (int) list_get(posiciones,posicionActual-1);
 			char* numeroBloque = string_itoa(posicionActual);
 			copia->bloque = string_new();
@@ -393,7 +390,6 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 			copia->bytes=posicion- posicionAnterior;
 			void* contenido = malloc(posicion - posicionAnterior);
 			fread(contenido, posicion - posicionAnterior, 1,archivo);
-//			char* contenidoAEnviar = string_substring_until(contenido, posicion-posicionAnterior);
 			asignarEnviarANodo(contenido,posicion - posicionAnterior,copia);
 			free(contenido);
 			free(numeroBloque);
@@ -407,7 +403,7 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 
 void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	FILE* archivo = fopen(pathArchivo, "r+");//CACHEAR ERROR ARCHIVO
-	//FILE* archivo = fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/Master/Debug/yama-test1/WBAN.csv", "rb");
+
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
 

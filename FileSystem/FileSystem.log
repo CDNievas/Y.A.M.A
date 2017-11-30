@@ -384,3 +384,267 @@
 [INFO] 01:52:19:771 FileSystem/(2851:2857): Se creo correctamente el directorio
 [INFO] 01:53:52:495 FileSystem/(2851:2857): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASD/nombres.csv.
 [INFO] 01:54:03:730 FileSystem/(2851:2857): El archivo ha sido copiado exitosamente.
+[INFO] 14:55:11:635 FileSystem/(4032:4032): 0
+[INFO] 14:55:16:128 FileSystem/(4032:4032): 1
+[INFO] 14:55:16:864 FileSystem/(4032:4032): 2
+[INFO] 14:55:17:464 FileSystem/(4032:4032): 3
+[INFO] 14:55:17:872 FileSystem/(4032:4032): 4
+[INFO] 14:55:18:208 FileSystem/(4032:4032): 5
+[INFO] 14:55:18:472 FileSystem/(4032:4032): 6
+[INFO] 14:55:18:728 FileSystem/(4032:4032): 7
+[INFO] 14:55:19:84 FileSystem/(4032:4032): 8
+[INFO] 14:55:19:409 FileSystem/(4032:4032): 9
+[INFO] 14:55:19:620 FileSystem/(4032:4032): 10
+[INFO] 14:55:19:841 FileSystem/(4032:4032): 11
+[INFO] 14:55:20:49 FileSystem/(4032:4032): 12
+[INFO] 14:55:20:249 FileSystem/(4032:4032): 13
+[INFO] 14:55:20:469 FileSystem/(4032:4032): 14
+[INFO] 14:55:20:657 FileSystem/(4032:4032): 15
+[INFO] 14:55:20:868 FileSystem/(4032:4032): 16
+[INFO] 14:55:21:73 FileSystem/(4032:4032): 17
+[INFO] 14:55:21:281 FileSystem/(4032:4032): 18
+[INFO] 14:55:21:456 FileSystem/(4032:4032): 19
+[INFO] 14:55:21:668 FileSystem/(4032:4032): 20
+[INFO] 14:55:21:864 FileSystem/(4032:4032): 21
+[INFO] 14:55:22:64 FileSystem/(4032:4032): 22
+[INFO] 14:55:22:265 FileSystem/(4032:4032): 23
+[INFO] 14:55:22:472 FileSystem/(4032:4032): 24
+[INFO] 14:55:22:684 FileSystem/(4032:4032): 25
+[INFO] 14:55:22:865 FileSystem/(4032:4032): 26
+[INFO] 14:55:23:65 FileSystem/(4032:4032): 27
+[INFO] 14:55:23:241 FileSystem/(4032:4032): 28
+[INFO] 14:55:23:433 FileSystem/(4032:4032): 29
+[INFO] 14:55:23:625 FileSystem/(4032:4032): 30
+[INFO] 14:55:23:849 FileSystem/(4032:4032): 31
+[INFO] 14:55:30:37 FileSystem/(4032:4032): 32
+[INFO] 14:56:24:736 FileSystem/(4032:4032): 33
+[INFO] 14:56:44:80 FileSystem/(4032:4032): 34
+[INFO] 14:59:42:94 FileSystem/(4286:4286): 0
+[INFO] 14:59:42:94 FileSystem/(4286:4286): 1
+[INFO] 14:59:42:94 FileSystem/(4286:4286): 2
+[INFO] 14:59:42:94 FileSystem/(4286:4286): 3
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 4
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 5
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 6
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 7
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 8
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 9
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 10
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 11
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 12
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 13
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 14
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 15
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 16
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 17
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 18
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 19
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 20
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 21
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 22
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 23
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 24
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 25
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 26
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 27
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 28
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 29
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 30
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 31
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 32
+[INFO] 14:59:42:95 FileSystem/(4286:4286): 33
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 0
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 1
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 2
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 3
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 4
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 5
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 6
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 7
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 8
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 9
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 10
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 11
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 12
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 13
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 14
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 15
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 16
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 17
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 18
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 19
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 20
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 21
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 22
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 23
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 24
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 25
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 26
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 27
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 28
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 29
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 30
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 31
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 32
+[INFO] 15:01:50:241 FileSystem/(4359:4359): 33
+[INFO] 15:04:34:711 FileSystem/(4464:4464): 0
+[INFO] 15:04:57:669 FileSystem/(4464:4464): 1
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 2
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 3
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 4
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 5
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 6
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 7
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 8
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 9
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 10
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 11
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 12
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 13
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 14
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 15
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 16
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 17
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 18
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 19
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 20
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 21
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 22
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 23
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 24
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 25
+[INFO] 15:05:03:484 FileSystem/(4464:4464): 26
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 27
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 28
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 29
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 30
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 31
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 32
+[INFO] 15:05:03:485 FileSystem/(4464:4464): 33
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 0
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 1
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 2
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 3
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 4
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 5
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 6
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 7
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 8
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 9
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 10
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 11
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 12
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 13
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 14
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 15
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 16
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 17
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 18
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 19
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 20
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 21
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 22
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 23
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 24
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 25
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 26
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 27
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 28
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 29
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 30
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 31
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 32
+[INFO] 15:08:56:267 FileSystem/(4702:4702): 33
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 0
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 1
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 2
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 3
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 4
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 5
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 6
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 7
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 8
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 9
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 10
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 11
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 12
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 13
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 14
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 15
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 16
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 17
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 18
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 19
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 20
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 21
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 22
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 23
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 24
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 25
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 26
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 27
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 28
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 29
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 30
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 31
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 32
+[INFO] 15:10:28:918 FileSystem/(4816:4816): 33
+[INFO] 17:24:23:862 FileSystem/(6702:6702): 0
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 1
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 2
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 3
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 4
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 5
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 6
+[INFO] 17:24:23:882 FileSystem/(6702:6702): 7
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 8
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 9
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 10
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 11
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 12
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 13
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 14
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 15
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 16
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 17
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 18
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 19
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 20
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 21
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 22
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 23
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 24
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 25
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 26
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 27
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 28
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 29
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 30
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 31
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 32
+[INFO] 17:24:23:883 FileSystem/(6702:6702): 33
+[INFO] 17:24:34:489 FileSystem/(6702:6702): Se ha recibido una nueva conexion.
+[DEBUG] 17:24:34:489 FileSystem/(6702:6702): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:26:33:556 FileSystem/(6892:6892): Se ha recibido una nueva conexion.
+[DEBUG] 17:26:37:484 FileSystem/(6892:6892): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:26:44:934 FileSystem/(6892:6892): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:26:48:905 FileSystem/(6892:6892): Se ha recibido una nueva conexion.
+[DEBUG] 17:26:50:926 FileSystem/(6892:6892): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:26:50:926 FileSystem/(6892:6892): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:26:54:288 FileSystem/(6892:6892): Se ha recibido una nueva conexion.
+[DEBUG] 17:26:57:94 FileSystem/(6892:6892): Se procede a crear el archivo Bitmap.bin
+[INFO] 17:26:57:94 FileSystem/(6892:6892): Se ha registrado un nodo nuevo al sistema
+[INFO] 17:27:14:980 FileSystem/(6892:6899): Se creo correctamente el directorio
+[INFO] 17:28:08:623 FileSystem/(6892:6899): Se procede a almacenar el archivo nombres.csv en /home/utnso/Escritorio/yamafs:/ASD/nombres.csv.
+[INFO] 17:28:15:419 FileSystem/(6892:6899): El archivo ha sido copiado exitosamente.
+[INFO] 17:43:36:363 FileSystem/(7245:7245): Se ha recibido una nueva conexion.
+[INFO] 17:44:42:394 FileSystem/(7361:7361): Se ha recibido una nueva conexion.
+[INFO] 17:46:07:271 FileSystem/(7460:7460): Se ha recibido una nueva conexion.
+[INFO] 17:48:17:149 FileSystem/(7554:7554): Se ha recibido una nueva conexion.
+[INFO] 17:50:48:940 FileSystem/(7771:7771): Se ha recibido una nueva conexion.
+[INFO] 17:54:35:2 FileSystem/(7966:7966): Se ha recibido una nueva conexion.
+[INFO] 17:55:08:562 FileSystem/(8021:8021): Se ha recibido una nueva conexion.
+[INFO] 17:56:09:56 FileSystem/(8095:8095): Se ha recibido una nueva conexion.
+[INFO] 17:58:33:386 FileSystem/(8349:8349): Se ha recibido una nueva conexion.
+[INFO] 18:00:07:179 FileSystem/(8349:8349): Se ha registrado un nodo nuevo al sistema
+[INFO] 18:00:15:857 FileSystem/(8349:8349): Se ha recibido una nueva conexion.
