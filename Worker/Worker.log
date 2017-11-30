@@ -490,3 +490,649 @@
 
 [INFO] 04:56:55:267 Worker/(14658:14747): Se creo correctamente el comando del script transformador
 
+[INFO] 23:10:18:755 Worker/(8166:8166): Se cargo correctamente Worker.
+
+[INFO] 23:10:19:683 Worker/(8166:8166): Procesos hijos muertos eliminados del sistema.
+
+[INFO] 23:10:27:985 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:985 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:985 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:986 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:986 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:986 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:986 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:986 Worker/(8166:8367): Soy el hijo con el pid 8367 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:987 Worker/(8166:8367): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:27:987 Worker/(8166:8367): Se pudo abrir el archivo donde se guardara el script: transformador18367.py.
+
+[INFO] 23:10:27:987 Worker/(8166:8367): Se pudo escribir en el archivo donde se guarda el script: transformador18367.py.
+
+[INFO] 23:10:27:987 Worker/(8166:8367): Se pudo cerrar el archivo donde se guarda el script: transformador18367.py.
+
+[INFO] 23:10:27:988 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:988 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:988 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:988 Worker/(8166:8368): Soy el hijo con el pid 8368 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:988 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:988 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:988 Worker/(8166:8370): Soy el hijo con el pid 8370 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:988 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:989 Worker/(8166:8371): Soy el hijo con el pid 8371 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:989 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:990 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:990 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:990 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:991 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:991 Worker/(8166:8372): Soy el hijo con el pid 8372 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:991 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:991 Worker/(8166:8374): Soy el hijo con el pid 8374 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:991 Worker/(8166:8370): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:27:991 Worker/(8166:8368): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:27:992 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:27:992 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:27:992 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:27:992 Worker/(8166:8370): Se pudo abrir el archivo donde se guardara el script: transformador78370.py.
+
+[INFO] 23:10:27:992 Worker/(8166:8370): Se pudo escribir en el archivo donde se guarda el script: transformador78370.py.
+
+[INFO] 23:10:27:992 Worker/(8166:8370): Se pudo cerrar el archivo donde se guarda el script: transformador78370.py.
+
+[INFO] 23:10:27:993 Worker/(8166:8368): Se pudo abrir el archivo donde se guardara el script: transformador58368.py.
+
+[INFO] 23:10:27:993 Worker/(8166:8368): Se pudo escribir en el archivo donde se guarda el script: transformador58368.py.
+
+[INFO] 23:10:27:993 Worker/(8166:8368): Se pudo cerrar el archivo donde se guarda el script: transformador58368.py.
+
+[INFO] 23:10:27:994 Worker/(8166:8367): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:27:994 Worker/(8166:8367): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:27:994 Worker/(8166:8367): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque18367.
+
+[INFO] 23:10:27:999 Worker/(8166:8370): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:27:999 Worker/(8166:8370): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:27:999 Worker/(8166:8370): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque78370.
+
+[INFO] 23:10:27:0 Worker/(8166:8371): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:27:0 Worker/(8166:8371): Se pudo abrir el archivo donde se guardara el script: transformador98371.py.
+
+[INFO] 23:10:27:0 Worker/(8166:8371): Se pudo escribir en el archivo donde se guarda el script: transformador98371.py.
+
+[INFO] 23:10:27:0 Worker/(8166:8371): Se pudo cerrar el archivo donde se guarda el script: transformador98371.py.
+
+[INFO] 23:10:27:1 Worker/(8166:8370): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque78370.
+
+[INFO] 23:10:27:2 Worker/(8166:8367): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque18367.
+
+[INFO] 23:10:27:3 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:27:3 Worker/(8166:8375): Soy el hijo con el pid 8375 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:27:5 Worker/(8166:8370): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque78370.
+
+[INFO] 23:10:28:6 Worker/(8166:8367): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque18367.
+
+[INFO] 23:10:28:6 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:6 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:7 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:7 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:7 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:7 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:7 Worker/(8166:8368): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:7 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:7 Worker/(8166:8368): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:7 Worker/(8166:8368): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque58368.
+
+[INFO] 23:10:28:8 Worker/(8166:8372): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:9 Worker/(8166:8372): Se pudo abrir el archivo donde se guardara el script: transformador38372.py.
+
+[INFO] 23:10:28:9 Worker/(8166:8372): Se pudo escribir en el archivo donde se guarda el script: transformador38372.py.
+
+[INFO] 23:10:28:9 Worker/(8166:8372): Se pudo cerrar el archivo donde se guarda el script: transformador38372.py.
+
+[INFO] 23:10:28:9 Worker/(8166:8367): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:9 Worker/(8166:8367): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:9 Worker/(8166:8370): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:9 Worker/(8166:8368): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque58368.
+
+[INFO] 23:10:28:9 Worker/(8166:8370): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:13 Worker/(8166:8368): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque58368.
+
+[INFO] 23:10:28:13 Worker/(8166:8384): Soy el hijo con el pid 8384 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:13 Worker/(8166:8375): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:15 Worker/(8166:8368): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:18 Worker/(8166:8371): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:19 Worker/(8166:8371): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:19 Worker/(8166:8371): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque98371.
+
+[INFO] 23:10:28:19 Worker/(8166:8384): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:19 Worker/(8166:8384): Se pudo abrir el archivo donde se guardara el script: transformador158384.py.
+
+[INFO] 23:10:28:20 Worker/(8166:8384): Se pudo escribir en el archivo donde se guarda el script: transformador158384.py.
+
+[INFO] 23:10:28:20 Worker/(8166:8384): Se pudo cerrar el archivo donde se guarda el script: transformador158384.py.
+
+[INFO] 23:10:28:21 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:21 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:21 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:21 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:22 Worker/(8166:8374): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:22 Worker/(8166:8374): Se pudo abrir el archivo donde se guardara el script: transformador118374.py.
+
+[INFO] 23:10:28:22 Worker/(8166:8374): Se pudo escribir en el archivo donde se guarda el script: transformador118374.py.
+
+[INFO] 23:10:28:22 Worker/(8166:8368): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:23 Worker/(8166:8372): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:23 Worker/(8166:8374): Se pudo cerrar el archivo donde se guarda el script: transformador118374.py.
+
+[INFO] 23:10:28:24 Worker/(8166:8372): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:24 Worker/(8166:8372): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque38372.
+
+[INFO] 23:10:28:24 Worker/(8166:8385): Soy el hijo con el pid 8385 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:24 Worker/(8166:8371): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque98371.
+
+[INFO] 23:10:28:26 Worker/(8166:8375): Se pudo abrir el archivo donde se guardara el script: transformador138375.py.
+
+[INFO] 23:10:28:26 Worker/(8166:8372): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque38372.
+
+[INFO] 23:10:28:27 Worker/(8166:8385): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:27 Worker/(8166:8385): Se pudo abrir el archivo donde se guardara el script: transformador178385.py.
+
+[INFO] 23:10:28:27 Worker/(8166:8385): Se pudo escribir en el archivo donde se guarda el script: transformador178385.py.
+
+[INFO] 23:10:28:27 Worker/(8166:8385): Se pudo cerrar el archivo donde se guarda el script: transformador178385.py.
+
+[INFO] 23:10:28:30 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:30 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:30 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:30 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:30 Worker/(8166:8375): Se pudo escribir en el archivo donde se guarda el script: transformador138375.py.
+
+[INFO] 23:10:28:30 Worker/(8166:8375): Se pudo cerrar el archivo donde se guarda el script: transformador138375.py.
+
+[INFO] 23:10:28:31 Worker/(8166:8372): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque38372.
+
+[INFO] 23:10:28:31 Worker/(8166:8371): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque98371.
+
+[INFO] 23:10:28:31 Worker/(8166:8396): Soy el hijo con el pid 8396 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:31 Worker/(8166:8396): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:31 Worker/(8166:8396): Se pudo abrir el archivo donde se guardara el script: transformador218396.py.
+
+[INFO] 23:10:28:31 Worker/(8166:8396): Se pudo escribir en el archivo donde se guarda el script: transformador218396.py.
+
+[INFO] 23:10:28:31 Worker/(8166:8396): Se pudo cerrar el archivo donde se guarda el script: transformador218396.py.
+
+[INFO] 23:10:28:32 Worker/(8166:8402): Soy el hijo con el pid 8402 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:32 Worker/(8166:8402): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:32 Worker/(8166:8402): Se pudo abrir el archivo donde se guardara el script: transformador198402.py.
+
+[INFO] 23:10:28:32 Worker/(8166:8402): Se pudo escribir en el archivo donde se guarda el script: transformador198402.py.
+
+[INFO] 23:10:28:33 Worker/(8166:8402): Se pudo cerrar el archivo donde se guarda el script: transformador198402.py.
+
+[INFO] 23:10:28:34 Worker/(8166:8384): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:34 Worker/(8166:8384): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:34 Worker/(8166:8384): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque158384.
+
+[INFO] 23:10:28:39 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:39 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:39 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:40 Worker/(8166:8384): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque158384.
+
+[INFO] 23:10:28:40 Worker/(8166:8384): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque158384.
+
+[INFO] 23:10:28:41 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:41 Worker/(8166:8385): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:41 Worker/(8166:8385): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:41 Worker/(8166:8385): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque178385.
+
+[INFO] 23:10:28:44 Worker/(8166:8385): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque178385.
+
+[INFO] 23:10:28:44 Worker/(8166:8385): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque178385.
+
+[INFO] 23:10:28:45 Worker/(8166:8371): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:45 Worker/(8166:8371): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:47 Worker/(8166:8372): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:48 Worker/(8166:8372): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:53 Worker/(8166:8385): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:54 Worker/(8166:8384): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:56 Worker/(8166:8385): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:56 Worker/(8166:8384): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:56 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:56 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:57 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:57 Worker/(8166:8415): Soy el hijo con el pid 8415 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:57 Worker/(8166:8415): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:57 Worker/(8166:8415): Se pudo abrir el archivo donde se guardara el script: transformador238415.py.
+
+[INFO] 23:10:28:57 Worker/(8166:8415): Se pudo escribir en el archivo donde se guarda el script: transformador238415.py.
+
+[INFO] 23:10:28:58 Worker/(8166:8415): Se pudo cerrar el archivo donde se guarda el script: transformador238415.py.
+
+[INFO] 23:10:28:60 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:66 Worker/(8166:8375): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:66 Worker/(8166:8375): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:66 Worker/(8166:8375): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque138375.
+
+[INFO] 23:10:28:67 Worker/(8166:8374): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:67 Worker/(8166:8374): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:67 Worker/(8166:8374): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque118374.
+
+[INFO] 23:10:28:68 Worker/(8166:8375): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque138375.
+
+[INFO] 23:10:28:68 Worker/(8166:8375): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque138375.
+
+[INFO] 23:10:28:69 Worker/(8166:8374): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque118374.
+
+[INFO] 23:10:28:69 Worker/(8166:8374): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque118374.
+
+[INFO] 23:10:28:82 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:82 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:82 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:82 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:82 Worker/(8166:8375): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:82 Worker/(8166:8375): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:82 Worker/(8166:8423): Soy el hijo con el pid 8423 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:83 Worker/(8166:8423): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:83 Worker/(8166:8423): Se pudo abrir el archivo donde se guardara el script: transformador298423.py.
+
+[INFO] 23:10:28:83 Worker/(8166:8423): Se pudo escribir en el archivo donde se guarda el script: transformador298423.py.
+
+[INFO] 23:10:28:83 Worker/(8166:8423): Se pudo cerrar el archivo donde se guarda el script: transformador298423.py.
+
+[INFO] 23:10:28:92 Worker/(8166:8402): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:92 Worker/(8166:8402): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:92 Worker/(8166:8402): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque198402.
+
+[INFO] 23:10:28:99 Worker/(8166:8402): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque198402.
+
+[INFO] 23:10:28:99 Worker/(8166:8402): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque198402.
+
+[INFO] 23:10:28:104 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:105 Worker/(8166:8415): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:107 Worker/(8166:8415): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:107 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:107 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:107 Worker/(8166:8415): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque238415.
+
+[INFO] 23:10:28:107 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:108 Worker/(8166:8439): Soy el hijo con el pid 8439 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:109 Worker/(8166:8415): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque238415.
+
+[INFO] 23:10:28:115 Worker/(8166:8439): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:115 Worker/(8166:8439): Se pudo abrir el archivo donde se guardara el script: transformador258439.py.
+
+[INFO] 23:10:28:115 Worker/(8166:8439): Se pudo escribir en el archivo donde se guarda el script: transformador258439.py.
+
+[INFO] 23:10:28:115 Worker/(8166:8439): Se pudo cerrar el archivo donde se guarda el script: transformador258439.py.
+
+[INFO] 23:10:28:119 Worker/(8166:8415): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque238415.
+
+[INFO] 23:10:28:120 Worker/(8166:8402): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:120 Worker/(8166:8402): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:124 Worker/(8166:8374): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:130 Worker/(8166:8374): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:135 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:135 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:135 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:135 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:136 Worker/(8166:8396): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:136 Worker/(8166:8396): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:136 Worker/(8166:8396): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque218396.
+
+[INFO] 23:10:28:137 Worker/(8166:8396): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque218396.
+
+[INFO] 23:10:28:138 Worker/(8166:8396): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque218396.
+
+[INFO] 23:10:28:138 Worker/(8166:8449): Soy el hijo con el pid 8449 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:138 Worker/(8166:8449): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:138 Worker/(8166:8449): Se pudo abrir el archivo donde se guardara el script: transformador278449.py.
+
+[INFO] 23:10:28:138 Worker/(8166:8449): Se pudo escribir en el archivo donde se guarda el script: transformador278449.py.
+
+[INFO] 23:10:28:138 Worker/(8166:8449): Se pudo cerrar el archivo donde se guarda el script: transformador278449.py.
+
+[INFO] 23:10:28:146 Worker/(8166:8415): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:146 Worker/(8166:8415): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:146 Worker/(8166:8423): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:146 Worker/(8166:8423): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:146 Worker/(8166:8423): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque298423.
+
+[INFO] 23:10:28:148 Worker/(8166:8423): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque298423.
+
+[INFO] 23:10:28:150 Worker/(8166:8423): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque298423.
+
+[INFO] 23:10:28:163 Worker/(8166:8423): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:164 Worker/(8166:8423): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:170 Worker/(8166:8439): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:170 Worker/(8166:8439): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:170 Worker/(8166:8439): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque258439.
+
+[INFO] 23:10:28:172 Worker/(8166:8439): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque258439.
+
+[INFO] 23:10:28:172 Worker/(8166:8439): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque258439.
+
+[INFO] 23:10:28:172 Worker/(8166:8396): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:178 Worker/(8166:8396): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:182 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:182 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:28:182 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:28:182 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:28:182 Worker/(8166:8455): Soy el hijo con el pid 8455 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:183 Worker/(8166:8455): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:183 Worker/(8166:8455): Se pudo abrir el archivo donde se guardara el script: transformador318455.py.
+
+[INFO] 23:10:28:183 Worker/(8166:8455): Se pudo escribir en el archivo donde se guarda el script: transformador318455.py.
+
+[INFO] 23:10:28:183 Worker/(8166:8455): Se pudo cerrar el archivo donde se guarda el script: transformador318455.py.
+
+[INFO] 23:10:28:198 Worker/(8166:8449): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:198 Worker/(8166:8449): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:198 Worker/(8166:8449): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque278449.
+
+[INFO] 23:10:28:200 Worker/(8166:8449): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque278449.
+
+[INFO] 23:10:28:200 Worker/(8166:8449): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque278449.
+
+[INFO] 23:10:28:201 Worker/(8166:8474): Soy el hijo con el pid 8474 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:28:206 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:28:207 Worker/(8166:8439): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:210 Worker/(8166:8474): Todos los datos fueron recibidos de master para realizar la transformacion
+[INFO] 23:10:28:210 Worker/(8166:8474): Se pudo abrir el archivo donde se guardara el script: transformador338474.py.
+
+[INFO] 23:10:28:210 Worker/(8166:8474): Se pudo escribir en el archivo donde se guarda el script: transformador338474.py.
+
+[INFO] 23:10:28:210 Worker/(8166:8474): Se pudo cerrar el archivo donde se guarda el script: transformador338474.py.
+
+[INFO] 23:10:28:212 Worker/(8166:8439): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:218 Worker/(8166:8449): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:218 Worker/(8166:8449): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:222 Worker/(8166:8455): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:222 Worker/(8166:8455): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:222 Worker/(8166:8455): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque318455.
+
+[INFO] 23:10:28:224 Worker/(8166:8455): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque318455.
+
+[INFO] 23:10:28:224 Worker/(8166:8455): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque318455.
+
+[INFO] 23:10:28:255 Worker/(8166:8474): System para permisos ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:255 Worker/(8166:8474): Los permisos para el script son: 000081ff
+
+[INFO] 23:10:28:255 Worker/(8166:8474): Se pudo abrir el archivo donde se guardara el bloque: temporalBloque338474.
+
+[INFO] 23:10:28:255 Worker/(8166:8474): Se pudo escribir en el archivo donde se guarda el bloque: temporalBloque338474.
+
+[INFO] 23:10:28:255 Worker/(8166:8474): Se pudo cerrar el archivo donde se guarda el bloque: temporalBloque338474.
+
+[INFO] 23:10:28:271 Worker/(8166:8474): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:271 Worker/(8166:8474): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:275 Worker/(8166:8455): System para obtener bloque ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:275 Worker/(8166:8455): Se creo correctamente el comando del script transformador
+
+[INFO] 23:10:28:539 Worker/(8166:8474): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:28:543 Worker/(8166:8474): El script se elimino correctamente.
+
+[INFO] 23:10:28:543 Worker/(8166:8474): El script se elimino correctamente.
+
+[INFO] 23:10:31:881 Worker/(8166:8368): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:31:882 Worker/(8166:8368): El script se elimino correctamente.
+
+[INFO] 23:10:31:882 Worker/(8166:8368): El script se elimino correctamente.
+
+[INFO] 23:10:31:906 Worker/(8166:8371): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:31:907 Worker/(8166:8371): El script se elimino correctamente.
+
+[INFO] 23:10:31:907 Worker/(8166:8371): El script se elimino correctamente.
+
+[INFO] 23:10:32:11 Worker/(8166:8384): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:13 Worker/(8166:8384): El script se elimino correctamente.
+
+[INFO] 23:10:32:13 Worker/(8166:8384): El script se elimino correctamente.
+
+[INFO] 23:10:32:170 Worker/(8166:8367): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:171 Worker/(8166:8367): El script se elimino correctamente.
+
+[INFO] 23:10:32:171 Worker/(8166:8367): El script se elimino correctamente.
+
+[INFO] 23:10:32:185 Worker/(8166:8375): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:190 Worker/(8166:8375): El script se elimino correctamente.
+
+[INFO] 23:10:32:190 Worker/(8166:8375): El script se elimino correctamente.
+
+[INFO] 23:10:32:214 Worker/(8166:8402): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:214 Worker/(8166:8402): El script se elimino correctamente.
+
+[INFO] 23:10:32:215 Worker/(8166:8402): El script se elimino correctamente.
+
+[INFO] 23:10:32:237 Worker/(8166:8415): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:242 Worker/(8166:8415): El script se elimino correctamente.
+
+[INFO] 23:10:32:242 Worker/(8166:8415): El script se elimino correctamente.
+
+[INFO] 23:10:32:244 Worker/(8166:8374): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:244 Worker/(8166:8374): El script se elimino correctamente.
+
+[INFO] 23:10:32:244 Worker/(8166:8374): El script se elimino correctamente.
+
+[INFO] 23:10:32:285 Worker/(8166:8449): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:285 Worker/(8166:8449): El script se elimino correctamente.
+
+[INFO] 23:10:32:286 Worker/(8166:8449): El script se elimino correctamente.
+
+[INFO] 23:10:32:290 Worker/(8166:8423): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:291 Worker/(8166:8423): El script se elimino correctamente.
+
+[INFO] 23:10:32:291 Worker/(8166:8423): El script se elimino correctamente.
+
+[INFO] 23:10:32:318 Worker/(8166:8385): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:322 Worker/(8166:8370): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:322 Worker/(8166:8370): El script se elimino correctamente.
+
+[INFO] 23:10:32:323 Worker/(8166:8385): El script se elimino correctamente.
+
+[INFO] 23:10:32:323 Worker/(8166:8370): El script se elimino correctamente.
+
+[INFO] 23:10:32:323 Worker/(8166:8385): El script se elimino correctamente.
+
+[INFO] 23:10:32:338 Worker/(8166:8455): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:339 Worker/(8166:8455): El script se elimino correctamente.
+
+[INFO] 23:10:32:339 Worker/(8166:8455): El script se elimino correctamente.
+
+[INFO] 23:10:32:350 Worker/(8166:8439): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:354 Worker/(8166:8439): El script se elimino correctamente.
+
+[INFO] 23:10:32:354 Worker/(8166:8439): El script se elimino correctamente.
+
+[INFO] 23:10:32:359 Worker/(8166:8396): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:359 Worker/(8166:8396): El script se elimino correctamente.
+
+[INFO] 23:10:32:359 Worker/(8166:8396): El script se elimino correctamente.
+
+[INFO] 23:10:32:366 Worker/(8166:8372): Script ejecutado correctamente con el valor de retorno: 0
+
+[INFO] 23:10:32:367 Worker/(8166:8372): El script se elimino correctamente.
+
+[INFO] 23:10:32:367 Worker/(8166:8372): El script se elimino correctamente.
+
+[INFO] 23:10:32:374 Worker/(8166:8166): Se ha recibido una nueva conexion.
+
+[INFO] 23:10:32:374 Worker/(8166:8166): Se recibio una conexion de master.
+
+[INFO] 23:10:32:374 Worker/(8166:8166): Se recibio un job del socket de master 5.
+
+[INFO] 23:10:32:375 Worker/(8166:8528): Soy el hijo con el pid 8528 y mi padre tiene el pid: 8166 
+
+[INFO] 23:10:32:377 Worker/(8166:8166): Soy el proceso padre con pid: 8166 
+ 
+[INFO] 23:10:32:377 Worker/(8166:8528): Todos los datos fueron recibidos de master para realizar la reduccion local
+[INFO] 23:10:32:377 Worker/(8166:8528): Comando para realizar apareo local de archivos fue correctamente creado.
+

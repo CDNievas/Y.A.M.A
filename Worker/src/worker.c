@@ -111,7 +111,7 @@ void darPermisosAScripts(char* script, int casoError, int socketMaster){
 	struct stat infoScript;
 
 	char* comandoAEjecutar = string_new();
-	string_append(&comandoAEjecutar,"chmod 0777 ");
+	string_append(&comandoAEjecutar,"chmod 777 ");
 	string_append(&comandoAEjecutar,script);
 
 	int resultado = system(comandoAEjecutar);
@@ -327,6 +327,7 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	string_append(&command," > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
+	printf("Comando script reductor: %s",command);
 	log_info(loggerWorker, "Se creo correctamente el comando del script reductor\n");
 	return command;
 }
@@ -640,18 +641,18 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 	char* numeroPID = string_itoa((int)getpid());
 	string_append(&nombreArchivoApareado,numeroPID);
 	char* comandoOrdenacionArchivos = string_new();
-	string_append(&comandoOrdenacionArchivos,"sort -m");
+	string_append(&comandoOrdenacionArchivos,"sort -m ");
 	int posicion;
 	int cantidad = list_size(archivosTemporales);
 
 	for(posicion=0;posicion<cantidad;posicion++){
 		char* unArchivoTemporal = list_remove(archivosTemporales,0);
-		string_append(&comandoOrdenacionArchivos," | cat ");
 		string_append(&comandoOrdenacionArchivos,unArchivoTemporal);
+		string_append(&comandoOrdenacionArchivos," ");
 		free(unArchivoTemporal);
 	}
 
-	string_append(&comandoOrdenacionArchivos,"> ");
+	string_append(&comandoOrdenacionArchivos,"| cat > ");
 	string_append(&comandoOrdenacionArchivos,nombreArchivoApareado);
 
 	log_info(loggerWorker,"Comando para realizar apareo local de archivos fue correctamente creado.\n");

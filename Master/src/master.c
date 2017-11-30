@@ -1026,7 +1026,7 @@ void darPermisosAScripts(char* script){
 	struct stat infoScript;
 
 	char* comandoAEjecutar = string_new();
-	string_append(&comandoAEjecutar,"chmod 0777 ");
+	string_append(&comandoAEjecutar,"chmod 777 ");
 	string_append(&comandoAEjecutar,script);
 
 	int resultado = system(comandoAEjecutar);
