@@ -119,8 +119,10 @@ void enviarTablaAYama(int socket, tablaArchivos* entradaArchivo){
 
 void enviarDatoArchivo(int socket){
   char* archivoABuscar=recibirString(socket);
+  char** ruta = string_split(archivoABuscar, "/");
+  char* nombreArchivo = obtenerNombreDirectorio(ruta);
 	bool esArchivo(tablaArchivos* archivo){
-		return(string_equals_ignore_case(archivo->nombreArchivo,archivoABuscar));
+		return(string_equals_ignore_case(archivo->nombreArchivo,nombreArchivo));
 	}
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 	if(entradaArchivo==NULL){
@@ -128,6 +130,8 @@ void enviarDatoArchivo(int socket){
 	}
 	enviarTablaAYama(socket,entradaArchivo);
 	free(archivoABuscar);
+	free(nombreArchivo);
+	liberarComandoDesarmado(ruta);
 }
 
 //ENVIAR IP Y PUERTO
