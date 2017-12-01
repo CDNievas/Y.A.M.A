@@ -14,6 +14,8 @@
 #define FUNCIONESFS_H_
 
 
+void killMe(int);
+
 //------------------------FUNCIONES DIRECTORIOS
 
 void inicializarDirectoriosPrincipales();

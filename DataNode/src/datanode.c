@@ -91,6 +91,12 @@ int main(int argc, char **argv) {
 
 			}
 
+			case 0:{
+				corte = 0;
+				log_error(loggerDatanode, "Murio FileSystem. Terminando proceso");
+				break;
+			}
+
 			default:
 				corte = 0;
 				log_warning(loggerDatanode, "Peticion recibida por FS incorrecta.");

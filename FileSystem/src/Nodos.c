@@ -6,6 +6,7 @@
  */
 
 #include "Nodos.h"
+#include "../../Biblioteca/src/Socket.h"
 
 int cantBloquesLibres(t_bitarray* bitarray) {
 	int i = 0;
@@ -126,24 +127,18 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 
 void registrarNodo(int socket) {
 
-	char * nombreNodo=string_new();
-	char* ip=string_new();
 	uint32_t cantBloques,puerto;
 	t_bitarray * bitarray;
 
-	nombreNodo = recibirString(socket);
+	char * nombreNodo = recibirString(socket);
+	char * ip = recibirString(socket);
 
 	cantBloques = recibirUInt(socket);
-
-	ip=recibirString(socket);
-
 	puerto=recibirUInt(socket);
-
 
 	// Checkeo estado anterior
 	if(hayEstadoAnterior){
 		perteneceAlSistema(nombreNodo,socket,ip,puerto);
-
 	} else {
 		bitarray = crearBitmap(nombreNodo,cantBloques);
 
@@ -169,8 +164,6 @@ void registrarNodo(int socket) {
 		string_append(&bitmapNodo->nodo, nombreNodo);
 		bitmapNodo->bitarray = bitarray;
 		list_add(listaBitmap, bitmapNodo);
-
-
 
 		persistirTablaNodo();
 

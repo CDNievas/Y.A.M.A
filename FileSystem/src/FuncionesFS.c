@@ -6,6 +6,67 @@
  */
 
 #include "FuncionesFS.h"
+#include "../../Biblioteca/src/Socket.h"
+
+//------------------------------LIBERO MEMORIA
+
+void liberarCopiasXBloque(copiasXBloque* copiaBloque){
+	free(copiaBloque->bloque);
+	free(copiaBloque->copia1->nodo);
+	free(copiaBloque->copia2->nodo);
+}
+
+void liberarArchivo(tablaArchivos* entradaArchivo){
+	list_destroy_and_destroy_elements(entradaArchivo->bloques,(void*)liberarCopiasXBloque);
+	free(entradaArchivo->nombreArchivo);
+	free(entradaArchivo->tipo);
+}
+
+void liberarListaNodos(char* nodo){
+	free(nodo);
+}
+
+void liberarContenidoNodo(contenidoNodo* contenidoDelNodo){
+	free(contenidoDelNodo->nodo);
+}
+
+void liberarBitmaps(tablaBitmapXNodos* entradaBitmap){
+	bitarray_destroy(entradaBitmap->bitarray);
+	free(entradaBitmap->nodo);
+}
+
+void liberarDirectorios(t_directory* entradaDirectorio){
+	free(entradaDirectorio->nombre);
+}
+
+void liberarConexionNodo(datosConexionNodo* entradaConexionNodo){
+	free(entradaConexionNodo->ip);
+	free(entradaConexionNodo->nodo);
+}
+
+void liberarRegistroArchivos(char* nombre){
+	free(nombre);
+}
+
+void killMe(int signal){
+	list_destroy_and_destroy_elements(tablaGlobalArchivos, (void*)liberarArchivo);
+	list_destroy_and_destroy_elements(tablaGlobalNodos->nodo,(void*)liberarListaNodos);
+	list_destroy_and_destroy_elements(tablaGlobalNodos->contenidoXNodo,(void*)liberarContenidoNodo);
+	list_destroy_and_destroy_elements(listaBitmap,(void*)liberarBitmaps);
+	list_destroy_and_destroy_elements(listaDirectorios,(void*)liberarDirectorios);
+	list_destroy_and_destroy_elements(listaConexionNodos,(void*)liberarConexionNodo);
+	list_destroy_and_destroy_elements(registroArchivos,(void*)liberarRegistroArchivos);
+	close(socketEscuchaFS);
+	close(socketClienteChequeado);
+	log_destroy(loggerFileSystem);
+	free(PATH_METADATA);
+	free(PATH_BITMAPS);
+	free(PATH_ARCHIVOS);
+	free(PATH_PADRE);
+}
+
+
+
 
 //------------------------------INICIALIZACION
 
@@ -94,7 +155,7 @@ int obtenerDirectorioPadre(char** rutaDesmembrada){
       }
     }else if(rutaDesmembrada[posicion+1]==NULL){
     	free(fathersName);
-      return -1;
+    	return -1;
     }
     posicion++;
   }
@@ -113,7 +174,7 @@ void moveDirectory(char* oldPath, char* newPath){
   char* nombreDirectorio = obtenerNombreDirectorio(rutaDesmembradaVieja);
   int indexPadreNuevo = obtenerDirectorioPadre(rutaDesmembradaNueva);
   if(indexPadreNuevo == -1 || indexPadreNuevo==-2){
-	  liberarComandoDesarmado(rutaDesmembradaNueva);
+	liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
     free(nombreDirectorio);
     log_error(loggerFileSystem,"Error al encontrar el directorio padre del path final");
@@ -179,7 +240,6 @@ int crearDirectorio(char* ruta){
 }
 
 //RENOMBRAR DIRECTORIO
-
 void renameDirectory(char* oldName, char* newName){
   char** rutaDesmembradaVieja = string_split(oldName, "/");
   char** rutaDesmembradaNueva = string_split(newName, "/");
@@ -202,7 +262,7 @@ void renameDirectory(char* oldName, char* newName){
     free(nuevoNombre);
     log_info(loggerFileSystem,"Se ha renombrado exitosamente el directori/archivo.");
   }else{
-	  liberarComandoDesarmado(rutaDesmembradaNueva);
+	liberarComandoDesarmado(rutaDesmembradaNueva);
     liberarComandoDesarmado(rutaDesmembradaVieja);
     free(viejoNombre);
     free(nuevoNombre);
@@ -221,7 +281,6 @@ int obtenerIndexDirectorio(char* nombre){
     return directorio->index;
   }
   return -2;
-
 }
 
 //BORRAR DIRECTORIO
@@ -363,6 +422,7 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
 		//CACHER ERROR
 	}
+
 	free(mensaje);
 
 }
@@ -402,7 +462,14 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 }
 
 void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
-	FILE* archivo = fopen(pathArchivo, "r+");//CACHEAR ERROR ARCHIVO
+
+	// CATCHEAR ERROR ARCHIVO
+	FILE* archivo = fopen(pathArchivo, "r+");
+
+	if(archivo == NULL){
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en almacenar archivo.");
+		exit(-1);
+	}
 
 	uint32_t tamanio = sacarTamanioArchivo(archivo);
 	t_list* posicionBloquesAGuardar=list_create();
@@ -415,7 +482,6 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	char** rutaArchivo = string_split(pathArchivo,"/");
 	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
 	string_append(&pathDirectorio, archivoAGuardar->nombreArchivo);
-
 
 	char** rutaDirectorio = string_split(pathDirectorio,"/");
 
@@ -474,7 +540,8 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			string_append(&comandoCopiarArchivo, pathDirectorio);
 			system(comandoCopiarArchivo);
 
-			list_destroy(posicionBloquesAGuardar);
+			free(comandoCopiarArchivo);
+
 		}else{
 			log_error(loggerFileSystem,"El archivo se encuentra vacio");
 		}
@@ -482,6 +549,8 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 	}else{
 		log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
 	}
+
+	list_destroy(posicionBloquesAGuardar);
 
 }
 

@@ -13,6 +13,13 @@ void persistirTablaNodo(){
 	char * path = obtenerPathTablaNodo();
 	FILE* archivoNodos=fopen(path,"w+");
 
+	if(archivoNodos == NULL){
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo de nodos.");
+		exit(-1);
+	}
+
+	free(path);
+
 	fputs("TAMANIO=",archivoNodos);
 	char* tamanio = string_itoa(tablaGlobalNodos->tamanio);
 	fputs(tamanio,archivoNodos);
@@ -73,6 +80,14 @@ void persistirRegistroArchivo(){
 	string_append(&path,"registro.dat");
 
 	FILE* archivoRegistro=fopen(path,"w+");
+
+	free(path);
+
+	if(archivoRegistro == NULL){
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en persistir registro archivo.");
+		exit(-1);
+	}
+
 	int cont=0;
 	int cantTotal=list_size(registroArchivos);
 	while(cont<cantTotal){
@@ -98,10 +113,15 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	string_append(&comando,"mkdir ");
 	string_append(&comando,path);
 	system(comando);
+	free(comando);
 	string_append(&path,entradaArchivo->nombreArchivo);
 
-
 	FILE* archivo=fopen(path,"w+");
+
+	if(archivo == NULL){
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en persistir tabla archivo.");
+		exit(-1);
+	}
 
 	fputs("TAMANIO=",archivo);
 	char* tamanioCadena = string_new();
@@ -145,6 +165,7 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 	fclose(archivo);
 
 	list_add(registroArchivos,path);
+
 	persistirRegistroArchivo();
 
 }
@@ -164,6 +185,13 @@ void persistirDirectorio(){
 	string_append(&path,"directorios.dat");
 
 	FILE* archivoDirectorio=fopen(path,"w+");
+	free(path);
+
+	if(archivoDirectorio == NULL){
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en persistir tabla archivo.");
+		exit(-1);
+	}
+
 	int cont=0;
 	int cantTotal=list_size(listaDirectorios);
 
@@ -182,5 +210,4 @@ void persistirDirectorio(){
 		cont++;
 	}
 	fclose(archivoDirectorio);
-
 }

@@ -78,11 +78,9 @@ void cargarBin(){
 		// Abro el archivo
 		uint32_t archivo;
 		if((archivo = open(RUTA_DATABIN, O_RDWR)) < 0){
-
 			// Error al abrir el archivo
 			log_error(loggerDatanode,"Error al tratar de abrir el archivo.");
 			exit(-1);
-
 		}
 
 		// Lo mapeo a memoria

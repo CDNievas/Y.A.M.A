@@ -6,6 +6,8 @@
  */
 
 #include "YAMA.h"
+#include "../../Biblioteca/src/Socket.h"
+#include "FuncionesFS.h"
 
 int sacarTamanioMensaje() {
 	int tamanio = 0;
@@ -127,8 +129,9 @@ void enviarDatoArchivo(int socket){
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 	if(entradaArchivo==NULL){
 		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
+	} else {
+		enviarTablaAYama(socket,entradaArchivo);
 	}
-	enviarTablaAYama(socket,entradaArchivo);
 	free(archivoABuscar);
 	free(nombreArchivo);
 	liberarComandoDesarmado(ruta);
@@ -136,8 +139,7 @@ void enviarDatoArchivo(int socket){
 
 //ENVIAR IP Y PUERTO
 void enviarDatosConexionNodo(int socket){
-	char* nodo;
-	nodo=recibirString(socket);
+	char* nodo=recibirString(socket);
 	bool esNodo(datosConexionNodo* nodoSeleccionado){
 		return(string_equals_ignore_case(nodoSeleccionado->nodo,nodo));
 	}

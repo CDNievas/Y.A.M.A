@@ -6,24 +6,40 @@
  */
 
 #include "Worker.h"
+#include "../../Biblioteca/src/Socket.h"
+#include "FuncionesFS.h"
 
 void almacenarArchivoWorker(int socket){
-	char* contenido = string_new();
-	char* path = string_new();
-	char* nombreArchivo = string_new();
 	uint32_t tipo;
-	contenido = recibirString(socket);
-	nombreArchivo = recibirString(socket);
-	path = recibirString(socket);
+	char* contenido  = recibirString(socket);
+	char* nombreArchivo  = recibirString(socket);
+	char* path = recibirString(socket);
 	tipo = recibirUInt(socket);
+
 	FILE* archivo=fopen(nombreArchivo,"r+");
+
+	if(archivo == NULL){
+		free(path);
+		free(nombreArchivo);
+		free(contenido);
+		log_error(loggerFileSystem,"Error al tratar de abrir el archivo al almacenar de Worker.");
+		exit(-1);
+	}
+
 	fputs(contenido,archivo);
+	free(contenido);
 	fclose(archivo);
+
 	if(tipo==21){
 		almacenarArchivo(nombreArchivo,path,"B");
 	}
+
 	if(tipo==22){
 		almacenarArchivo(nombreArchivo,path,"T");
 	}
+
+	free(path);
+	free(nombreArchivo);
+
 }
 

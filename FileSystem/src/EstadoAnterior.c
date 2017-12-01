@@ -6,6 +6,7 @@
  */
 
 #include "EstadoAnterior.h"
+#include "FuncionesFS.h"
 
 void cargarEstructuraBitmap(){
 	uint32_t cantidadDeNodo = list_size(tablaGlobalNodos->nodo);

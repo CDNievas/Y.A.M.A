@@ -81,6 +81,7 @@ void analizarComando(char * linea){
 
   switch(comandoNativo){
 
+  	  // ARREGLO?
       case 1:{
         char * comandoNuevo = string_new();
 
@@ -98,14 +99,13 @@ void analizarComando(char * linea){
 
       case 2:{
         if(strcmp(comandoDesarmado[1], "-d")==0){
-        	int pudoBorrar = deleteDirectory(comandoDesarmado[1]);
+        	int pudoBorrar = deleteDirectory(comandoDesarmado[2]);
         	if(pudoBorrar == 0){
         		log_error(loggerFileSystem, "El directorio a borrar no existe.");
         	}else if(pudoBorrar == -1){
         		log_error(loggerFileSystem, "El directorio a borrar tiene subdirectorios. No se puede borrar.");
         	}else{
         		char* comandoPConsola = string_new();
-
         		string_append(&comandoPConsola, "rmdir ");
         		string_append(&comandoPConsola, comandoDesarmado[2]);
         		system(comandoPConsola);
@@ -132,18 +132,22 @@ void analizarComando(char * linea){
 
     	  if(nombreArchivoViejo == NULL || nombreArchivoNuevo == NULL){
     	  	  log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando rename");
-    	  	  break;
+    	  } else {
+
+    		  renameDirectory(nombreArchivoViejo,nombreArchivoNuevo);
+
+    		  string_append(&comandoNuevo,"rename ");
+    		  string_append(&comandoNuevo,nombreArchivoViejo);
+    		  string_append(&comandoNuevo," ");
+    		  string_append(&comandoNuevo,nombreArchivoNuevo);
+
+    		  system(comandoNuevo);
+        	  printf("\n");
+
     	  }
 
-    	  renameDirectory(nombreArchivoViejo,nombreArchivoNuevo);
+    	  free(comandoNuevo);
 
-    	  string_append(&comandoNuevo,"rename ");
-    	  string_append(&comandoNuevo,nombreArchivoViejo);
-    	  string_append(&comandoNuevo," ");
-    	  string_append(&comandoNuevo,nombreArchivoNuevo);
-
-    	  system(comandoNuevo);
-    	  printf("\n");
       }
       break;
 
@@ -155,22 +159,23 @@ void analizarComando(char * linea){
 
     	  if(pathOriginal == NULL || pathFinal == NULL){
     		  log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando mv");
-    		  break;
+    	  } else {
+
+        	  moveDirectory(pathOriginal,pathFinal);
+
+        	  string_append(&comandoNuevo,"mv ");
+        	  string_append(&comandoNuevo,pathOriginal);
+        	  string_append(&comandoNuevo," ");
+        	  string_append(&comandoNuevo,pathFinal);
+
+        	  system(comandoNuevo);
+        	  printf("\n");
+
     	  }
 
-    	  moveDirectory(pathOriginal,pathFinal);
-
-    	  string_append(&comandoNuevo,"mv ");
-    	  string_append(&comandoNuevo,pathOriginal);
-    	  string_append(&comandoNuevo," ");
-    	  string_append(&comandoNuevo,pathFinal);
-
-    	  system(comandoNuevo);
-    	  printf("\n");
     	  free(comandoNuevo);
+
       }
-
-
       break;
 
       case 5:{
@@ -198,7 +203,7 @@ void analizarComando(char * linea){
       }
       break;
 
-       case 7:{
+      case 7:{
     	   char * nombreArchivoViejo = comandoDesarmado[1];
     	   char * nombreArchivoNuevo = comandoDesarmado[2];
     	   char * flag = comandoDesarmado[3];
@@ -235,15 +240,15 @@ void analizarComando(char * linea){
 
         if(nombreArchivoViejo == NULL){
         	log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando md5sum");
-        	break;
+        } else {
+        	string_append(&comandoNuevo,"md5sum ");
+        	string_append(&comandoNuevo,nombreArchivoViejo);
+        	system(comandoNuevo);
+        	printf("\n");
         }
 
-        string_append(&comandoNuevo,"md5sum ");
-        string_append(&comandoNuevo,nombreArchivoViejo);
+    	free(comandoNuevo);
 
-        system(comandoNuevo);
-        printf("\n");
-        free(comandoNuevo);
       }
       break;
 
@@ -254,34 +259,36 @@ void analizarComando(char * linea){
       break;
 
       case 12:{
-        char * comandoNuevo = string_new();//;
-
+        char * comandoNuevo = string_new();
         char * nombreArchivoViejo = string_new();
+
         string_append(&nombreArchivoViejo, comandoDesarmado[1]);
         if(nombreArchivoViejo == NULL){
         	log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando info.");
-        	break;
+        } else {
+
+            string_append(&comandoNuevo,"ls -l -h ");
+            string_append(&comandoNuevo,nombreArchivoViejo);
+            system(comandoNuevo);
+            printf("\n");
+
         }
 
-        string_append(&comandoNuevo,"ls -l -h ");
-        string_append(&comandoNuevo,nombreArchivoViejo);
-
-        system(comandoNuevo);
-        printf("\n");
         free(comandoNuevo);
         free(nombreArchivoViejo);
+
       }
       break;
 
       default:
-//            log_error(loggerFileSystem, "Comando no reconocido.");
+    	  	log_error(loggerFileSystem, "Comando no reconocido.");
             break;
 
     }
-  liberarComandoDesarmado(comandoDesarmado);
+
+  	liberarComandoDesarmado(comandoDesarmado);
+
 }
-
-
 
 void consolaFS(){
 
@@ -291,18 +298,19 @@ void consolaFS(){
   printf("\n");
 
   while(1) {
-    linea = readline(">");
+    linea = (char *) readline(">");
 
     if(linea)
     	add_history(linea);
 
     if(!strncmp(linea, "exit", 4)) {
        free(linea);
+       pthread_detach(hiloConsolaFS);
        break;
+    } else {
+        analizarComando(linea);
     }
 
-    analizarComando(linea);
-    //free(linea);
   }
 
 }

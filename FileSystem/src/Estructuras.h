@@ -117,6 +117,8 @@ bool hayEstadoAnterior;
 t_list* listaConexionNodos;
 t_list* listaDirectorios;
 t_list* registroArchivos;
-
+int socketClienteChequeado;
+int socketEscuchaFS;
+pthread_t hiloConsolaFS;
 
 #endif /* ESTRUCTURAS_H_ */
