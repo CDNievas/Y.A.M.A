@@ -23,6 +23,9 @@ char* RUTA_DATABIN;
 char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
+void* dataBinBloque;
+size_t dataBinTamanio;
+bool dataBinLiberado;
 
 typedef struct{
 	uint32_t socketParaRecibir;
@@ -86,7 +89,7 @@ char* leerLinea(FILE* unArchivo){
 
 	while(!feof(unArchivo))
 	{
-		char cadenaLeida[2] = "\0";
+		char cadenaLeida[2] = " ";
 		cadenaLeida[0] = fgetc(unArchivo);
 
 		if (cadenaLeida[0] != '\n')
@@ -96,6 +99,8 @@ char* leerLinea(FILE* unArchivo){
 		else{
 			break;
 		}
+
+		//free(cadenaLeida);
 	}
 
 	if(feof(unArchivo)){
@@ -234,7 +239,7 @@ void* dataBinMapear() {
 		log_error(loggerWorker,"Fallo el fstat \n");
 		exit(-1);
 	}
-	size_t dataBinTamanio = estadoArchivo.st_size;
+	dataBinTamanio = estadoArchivo.st_size;
 	void* puntero = mmap(0, dataBinTamanio, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, descriptorArchivo, 0);
 	if (puntero == MAP_FAILED) {
 		log_error(loggerWorker,"Fallo el mmap \n");
@@ -262,10 +267,10 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	else{
 		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el bloque: %s.\n",nombreBloque);
 	}
+	void* pedazoDataBin = malloc(bytesOcupados);
+	memcpy(pedazoDataBin,dataBinBloque+(1048576*nroBloque),bytesOcupados);
 
-	void* dataBinBloque = dataBinMapear();
-
-	if(fwrite(dataBinBloque+(1048576*nroBloque),sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
+	if(fwrite(pedazoDataBin,sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
 		exit(-1);
@@ -301,6 +306,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	free(comandoAEjecutar);
 	free(numeroBloque);
 	free(numeroPID);
+	free(pedazoDataBin);
 	//free(dataBinBloque);
 	return nombreBloque;
 }
@@ -389,7 +395,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 	int posicion;
 	char* archivoApareado = string_new();
 	string_append(&archivoApareado,"archivoApareoGlobal");
-	crearArchivoTemporal(archivoApareado,casoError,socketMaster);
+	//crearArchivoTemporal(archivoApareado,casoError,socketMaster);
 
 	FILE* archivoGlobalApareado = fopen(archivoApareado,"w");
 	FILE* miTemporal = fopen(temporalEncargado,"r");
@@ -412,7 +418,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 				if(strcmp(unaInfoArchivo->nombreNodo,NOMBRE_NODO)!=0){
 					unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
 
-					if(strcmp(unPedacitoArchivo,"\0")!=0){
+					if(strcmp(unPedacitoArchivo," \0")!=0){
 						unaInfoArchivo->bloqueLeido = string_new();
 						string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
 						list_add(listaInfoApareo,unaInfoArchivo);
@@ -428,7 +434,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 				else{
 					unPedacitoArchivo = leerLinea(miTemporal);
 
-					if(strcmp(unPedacitoArchivo,"\0")!=0){
+					if(strcmp(unPedacitoArchivo," \0")!=0){
 						unaInfoArchivo->bloqueLeido = string_new();
 						string_append(&(unaInfoArchivo->bloqueLeido),unPedacitoArchivo);
 						list_add(listaInfoApareo,unaInfoArchivo);
@@ -477,7 +483,8 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			}
 		}
 
-		string_append(&menorString,"\n");
+		log_info(loggerWorker,"MIRA ESTO CHABAL HDRMP: %s",menorString);
+		strcat(menorString,"\n");
 
 		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
 
@@ -539,22 +546,20 @@ void realizarHandshakeWorker(char* unArchivoTemporal, uint32_t unSocketWorker){
 		exit(-10);
 	}
 
-	sendDeNotificacion(unSocketWorker, ES_WORKER);
-
-	if(recvDeNotificacion(unSocketWorker) != ES_OTRO_WORKER){
-		log_error(loggerWorker, "La conexion efectuada no es con otro worker.\n");
-		close(unSocketWorker);
-		exit(-1);
-	}
-
-	log_info(loggerWorker, "Se conecto con otro worker.\n");
-
 	memcpy(datosAEnviar,&tamanioArchivoTemporal,sizeof(uint32_t));
 	memcpy(datosAEnviar+sizeof(uint32_t),unArchivoTemporal,tamanioArchivoTemporal);
 
 	log_info(loggerWorker, "Datos serializados para ser enviados al otro worker.\n");
 
-	sendRemasterizado(unSocketWorker,APAREO_GLOBAL,tamanioArchivoTemporal+sizeof(uint32_t),datosAEnviar);
+	sendRemasterizado(unSocketWorker,ES_WORKER,tamanioArchivoTemporal+sizeof(uint32_t),datosAEnviar);
+
+	if(recvDeNotificacion(unSocketWorker) != ES_OTRO_WORKER){
+			log_error(loggerWorker, "La conexion efectuada no es con otro worker.\n");
+			close(unSocketWorker);
+			exit(-1);
+	}
+
+	log_info(loggerWorker, "Se conecto con otro worker.\n");
 
 	free(unArchivoTemporal);
 	free(datosAEnviar);
@@ -600,34 +605,40 @@ void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* n
 	sendRemasterizado(socketFS,ALMACENADO_FINAL,tamanioTotalAEnviar,datosAEnviar);
 }
 
-uint32_t asignarStreamADatosParaEnviar(uint32_t tamanioPrevio, char* streamAEnviar, void* datosAEnviar){
-	uint32_t tamanioStream = string_length(streamAEnviar);
-	datosAEnviar = realloc(datosAEnviar,tamanioStream+sizeof(uint32_t)+tamanioPrevio);
-	tamanioPrevio = tamanioStream+sizeof(uint32_t)+tamanioPrevio;
 
-	memcpy(datosAEnviar,&tamanioStream,sizeof(uint32_t));
-	memcpy(datosAEnviar+sizeof(uint32_t),streamAEnviar,tamanioStream);
-
-	free(streamAEnviar);
-
-	return tamanioPrevio;
-}
 
 void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
 	FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
-	void* datosAEnviar;
-	char* streamAEnviar;
-	uint32_t tamanioPrevio = 0;
-
 	while(!feof(archivoTemporal)){
-		streamAEnviar = leerLinea(archivoTemporal);
-		tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
+		char* streamAEnviar = leerLinea(archivoTemporal);
+		uint32_t tamanioLinea = strlen(streamAEnviar);
+		void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioLinea);
+		memcpy(datosAEnviar,&tamanioLinea,sizeof(uint32_t));
+		memcpy(datosAEnviar+sizeof(uint32_t),streamAEnviar,tamanioLinea);
+		if(send(socketAceptado, datosAEnviar, tamanioLinea+sizeof(uint32_t), 0) == -1){
+			perror("Error al enviar mensaje.");
+			exit(-1);
+		}
+		free(datosAEnviar);
+		free(streamAEnviar);
 	}
 
-	tamanioPrevio = asignarStreamADatosParaEnviar(tamanioPrevio,streamAEnviar,datosAEnviar);
-	log_info(loggerWorker, "Todos los datos del archivo temporal reducido del worker fueron serializados\n");
-	sendRemasterizado(socketAceptado,APAREO_GLOBAL,tamanioPrevio,datosAEnviar);
-	free(datosAEnviar);
+	char* terminador = string_new();
+	string_append(&terminador," /0");
+	uint32_t tamanioTerminador = strlen(terminador);
+	void* datoAEnviar = malloc(sizeof(uint32_t)+tamanioTerminador);
+	memcpy(datoAEnviar,&tamanioTerminador,sizeof(uint32_t));
+	memcpy(datoAEnviar+sizeof(uint32_t),terminador,tamanioTerminador);
+
+	if(send(socketAceptado, datoAEnviar, tamanioTerminador+sizeof(uint32_t), 0) == -1){
+		perror("Error al enviar mensaje.");
+		exit(-1);
+	}
+
+	free(terminador);
+	free(datoAEnviar);
+
+	log_info(loggerWorker, "Todos los datos del archivo temporal reducido del worker fueron enviados\n");
 
 	if(fclose(archivoTemporal)==EOF){
 		log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
@@ -781,6 +792,10 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			break;
 		}
 		case REDUCCION_GLOBAL:{
+			if(munmap(dataBinBloque,dataBinTamanio)==-1){
+				log_error(loggerWorker,"Error al liberar el dataBin mappeado de memoria. \n");
+			}
+			dataBinLiberado = true;
 			char* script = recibirString(socketMaster);
 			char* nombreScript = recibirString(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
@@ -794,7 +809,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			string_append(&(infoEncargado->nombreNodo),NOMBRE_NODO);
 			list_add(listaInfoApareo,infoEncargado);
 
-			for(posicionWorker = 0; posicionWorker < cantidadWorkers; posicionWorker++){
+			for(posicionWorker = 0; posicionWorker < (cantidadWorkers-1); posicionWorker++){
 				char* archivoTemporal = recibirString(socketMaster);
 				char* ipWorker = recibirString(socketMaster);
 				char* nombreNodo = recibirString(socketMaster);
@@ -881,6 +896,9 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 void laMardita(int signal){
 	log_info(loggerWorker, "Se recibio la senial SIGINT, muriendo con estilo... \n");
+	if(!dataBinLiberado){
+		munmap(dataBinBloque,dataBinTamanio);
+	}
 	free(IP_FILESYSTEM);
 	free(RUTA_DATABIN);
 	free(NOMBRE_NODO);
@@ -890,6 +908,7 @@ void laMardita(int signal){
 }
 
 int main(int argc, char **argv) {
+	dataBinLiberado = true;
 	signal(SIGINT, laMardita);
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
@@ -901,6 +920,8 @@ int main(int argc, char **argv) {
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	eliminarProcesosMuertos();
 	log_info(loggerWorker, "Procesos hijos muertos eliminados del sistema.\n");
+	dataBinBloque = dataBinMapear();
+	dataBinLiberado = false;
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");

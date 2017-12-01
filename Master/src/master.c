@@ -764,9 +764,9 @@ bool reduccionesNoTerminadas(){
 	}
 }
 
-uint32_t obtenerTamanioLista(t_list* listaInfoGlobal,uint32_t cantRedux){
+uint32_t obtenerTamanioLista(t_list* listaInfoGlobal){
 	uint32_t posicion;
-	uint32_t tamanioTotal = cantRedux;
+	uint32_t tamanioTotal = 0;
 	for(posicion=0;posicion<list_size(listaInfoGlobal);posicion++){
 		infoReduccionGlobal* infoEncargado = list_get(listaInfoGlobal,posicion);
 		uint32_t tamanioIp = strlen(infoEncargado->conexion.ipNodo);
@@ -813,7 +813,7 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 			uint32_t tamanioTemporalEncargado = string_length(unaInfoReduxGlobalEncargado->temporalReduccion);
 			uint32_t tamanioNombreScript = string_length(scriptReductor);
 			uint32_t tamanioPathDestino = string_length(rutaReduxGlobal);
-			uint32_t tamanioAEnviar = tamanioScript+tamanioNombreScript+tamanioPathDestino+(sizeof(uint32_t)*3)+obtenerTamanioLista(listaInfoGlobal,cantRedux);
+			uint32_t tamanioAEnviar = tamanioScript+tamanioNombreScript+tamanioPathDestino+tamanioTemporalEncargado+(sizeof(uint32_t)*5)+obtenerTamanioLista(listaInfoGlobal);
 			void* datosAEnviar = malloc(tamanioAEnviar);
 			uint32_t posicion, posicionActual;
 
@@ -843,7 +843,7 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 				posicionActual += tamanioIP;
 				memcpy(datosAEnviar+posicionActual,&tamanioNombreNodo,sizeof(uint32_t));
 				posicionActual += sizeof(uint32_t);
-				memcpy(datosAEnviar+posicionActual,unaInfoReduxGlobal->temporalReduccion,tamanioNombreNodo);
+				memcpy(datosAEnviar+posicionActual,unaInfoReduxGlobal->conexion.nombreNodo,tamanioNombreNodo);
 				posicionActual += tamanioNombreNodo;
 				memcpy(datosAEnviar+posicionActual,&(unaInfoReduxGlobal->conexion.puertoNodo),sizeof(uint32_t));
 				posicionActual += sizeof(uint32_t);
@@ -883,14 +883,11 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 	}
 	else{
 		log_error(loggerMaster,"No se pudo conectar con el WORKER. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
-		free(rutaReduxGlobal);
-		free(scriptReductor);
 		destruirListaInfoGlobal(listaInfoGlobal);
 		sendDeNotificacion(socketYAMA,ERROR_REDUCCION_GLOBAL);
 	}
 
 	free(rutaReduxGlobal);
-	free(scriptReductor);
 }
 
 void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
