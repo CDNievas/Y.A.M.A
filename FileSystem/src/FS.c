@@ -47,11 +47,11 @@ int main(int argc, char **argv) {
 	listaDirectorios = list_create();
 	registroArchivos=list_create();
 
-	hayNodos=0;
-	if(!hayUnEstadoAnterior()){
-		esEstadoSeguro=true;
+	seDesconectoUnNodo=false;
+	if(hayUnEstadoAnterior()==false){
 		inicializarDirectoriosPrincipales();
-		hayEstadoAnterior=false;
+		esEstadoSeguro=false;
+		estaFormateado=false;
 	}
 
 
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 							sendDeNotificacion(socketClienteChequeado, ES_FS);
 							break;
 						case ES_YAMA:
-							if (hayNodos>=2 && esEstadoSeguro) {
+							if (esEstadoSeguro) {
 								enviarListaNodos(socketClienteChequeado);
 							} else {
 								log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
 							break;
 						case CORTO:
 							log_error(loggerFileSystem, "El socket %d corto la conexion.", socketClienteChequeado);
-							//verificarQueNodo(socketClienteChequeado);
+							verificarQueNodo(socketClienteChequeado);
 							FD_CLR(socketClienteChequeado, &socketClientes);
 							close(socketClienteChequeado);
 							break;

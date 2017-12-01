@@ -87,12 +87,22 @@ void analizarComando(char * linea){
 
         printf("Formateando FileSystem.\n");
 
-        string_append(&comandoNuevo,"rm -r ");
-        string_append(&comandoNuevo,"yamafs:/"); // Abro esto porque no se donde vamos a guardar yamafs
+        if(hayEstadoAnterior==false){
+          	uint cantidadNodosSistemas=list_size(tablaGlobalNodos->nodo);
+          	if(cantidadNodosSistemas>2){
+          		esEstadoSeguro=true;
+          	}else{
+          		log_error(loggerFileSystem,"No hay suficientes DataNode para dejar el FS en un estado Estable");
+          	}
+        }else{
+          	if(hayUnEstadoEstable()){
+          		esEstadoSeguro=true;
+           	}else{
+           		log_error(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
+           	}
+        }
 
-        system(comandoNuevo);
-        system("mkdir yamafs:"); //SI BORRO LA CARPETA YAMAFS, LA DEBERIA VOLVER A CREAR NO?
-        printf("\n");
+
         free(comandoNuevo);
         break;
       }

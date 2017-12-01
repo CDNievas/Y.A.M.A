@@ -331,8 +331,7 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 		return(string_equals_ignore_case(nodoConBitmap->nodo,nodo->nodo));
 	}
 	tablaBitmapXNodos* nodoConbitarray = list_find(listaBitmap,(void*)esNodo);
-	int tamaniobitarray = bitarray_get_max_bit(nodoConbitarray->bitarray);
-	for(;posicion<tamaniobitarray;posicion++){
+	for(;posicion<nodo->total;posicion++){
 		if (!bitarray_test_bit(nodoConbitarray->bitarray, posicion)) {
 			bitarray_set_bit(nodoConbitarray->bitarray,posicion);
 			return posicion;
@@ -468,6 +467,11 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
 	if(archivo == NULL){
 		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en almacenar archivo.");
+		exit(-1);
+	}
+
+	if(existeDirectory(pathDirectorio)){
+		log_error(loggerFileSystem,"No existe el directorio ingresado");
 		exit(-1);
 	}
 

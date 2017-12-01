@@ -107,8 +107,10 @@ char * PATH_BITMAPS;
 char * PATH_ARCHIVOS;
 char * PATH_PADRE;
 
+bool estaFormateado;
+bool seDesconectoUnNodo;
+
 t_log* loggerFileSystem;
-int hayNodos;
 bool esEstadoSeguro;
 tablaNodos* tablaGlobalNodos;
 t_list* listaBitmap;

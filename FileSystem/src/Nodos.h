@@ -11,7 +11,7 @@
 #define NODOS_H_
 
 
-int cantBloquesLibres(t_bitarray* ) ;
+int cantBloquesLibres(t_bitarray* , uint32_t) ;
 
 
 int sacarPorcentajeOcioso(int , int );

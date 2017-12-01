@@ -213,6 +213,7 @@ bool hayUnEstadoAnterior(){
 		cargarEstructuraArchivos(archivoRegistroArchivos);
 		cargarEstructuraBitmap();
 		hayEstadoAnterior=true;
+		estaFormateado=true;
 		return true;
 	}else{
 		return false;
