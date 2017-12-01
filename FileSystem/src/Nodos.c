@@ -143,11 +143,12 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 
 	}else{
 		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
+		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
 }
 
 
-void verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto){
+void verificarSiEsNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,uint32_t puerto){
 	bool estaEnElSistema(char* nodoSeleccionado){
 		return(strcmp(nodoSeleccionado,nombreNodo)==0);
 	}
@@ -172,6 +173,9 @@ void verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto){
 			seDesconectoUnNodo=false;
 		}
 
+	}else{
+		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
+		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
 }
 
@@ -191,8 +195,7 @@ void registrarNodo(int socket) {
 	if(hayEstadoAnterior==true){
 		perteneceAlSistema(nombreNodo,socket,ip,puerto);
 	} else {
-		if(estaFormateado==false){
-
+		if(estaFormateado==false && seDesconectoUnNodo==false){
 			bitarray = crearBitmap(nombreNodo,cantBloques);
 
 			// Creo el bloque de info del nodo
@@ -227,17 +230,20 @@ void registrarNodo(int socket) {
 			string_append(&datosConexion->ip, ip);
 			datosConexion->puerto=puerto;
 			list_add(listaConexionNodos,datosConexion);
+
 		} else{
 			if(seDesconectoUnNodo==true){
-				verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto);
+						verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
 				log_error(loggerFileSystem,"No se ha podido registrar el nodo. Ya ha sido formateado el sistema");
 				sendDeNotificacion(socket,DESCONECTAR_NODO);
 			}
 		}
-
-
 	}
 
+
 }
+
+
+
 
