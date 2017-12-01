@@ -16,7 +16,7 @@ void almacenarArchivoWorker(int socket){
 	char* path = recibirString(socket);
 	tipo = recibirUInt(socket);
 
-	FILE* archivo=fopen(nombreArchivo,"r+");
+	FILE* archivo=fopen(nombreArchivo,"w+");
 
 	if(archivo == NULL){
 		free(path);
