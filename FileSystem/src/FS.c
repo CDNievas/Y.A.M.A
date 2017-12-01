@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 //		log_error(loggerFileSystem,"Faltan parametro para iniciar FS");
 //		exit (-1);
 //	}
-	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
+	t_config* configuracionFS = generarTConfig("Debug/off_filesystem.ini", 5);
 //	t_config* configuracionFS = generarTConfig(argv[1], 5);
 	cargarFileSystem(configuracionFS);
 //	chequearParametrosFs(argc,argv[2]);
