@@ -2,7 +2,6 @@
 #include "../../Biblioteca/src/configParser.c"
 #include <sys/mman.h>
 
-#define PARAMETROS {"IP_FILESYSTEM","PUERTO_FILESYSTEM","NOMBRE_NODO","PUERTO_WORKER","RUTA_DATABIN"}
 #define TRANSFORMACION 1
 #define TRANSFORMACION_TERMINADA 2
 #define ERROR_TRANSFORMACION 18
@@ -13,8 +12,8 @@
 #define REDUCCION_GLOBAL_TERMINADA 5
 #define ERROR_REDUCCION_GLOBAL 7
 #define ALMACENADO_FINAL 15
-#define ALMACENADO_FINAL_TERMINADO 16
-#define ERROR_ALMACENADO_FINAL 17
+#define ALMACENADO_FINAL_TERMINADO 17
+#define ERROR_ALMACENADO_FINAL 16
 #define APAREO_GLOBAL 18
 
 t_log* loggerWorker;
@@ -53,7 +52,9 @@ void cargarWorker(t_config* configuracionWorker){
         log_error(loggerWorker,"No se encuentra cargado IP_FILESYSTEM en el archivo.\n");
         exit(-1);
     }else{
-        IP_FILESYSTEM = config_get_string_value(configuracionWorker, "IP_FILESYSTEM");
+    	IP_FILESYSTEM = string_new();
+    	string_append(&IP_FILESYSTEM, config_get_string_value(configuracionWorker, "IP_FILESYSTEM"));
+//        IP_FILESYSTEM = config_get_string_value(configuracionWorker, "IP_FILESYSTEM");
     }
     if(!config_has_property(configuracionWorker, "PUERTO_FILESYSTEM")){
     	log_error(loggerWorker,"No se encuentra cargado PUERTO_FILESYSTEM en el archivo.\n");
@@ -850,18 +851,23 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			eliminarArchivo(archivoApareado);
 
+			sendDeNotificacion(socketMaster,REDUCCION_GLOBAL_TERMINADA);
+
 			break;
 		}
 		case ALMACENADO_FINAL:{
 			char* nombreArchivoReduccionGlobal = recibirString(socketMaster);
 			char* nombreResultante = recibirString(socketMaster);
 			char* rutaResultante = recibirString(socketMaster);
-
+			log_debug(loggerWorker,"%s",nombreArchivoReduccionGlobal);
+			log_debug(loggerWorker,"%s",nombreResultante);
+			log_debug(loggerWorker,"%s",rutaResultante);
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar el almacenado final");
 
+			log_debug(loggerWorker,"%s",IP_FILESYSTEM);
+			log_debug(loggerWorker,"%d",PUERTO_FILESYSTEM);
 			uint32_t socketFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 			realizarHandshakeFS(socketFS);
-
 			enviarDatosAFS(socketFS,nombreArchivoReduccionGlobal,nombreResultante,rutaResultante);
 
 			int notificacion = recvDeNotificacion(socketFS);
@@ -914,7 +920,7 @@ int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionWorker = generarTConfig(argv[1], 5);
-	//t_config* configuracionWorker = generarTConfig("Debug/worker1.ini", 5);
+	//t_config* configuracionWorker = generarTConfig("Debug/off_worker1.ini", 5);
 	cargarWorker(configuracionWorker);
 	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;
