@@ -1,12 +1,11 @@
 echo "Instalando commons"
+cd ../
 git clone https://github.com/sisoputnfrba/so-commons-library
 cd so-commons-library
 make install
 cd ../
 echo "Instalando readline"
 sudo apt-get install libreadline6 libreadline6-dev
-echo "Clonando TP"
-git clone https://github.com/sisoputnfrba/tp-2017-2c-ElTPEstaBien
 echo "Compilando Datanode"
 cd tp-2017-2c-ElTPEstaBien/DataNode/src/
 gcc funcionesDatanode.c datanode.c -o datanode -lcommons
