@@ -10,6 +10,20 @@
 #include "../../Biblioteca/src/genericas.c"
 #include "../../Biblioteca/src/Socket.h"
 
+
+void chequearParametrosFs(int argc, char* flag){
+
+	if(argc==3){
+		if(strcmp(flag,"--clean")==0){
+			char* comandoReseteo=string_new();
+			string_append(&comandoReseteo,"rm -r ");
+			string_append(&comandoReseteo,PATH_PADRE);
+			system(comandoReseteo);
+			free(comandoReseteo);
+		}
+	}
+}
+
 void pedirBloque(int socketNodo, uint32_t nroBloque, uint32_t cantBytes){
 
 	 // PRUEBA LECTURA
