@@ -90,7 +90,14 @@ int main(int argc, char **argv) {
 				break;
 
 			}
-
+				
+			case DESCONECTAR_NODO:{
+				corte=0;
+				log_error(loggerDatanode, "FileSystem rechazo la conexion");
+				close(socketServerFS);
+				break;
+			}
+				
 			case 0:{
 				corte = 0;
 				log_error(loggerDatanode, "Murio FileSystem. Terminando proceso");
