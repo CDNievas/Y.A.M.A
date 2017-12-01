@@ -147,6 +147,7 @@ void deserializarIPYPuerto(conexionNodo* conexion){
 	}else{
 		conexion->puertoNodo = recibirUInt(socketFS);
 		conexion->ipNodo = recibirString(socketFS);
+		log_debug(loggerYAMA, "IP=%s", conexion->ipNodo);
 	}
 }
 

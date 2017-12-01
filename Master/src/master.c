@@ -239,6 +239,7 @@ void recibirSolicitudTransformacion(int socketYAMA){
     	datosTransformacion* nodoActual = (datosTransformacion*) malloc(sizeof(datosTransformacion));
         nodoActual->conexion.nombreNodo = recibirString(socketYAMA);
         nodoActual->conexion.ipNodo = recibirString(socketYAMA);
+        log_debug(loggerMaster, "%s", nodoActual->conexion.ipNodo);
         nodoActual->conexion.puertoNodo = recibirUInt(socketYAMA);
         nodoActual->nroBloque = recibirUInt(socketYAMA);
         nodoActual->bytesOcupados = recibirUInt(socketYAMA);
