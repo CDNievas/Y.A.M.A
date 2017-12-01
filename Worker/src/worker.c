@@ -480,21 +480,23 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			}
 		}
 
-		free(infoMenorElejido->bloqueLeido);
-		infoMenorElejido->bloqueLeido = NULL;
+		if(infoMenorElejido!=NULL){
+			free(infoMenorElejido->bloqueLeido);
+			infoMenorElejido->bloqueLeido = NULL;
 
-		string_append(&menorString,"\n");
+			string_append(&menorString,"\n");
 
-		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
+			log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
 
-		if(fputs(menorString,archivoGlobalApareado)==EOF){
-			log_error(loggerWorker,"No se pudo escribir en el archivo global apareado.\n");
-			exit(-1);
+			if(fputs(menorString,archivoGlobalApareado)==EOF){
+				log_error(loggerWorker,"No se pudo escribir en el archivo global apareado.\n");
+				exit(-1);
+			}
+
+			log_info(loggerWorker, "El string: %s se escribio correctamente en el archivo global apareado.\n",menorString);
+
+			free(menorString);
 		}
-
-		log_info(loggerWorker, "El string: %s se escribio correctamente en el archivo global apareado.\n",menorString);
-
-		free(menorString);
 	}
 
 
