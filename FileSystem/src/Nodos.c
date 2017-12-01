@@ -19,6 +19,7 @@ void verificarQueNodo(int socket){
 		tablaGlobalNodos->tamanio-=nodoDesconectado->total;
 		tablaGlobalNodos->libres-=nodoDesconectado->libre;
 		nodoDesconectado->disponible=0;
+		seDesconectoUnNodo=true;
 	}
 }
 
@@ -140,6 +141,8 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 		}
 		verificarCopiasNodo(nombreNodo);
 
+	}else{
+		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 	}
 }
 
@@ -229,6 +232,7 @@ void registrarNodo(int socket) {
 				verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
 				log_error(loggerFileSystem,"No se ha podido registrar el nodo. Ya ha sido formateado el sistema");
+				sendDeNotificacion(socket,DESCONECTAR_NODO);
 			}
 		}
 

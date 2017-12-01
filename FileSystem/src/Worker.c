@@ -31,11 +31,19 @@ void almacenarArchivoWorker(int socket){
 	fclose(archivo);
 
 	if(tipo==21){
-		almacenarArchivo(nombreArchivo,path,"B");
+		if(almacenarArchivo(nombreArchivo,path,"B")==true){
+			sendDeNotificacion(socket,ALMACENADO_FINAL_TERMINADO);
+		}else{
+			sendDeNotificacion(socket,ERROR_ALMACENADO_FINAL);
+		}
 	}
 
 	if(tipo==22){
-		almacenarArchivo(nombreArchivo,path,"T");
+		if(almacenarArchivo(nombreArchivo,path,"T")==true){
+			sendDeNotificacion(socket,ALMACENADO_FINAL_TERMINADO);
+		}else{
+			sendDeNotificacion(socket,ERROR_ALMACENADO_FINAL);
+		}
 	}
 
 	free(path);

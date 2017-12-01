@@ -20,14 +20,14 @@
 int main(int argc, char **argv) {
 	signal(SIGINT, killMe);
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
-	if(argc<2){
-		log_error(loggerFileSystem,"Faltan parametro para iniciar FS");
-		exit (-1);
-	}
-	//t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
-	t_config* configuracionFS = generarTConfig(argv[1], 5);
+//	if(argc<2){
+//		log_error(loggerFileSystem,"Faltan parametro para iniciar FS");
+//		exit (-1);
+//	}
+	t_config* configuracionFS = generarTConfig("Debug/filesystem.ini", 5);
+//	t_config* configuracionFS = generarTConfig(argv[1], 5);
 	cargarFileSystem(configuracionFS);
-	chequearParametrosFs(argc,argv[2]);
+//	chequearParametrosFs(argc,argv[2]);
 	int socketMaximo, socketAceptado;
 	socketEscuchaFS = ponerseAEscucharClientes(PUERTO_ESCUCHA, 0);
 	socketMaximo = socketEscuchaFS;
@@ -82,6 +82,9 @@ int main(int argc, char **argv) {
 					int notificacion = recvDeNotificacion(socketClienteChequeado);
 
 					switch (notificacion) {
+						case ES_WORKER:
+							sendDeNotificacion(socketClienteChequeado, ES_FS);
+							break;
 						case ES_DATANODE:
 							sendDeNotificacion(socketClienteChequeado, ES_FS);
 							break;

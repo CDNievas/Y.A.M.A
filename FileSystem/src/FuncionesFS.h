@@ -41,7 +41,7 @@ void asignarEnviarANodo(void* ,uint32_t ,copiasXBloque* );
 
 void enviarDatosANodo(t_list* ,FILE* , tablaArchivos* );
 
-void almacenarArchivo(char* , char* ,char* ) ;
+bool almacenarArchivo(char* , char* ,char* ) ;
 
 //------------------------------------------------LEER
 void leerArchivo(char* ,char* );

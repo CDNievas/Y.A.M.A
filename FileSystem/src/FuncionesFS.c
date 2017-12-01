@@ -460,102 +460,107 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
 
-void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
+bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
 	// CATCHEAR ERROR ARCHIVO
 	FILE* archivo = fopen(pathArchivo, "r+");
 
 	if(archivo == NULL){
 		log_error(loggerFileSystem,"Error al tratar de abrir el archivo en almacenar archivo.");
-		exit(-1);
-	}
-
-	if(!existeDirectory(pathDirectorio)){
-		log_error(loggerFileSystem,"No existe el directorio ingresado");
-		exit(-1);
-	}
-
-	uint32_t tamanio = sacarTamanioArchivo(archivo);
-	t_list* posicionBloquesAGuardar=list_create();
-
-	tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
-	archivoAGuardar->bloques=list_create();
-	archivoAGuardar->tamanio=tamanio;
-
-	//OBTENGO NOMBRE DEL ARCHIVO
-	char** rutaArchivo = string_split(pathArchivo,"/");
-	archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
-	string_append(&pathDirectorio, archivoAGuardar->nombreArchivo);
-
-	char** rutaDirectorio = string_split(pathDirectorio,"/");
-
-	log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
-	archivoAGuardar->tipo=tipo;
-	archivoAGuardar->directorioPadre=obtenerDirectorioPadre(rutaDirectorio);
-	liberarComandoDesarmado(rutaArchivo);
-	liberarComandoDesarmado(rutaDirectorio);
-	uint32_t tamAux = 0;
-		if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
-			if(tamanio!=0){
-				if (strcmp(tipo,"B")==0) {
-					while (tamanio > 0) {
-						if (tamanio < 1048576) {
-							tamAux += tamanio;
-							list_add(posicionBloquesAGuardar,tamAux);
-							tamanio-=tamanio;
-						} else {
-							tamAux += 1048576;
-							list_add(posicionBloquesAGuardar,tamAux);
-							tamanio -= 1048576;
-						}
-					}
-			} else {
-				int digito;
-				uint32_t ultimoBarraN = 0;
-				uint32_t registroAntesMega = 0;
-				uint32_t ultimaPosicion = 0;
-				fseek(archivo, 0, SEEK_SET);
-				while (!feof(archivo)) {
-					digito = fgetc(archivo);
-
-					if (digito == '\n') {
-						ultimoBarraN = ftell(archivo);
-					}
-
-					if (ftell(archivo) == 1048576 + registroAntesMega) {
-						registroAntesMega = ultimoBarraN;
-						list_add(posicionBloquesAGuardar,ultimoBarraN);
-					}
-				}
-
-				fseek(archivo, 0, SEEK_END);
-				ultimaPosicion = ftell(archivo);
-				list_add(posicionBloquesAGuardar, ultimaPosicion);
-				fseek(archivo, 0, SEEK_SET);
-			}
-			archivoAGuardar->disponible=1;
-			enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
-			persistirTablaArchivo(archivoAGuardar);
-
-			char* comandoCopiarArchivo = string_new();
-			string_append(&comandoCopiarArchivo, "cp -a ");
-			string_append(&comandoCopiarArchivo, pathArchivo);
-			string_append(&comandoCopiarArchivo, " ");
-			string_append(&comandoCopiarArchivo, pathDirectorio);
-			system(comandoCopiarArchivo);
-
-			free(comandoCopiarArchivo);
-
-		}else{
-			log_error(loggerFileSystem,"El archivo se encuentra vacio");
-		}
+		return false;
 
 	}else{
-		log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
+
+		if(!existeDirectory(pathDirectorio)){
+			log_error(loggerFileSystem,"No existe el directorio ingresado");
+			return false;
+		}else{
+
+			uint32_t tamanio = sacarTamanioArchivo(archivo);
+			t_list* posicionBloquesAGuardar=list_create();
+
+			tablaArchivos* archivoAGuardar=malloc(sizeof(tablaArchivos));
+			archivoAGuardar->bloques=list_create();
+			archivoAGuardar->tamanio=tamanio;
+
+			//OBTENGO NOMBRE DEL ARCHIVO
+			char** rutaArchivo = string_split(pathArchivo,"/");
+			archivoAGuardar->nombreArchivo=obtenerNombreDirectorio(rutaArchivo);
+			string_append(&pathDirectorio, archivoAGuardar->nombreArchivo);
+
+			char** rutaDirectorio = string_split(pathDirectorio,"/");
+
+			log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
+			archivoAGuardar->tipo=tipo;
+			archivoAGuardar->directorioPadre=obtenerDirectorioPadre(rutaDirectorio);
+			liberarComandoDesarmado(rutaArchivo);
+			liberarComandoDesarmado(rutaDirectorio);
+			uint32_t tamAux = 0;
+			if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
+				if(tamanio!=0){
+					if (strcmp(tipo,"B")==0) {
+							while (tamanio > 0) {
+								if (tamanio < 1048576) {
+									tamAux += tamanio;
+									list_add(posicionBloquesAGuardar,tamAux);
+									tamanio-=tamanio;
+								} else {
+									tamAux += 1048576;
+									list_add(posicionBloquesAGuardar,tamAux);
+									tamanio -= 1048576;
+								}
+							}
+						} else {
+							int digito;
+							uint32_t ultimoBarraN = 0;
+							uint32_t registroAntesMega = 0;
+							uint32_t ultimaPosicion = 0;
+							fseek(archivo, 0, SEEK_SET);
+							while (!feof(archivo)) {
+								digito = fgetc(archivo);
+
+								if (digito == '\n') {
+									ultimoBarraN = ftell(archivo);
+								}
+
+								if (ftell(archivo) == 1048576 + registroAntesMega) {
+									registroAntesMega = ultimoBarraN;
+									list_add(posicionBloquesAGuardar,ultimoBarraN);
+								}
+							}
+
+							fseek(archivo, 0, SEEK_END);
+							ultimaPosicion = ftell(archivo);
+							list_add(posicionBloquesAGuardar, ultimaPosicion);
+							fseek(archivo, 0, SEEK_SET);
+						}
+						archivoAGuardar->disponible=1;
+						enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
+						persistirTablaArchivo(archivoAGuardar);
+
+						char* comandoCopiarArchivo = string_new();
+						string_append(&comandoCopiarArchivo, "cp -a ");
+						string_append(&comandoCopiarArchivo, pathArchivo);
+						string_append(&comandoCopiarArchivo, " ");
+						string_append(&comandoCopiarArchivo, pathDirectorio);
+						system(comandoCopiarArchivo);
+
+						free(comandoCopiarArchivo);
+						log_info(loggerFileSystem,"Se ha almacenado correctamente el archivo.");
+						return true;
+				}else{
+					log_error(loggerFileSystem,"El archivo se encuentra vacio");
+					return false;
+				}
+
+			}else{
+				log_error(loggerFileSystem,"El tamaño del archivo supera la capacidad de almacenamiento del sistema");
+				return false;
+			}
+			list_destroy(posicionBloquesAGuardar);
+		}
+
 	}
-
-	list_destroy(posicionBloquesAGuardar);
-
 }
 
 //-------------------------------------------------------------------------------------

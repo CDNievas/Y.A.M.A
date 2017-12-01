@@ -648,3 +648,37 @@
 [INFO] 17:58:33:386 FileSystem/(8349:8349): Se ha recibido una nueva conexion.
 [INFO] 18:00:07:179 FileSystem/(8349:8349): Se ha registrado un nodo nuevo al sistema
 [INFO] 18:00:15:857 FileSystem/(8349:8349): Se ha recibido una nueva conexion.
+[INFO] 11:49:51:190 FileSystem/(3574:3574): Se ha recibido una nueva conexion.
+[DEBUG] 11:50:16:616 FileSystem/(3574:3574): Se procede a crear el archivo Bitmap.bin
+[INFO] 11:50:24:885 FileSystem/(3574:3574): Se ha registrado un nodo nuevo al sistema
+[INFO] 11:50:32:80 FileSystem/(3574:3574): Se ha recibido una nueva conexion.
+[DEBUG] 11:52:46:238 FileSystem/(3574:3574): Se procede a crear el archivo Bitmap.bin
+[INFO] 11:52:53:259 FileSystem/(3574:3574): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:27:00:750 FileSystem/(5001:5001): Se ha recibido una nueva conexion.
+[INFO] 12:27:01:760 FileSystem/(5001:5001): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:27:24:357 FileSystem/(5001:5001): Se ha recibido una nueva conexion.
+[INFO] 12:27:39:603 FileSystem/(5001:5001): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:27:57:891 FileSystem/(5001:5001): Se ha recibido una nueva conexion.
+[ERROR] 12:28:09:991 FileSystem/(5001:5001): No se ha podido registrar el nodo. Ya ha sido formateado el sistema
+[INFO] 12:28:11:743 FileSystem/(5001:5001): Se ha registrado un nodo nuevo al sistema
+[ERROR] 12:32:09:954 FileSystem/(5001:5001): El socket 6 corto la conexion.
+[INFO] 12:32:41:565 FileSystem/(5001:5001): Se ha recibido una nueva conexion.
+[ERROR] 12:32:57:324 FileSystem/(5001:5001): No se ha podido registrar el nodo. Ya ha sido formateado el sistema
+[INFO] 12:32:58:880 FileSystem/(5001:5001): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:41:48:319 FileSystem/(5510:5510): Se ha recibido una nueva conexion.
+[INFO] 12:41:53:566 FileSystem/(5510:5510): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:41:59:743 FileSystem/(5510:5510): Se ha recibido una nueva conexion.
+[ERROR] 12:42:04:460 FileSystem/(5510:5510): El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.
+[INFO] 12:42:07:590 FileSystem/(5510:5510): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:42:16:479 FileSystem/(5510:5510): Se ha recibido una nueva conexion.
+[INFO] 12:42:18:653 FileSystem/(5510:5510): Se ha registrado un nodo nuevo al sistema
+[ERROR] 12:42:55:505 FileSystem/(5510:5510): El socket 7 corto la conexion.
+[INFO] 12:43:16:862 FileSystem/(5510:5510): Se ha recibido una nueva conexion.
+[INFO] 12:43:47:360 FileSystem/(5510:5510): Se ha registrado un nodo nuevo al sistema
+[ERROR] 12:44:27:384 FileSystem/(5510:5510): El socket 6 corto la conexion.
+[ERROR] 12:44:27:667 FileSystem/(5510:5510): No se ha desconectado un DataNode del sistema.
+[INFO] 12:44:50:788 FileSystem/(5510:5510): Se ha recibido una nueva conexion.
+[INFO] 12:45:38:964 FileSystem/(5798:5798): Se ha recibido una nueva conexion.
+[INFO] 12:45:38:968 FileSystem/(5798:5798): Se ha registrado un nodo nuevo al sistema
+[INFO] 12:46:02:851 FileSystem/(5798:5798): Se ha recibido una nueva conexion.
+[ERROR] 12:46:16:938 FileSystem/(5798:5798): El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.
