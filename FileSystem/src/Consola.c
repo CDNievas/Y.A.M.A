@@ -314,7 +314,6 @@ void consolaFS(){
     	add_history(linea);
 
     if(!strncmp(linea, "exit", 4)) {
-       free(linea);
        pthread_detach(hiloConsolaFS);
        break;
     } else {
