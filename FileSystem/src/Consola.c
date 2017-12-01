@@ -89,7 +89,7 @@ void analizarComando(char * linea){
 
         if(hayEstadoAnterior==false){
           	uint cantidadNodosSistemas=list_size(tablaGlobalNodos->nodo);
-          	if(cantidadNodosSistemas>2){
+          	if(cantidadNodosSistemas>=2){
           		esEstadoSeguro=true;
           	}else{
           		log_error(loggerFileSystem,"No hay suficientes DataNode para dejar el FS en un estado Estable");
