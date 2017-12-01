@@ -104,7 +104,7 @@ char* leerLinea(FILE* unArchivo){
 	}
 
 	if(feof(unArchivo)){
-		string_append(&lineaLeida,"\0");
+		string_append(&lineaLeida," \0");
 	}
 
 	log_info(loggerWorker, "Se obtuvo la siguiente linea del archivo.\n");
@@ -414,9 +414,8 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		for(posicion=0;posicion<cantidad;posicion++){
 			infoApareoArchivo* unaInfoArchivo = list_remove(listaInfoApareo, 0);
 			if((unaInfoArchivo->bloqueLeido)==NULL){
-				char* unPedacitoArchivo;
 				if(strcmp(unaInfoArchivo->nombreNodo,NOMBRE_NODO)!=0){
-					unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
+					char* unPedacitoArchivo = recibirString(unaInfoArchivo->socketParaRecibir);
 
 					if(strcmp(unPedacitoArchivo," \0")!=0){
 						unaInfoArchivo->bloqueLeido = string_new();
@@ -432,7 +431,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 					}
 				}
 				else{
-					unPedacitoArchivo = leerLinea(miTemporal);
+					char* unPedacitoArchivo = leerLinea(miTemporal);
 
 					if(strcmp(unPedacitoArchivo," \0")!=0){
 						unaInfoArchivo->bloqueLeido = string_new();
@@ -456,32 +455,31 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 
 		cantidad = list_size(listaInfoApareo);
 		char* menorString = NULL;
+		infoApareoArchivo* infoMenorElejido;
 
 		for(posicion=0;posicion<cantidad;posicion++){
-			infoApareoArchivo* unaInfoArchivo = list_remove(listaInfoApareo, 0);
+			infoApareoArchivo* unaInfoArchivo = list_get(listaInfoApareo, posicion);
 			if(menorString!=NULL){
 				if(strcmp(unaInfoArchivo->bloqueLeido,menorString)<=0){
 					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivo->bloqueLeido,menorString);
 					free(menorString);
-					char* menorString = string_new();
+					menorString = string_new();
 					string_append(&menorString,unaInfoArchivo->bloqueLeido);
-					free(unaInfoArchivo->bloqueLeido);
-					unaInfoArchivo->bloqueLeido = NULL;
-					list_add(listaInfoApareo,unaInfoArchivo);
+					infoMenorElejido = unaInfoArchivo;
 				}
 				else{
 					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoArchivo->bloqueLeido);
-					list_add(listaInfoApareo,unaInfoArchivo);
 				}
 			}
 			else{
 				menorString = string_new();
 				string_append(&menorString,unaInfoArchivo->bloqueLeido);
-				free(unaInfoArchivo->bloqueLeido);
-				unaInfoArchivo->bloqueLeido = NULL;
-				list_add(listaInfoApareo,unaInfoArchivo);
+				infoMenorElejido = unaInfoArchivo;
 			}
 		}
+
+		free(infoMenorElejido->bloqueLeido);
+		infoMenorElejido->bloqueLeido = NULL;
 
 		log_info(loggerWorker,"MIRA ESTO CHABAL HDRMP: %s",menorString);
 		strcat(menorString,"\n");

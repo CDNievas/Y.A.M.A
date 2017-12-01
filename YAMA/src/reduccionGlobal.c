@@ -1,18 +1,18 @@
 #include "reduccionGlobal.h"
 
 bool sePuedeHacerReduccionGlobal(int nroMaster){
-	bool esDeNodoYEsRedu(administracionYAMA* admin){
-		return nroMaster == admin->nroMaster && admin->etapa == REDUCCION_LOCAL;
+	bool esDeMaster(administracionYAMA* admin){
+		return admin->nroMaster == nroMaster;
 	}
-	bool esReduccionTerminada(administracionYAMA* admin){
-		return admin->estado == FINALIZADO && admin->etapa == REDUCCION_LOCAL;
+	bool estaTerminado(administracionYAMA* admin){
+		return admin->estado == FINALIZADO || admin->estado == FALLO;
 	}
 	pthread_mutex_lock(&semTablaEstados);
-	t_list* listaDeNodos = list_filter(tablaDeEstados, (void*) esDeNodoYEsRedu);
-	int sePuede = list_all_satisfy(listaDeNodos, (void*) esReduccionTerminada);
+	t_list* listaDeMaster = list_filter(tablaDeEstados, (void*)esDeMaster);
+	int sePuede = list_all_satisfy(listaDeMaster, (void*)estaTerminado);
 	pthread_mutex_unlock(&semTablaEstados);
-	list_destroy(listaDeNodos);
-	return sePuede;
+	list_destroy(listaDeMaster);
+	return sePuede
 }
 
 
