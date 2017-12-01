@@ -86,24 +86,24 @@ void cargarWorker(t_config* configuracionWorker){
 
 char* leerLinea(FILE* unArchivo){
 	char* lineaLeida = string_new();
+	bool entro = false;
 
 	while(!feof(unArchivo))
 	{
+		bool entro = true;
 		char cadenaLeida[2] = " ";
 		cadenaLeida[0] = fgetc(unArchivo);
 
-		if (cadenaLeida[0] != '\n')
+		if ((cadenaLeida[0] != '\n') && (cadenaLeida[0] != EOF))
 		{
 			string_append(&lineaLeida,cadenaLeida);
 		}
 		else{
 			break;
 		}
-
-		//free(cadenaLeida);
 	}
 
-	if(feof(unArchivo)){
+	if(!entro){
 		string_append(&lineaLeida," \0");
 	}
 
@@ -423,12 +423,13 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 						list_add(listaInfoApareo,unaInfoArchivo);
 					}
 					else{
-						free(unPedacitoArchivo);
 						free(unaInfoArchivo->bloqueLeido);
 						free(unaInfoArchivo->nombreNodo);
 						close(unaInfoArchivo->socketParaRecibir);
 						free(unaInfoArchivo);
 					}
+
+					free(unPedacitoArchivo);
 				}
 				else{
 					char* unPedacitoArchivo = leerLinea(miTemporal);
@@ -439,11 +440,12 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 						list_add(listaInfoApareo,unaInfoArchivo);
 					}
 					else{
-						free(unPedacitoArchivo);
 						free(unaInfoArchivo->bloqueLeido);
 						free(unaInfoArchivo->nombreNodo);
 						free(unaInfoArchivo);
 					}
+
+					free(unPedacitoArchivo);
 				}
 			}
 			else{
@@ -458,31 +460,30 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		infoApareoArchivo* infoMenorElejido;
 
 		for(posicion=0;posicion<cantidad;posicion++){
-			infoApareoArchivo* unaInfoArchivo = list_get(listaInfoApareo, posicion);
+			infoApareoArchivo* unaInfoArchivoConseguido = list_get(listaInfoApareo, posicion);
 			if(menorString!=NULL){
-				if(strcmp(unaInfoArchivo->bloqueLeido,menorString)<=0){
-					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivo->bloqueLeido,menorString);
+				if(strcmp(unaInfoArchivoConseguido->bloqueLeido,menorString)<0){
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivoConseguido->bloqueLeido,menorString);
 					free(menorString);
 					menorString = string_new();
-					string_append(&menorString,unaInfoArchivo->bloqueLeido);
-					infoMenorElejido = unaInfoArchivo;
+					string_append(&menorString,unaInfoArchivoConseguido->bloqueLeido);
+					infoMenorElejido = unaInfoArchivoConseguido;
 				}
 				else{
-					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoArchivo->bloqueLeido);
+					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoArchivoConseguido->bloqueLeido);
 				}
 			}
 			else{
 				menorString = string_new();
-				string_append(&menorString,unaInfoArchivo->bloqueLeido);
-				infoMenorElejido = unaInfoArchivo;
+				string_append(&menorString,unaInfoArchivoConseguido->bloqueLeido);
+				infoMenorElejido = unaInfoArchivoConseguido;
 			}
 		}
 
 		free(infoMenorElejido->bloqueLeido);
 		infoMenorElejido->bloqueLeido = NULL;
 
-		log_info(loggerWorker,"MIRA ESTO CHABAL HDRMP: %s",menorString);
-		strcat(menorString,"\n");
+		string_append(&menorString,"\n");
 
 		log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
 
@@ -812,19 +813,19 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 				char* ipWorker = recibirString(socketMaster);
 				char* nombreNodo = recibirString(socketMaster);
 				uint32_t puertoWorker = recibirUInt(socketMaster);
-				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
-				log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
-				realizarHandshakeWorker(archivoTemporal,unSocketWorker);
 				infoApareoArchivo* unaInfoArchivo = malloc(sizeof(infoApareoArchivo));
 				if(unaInfoArchivo==NULL){
 					log_error(loggerWorker,"Error al asignar memoria en almacenamiento global.\n");
 					exit(-10);
 				}
-				unaInfoArchivo->socketParaRecibir = unSocketWorker;
 				unaInfoArchivo->nombreNodo = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
 				string_append(&(unaInfoArchivo->nombreNodo),nombreNodo);
+				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
+				unaInfoArchivo->socketParaRecibir = unSocketWorker;
 				list_add(listaInfoApareo,unaInfoArchivo);
+				log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
+				realizarHandshakeWorker(archivoTemporal,unSocketWorker);
 				free(ipWorker);
 				free(nombreNodo);
 			}
@@ -932,9 +933,13 @@ int main(int argc, char **argv) {
 			break;
 		}
 		case ES_WORKER:{
+			if(munmap(dataBinBloque,dataBinTamanio)==-1){
+				log_error(loggerWorker,"Error al liberar el dataBin mappeado de memoria. \n");
+			}
+			dataBinLiberado = true;
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
-			sendDeNotificacion(socketAceptado, ES_OTRO_WORKER);
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
+			sendDeNotificacion(socketAceptado, ES_OTRO_WORKER);
 			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
 			close(socketAceptado);
 			break;

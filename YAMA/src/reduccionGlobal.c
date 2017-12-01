@@ -9,10 +9,10 @@ bool sePuedeHacerReduccionGlobal(int nroMaster){
 	}
 	pthread_mutex_lock(&semTablaEstados);
 	t_list* listaDeMaster = list_filter(tablaDeEstados, (void*)esDeMaster);
-	int sePuede = list_all_satisfy(listaDeMaster, (void*)estaTerminado);
+	bool sePuede = list_all_satisfy(listaDeMaster, (void*)estaTerminado);
 	pthread_mutex_unlock(&semTablaEstados);
 	list_destroy(listaDeMaster);
-	return sePuede
+	return sePuede;
 }
 
 
