@@ -17,8 +17,8 @@
 #define FINALIZADO 14
 #define ALMACENADO_FINAL 15
 #define CORTO 0
-#define ALMACENADO_FINAL_TERMINADO 16
-#define ERROR_ALMACENADO_FINAL 18
+#define ALMACENADO_FINAL_TERMINADO 17
+#define ERROR_ALMACENADO_FINAL 16
 #define NO_REDU_LOCAL 19
 
 typedef struct{
@@ -933,7 +933,7 @@ char* obtenerResultante(char* rutaCompleta,uint32_t valor){
 	}
 
 	if(valor==1){
-		return string_substring_until(rutaCompleta,posicionMaxima-1);
+		return string_substring_until(rutaCompleta,posicionMaxima+1);
 	}
 	else{
 		return string_substring_from(rutaCompleta,posicionMaxima+1);
@@ -982,7 +982,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 			memcpy(datosAEnviar+sizeof(uint32_t)+tamanioArchivoReduxGlobal,&tamanioNombreResultante,sizeof(uint32_t));
 			memcpy(datosAEnviar+(sizeof(uint32_t)*2)+tamanioArchivoReduxGlobal,nombreResultante,tamanioNombreResultante);
 			memcpy(datosAEnviar+(sizeof(uint32_t)*2)+tamanioArchivoReduxGlobal+tamanioNombreResultante,&tamanioRutaResultante,sizeof(uint32_t));
-			memcpy(datosAEnviar+(sizeof(uint32_t)*2)+tamanioArchivoReduxGlobal+tamanioNombreResultante,rutaResultante,sizeof(uint32_t));
+			memcpy(datosAEnviar+(sizeof(uint32_t)*3)+tamanioArchivoReduxGlobal+tamanioNombreResultante,rutaResultante,tamanioRutaResultante);
 
 			log_info(loggerMaster, "Datos serializados de almacenamiento final listos para ser enviados a Worker.\n");
 
