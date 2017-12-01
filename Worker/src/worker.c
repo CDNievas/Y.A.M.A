@@ -457,7 +457,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 
 		cantidad = list_size(listaInfoApareo);
 		char* menorString = NULL;
-		infoApareoArchivo* infoMenorElejido;
+		infoApareoArchivo* infoMenorElejido = NULL;
 
 		for(posicion=0;posicion<cantidad;posicion++){
 			infoApareoArchivo* unaInfoArchivoConseguido = list_get(listaInfoApareo, posicion);
