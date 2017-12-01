@@ -470,7 +470,7 @@ void almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 		exit(-1);
 	}
 
-	if(existeDirectory(pathDirectorio)){
+	if(!existeDirectory(pathDirectorio)){
 		log_error(loggerFileSystem,"No existe el directorio ingresado");
 		exit(-1);
 	}
