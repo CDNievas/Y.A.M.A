@@ -91,7 +91,7 @@ char* leerLinea(FILE* unArchivo){
 
 	while(!feof(unArchivo))
 	{
-		bool entro = true;
+		entro = true;
 		char cadenaLeida[2] = " ";
 		cadenaLeida[0] = fgetc(unArchivo);
 
@@ -794,10 +794,10 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			break;
 		}
 		case REDUCCION_GLOBAL:{
-			if(munmap(dataBinBloque,dataBinTamanio)==-1){
-				log_error(loggerWorker,"Error al liberar el dataBin mappeado de memoria. \n");
+			if(!dataBinLiberado){
+				munmap(dataBinBloque,dataBinTamanio);
+				dataBinLiberado = true;
 			}
-			dataBinLiberado = true;
 			char* script = recibirString(socketMaster);
 			char* nombreScript = recibirString(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
@@ -941,10 +941,10 @@ int main(int argc, char **argv) {
 			break;
 		}
 		case ES_WORKER:{
-			if(munmap(dataBinBloque,dataBinTamanio)==-1){
-				log_error(loggerWorker,"Error al liberar el dataBin mappeado de memoria. \n");
+			if(!dataBinLiberado){
+				munmap(dataBinBloque,dataBinTamanio);
+				dataBinLiberado = true;
 			}
-			dataBinLiberado = true;
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
 			sendDeNotificacion(socketAceptado, ES_OTRO_WORKER);
