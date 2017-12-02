@@ -297,7 +297,7 @@ void analizarComando(char * linea){
 
     }
 
-  	liberarComandoDesarmado(comandoDesarmado);
+  	//liberarComandoDesarmado(comandoDesarmado);
 
 }
 
