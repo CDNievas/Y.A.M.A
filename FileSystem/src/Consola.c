@@ -190,8 +190,16 @@ void analizarComando(char * linea){
       break;
 
       case 5:{
-        system(linea);
+
+        char * path = comandoDesarmado[1];
+
+        if(existePath(path)){
+          printf("Existe path");
+        } else {
+          printf("No existe path");
+        }
         printf("\n");
+
       }
       break;
 
