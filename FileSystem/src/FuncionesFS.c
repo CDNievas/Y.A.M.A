@@ -494,11 +494,14 @@ bool elSistemaAguantaElArchivo(uint32_t tamanio){
 	while(cont<cantidadDeNodos){
 		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
 		contadorCapacidad+=nodoSeleccionado->libre;
-		if((contadorCapacidad*1024*1024)>tamanio && nodoSeleccionado->disponible==1){
-			nodosConCapacidadDeCopia++;
-			contadorCapacidad=0;
-		}
-
+		if(nodoSeleccionado->disponible==1){
+				if((contadorCapacidad*1024*1024)>tamanio){
+					nodosConCapacidadDeCopia++;
+					contadorCapacidad-=tamanio;
+				}
+				}else{
+					contadorCapacidad-=nodoSeleccionado->libre;
+				}
 		cont++;
 	}
 	if(nodosConCapacidadDeCopia>=2){
