@@ -17,12 +17,6 @@
 void killMe(int);
 
 //------------------------FUNCIONES DIRECTORIOS
-int buscarYamafs(char **);
-tablaArchivos* esArchivoPath(char *,int );
-t_directory* esDirectorioPath(char *, int );
-bool recorrerPath(char **,int ,int );
-bool existePath(char * pathDirectorio);
-
 void inicializarDirectoriosPrincipales();
 void liberarComandoDesarmado(char** );
 void liberarDirectorio(t_directory* );
