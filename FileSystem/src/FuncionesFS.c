@@ -8,6 +8,91 @@
 #include "FuncionesFS.h"
 #include "../../Biblioteca/src/Socket.h"
 
+//------------------------------BUSCA PATHS
+
+int buscarYamafs(char ** pathDesc){
+
+	int i=0;
+
+	while(pathDesc[i] != NULL){
+		if(strcmp(pathDesc[i],"yamafs:") == 0){
+			return i;
+		} else {
+			i++;
+		}
+	}
+
+	if(pathDesc[i] == NULL){
+		return -1;
+	} else {
+		return i;
+	}
+
+}
+
+
+tablaArchivos* esArchivoPath(char * nombreArchivo,int idPadre){
+	bool buscaPorNombre(tablaArchivos * archivo){
+		return strcmp(archivo->nombreArchivo,nombreArchivo) == 0 && archivo->directorioPadre == idPadre;
+	}
+	return list_find(tablaGlobalArchivos, (void *)buscaPorNombre);;
+}
+
+t_directory* esDirectorioPath(char * nombreDirectorio, int idPadre){
+	bool buscaPorNombre(t_directory * directorio){
+		return strcmp(directorio->nombre,nombreDirectorio) == 0 && directorio->padre==idPadre;
+	}
+	return list_find(listaDirectorios, (void *)buscaPorNombre);
+}
+
+bool recorrerPath(char ** pathDesc,int indice,int idPadre){
+
+	char * pathAct = pathDesc[indice];
+	char * pathProx = pathDesc[indice+1];
+
+	tablaArchivos * archivo = esArchivoPath(pathAct,idPadre);
+
+	if (archivo != NULL){
+
+		if(pathProx == NULL){
+			return true;
+		} else {
+			return false;
+		}
+
+	} else {
+
+		t_directory * directorio = esDirectorioPath(pathAct,idPadre);
+		if (directorio != NULL){
+
+			if(pathProx == NULL){
+				return true;
+			} else {
+				return recorrerPath(pathDesc,indice+1,directorio->index);
+			}
+
+		} else {
+			return false;
+		}
+
+	}
+
+}
+
+bool existePath(char * pathDirectorio){
+
+	char ** pathDesc = string_split(pathDirectorio,"/");
+	int indice = buscarYamafs(pathDesc);
+
+	if(indice == -1){
+		log_warning(loggerFileSystem,"El directorio no corresponde a yamafs");
+		return false;
+	} else {
+		return recorrerPath(pathDesc,indice,-1);
+	}
+
+}
+
 //------------------------------LIBERO MEMORIA
 
 void liberarCopiasXBloque(copiasXBloque* copiaBloque){
