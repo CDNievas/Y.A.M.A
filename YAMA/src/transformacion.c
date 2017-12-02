@@ -177,7 +177,7 @@ copia* obtenerCopiaDeReplanificacion(infoDeFs* info, char* nodoFallido){
 	nodoSistema* nodo2 = list_find(nodosSistema, (void*)esCopia2);
 	if(nodo1->wl > nodo2->wl && strcmp(info->copia2->nombreNodo, nodoFallido)!=0){
 		return info->copia2;
-	}else if(nodo1->wl < nodo2->wl && strcmp(info->copia2->nombreNodo, nodoFallido)!=0){
+	}else if(nodo1->wl < nodo2->wl && strcmp(info->copia1->nombreNodo, nodoFallido)!=0){
 		return info->copia1;
 	}else if(strcmp(info->copia1->nombreNodo, nodoFallido)==0){
 		return info->copia2;
