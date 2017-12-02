@@ -281,23 +281,17 @@ void eliminarHilos(char* nombreNodo,uint32_t nroBloque){
 	for(posicion=0;posicion<list_size(listaHilosTransformacion);posicion++){
 		datosHilo* unDatoHilo = list_get(listaHilosTransformacion,posicion);
 		if((strcmp(unDatoHilo->nombreNodo,nombreNodo)==0) && (nroBloque!=unDatoHilo->numeroBloque)){
-			if(pthread_cancel(unDatoHilo->hiloManejadorNodo) == 0)
-			{
-				log_info(loggerMaster,"Se finalizo correctamente el hilo del nodo: %s y numero de bloque: %d \n",nombreNodo,nroBloque);
-				pthread_join(unDatoHilo->hiloManejadorNodo, (void**) NULL);
-				list_remove(listaHilosTransformacion,posicion);
-				free(unDatoHilo->nombreNodo);
-				free(unDatoHilo);
-				posicion--;
-			}else{
-				log_error(loggerMaster,"No se pudo matar el hilo del nodo: %s y numero de bloque: %d \n",nombreNodo,nroBloque);
-			}
+			list_remove(listaHilosTransformacion,posicion);
+			posicion--;
+			free(unDatoHilo->nombreNodo);
+			pthread_cancel(unDatoHilo->hiloManejadorNodo);
+			free(unDatoHilo);
 		}
 	}
 }
 
 void eliminarDatosTransformacion(char* nombreNodo){
-	uint32_t posicion;
+	int posicion;
 	for(posicion=0;posicion<list_size(listaInfoNodos);posicion++){
 		datosTransformacion* unDatoTransformacion = list_get(listaInfoNodos,posicion);
 		if(strcmp(unDatoTransformacion->conexion.nombreNodo,nombreNodo)==0){
@@ -324,7 +318,7 @@ void replanificarTransformacion(datosTransformacion* datoNodoTransformacion,uint
 	memcpy(datosAEnviarAYAMA,&tamanioNombreNodo,sizeof(uint32_t));
 	memcpy(datosAEnviarAYAMA+sizeof(uint32_t),datoNodoTransformacion->conexion.nombreNodo,tamanioNombreNodo);
 
-	log_error(loggerMaster, "Datos de replanificacion para ser enviados a YAMA serializados con exito.\n");
+	log_debug(loggerMaster, "Datos de replanificacion para ser enviados a YAMA serializados con exito.\n");
 
 	free(datoNodoTransformacion->conexion.ipNodo);
 	free(datoNodoTransformacion->nombreTemporal);
@@ -444,12 +438,12 @@ void inicializarTransformacionEnNodos(char* scriptTransformador,int socketYAMA){
 		string_append(&(unDatoTransformacion->infoGeneral.scriptTransformacion ),scriptTransformador);
 		string_append(&(unDatoHilo->nombreNodo),unDatoTransformacion->conexion.nombreNodo);
 		pthread_t hiloManejadorWorker;
-		unDatoHilo->hiloManejadorNodo = hiloManejadorWorker;
-		list_add(listaHilosTransformacion,unDatoHilo);
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 		pthread_create(&hiloManejadorWorker, &attr, (void*)manejadorTransformacionWorker, (void*)unDatoTransformacion);
+		unDatoHilo->hiloManejadorNodo = hiloManejadorWorker;
+		list_add(listaHilosTransformacion,unDatoHilo);
 	}
 	pthread_mutex_unlock(&mutexNodos);
 }
@@ -1102,6 +1096,7 @@ int main(int argc, char **argv) {
     darPermisosAScripts(argv[3]);
     while(1){
     	int operacion = recvDeNotificacion(socketYAMA);
+    	log_debug(loggerMaster,"%d",operacion);
     	switch(operacion){
     	case TRANSFORMACION:{
     		recibirSolicitudTransformacion(socketYAMA);
@@ -1144,6 +1139,7 @@ int main(int argc, char **argv) {
     		break;
     	}
     	default:{
+    		log_debug(loggerMaster,"%d",operacion);
     		log_error(loggerMaster,"La conexion recibida es erronea.\n");
     		close(socketYAMA);
     		exit(-1);
