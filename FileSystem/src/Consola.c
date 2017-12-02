@@ -111,37 +111,18 @@ void analizarComando(char * linea){
 
 		case 2:{
 
-			if(strcmp(comandoDesarmado[1], "-d")==0){
+			if(strcmp(comandoDesarmado[1], "-d") == 0){
 
-				int pudoBorrar = deleteDirectory(comandoDesarmado[2]);
 
-				if(pudoBorrar == 0){
+			} else if(strcmp(comandoDesarmado[1], "-b") == 0){
 
-					log_error(loggerFileSystem, "El directorio a borrar no existe.");
+			} else {
 
-				} else if(pudoBorrar == -1) {
+				char * path = comandoDesarmado[1];
+				borrarArchivo(path);
 
-					log_error(loggerFileSystem, "El directorio a borrar tiene subdirectorios. No se puede borrar.");
-
-				}else{
-
-					char* comandoPConsola = string_new();
-					string_append(&comandoPConsola, "rmdir ");
-					string_append(&comandoPConsola, comandoDesarmado[2]);
-					system(comandoPConsola);
-					persistirDirectorio();
-					log_info(loggerFileSystem, "Directorio borrado exitosamente.");
-					free(comandoPConsola);
-
-				}
-
-			}else if(strcmp(comandoDesarmado[1], "-b")==0){
-				//BORRO BLOQUE
-			}else if(comandoDesarmado[1]!=NULL){
-				//BORRO ARCHIVO
-			}else{
-				//log_error
 			}
+
 
 		}
 		break;
@@ -224,12 +205,15 @@ void analizarComando(char * linea){
 					if(crearDirectorio(nuevoDirectorio) == 1){
 						system(linea);
 						printf("\n");
+
 					}else{
 						log_error(loggerFileSystem, "No se pudo crear el directorio. Por favor vuelva a intentarlo");
 					}
+
 				}else{
 					log_error(loggerFileSystem, "No se pudo crear el directorio. El directorio ya existe.");
 				}
+
 			}else{
 				log_error(loggerFileSystem, "Asegurese de ingresar el nombre del directorio. Por favor vuelva a intentarlo");
 			}
@@ -316,7 +300,7 @@ void analizarComando(char * linea){
 
 		default:
 			log_error(loggerFileSystem, "Comando no reconocido.");
-			break;
+		break;
 
 	}
 
@@ -345,3 +329,4 @@ void consolaFS(){
 	}
 
 }
+
