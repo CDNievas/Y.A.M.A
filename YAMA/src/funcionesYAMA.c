@@ -296,7 +296,7 @@ void handshakeFS(){
 int obtenerWLMax(){
 	uint32_t maximo = 0;
 	bool maximoWL(nodoSistema* nodoAChequear){
-		if(nodoAChequear->wl>maximo){
+		if(nodoAChequear->wl>=maximo){
 			maximo = nodoAChequear->wl;
 			return true;
 		}else{

@@ -1,4 +1,5 @@
 #include "reduccionGlobal.h"
+#include <commons/collections/list.h>
 
 bool sePuedeHacerReduccionGlobal(int nroMaster){
 	bool esDeMaster(administracionYAMA* admin){
