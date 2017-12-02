@@ -20,4 +20,4 @@ cd ../../Worker/src
 gcc worker.c -o worker -lcommons -lpthread -lm
 echo "Compilando Master"
 cd ../../Master/src
-gcc master.c -o master -lcommons -lpthread
+gcc master.c -o master -lcommons -lpthread -lm
