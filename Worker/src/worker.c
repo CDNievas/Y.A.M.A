@@ -91,7 +91,7 @@ char* leerLinea(FILE* unArchivo){
 
 	while(!feof(unArchivo))
 	{
-		entro = true;
+		bool entro = true;
 		char cadenaLeida[2] = " ";
 		cadenaLeida[0] = fgetc(unArchivo);
 
