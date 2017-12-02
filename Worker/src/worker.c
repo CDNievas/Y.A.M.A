@@ -464,14 +464,14 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			infoApareoArchivo* unaInfoArchivoConseguido = list_get(listaInfoApareo, posicion);
 			if(menorString!=NULL){
 				if(strcmp(unaInfoArchivoConseguido->bloqueLeido,menorString)<0){
-					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivoConseguido->bloqueLeido,menorString);
+					//log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",unaInfoArchivoConseguido->bloqueLeido,menorString);
 					free(menorString);
 					menorString = string_new();
 					string_append(&menorString,unaInfoArchivoConseguido->bloqueLeido);
 					infoMenorElejido = unaInfoArchivoConseguido;
 				}
 				else{
-					log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoArchivoConseguido->bloqueLeido);
+					//log_info(loggerWorker, "El string %s es menor alfabeticamente que %s.\n",menorString,unaInfoArchivoConseguido->bloqueLeido);
 				}
 			}
 			else{
@@ -487,7 +487,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 
 			string_append(&menorString,"\n");
 
-			log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
+			//log_info(loggerWorker, "El string menor alfabeticamente es %s.\n",menorString);
 
 			if(fputs(menorString,archivoGlobalApareado)==EOF){
 				log_error(loggerWorker,"No se pudo escribir en el archivo global apareado.\n");
