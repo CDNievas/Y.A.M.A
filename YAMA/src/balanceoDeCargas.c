@@ -22,7 +22,7 @@ void reducirWL(char* nodo){
 void actualizarWLTransformacion(t_list* copiasElegidas){
 	copia* copiaElegida;
 	bool esNodo(nodoSistema* nodo){
-		return !strcmp(nodo->nombreNodo, copiaElegida->nombreNodo);
+		return strcmp(nodo->nombreNodo, copiaElegida->nombreNodo)==0;
 
 	}
 	int posicion;
@@ -74,7 +74,7 @@ bool laTieneOtroNodo(infoDeFs* bloqueABuscar, t_list* listaDeBalanceo){
 copia* obtenerCopia(datosBalanceo* nodo, infoDeFs* bloque){
 	if(!strcmp(nodo->nombreNodo, bloque->copia1->nombreNodo)){
 		return bloque->copia1;
-	}else if(!strcmp(nodo->nombreNodo, bloque->copia2->nombreNodo)){
+	}else if(strcmp(nodo->nombreNodo, bloque->copia2->nombreNodo)==0){
 		return bloque->copia2;
 	}else{
 		log_error(loggerYAMA, "Error al obtener los datos de la copia a utilizar.");
@@ -110,7 +110,11 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		//chequeo si el que viene es igual al que tuvo el bloque en el recorrido auxiliar
 		if(list_get(listaDeBalanceo, posicion) == nodoAuxiliar){
 			incrementarAvailabilityDeNodo(nodoAuxiliar);
-			posicion++;
+			if(posicion >= list_size(listaDeBalanceo)){
+				posicion = 0;
+			}else{
+				posicion++;
+			}
 		}
 		datosBalanceo* nodoAChequear = list_get(listaDeBalanceo, posicion);
 		if(tieneAvailability(nodoAChequear)){
