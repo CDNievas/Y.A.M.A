@@ -185,8 +185,7 @@ void cargarMaster(t_config* configuracionMaster){
 
 void realizarHandshake(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    int notificacion = 
-	    ion(unSocket);
+    uint32_t notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         mostrarMetricas();
