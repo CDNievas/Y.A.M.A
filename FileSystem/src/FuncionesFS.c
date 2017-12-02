@@ -459,6 +459,28 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
+bool elSistemaAguantaElArchivo(uint32_t tamanio){
+	uint32_t cantidadDeNodos=list_size(tablaGlobalNodos->nodo);
+	uint32_t cont=0;
+	uint32_t nodosConCapacidadDeCopia=0;
+	uint32_t contadorCapacidad=0;
+	while(cont<cantidadDeNodos){
+		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
+		contadorCapacidad+=nodoSeleccionado->libre;
+		if((contadorCapacidad*1024*1024)>tamanio){
+			nodosConCapacidadDeCopia++;
+			contadorCapacidad=0;
+		}
+
+		cont++;
+	}
+	if(nodosConCapacidadDeCopia>=2){
+		return true;
+	}else{
+		return false;
+	}
+
+}
 
 bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
@@ -496,7 +518,10 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			liberarComandoDesarmado(rutaArchivo);
 			liberarComandoDesarmado(rutaDirectorio);
 			uint32_t tamAux = 0;
-			if(tablaGlobalNodos->libres*1024*1024>=(tamanio*2)){
+
+			bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
+
+			if(sePuedeAlmacenarEnElSistema==true){
 				if(tamanio!=0){
 					if (strcmp(tipo,"B")==0) {
 							while (tamanio > 0) {

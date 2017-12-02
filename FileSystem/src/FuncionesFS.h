@@ -39,6 +39,7 @@ int asignarBloqueNodo(contenidoNodo* );
 void asignarEnviarANodo(void* ,uint32_t ,copiasXBloque* );
 
 void enviarDatosANodo(t_list* ,FILE* , tablaArchivos* );
+bool elSistemaAguantaElArchivo(uint32_t );
 
 bool almacenarArchivo(char* , char* ,char* ) ;
 

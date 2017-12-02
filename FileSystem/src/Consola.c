@@ -227,7 +227,6 @@ void analizarComando(char * linea){
 			char * flag = comandoDesarmado[3];
 			if(nombreArchivoViejo != NULL && nombreArchivoNuevo != NULL && flag != NULL){
 				almacenarArchivo(nombreArchivoViejo,nombreArchivoNuevo,flag);
-				log_info(loggerFileSystem,"El archivo ha sido copiado exitosamente.");
 			}else{
 				log_error(loggerFileSystem, "Faltan parametros para ejecutar el comando cpfrom");
 			}
