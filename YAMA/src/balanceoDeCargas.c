@@ -65,7 +65,7 @@ bool laTieneOtroNodo(infoDeFs* bloqueABuscar, t_list* listaDeBalanceo){
 		return nroBloque == bloqueABuscar->nroBloque;
 	}
 	bool tieneBloqueYEstaDisponible(datosBalanceo* nodo){
-		return list_any_satisfy(nodo->bloques, (void*)esElBloque) && nodo->availability>0;
+		return list_any_satisfy(nodo->bloques, (void*)esElBloque);// && nodo->availability>0;
 	}
 	usleep(RETARDO_PLANIFICACION);
 	return list_any_satisfy(listaDeBalanceo, (void*)tieneBloqueYEstaDisponible);
