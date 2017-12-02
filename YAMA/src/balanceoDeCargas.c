@@ -110,13 +110,14 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		//chequeo si el que viene es igual al que tuvo el bloque en el recorrido auxiliar
 		if(list_get(listaDeBalanceo, posicion) == nodoAuxiliar){
 			incrementarAvailabilityDeNodo(nodoAuxiliar);
-			if(posicion >= list_size(listaDeBalanceo)){
+			if(posicion+1 >= list_size(listaDeBalanceo)){
 				posicion = 0;
 			}else{
 				posicion++;
 			}
 		}
 		datosBalanceo* nodoAChequear = list_get(listaDeBalanceo, posicion);
+		log_trace(loggerYAMA, "Nodo %s, availability %d", nodoAChequear->nombreNodo, nodoAChequear->availability);
 		if(tieneAvailability(nodoAChequear)){
 			if(tieneBloqueBuscado(nodoAChequear, bloqueABuscar)){
 				posicion++;
@@ -124,6 +125,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				list_add(copiasElegidas, copiaElegida);
 				log_debug(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", copiaElegida->nombreNodo, bloqueABuscar->nroBloque);
 				cantidadAsignados++;
+				nodoAChequear->availability--;
 				usleep(RETARDO_PLANIFICACION);
 				//paso a buscar el bloque con un puntero auxiliar
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
@@ -133,6 +135,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				log_debug(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 				cantidadAsignados++;
+				nodoAChequear->availability--;
 				usleep(RETARDO_PLANIFICACION);
 			}else{
 				log_error(loggerYAMA, "Ocurrio un error en el algoritmo de balanceo de transformacion - Cerrando YAMA.");

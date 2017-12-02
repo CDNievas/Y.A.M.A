@@ -1,0 +1,430 @@
+[DEBUG] 14:23:56:680 YAMA/(3435:3435): Se cargo exitosamente YAMA.
+[DEBUG] 14:23:56:681 YAMA/(3435:3435): Conexion con FileSystem realizada.
+[INFO] 14:23:56:681 YAMA/(3435:3435): Cantidad de nodos del sistema: 3
+[INFO] 14:23:56:681 YAMA/(3435:3435): Se han recibido todos los nodos del sistema correctamente.
+[INFO] 14:23:56:681 YAMA/(3435:3435): Handshake con FileSystem realizado.
+[INFO] 14:23:56:681 YAMA/(3435:3435): Escuchando clientes...
+[INFO] 14:23:59:944 YAMA/(3435:3435): Un socket realizo una peticion a YAMA.
+[INFO] 14:23:59:944 YAMA/(3435:3435): Se recibio una nueva conexion del socket 6.
+[INFO] 14:23:59:944 YAMA/(3435:3435): Un socket realizo una peticion a YAMA.
+[TRACE] 14:23:59:944 YAMA/(3435:3435): Se establecio la conexion con el socket master 6 - Handshake realizado.
+[TRACE] 14:23:59:954 YAMA/(3435:3435): Pasando a atender la peticion del socket master 6.
+[INFO] 14:23:59:954 YAMA/(3435:3442): El numero de master del socket 6 es 1.
+[TRACE] 14:23:59:954 YAMA/(3435:3442): Se recibio una peticion del socket 6 para llevar a cabo una transformacion.
+[INFO] 14:23:59:954 YAMA/(3435:3442): Se envio la peticion del archivo a FileSystem.
+[DEBUG] 14:23:59:954 YAMA/(3435:3442): Se recibieron los datos del archivo de FileSystem.
+[TRACE] 14:23:59:954 YAMA/(3435:3442): Preparando los datos para el balanceo de cargas.
+[INFO] 14:23:59:955 YAMA/(3435:3442): Llevando a cabo el balanceo de cargas con el algoritmo WClock.
+[TRACE] 14:24:05:2 YAMA/(3435:3442): Se comienza con el algoritmo de balanceo de cargas.
+[WARNING] 14:24:22:595 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:24:23:39 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:24:24:209 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 0.
+[DEBUG] 14:24:44:918 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 1.
+[DEBUG] 14:25:14:741 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 2.
+[DEBUG] 14:25:26:292 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 3.
+[DEBUG] 14:25:38:674 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 4.
+[DEBUG] 14:25:47:690 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 5.
+[DEBUG] 14:26:05:94 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 6.
+[DEBUG] 14:26:14:363 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 7.
+[DEBUG] 14:26:18:720 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 8.
+[DEBUG] 14:26:23:703 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 9.
+[DEBUG] 14:27:05:374 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 10.
+[DEBUG] 14:27:09:281 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 11.
+[DEBUG] 14:27:12:445 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 12.
+[DEBUG] 14:27:15:682 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 13.
+[DEBUG] 14:27:19:316 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 14.
+[DEBUG] 14:27:22:122 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 15.
+[DEBUG] 14:27:25:210 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 16.
+[WARNING] 14:27:27:677 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:27:27:941 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:27:28:897 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 17.
+[WARNING] 14:27:38:861 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:27:39:127 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:27:40:340 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 18.
+[DEBUG] 14:27:47:537 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 19.
+[DEBUG] 14:27:50:539 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 20.
+[WARNING] 14:27:52:799 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:27:52:995 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:27:53:398 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 21.
+[DEBUG] 14:27:56:141 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 22.
+[DEBUG] 14:27:59:289 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 23.
+[WARNING] 14:28:01:742 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:28:01:949 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:28:02:368 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 24.
+[WARNING] 14:28:04:926 YAMA/(3435:3442): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:28:05:125 YAMA/(3435:3442): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:28:05:517 YAMA/(3435:3442): El nodo NODO1 fue elegido para transformar el bloque 25.
+[DEBUG] 14:28:08:355 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 26.
+[DEBUG] 14:28:11:633 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 27.
+[DEBUG] 14:28:14:518 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 28.
+[DEBUG] 14:28:17:802 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 29.
+[DEBUG] 14:28:20:554 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 30.
+[DEBUG] 14:28:23:804 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 31.
+[DEBUG] 14:28:26:803 YAMA/(3435:3442): El nodo NODO3 fue elegido para transformar el bloque 32.
+[DEBUG] 14:28:30:792 YAMA/(3435:3442): El nodo NODO2 fue elegido para transformar el bloque 33.
+[TRACE] 14:28:32:725 YAMA/(3435:3442): Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.
+[INFO] 14:28:38:911 YAMA/(3435:3442): Se prosigue a cargar la transformacion en la tabla de estados.
+[INFO] 14:28:39:106 YAMA/(3435:3442): El master 1 tiene el numero de Job 1.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion0.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 0. Corresponde al bloque del archivo: 0
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion1.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 0. Corresponde al bloque del archivo: 1
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 1. Corresponde al bloque del archivo: 2
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 1. Corresponde al bloque del archivo: 3
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion4.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 3. Corresponde al bloque del archivo: 4
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion5.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 2. Corresponde al bloque del archivo: 5
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion6.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 5. Corresponde al bloque del archivo: 6
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion7.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 3. Corresponde al bloque del archivo: 7
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion8.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 7. Corresponde al bloque del archivo: 8
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion9.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 4. Corresponde al bloque del archivo: 9
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion10.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 8. Corresponde al bloque del archivo: 10
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion11.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 5. Corresponde al bloque del archivo: 11
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion12.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 10. Corresponde al bloque del archivo: 12
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion13.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): Su numero de bloque a transformar es: 6. Corresponde al bloque del archivo: 13
+[INFO] 14:28:39:106 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:106 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion14.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 11. Corresponde al bloque del archivo: 14
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion15.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 8. Corresponde al bloque del archivo: 15
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion16.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 12. Corresponde al bloque del archivo: 16
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion17.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 12. Corresponde al bloque del archivo: 17
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion18.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 13. Corresponde al bloque del archivo: 18
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion19.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 9. Corresponde al bloque del archivo: 19
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion20.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 15. Corresponde al bloque del archivo: 20
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion21.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 15. Corresponde al bloque del archivo: 21
+[INFO] 14:28:39:107 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion22.
+[TRACE] 14:28:39:107 YAMA/(3435:3442): Su numero de bloque a transformar es: 11. Corresponde al bloque del archivo: 22
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion23.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 17. Corresponde al bloque del archivo: 23
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion24.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 18. Corresponde al bloque del archivo: 24
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO1.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion25.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 19. Corresponde al bloque del archivo: 25
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion26.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 12. Corresponde al bloque del archivo: 26
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion27.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 20. Corresponde al bloque del archivo: 27
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion28.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 13. Corresponde al bloque del archivo: 28
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion29.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 22. Corresponde al bloque del archivo: 29
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion30.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 14. Corresponde al bloque del archivo: 30
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion31.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 24. Corresponde al bloque del archivo: 31
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO3.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion32.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 15. Corresponde al bloque del archivo: 32
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): El Nodo elegido es: NODO2.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su archivo temporal sera: tempFileTransformacion33.
+[TRACE] 14:28:39:108 YAMA/(3435:3442): Su numero de bloque a transformar es: 26. Corresponde al bloque del archivo: 33
+[INFO] 14:28:39:108 YAMA/(3435:3442): Se agrego la operacion a la tabla de estados.
+[INFO] 14:28:39:111 YAMA/(3435:3442): Se envio correctamente la informacion de la transformacion al master 1
+[WARNING] 14:28:42:955 YAMA/(3435:3442): El nodo NODO3 fallo en su etapa de transformacion.
+[TRACE] 14:28:43:151 YAMA/(3435:3442): Se prosigue a replanificar los bloques del nodo NODO3.
+[DEBUG] 14:40:06:787 YAMA/(4201:4201): Se cargo exitosamente YAMA.
+[DEBUG] 14:40:06:787 YAMA/(4201:4201): Conexion con FileSystem realizada.
+[INFO] 14:40:06:788 YAMA/(4201:4201): Cantidad de nodos del sistema: 3
+[INFO] 14:40:06:788 YAMA/(4201:4201): Se han recibido todos los nodos del sistema correctamente.
+[INFO] 14:40:06:788 YAMA/(4201:4201): Handshake con FileSystem realizado.
+[INFO] 14:40:06:788 YAMA/(4201:4201): Escuchando clientes...
+[DEBUG] 14:45:14:755 YAMA/(4440:4440): Se cargo exitosamente YAMA.
+[DEBUG] 14:45:14:755 YAMA/(4440:4440): Conexion con FileSystem realizada.
+[INFO] 14:45:14:755 YAMA/(4440:4440): Cantidad de nodos del sistema: 3
+[INFO] 14:45:14:755 YAMA/(4440:4440): Se han recibido todos los nodos del sistema correctamente.
+[INFO] 14:45:14:755 YAMA/(4440:4440): Handshake con FileSystem realizado.
+[INFO] 14:45:14:755 YAMA/(4440:4440): Escuchando clientes...
+[INFO] 14:45:17:884 YAMA/(4440:4440): Un socket realizo una peticion a YAMA.
+[INFO] 14:45:17:884 YAMA/(4440:4440): Se recibio una nueva conexion del socket 6.
+[INFO] 14:45:17:884 YAMA/(4440:4440): Un socket realizo una peticion a YAMA.
+[TRACE] 14:45:17:884 YAMA/(4440:4440): Se establecio la conexion con el socket master 6 - Handshake realizado.
+[TRACE] 14:45:17:892 YAMA/(4440:4440): Pasando a atender la peticion del socket master 6.
+[INFO] 14:45:17:893 YAMA/(4440:4448): El numero de master del socket 6 es 1.
+[TRACE] 14:45:17:893 YAMA/(4440:4448): Se recibio una peticion del socket 6 para llevar a cabo una transformacion.
+[INFO] 14:45:17:893 YAMA/(4440:4448): Se envio la peticion del archivo a FileSystem.
+[DEBUG] 14:45:17:894 YAMA/(4440:4448): Se recibieron los datos del archivo de FileSystem.
+[TRACE] 14:45:17:894 YAMA/(4440:4448): Preparando los datos para el balanceo de cargas.
+[INFO] 14:45:17:894 YAMA/(4440:4448): Llevando a cabo el balanceo de cargas con el algoritmo WClock.
+[TRACE] 14:45:24:509 YAMA/(4440:4448): Se comienza con el algoritmo de balanceo de cargas.
+[TRACE] 14:45:31:503 YAMA/(4440:4448): Nodo NODO2, availability 3
+[WARNING] 14:45:31:503 YAMA/(4440:4448): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:45:31:503 YAMA/(4440:4448): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:45:31:504 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 0.
+[TRACE] 14:45:32:357 YAMA/(4440:4448): Nodo NODO2, availability 2
+[DEBUG] 14:45:32:357 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 1.
+[TRACE] 14:45:33:212 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:45:33:212 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 2.
+[TRACE] 14:45:33:917 YAMA/(4440:4448): Nodo NODO2, availability 1
+[DEBUG] 14:45:33:917 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 3.
+[TRACE] 14:45:34:584 YAMA/(4440:4448): Nodo NODO1, availability 2
+[DEBUG] 14:45:34:584 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 4.
+[TRACE] 14:45:35:304 YAMA/(4440:4448): Nodo NODO2, availability 0
+[TRACE] 14:45:36:84 YAMA/(4440:4448): Nodo NODO2, availability 3
+[DEBUG] 14:45:36:84 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 5.
+[TRACE] 14:45:37:11 YAMA/(4440:4448): Nodo NODO1, availability 1
+[DEBUG] 14:45:37:11 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 6.
+[TRACE] 14:45:37:822 YAMA/(4440:4448): Nodo NODO2, availability 2
+[DEBUG] 14:45:37:822 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 7.
+[TRACE] 14:45:38:690 YAMA/(4440:4448): Nodo NODO1, availability 0
+[TRACE] 14:45:39:460 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:45:39:460 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 8.
+[TRACE] 14:45:40:79 YAMA/(4440:4448): Nodo NODO2, availability 1
+[DEBUG] 14:45:40:79 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 9.
+[TRACE] 14:45:40:902 YAMA/(4440:4448): Nodo NODO1, availability 2
+[DEBUG] 14:45:40:902 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 10.
+[TRACE] 14:45:41:591 YAMA/(4440:4448): Nodo NODO2, availability 0
+[TRACE] 14:45:42:9 YAMA/(4440:4448): Nodo NODO2, availability 3
+[DEBUG] 14:45:42:9 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 11.
+[TRACE] 14:45:42:481 YAMA/(4440:4448): Nodo NODO1, availability 1
+[DEBUG] 14:45:42:481 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 12.
+[TRACE] 14:45:42:807 YAMA/(4440:4448): Nodo NODO2, availability 2
+[DEBUG] 14:45:42:807 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 13.
+[TRACE] 14:45:43:204 YAMA/(4440:4448): Nodo NODO1, availability 0
+[TRACE] 14:45:43:569 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:45:43:569 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 14.
+[TRACE] 14:45:43:932 YAMA/(4440:4448): Nodo NODO2, availability 1
+[DEBUG] 14:45:43:932 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 15.
+[TRACE] 14:45:44:307 YAMA/(4440:4448): Nodo NODO1, availability 2
+[WARNING] 14:45:44:308 YAMA/(4440:4448): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:45:44:308 YAMA/(4440:4448): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:45:44:310 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 16.
+[TRACE] 14:45:44:671 YAMA/(4440:4448): Nodo NODO1, availability 1
+[DEBUG] 14:45:44:671 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 17.
+[TRACE] 14:45:44:960 YAMA/(4440:4448): Nodo NODO2, availability 0
+[TRACE] 14:45:46:479 YAMA/(4440:4448): Nodo NODO2, availability 3
+[DEBUG] 14:45:46:479 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 18.
+[TRACE] 14:45:47:469 YAMA/(4440:4448): Nodo NODO1, availability 0
+[TRACE] 14:45:48:426 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:45:48:426 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 19.
+[TRACE] 14:45:48:685 YAMA/(4440:4448): Nodo NODO2, availability 2
+[WARNING] 14:45:48:686 YAMA/(4440:4448): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:45:48:686 YAMA/(4440:4448): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:45:48:687 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 20.
+[TRACE] 14:45:49:149 YAMA/(4440:4448): Nodo NODO2, availability 1
+[DEBUG] 14:45:49:149 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 21.
+[TRACE] 14:45:49:504 YAMA/(4440:4448): Nodo NODO1, availability 2
+[DEBUG] 14:45:49:504 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 22.
+[TRACE] 14:45:49:879 YAMA/(4440:4448): Nodo NODO2, availability 0
+[TRACE] 14:45:50:283 YAMA/(4440:4448): Nodo NODO2, availability 3
+[DEBUG] 14:45:50:283 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 23.
+[TRACE] 14:45:50:636 YAMA/(4440:4448): Nodo NODO1, availability 1
+[WARNING] 14:45:50:637 YAMA/(4440:4448): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:45:50:637 YAMA/(4440:4448): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:45:50:638 YAMA/(4440:4448): El nodo NODO2 fue elegido para transformar el bloque 24.
+[TRACE] 14:45:51:58 YAMA/(4440:4448): Nodo NODO1, availability 0
+[TRACE] 14:45:51:391 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:45:51:391 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 25.
+[TRACE] 14:46:03:358 YAMA/(4440:4448): Nodo NODO3, availability 14
+[DEBUG] 14:46:03:358 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 26.
+[TRACE] 14:46:04:786 YAMA/(4440:4448): Nodo NODO1, availability 2
+[DEBUG] 14:46:04:786 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 27.
+[TRACE] 14:46:05:527 YAMA/(4440:4448): Nodo NODO3, availability 13
+[DEBUG] 14:46:05:527 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 28.
+[TRACE] 14:46:06:368 YAMA/(4440:4448): Nodo NODO1, availability 1
+[DEBUG] 14:46:06:368 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 29.
+[TRACE] 14:46:07:105 YAMA/(4440:4448): Nodo NODO3, availability 12
+[DEBUG] 14:46:07:105 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 30.
+[TRACE] 14:46:12:226 YAMA/(4440:4448): Nodo NODO1, availability 0
+[TRACE] 14:46:14:715 YAMA/(4440:4448): Nodo NODO1, availability 3
+[DEBUG] 14:46:14:715 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 31.
+[TRACE] 14:46:27:113 YAMA/(4440:4448): Nodo NODO3, availability 11
+[DEBUG] 14:46:27:113 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 32.
+[TRACE] 14:46:28:326 YAMA/(4440:4448): Nodo NODO1, availability 2
+[DEBUG] 14:46:28:326 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 33.
+[TRACE] 14:46:30:708 YAMA/(4440:4448): Nodo NODO3, availability 10
+[WARNING] 14:46:30:708 YAMA/(4440:4448): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:46:30:708 YAMA/(4440:4448): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:46:30:709 YAMA/(4440:4448): El nodo NODO1 fue elegido para transformar el bloque 34.
+[TRACE] 14:46:31:817 YAMA/(4440:4448): Nodo NODO3, availability 9
+[DEBUG] 14:46:31:817 YAMA/(4440:4448): El nodo NODO3 fue elegido para transformar el bloque 35.
+[DEBUG] 14:50:06:333 YAMA/(4596:4596): Se cargo exitosamente YAMA.
+[DEBUG] 14:50:06:333 YAMA/(4596:4596): Conexion con FileSystem realizada.
+[INFO] 14:50:06:333 YAMA/(4596:4596): Cantidad de nodos del sistema: 3
+[INFO] 14:50:06:333 YAMA/(4596:4596): Se han recibido todos los nodos del sistema correctamente.
+[INFO] 14:50:06:333 YAMA/(4596:4596): Handshake con FileSystem realizado.
+[INFO] 14:50:06:333 YAMA/(4596:4596): Escuchando clientes...
+[INFO] 14:50:08:768 YAMA/(4596:4596): Un socket realizo una peticion a YAMA.
+[INFO] 14:50:08:768 YAMA/(4596:4596): Se recibio una nueva conexion del socket 6.
+[INFO] 14:50:08:768 YAMA/(4596:4596): Un socket realizo una peticion a YAMA.
+[TRACE] 14:50:08:768 YAMA/(4596:4596): Se establecio la conexion con el socket master 6 - Handshake realizado.
+[TRACE] 14:50:08:776 YAMA/(4596:4596): Pasando a atender la peticion del socket master 6.
+[INFO] 14:50:08:776 YAMA/(4596:4604): El numero de master del socket 6 es 1.
+[TRACE] 14:50:08:777 YAMA/(4596:4604): Se recibio una peticion del socket 6 para llevar a cabo una transformacion.
+[INFO] 14:50:08:777 YAMA/(4596:4604): Se envio la peticion del archivo a FileSystem.
+[DEBUG] 14:50:08:778 YAMA/(4596:4604): Se recibieron los datos del archivo de FileSystem.
+[TRACE] 14:50:08:778 YAMA/(4596:4604): Preparando los datos para el balanceo de cargas.
+[INFO] 14:50:08:778 YAMA/(4596:4604): Llevando a cabo el balanceo de cargas con el algoritmo WClock.
+[TRACE] 14:50:10:631 YAMA/(4596:4604): Se comienza con el algoritmo de balanceo de cargas.
+[TRACE] 14:50:14:48 YAMA/(4596:4604): Nodo NODO2, availability 3
+[WARNING] 14:50:14:48 YAMA/(4596:4604): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:50:14:48 YAMA/(4596:4604): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:50:14:49 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 0.
+[TRACE] 14:50:15:395 YAMA/(4596:4604): Nodo NODO2, availability 2
+[DEBUG] 14:50:15:395 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 1.
+[TRACE] 14:50:15:869 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:15:869 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 2.
+[TRACE] 14:50:16:300 YAMA/(4596:4604): Nodo NODO2, availability 1
+[DEBUG] 14:50:16:300 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 3.
+[TRACE] 14:50:16:560 YAMA/(4596:4604): Nodo NODO1, availability 2
+[DEBUG] 14:50:16:560 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 4.
+[TRACE] 14:50:16:727 YAMA/(4596:4604): Nodo NODO2, availability 0
+[TRACE] 14:50:16:881 YAMA/(4596:4604): Nodo NODO2, availability 3
+[DEBUG] 14:50:16:881 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 5.
+[TRACE] 14:50:17:58 YAMA/(4596:4604): Nodo NODO1, availability 1
+[DEBUG] 14:50:17:58 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 6.
+[TRACE] 14:50:17:208 YAMA/(4596:4604): Nodo NODO2, availability 2
+[DEBUG] 14:50:17:208 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 7.
+[TRACE] 14:50:17:441 YAMA/(4596:4604): Nodo NODO1, availability 0
+[TRACE] 14:50:17:595 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:17:595 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 8.
+[TRACE] 14:50:17:777 YAMA/(4596:4604): Nodo NODO2, availability 1
+[DEBUG] 14:50:17:777 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 9.
+[TRACE] 14:50:17:922 YAMA/(4596:4604): Nodo NODO1, availability 2
+[DEBUG] 14:50:17:922 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 10.
+[TRACE] 14:50:18:73 YAMA/(4596:4604): Nodo NODO2, availability 0
+[TRACE] 14:50:18:241 YAMA/(4596:4604): Nodo NODO2, availability 3
+[DEBUG] 14:50:18:241 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 11.
+[TRACE] 14:50:18:408 YAMA/(4596:4604): Nodo NODO1, availability 1
+[DEBUG] 14:50:18:408 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 12.
+[TRACE] 14:50:18:800 YAMA/(4596:4604): Nodo NODO2, availability 2
+[DEBUG] 14:50:18:800 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 13.
+[TRACE] 14:50:18:962 YAMA/(4596:4604): Nodo NODO1, availability 0
+[TRACE] 14:50:19:122 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:19:122 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 14.
+[TRACE] 14:50:19:285 YAMA/(4596:4604): Nodo NODO2, availability 1
+[DEBUG] 14:50:19:285 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 15.
+[TRACE] 14:50:19:710 YAMA/(4596:4604): Nodo NODO1, availability 2
+[WARNING] 14:50:19:711 YAMA/(4596:4604): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:50:19:711 YAMA/(4596:4604): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:50:19:711 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 16.
+[TRACE] 14:50:19:862 YAMA/(4596:4604): Nodo NODO1, availability 1
+[DEBUG] 14:50:19:862 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 17.
+[TRACE] 14:50:20:10 YAMA/(4596:4604): Nodo NODO2, availability 0
+[TRACE] 14:50:20:551 YAMA/(4596:4604): Nodo NODO2, availability 3
+[DEBUG] 14:50:20:551 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 18.
+[TRACE] 14:50:21:408 YAMA/(4596:4604): Nodo NODO1, availability 0
+[TRACE] 14:50:21:560 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:21:560 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 19.
+[TRACE] 14:50:21:729 YAMA/(4596:4604): Nodo NODO2, availability 2
+[WARNING] 14:50:21:729 YAMA/(4596:4604): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:50:21:729 YAMA/(4596:4604): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:50:21:730 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 20.
+[TRACE] 14:50:21:873 YAMA/(4596:4604): Nodo NODO2, availability 1
+[DEBUG] 14:50:21:873 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 21.
+[TRACE] 14:50:22:30 YAMA/(4596:4604): Nodo NODO1, availability 2
+[DEBUG] 14:50:22:30 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 22.
+[TRACE] 14:50:22:166 YAMA/(4596:4604): Nodo NODO2, availability 0
+[TRACE] 14:50:22:330 YAMA/(4596:4604): Nodo NODO2, availability 3
+[DEBUG] 14:50:22:330 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 23.
+[TRACE] 14:50:22:478 YAMA/(4596:4604): Nodo NODO1, availability 1
+[WARNING] 14:50:22:478 YAMA/(4596:4604): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:50:22:478 YAMA/(4596:4604): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:50:22:478 YAMA/(4596:4604): El nodo NODO2 fue elegido para transformar el bloque 24.
+[TRACE] 14:50:22:650 YAMA/(4596:4604): Nodo NODO1, availability 0
+[TRACE] 14:50:23:121 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:23:121 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 25.
+[TRACE] 14:50:23:288 YAMA/(4596:4604): Nodo NODO3, availability 14
+[DEBUG] 14:50:23:288 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 26.
+[TRACE] 14:50:23:908 YAMA/(4596:4604): Nodo NODO1, availability 2
+[DEBUG] 14:50:23:908 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 27.
+[TRACE] 14:50:24:86 YAMA/(4596:4604): Nodo NODO3, availability 13
+[DEBUG] 14:50:24:86 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 28.
+[TRACE] 14:50:24:485 YAMA/(4596:4604): Nodo NODO1, availability 1
+[DEBUG] 14:50:24:485 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 29.
+[TRACE] 14:50:24:794 YAMA/(4596:4604): Nodo NODO3, availability 12
+[DEBUG] 14:50:24:794 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 30.
+[TRACE] 14:50:25:345 YAMA/(4596:4604): Nodo NODO1, availability 0
+[TRACE] 14:50:26:938 YAMA/(4596:4604): Nodo NODO1, availability 3
+[DEBUG] 14:50:26:939 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 31.
+[TRACE] 14:50:28:367 YAMA/(4596:4604): Nodo NODO3, availability 11
+[DEBUG] 14:50:28:367 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 32.
+[TRACE] 14:50:28:872 YAMA/(4596:4604): Nodo NODO1, availability 2
+[DEBUG] 14:50:28:872 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 33.
+[TRACE] 14:50:32:65 YAMA/(4596:4604): Nodo NODO3, availability 10
+[WARNING] 14:50:36:945 YAMA/(4596:4604): El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.
+[TRACE] 14:50:37:421 YAMA/(4596:4604): Se prosigue a buscar que otro nodo lo tiene.
+[DEBUG] 14:50:40:436 YAMA/(4596:4604): El nodo NODO1 fue elegido para transformar el bloque 34.
+[TRACE] 14:51:18:12 YAMA/(4596:4604): Nodo NODO3, availability 9
+[DEBUG] 14:51:23:581 YAMA/(4596:4604): El nodo NODO3 fue elegido para transformar el bloque 35.
