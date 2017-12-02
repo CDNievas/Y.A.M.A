@@ -185,7 +185,8 @@ void cargarMaster(t_config* configuracionMaster){
 
 void realizarHandshake(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    int notificacion = recvDeNotificacion(unSocket);
+    int notificacion = 
+	    ion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         mostrarMetricas();
@@ -195,7 +196,7 @@ void realizarHandshake(int unSocket, int proceso){
 
 int realizarHandshakeWorker(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    int notificacion = recvDeNotificacion(unSocket);
+    uint32_t notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         notificacion = -1;
@@ -1214,7 +1215,7 @@ int main(int argc, char **argv) {
     darPermisosAScripts(argv[2]);
     darPermisosAScripts(argv[3]);
     while(1){
-    	int operacion = recvDeNotificacion(socketYAMA);
+    	uint32_t operacion = recvDeNotificacion(socketYAMA);
     	switch(operacion){
     	case TRANSFORMACION:{
     		recibirSolicitudTransformacion(socketYAMA);
