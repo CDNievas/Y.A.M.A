@@ -100,7 +100,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 	int posicion = 0, cantidadAsignados= 0; //como la lista esta ordenada por availability, la availability mas alta es la del primero
 	t_list* copiasElegidas = list_create();
 	datosBalanceo* nodoAuxiliar = NULL;
-	log_info(loggerYAMA, "Se comienza con el algoritmo de balanceo de cargas.");
+	log_trace(loggerYAMA, "Se comienza con el algoritmo de balanceo de cargas.");
 	while(cantidadAsignados < list_size(listaDeBloques)){
 		infoDeFs* bloqueABuscar = list_get(listaDeBloques, cantidadAsignados);
 		//si ya pegue la vuelta, vuelvo a empezar
@@ -122,15 +122,15 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				posicion++;
 				copia* copiaElegida = obtenerCopia(nodoAChequear, bloqueABuscar);
 				list_add(copiasElegidas, copiaElegida);
-				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", copiaElegida->nombreNodo, bloqueABuscar->nroBloque);
+				log_debug(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", copiaElegida->nombreNodo, bloqueABuscar->nroBloque);
 				cantidadAsignados++;
 				usleep(RETARDO_PLANIFICACION);
 				//paso a buscar el bloque con un puntero auxiliar
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
-				log_info(loggerYAMA, "El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.");
-				log_info(loggerYAMA, "Se prosigue a buscar que otro nodo lo tiene.");
+				log_warning(loggerYAMA, "El nodo que se encontraba marcado con el puntero no podia llevar a cabo la transformacion sobre ese bloque.");
+				log_trace(loggerYAMA, "Se prosigue a buscar que otro nodo lo tiene.");
 				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion);
-				log_info(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
+				log_debug(loggerYAMA, "El nodo %s fue elegido para transformar el bloque %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 				cantidadAsignados++;
 				usleep(RETARDO_PLANIFICACION);
@@ -142,8 +142,8 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 			nodoAChequear->availability = BASE_AVAILABILITY;
 			usleep(RETARDO_PLANIFICACION);
 		}
-		log_info(loggerYAMA, "Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.");
 	}
+	log_trace(loggerYAMA, "Se prosigue a actualizar el WL de todos los nodos elegidos para llevar a cabo las transformaciones.");
 	actualizarWLTransformacion(copiasElegidas);
 	return copiasElegidas;
 }

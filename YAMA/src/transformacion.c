@@ -79,9 +79,9 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
 		nuevaAdministracion->nroBloqueFile = infoDeBloque->nroBloque;
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
-		log_info(loggerYAMA, "El Nodo elegido es: %s.", copiaAUsar->nombreNodo);
-		log_info(loggerYAMA, "Su archivo temporal sera: %s.", nuevaAdministracion->nameFile);
-		log_info(loggerYAMA, "Su numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nroBloque, infoDeBloque->nroBloque);
+		log_trace(loggerYAMA, "El Nodo elegido es: %s.", copiaAUsar->nombreNodo);
+		log_trace(loggerYAMA, "Su archivo temporal sera: %s.", nuevaAdministracion->nameFile);
+		log_trace(loggerYAMA, "Su numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nroBloque, infoDeBloque->nroBloque);
 		nuevaAdministracion->nombreNodo = string_new();
 		string_append(&nuevaAdministracion->nombreNodo, copiaAUsar->nombreNodo);
 //		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
@@ -252,7 +252,7 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		}
 		actualizarWLTransformacion(listaParaWL);
 		void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
-		sendRemasterizado(socketMaster, REPLANIFICAR, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
+		sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
 		free(infoReplanificacionSerializada);
 		list_destroy(listaParaMaster);
 		list_destroy(listaBloquesAReplanificar);
