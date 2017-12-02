@@ -482,9 +482,9 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 		}
 		posicionActual++;
 		list_add(archivoAGuardar->bloques,copia);
-		list_add(tablaGlobalArchivos, archivoAGuardar);
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
+	list_add(tablaGlobalArchivos, archivoAGuardar);
 }
 bool elSistemaAguantaElArchivo(uint32_t tamanio){
 	uint32_t cantidadDeNodos=list_size(tablaGlobalNodos->nodo);
