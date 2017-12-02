@@ -194,3 +194,114 @@ int obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
 	}
 
 }
+
+//void copiaArchivo(tablaArchivos* entradaArchivo,char* directorioFilesystem){
+//	uint32_t bloquesDelArchivo=list_size(entradaArchivo->bloques);
+//	uint32_t cont=0;
+//
+//	while(cont<bloquesDelArchivo){
+//		copiasXBloque* entradaNodo=list_get(entradaArchivo->bloques,cont);
+//
+//
+//		void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
+//		uint32_t posicionActual=0;
+//		contenidoNodo* nodo0;
+//		contenidoNodo* nodo1;
+//		bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
+//			return(nodoSeleccionado1->porcentajeOcioso > nodoSeleccionado2->porcentajeOcioso);
+//		}
+//		list_sort(tablaGlobalNodos->contenidoXNodo,(void*)ordenarPorPorcentajeOcioso);
+//
+//		nodo0=list_get(tablaGlobalNodos->contenidoXNodo,0);
+//
+//		nodo0->libre--;
+//		nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
+//		tablaGlobalNodos->libres--;
+//
+//		nodo1=list_get(tablaGlobalNodos->contenidoXNodo,1);
+//		nodo1->libre--;
+//		nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
+//		tablaGlobalNodos->libres--;
+//
+//		persistirTablaNodo();
+//
+//		uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
+//
+//		copiaBloque->copia1=malloc(sizeof(copia));
+//
+//		copiaBloque->copia1->nodo=nodo0->nodo;
+//		copiaBloque->copia1->bloque=bloqueAsignado;
+//
+//
+//		memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+//		posicionActual+=sizeof(uint32_t);
+//
+//		memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+//		posicionActual+=sizeof(uint32_t);
+//
+//		memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+//		posicionActual+=sizeof(uint32_t);
+//
+//		memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
+//		posicionActual+=tamanio;
+//
+//		sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,posicionActual,mensaje);
+//
+//
+//		if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
+//				//CACHER ERROR
+//		}
+//
+//		mensaje=realloc(mensaje,sizeof(uint32_t)*3+tamanio);
+//
+//		bloqueAsignado=asignarBloqueNodo(nodo1);
+//			posicionActual = 0;
+//			memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+//			posicionActual+=sizeof(uint32_t);
+//
+//			memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+//			posicionActual+=sizeof(uint32_t);
+//
+//			memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
+//			posicionActual+=sizeof(uint32_t);
+//
+//			memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
+//			posicionActual+=tamanio;
+//
+//
+//			sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicionActual,mensaje);
+//
+//			copiaBloque->copia2=malloc(sizeof(copia));
+//
+//			copiaBloque->copia2->nodo=nodo1->nodo;
+//			copiaBloque->copia2->bloque=bloqueAsignado;
+//
+//
+//			if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
+//					//CACHER ERROR
+//			}
+//
+//			free(mensaje);
+//
+//
+//		}
+//}
+//
+//
+//
+//void copiaArchivoYamafsAlLocal(char* pathArchivoOrigen,char* directorioFilesystem){
+//
+//	if(existePath(pathArchivoOrigen)==true){
+//		char* nombreArchivo=obtenerNombreUltimoPath(pathArchivoOrigen);
+//		bool esElArchivo(tablaArchivos* entradaArchivo){
+//			return(strcmp(entradaArchivo->nombreArchivo,nombreArchivo)==0);
+//		}
+//		tablaArchivos* archivoSeleccionado=list_find(tablaGlobalArchivos,(void*)esElArchivo);
+//		if(archivoSeleccionado!=NULL){
+//			copiaArchivo(archivoSeleccionado,directorioFilesystem);
+//		}
+//	}
+//
+//
+//}
+//

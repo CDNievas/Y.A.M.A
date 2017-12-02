@@ -235,9 +235,11 @@ void analizarComando(char * linea){
 		break;
 
 		case 8:{
-			//
-			// Ver bien como hacer estos comandos despues
-			//
+			char * pathArchivoOrigen = comandoDesarmado[1];
+			char * directorioFilesystem = comandoDesarmado[2];
+
+			//copiaArchivoYamafsAlLocal(pathArchivoOrigen,directorioFilesystem);
+
 			printf("Comando en arreglo! Todavia no se puede ejecutar! (8)\n");
 		}
 		break;

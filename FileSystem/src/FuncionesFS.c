@@ -102,6 +102,7 @@ void inicializarDirectoriosPrincipales(){
 	directorioPadre->nombre="yamafs:";
 	directorioPadre->padre=-1;
 	list_add(listaDirectorios,directorioPadre);
+	persistirDirectorio();
 }
 
 
@@ -341,6 +342,18 @@ int asignarBloqueNodo(contenidoNodo* nodo){
 	return 0;
 }
 
+uint32_t elegirElNodoOciosoDisponible(uint32_t ubicacionDelNodoElegido){
+	uint32_t cantidadDeNodo=list_size(tablaGlobalNodos->contenidoXNodo);
+	while(ubicacionDelNodoElegido<cantidadDeNodo){
+		contenidoNodo* nodo=list_get(tablaGlobalNodos->contenidoXNodo,ubicacionDelNodoElegido);
+		if(nodo->disponible==1){
+			return ubicacionDelNodoElegido;
+		}
+	}
+	return -1;
+}
+
+
 void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* copiaBloque){
 
 	void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
@@ -353,12 +366,26 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	}
 	list_sort(tablaGlobalNodos->contenidoXNodo,(void*)ordenarPorPorcentajeOcioso);
 
+//	uint32_t ubicacionDelNodoElegido=0;
+//	ubicacionDelNodoElegido=elegirElNodoOciosoDisponible(ubicacionDelNodoElegido);
+//
+//	if(ubicacionDelNodoElegido==-1){
+//		log_error(loggerFileSystem,"No encontro ningun nodo disponible");
+//		exit(-1);
+//	}
+	//nodo0=list_get(tablaGlobalNodos->contenidoXNodo,ubicacionDelNodoElegido);
 	nodo0=list_get(tablaGlobalNodos->contenidoXNodo,0);
 
 	nodo0->libre--;
 	nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
 	tablaGlobalNodos->libres--;
 
+//	ubicacionDelNodoElegido=elegirElNodoOciosoDisponible(ubicacionDelNodoElegido);
+//	if(ubicacionDelNodoElegido==-1){
+//		log_error(loggerFileSystem,"No encontro ningun nodo disponible");
+//		exit(-1);
+//	}
+//	nodo1=list_get(tablaGlobalNodos->contenidoXNodo,ubicacionDelNodoElegido);
 	nodo1=list_get(tablaGlobalNodos->contenidoXNodo,1);
 	nodo1->libre--;
 	nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
@@ -467,7 +494,7 @@ bool elSistemaAguantaElArchivo(uint32_t tamanio){
 	while(cont<cantidadDeNodos){
 		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
 		contadorCapacidad+=nodoSeleccionado->libre;
-		if((contadorCapacidad*1024*1024)>tamanio){
+		if((contadorCapacidad*1024*1024)>tamanio && nodoSeleccionado->disponible==1){
 			nodosConCapacidadDeCopia++;
 			contadorCapacidad=0;
 		}
