@@ -211,34 +211,35 @@ int main(int argc, char *argv[])
 
 	while(estaFS){
 		socketMastersAuxiliares = socketsMasterCPeticion;
-		if((select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL)==-1)){
-			log_error(loggerYAMA, "No se pudo llevar a cabo el select en YAMA.");
-			exit(-1);
+		int selectVal = select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL);
+		if(selectVal<0){
+			if(selectVal != EINTR){
+				log_error(loggerYAMA, "Fallo el select.");
+				exit(-1);
+			}
 		}
-		if(estaFS){
-			log_info(loggerYAMA, "Un socket realizo una peticion a YAMA.");
-			for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
-				if(FD_ISSET(socketClienteChequeado, &socketMastersAuxiliares)){
-					if(socketClienteChequeado == socketEscuchaMasters){
-						socketAceptado = aceptarConexionDeCliente(socketEscuchaMasters);
-						FD_SET(socketAceptado, &socketsMasterCPeticion);
-						socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
-						log_info(loggerYAMA, "Se recibio una nueva conexion del socket %d.", socketAceptado);
+		log_info(loggerYAMA, "Un socket realizo una peticion a YAMA.");
+		for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
+			if(FD_ISSET(socketClienteChequeado, &socketMastersAuxiliares)){
+				if(socketClienteChequeado == socketEscuchaMasters){
+					socketAceptado = aceptarConexionDeCliente(socketEscuchaMasters);
+					FD_SET(socketAceptado, &socketsMasterCPeticion);
+					socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
+					log_info(loggerYAMA, "Se recibio una nueva conexion del socket %d.", socketAceptado);
+				}else{
+					int notificacion = recvDeNotificacion(socketClienteChequeado);
+					if(notificacion != ES_MASTER){
+						log_error(loggerYAMA, "La conexion del socket %d es erronea.", socketClienteChequeado);
+						FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
+						close(socketClienteChequeado);
 					}else{
-						int notificacion = recvDeNotificacion(socketClienteChequeado);
-						if(notificacion != ES_MASTER){
-							log_error(loggerYAMA, "La conexion del socket %d es erronea.", socketClienteChequeado);
-							FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
-							close(socketClienteChequeado);
-						}else{
-							sendDeNotificacion(socketClienteChequeado, ES_YAMA);
-			        		log_trace(loggerYAMA, "Se establecio la conexion con el socket master %d - Handshake realizado.", socketClienteChequeado);
-			       			int* socketCliente = malloc(sizeof(int));
-			            	*socketCliente = socketClienteChequeado;
-			            	pthread_create(&hiloManejadorMaster, &attr, (void*)manejadorMaster, (void*)socketCliente);
-			            	log_trace(loggerYAMA, "Pasando a atender la peticion del socket master %d.", socketClienteChequeado);
-			           		FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
-						}
+						sendDeNotificacion(socketClienteChequeado, ES_YAMA);
+		        		log_trace(loggerYAMA, "Se establecio la conexion con el socket master %d - Handshake realizado.", socketClienteChequeado);
+		       			int* socketCliente = malloc(sizeof(int));
+		            	*socketCliente = socketClienteChequeado;
+		            	pthread_create(&hiloManejadorMaster, &attr, (void*)manejadorMaster, (void*)socketCliente);
+		            	log_trace(loggerYAMA, "Pasando a atender la peticion del socket master %d.", socketClienteChequeado);
+		           		FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
 					}
 				}
 			}
