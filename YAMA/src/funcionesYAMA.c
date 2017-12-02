@@ -316,7 +316,7 @@ int calculoAvailability(char* nombreNodo){
 	}else{
 		int wlMax = obtenerWLMax();
 		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
-		availability = wlMax - nodo->wl;
+		availability = BASE_AVAILABILITY + wlMax - nodo->wl;
 	}
 	return availability;
 }
