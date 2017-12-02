@@ -78,15 +78,22 @@ t_list* listaInfoNodos;
 t_list* listaTemporales;
 t_list* listaHilosTransformacion;
 t_list* listaHilosReduccion;
-uint32_t transformacionesRealizadas;
-uint32_t reduccionesLocalesRealizadas;
-uint32_t cantidadNodos;
-uint32_t cantidadFallos;
+double transformacionesRealizadas;
+double reduccionesLocalesRealizadas;
+double cantidadNodos;
+double cantidadFallos;
+double paralelismoMaximoTransformaciones;
+double paralelismoMaximoReducciones;
+double paralelismoTempMaximoTransformaciones;
+double paralelismoTempMaximoReducciones;
 bool avisoCargaTemporal;
 pthread_mutex_t mutexNodos;
 pthread_mutex_t mutexReducciones;
 pthread_mutex_t mutexTemporales;
 tiempo tiempoI;
+tiempo tiempoTransformacion;
+tiempo tiempoReduccionLocal;
+tiempo tiempoReduccionGlobal;
 
 tiempo obtenerTiempo()
 {
@@ -121,9 +128,46 @@ tiempo get_tiempo_total(tiempo in, tiempo fin)
 	return aux;
 }
 
+void sumarTiempos(tiempo unTiempo,tiempo otroTiempo){
+	unTiempo.hora += otroTiempo.hora;
+	unTiempo.minuto += otroTiempo.minuto;
+	unTiempo.segundo += otroTiempo.segundo;
+}
+
+tiempo dividirTiempo(tiempo unTiempo,double factorDivision){
+	unTiempo.hora = ceil(((double)unTiempo.hora)/factorDivision);
+	unTiempo.minuto = ceil(((double)unTiempo.minuto)/factorDivision);
+	unTiempo.segundo = ceil(((double)unTiempo.segundo)/factorDivision);
+	return unTiempo;
+}
+
+void mostrarMetricas(){
+	tiempo tiempoF = obtenerTiempo();
+	tiempo tiempoDuracion = get_tiempo_total(tiempoI,tiempoF);
+	log_trace(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
+	log_trace(loggerMaster,"La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
+	log_trace(loggerMaster,"La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
+	log_trace(loggerMaster,"La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
+	log_trace(loggerMaster,"La cantidad maxima de tareas de transformacion ejecutadas en paralelo fue de: %d \n", paralelismoMaximoTransformaciones);
+	log_trace(loggerMaster,"La cantidad maxima de tareas de reduccion ejecutadas en paralelo fue de: %d \n", paralelismoMaximoReducciones);
+
+	if(transformacionesRealizadas!=0){
+		tiempo tiempoTransformacionPromedio = dividirTiempo(tiempoTransformacion,transformacionesRealizadas);
+		log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa transformacion fue %i:%i:%i \n",tiempoTransformacionPromedio.hora, tiempoTransformacionPromedio.minuto,tiempoTransformacionPromedio.segundo);
+	}
+
+	if(reduccionesLocalesRealizadas!=0){
+		tiempo tiempoReduccionLocalPromedio = dividirTiempo(tiempoReduccionLocal,reduccionesLocalesRealizadas);
+		log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion local fue %i:%i:%i \n",tiempoReduccionLocalPromedio.hora, tiempoReduccionLocalPromedio.minuto,tiempoReduccionLocalPromedio.segundo);
+	}
+
+	log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion global fue %i:%i:%i \n",tiempoReduccionGlobal.hora, tiempoReduccionGlobal.minuto,tiempoReduccionGlobal.segundo);
+}
+
 void cargarMaster(t_config* configuracionMaster){
     if(!config_has_property(configuracionMaster, "YAMA_IP")){
         log_error(loggerMaster, "No se encuentra YAMA_IP.\n");
+        mostrarMetricas();
         exit(-1);
     }else{
         YAMA_IP = string_new();
@@ -131,6 +175,7 @@ void cargarMaster(t_config* configuracionMaster){
     }
     if(!config_has_property(configuracionMaster, "YAMA_PUERTO")){
         log_error(loggerMaster, "No se encuentra YAMA_PUERTO en el archivo de configuracion.\n");
+        mostrarMetricas();
         exit(-1);
     }else{
         YAMA_PUERTO = config_get_int_value(configuracionMaster, "YAMA_PUERTO");
@@ -143,13 +188,14 @@ void realizarHandshake(int unSocket, int proceso){
     int notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
+        mostrarMetricas();
         exit(-1);
     }
 }
 
-uint32_t realizarHandshakeWorker(int unSocket, int proceso){
+int realizarHandshakeWorker(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    uint32_t notificacion = recvDeNotificacion(unSocket);
+    int notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         notificacion = -1;
@@ -162,6 +208,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 
 	if(retornoSeek!=0){
 		log_error(loggerMaster,"Error de fseek.\n");
+		mostrarMetricas();
 		exit(-1);
 	}
 
@@ -169,6 +216,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 
 	if(tamanioArchivo==-1){
 		log_error(loggerMaster,"Error de ftell.\n");
+		mostrarMetricas();
 		exit(-1);
 	}
 
@@ -181,6 +229,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 
 	if(retornoSeek!=0){
 		log_error(loggerMaster,"Error de fseek.\n");
+		mostrarMetricas();
 		exit(-1);
 	}
 
@@ -188,6 +237,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 
 	if(contenidoArchivo==NULL){
 		log_error(loggerMaster,"Error al asignar memoria para leer el archivo.\n");
+		mostrarMetricas();
 		exit(-10);
 	}
 
@@ -201,6 +251,7 @@ char* obtenerContenido(char* unPath){
 
 	if(archivoALeer==NULL){
 		log_error(loggerMaster,"No se pudo abrir el archivo: %s.\n",unPath);
+		mostrarMetricas();
 		exit(-1);
 	}
 
@@ -219,6 +270,7 @@ void enviarArchivoAYAMA(char* unArchivo,int socketYAMA){
 
 	if(datosAEnviar==NULL){
 		log_error(loggerMaster,"Error al asignar memoria para enviar archivo a YAMA.\n");
+		mostrarMetricas();
 		exit(-10);
 	}
 
@@ -263,7 +315,7 @@ int recvDeNotificacionMaster(int socketMaster){
 }
 
 void eliminarHilos(char* nombreNodo,uint32_t nroBloque){
-	uint32_t posicion;
+	int posicion;
 	for(posicion=0;posicion<list_size(listaHilosTransformacion);posicion++){
 		datosHilo* unDatoHilo = list_get(listaHilosTransformacion,posicion);
 		if((strcmp(unDatoHilo->nombreNodo,nombreNodo)==0) && (nroBloque!=unDatoHilo->numeroBloque)){
@@ -342,6 +394,16 @@ void replanificarTransformacion(datosTransformacion* datoNodoTransformacion,uint
 	pthread_cancel(pthread_self());
 }
 
+void calcularMaximoParalelos(){
+	if(paralelismoTempMaximoTransformaciones>paralelismoMaximoTransformaciones){
+		paralelismoMaximoTransformaciones = paralelismoTempMaximoTransformaciones;
+	}
+
+	if(paralelismoTempMaximoReducciones>paralelismoMaximoReducciones){
+		paralelismoMaximoReducciones = paralelismoTempMaximoReducciones;
+	}
+}
+
 void manejadorTransformacionWorker(void* unDatoTransformacion){
 	datosTransformacion* datoNodoTransformacion = (datosTransformacion*)unDatoTransformacion;
 
@@ -352,7 +414,7 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
 
-		uint32_t resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
+		int resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
 
 		if(resultadoHandshake!=-1){
 			log_info(loggerMaster,"Handshake con Worker realizado exitosamente.\n");
@@ -374,12 +436,25 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 
 			log_info(loggerMaster, "Datos serializados para ser enviados a Worker.\n");
 
+			paralelismoTempMaximoTransformaciones++;
+
+			tiempo tiempoInicialTransformacion = obtenerTiempo();
 			sendRemasterizado(socketWorker,TRANSFORMACION,tamanioScript+tamanioNombreScript+tamanioPathDestino+(sizeof(uint32_t)*5),datosAEnviar);
+
+			int resultadoTransformacion = recvDeNotificacionMaster(socketWorker);
+
+			calcularMaximoParalelos();
+
+			paralelismoTempMaximoTransformaciones--;
+
+			tiempo tiempoFinalTransformacion = obtenerTiempo();
+
+			tiempo tiempoDuracionTransformacion = get_tiempo_total(tiempoInicialTransformacion,tiempoFinalTransformacion);
+
+			sumarTiempos(tiempoTransformacion,tiempoDuracionTransformacion);
 
 			free(datosAEnviar);
 			free(codigoScript);
-
-			int resultadoTransformacion = recvDeNotificacionMaster(socketWorker);
 
 			if(resultadoTransformacion==TRANSFORMACION_TERMINADA){
 				transformacionesRealizadas++;
@@ -577,7 +652,7 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",infoNodoReduccion->conexion.ipNodo, infoNodoReduccion->conexion.puertoNodo);
 
-		uint32_t resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
+		int resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
 
 		if(resultadoHandshake!=-1){
 			log_info(loggerMaster,"Handshake con Worker realizado exitosamente.\n");
@@ -611,13 +686,28 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 
 			log_info(loggerMaster, "Datos serializados de reduccion local listos para ser enviados a Worker.\n");
 
+			paralelismoTempMaximoReducciones++;
+
+			tiempo tiempoInicialReduccionLocal = obtenerTiempo();
+
 			sendRemasterizado(socketWorker,REDUCCION_LOCAL,tamanioAEnviar,datosAEnviar);
+
+			int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
+
+			calcularMaximoParalelos();
+
+			paralelismoTempMaximoReducciones--;
+
+			tiempo tiempoFinalReduccionLocal = obtenerTiempo();
+
+			tiempo tiempoDuracionReduccionLocal = get_tiempo_total(tiempoInicialReduccionLocal,tiempoFinalReduccionLocal);
+
+			sumarTiempos(tiempoReduccionLocal,tiempoDuracionReduccionLocal);
+
 			eliminarDatosTemporales(infoNodoReduccion);
 
 			free(datosAEnviar);
 			free(codigoScript);
-
-			int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
 
 			uint32_t tamanioNombreNodo = string_length(infoNodoReduccion->conexion.nombreNodo);
 
@@ -858,12 +948,20 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 
 			log_info(loggerMaster, "Datos serializados de reduccion global listos para ser enviados a Worker.\n");
 
-			sendRemasterizado(socketWorker,REDUCCION_GLOBAL,tamanioAEnviar,datosAEnviar);
-			free(datosAEnviar);
 			free(codigoScript);
 			list_destroy(listaInfoGlobal);
 
+			tiempo tiempoInicialReduccionGlobal = obtenerTiempo();
+
+			sendRemasterizado(socketWorker,REDUCCION_GLOBAL,tamanioAEnviar,datosAEnviar);
+
 			int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
+
+			tiempo tiempoFinalReduccionGlobal = obtenerTiempo();
+
+			tiempoReduccionGlobal = get_tiempo_total(tiempoInicialReduccionGlobal,tiempoFinalReduccionGlobal);
+
+			free(datosAEnviar);
 
 			if(resultadoReduccion==REDUCCION_GLOBAL_TERMINADA){
 				sendDeNotificacion(socketYAMA,REDUCCION_GLOBAL_TERMINADA);
@@ -950,19 +1048,6 @@ char* obtenerResultante(char* rutaCompleta,uint32_t valor){
 	}
 }
 
-void mostrarMetricas(){
-	tiempo tiempoF = obtenerTiempo();
-	tiempo tiempoDuracion = get_tiempo_total(tiempoI,tiempoF);
-	printf("El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
-	log_info(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
-	printf("La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
-	log_info(loggerMaster,"La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
-	printf("La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
-	log_info(loggerMaster,"La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
-	printf("La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
-	log_info(loggerMaster,"La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
-}
-
 void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 	char* ipWorker = recibirString(socketYAMA);
 	uint32_t puertoWorker = recibirUInt(socketYAMA);
@@ -973,7 +1058,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",ipWorker, puertoWorker);
 
-		uint32_t resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
+		int resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
 
 		if(resultadoHandshake!=-1){
 			log_info(loggerMaster,"Handshake con Worker realizado exitosamente.\n");
@@ -1068,6 +1153,7 @@ void darPermisosAScripts(char* script){
 
 void laMardita(int signal){
 	log_info(loggerMaster, "Se recibio la senial SIGINT, muriendo con estilo... \n");
+	mostrarMetricas();
 	free(YAMA_IP);
 	free(WORKER_IP);
 	finalizarHilos();
@@ -1080,10 +1166,37 @@ void laMardita(int signal){
 	exit(0);
 }
 
-int main(int argc, char **argv) {
-	signal(SIGINT, laMardita);
+void inicializarVariablesGlobales(){
 	loggerMaster = log_create("Master.log", "Master", 1, 0);
 	tiempoI = obtenerTiempo();
+	cantidadFallos = 0;
+	transformacionesRealizadas = 0;
+	reduccionesLocalesRealizadas = 0;
+	paralelismoMaximoTransformaciones = 0;
+	paralelismoMaximoReducciones = 0;
+	paralelismoTempMaximoTransformaciones = 0;
+	paralelismoTempMaximoReducciones = 0;
+	listaInfoNodos = list_create();
+	listaHilosTransformacion = list_create();
+	listaTemporales = list_create();
+	listaHilosReduccion = list_create();
+	pthread_mutex_init(&mutexNodos,NULL);
+	pthread_mutex_init(&mutexReducciones,NULL);
+	pthread_mutex_init(&mutexTemporales,NULL);
+	tiempoTransformacion.hora = 0;
+	tiempoTransformacion.minuto = 0;
+	tiempoTransformacion.segundo = 0;
+	tiempoReduccionLocal.hora = 0;
+	tiempoReduccionLocal.minuto = 0;
+	tiempoReduccionLocal.segundo = 0;
+	tiempoReduccionGlobal.hora = 0;
+	tiempoReduccionGlobal.minuto = 0;
+	tiempoReduccionGlobal.segundo = 0;
+}
+
+int main(int argc, char **argv) {
+	inicializarVariablesGlobales();
+	signal(SIGINT, laMardita);
 	chequearParametros(argc,6);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
 	//t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
@@ -1096,16 +1209,6 @@ int main(int argc, char **argv) {
     //enviarArchivoAYAMA("nombres.csv",socketYAMA);
     enviarArchivoAYAMA(argv[4],socketYAMA);
     log_info(loggerMaster,"Envio de archivo realizado con exito.\n");
-    cantidadFallos = 0;
-    transformacionesRealizadas = 0;
-    reduccionesLocalesRealizadas = 0;
-    listaInfoNodos = list_create();
-    listaHilosTransformacion = list_create();
-    listaTemporales = list_create();
-    listaHilosReduccion = list_create();
-    pthread_mutex_init(&mutexNodos,NULL);
-    pthread_mutex_init(&mutexReducciones,NULL);
-    pthread_mutex_init(&mutexTemporales,NULL);
     //darPermisosAScripts("transformador.py");
     //darPermisosAScripts("reductor.py");
     darPermisosAScripts(argv[2]);
@@ -1141,6 +1244,7 @@ int main(int argc, char **argv) {
     	}
     	case ABORTAR:{
     		log_error(loggerMaster,"Se abortara el job.\n");
+    		mostrarMetricas();
     		finalizarHilos();
     		liberarListas();
     		free(YAMA_IP);
@@ -1155,6 +1259,7 @@ int main(int argc, char **argv) {
     	}
     	default:{
     		log_error(loggerMaster,"La conexion recibida es erronea.\n");
+    		mostrarMetricas();
     		close(socketYAMA);
     		exit(-1);
     	}

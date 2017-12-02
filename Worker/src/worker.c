@@ -27,7 +27,7 @@ size_t dataBinTamanio;
 bool dataBinLiberado;
 
 typedef struct{
-	uint32_t socketParaRecibir;
+	int socketParaRecibir;
 	char* bloqueLeido;
 	char* nombreNodo;
 }infoApareoArchivo;
@@ -519,7 +519,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 }
 
 void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t casoExito){
-	uint32_t resultado = system(command);
+	int resultado = system(command);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker, "Error al ejecutar el script con system.\n");
@@ -538,7 +538,7 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	free(command);
 }
 
-void realizarHandshakeWorker(char* unArchivoTemporal, uint32_t unSocketWorker){
+void realizarHandshakeWorker(char* unArchivoTemporal, int unSocketWorker){
 
 	uint32_t tamanioArchivoTemporal = string_length(unArchivoTemporal);
 	void* datosAEnviar = malloc(tamanioArchivoTemporal+sizeof(uint32_t));
@@ -567,7 +567,7 @@ void realizarHandshakeWorker(char* unArchivoTemporal, uint32_t unSocketWorker){
 	free(datosAEnviar);
 }
 
-void realizarHandshakeFS(uint32_t socketFS){
+void realizarHandshakeFS(int socketFS){
 	sendDeNotificacion(socketFS, ES_WORKER);
 
 	if(recibirUInt(socketFS) != ES_FS){
@@ -578,7 +578,7 @@ void realizarHandshakeFS(uint32_t socketFS){
 	log_info(loggerWorker, "Se conecto con el FileSystem.\n");
 }
 
-void enviarDatosAFS(uint32_t socketFS,char* nombreArchivoReduccionGlobal,char* nombreResultante,char* rutaResultante){
+void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombreResultante,char* rutaResultante){
 
 	char* contenidoArchivoReduccionGlobal = obtenerContenido(nombreArchivoReduccionGlobal);
 
@@ -670,7 +670,7 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 
 	log_info(loggerWorker,"Comando para realizar apareo local de archivos fue correctamente creado.\n");
 
-	uint32_t resultado = system(comandoOrdenacionArchivos);
+	int resultado = system(comandoOrdenacionArchivos);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker, "Error al ejecutar el comando para aparear archivos con system.\n");
@@ -824,7 +824,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 				unaInfoArchivo->nombreNodo = string_new();
 				unaInfoArchivo->bloqueLeido = NULL;
 				string_append(&(unaInfoArchivo->nombreNodo),nombreNodo);
-				uint32_t unSocketWorker = conectarAServer(ipWorker, puertoWorker);
+				int unSocketWorker = conectarAServer(ipWorker, puertoWorker);
 				unaInfoArchivo->socketParaRecibir = unSocketWorker;
 				list_add(listaInfoApareo,unaInfoArchivo);
 				log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
@@ -866,7 +866,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 			log_debug(loggerWorker,"%s",IP_FILESYSTEM);
 			log_debug(loggerWorker,"%d",PUERTO_FILESYSTEM);
-			uint32_t socketFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
+			int socketFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 			realizarHandshakeFS(socketFS);
 			enviarDatosAFS(socketFS,nombreArchivoReduccionGlobal,nombreResultante,rutaResultante);
 
