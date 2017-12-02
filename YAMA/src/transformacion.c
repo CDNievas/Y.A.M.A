@@ -166,7 +166,7 @@ infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBl
 	return list_remove_by_condition(listaDeBloques, (void*)buscarDatoAReplanificar);
 }
 
-copia* obtenerCopiaDeReplanificacion(infoDeFs* info){
+copia* obtenerCopiaDeReplanificacion(infoDeFs* info, char* nodoFallido){
 	bool esCopia1(nodoSistema* nodo){
 		return strcmp(nodo->nombreNodo, info->copia1->nombreNodo) == 0;
 	}
@@ -175,10 +175,14 @@ copia* obtenerCopiaDeReplanificacion(infoDeFs* info){
 	}
 	nodoSistema* nodo1 = list_find(nodosSistema, (void*)esCopia1);
 	nodoSistema* nodo2 = list_find(nodosSistema, (void*)esCopia2);
-	if(nodo1->wl > nodo2->wl){
-		return info->copia1;
-	}else{
+	if(nodo1->wl > nodo2->wl && strcmp(info->copia2->nombreNodo, nodoFallido)!=0){
 		return info->copia2;
+	}else if(nodo1->wl < nodo2->wl && strcmp(info->copia2->nombreNodo, nodoFallido)!=0){
+		return info->copia1;
+	}else if(strcmp(info->copia1->nombreNodo, nodoFallido)==0){
+		return info->copia2;
+	}else{
+		return info->copia1;
 	}
 }
 
@@ -230,7 +234,10 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		for(posicion = 0; posicion < list_size(listaEntradasAReplanificar); posicion++){
 			administracionYAMA* adminFallida = list_get(listaEntradasAReplanificar, posicion);
 			infoDeFs* info = obtenerDatosAReplanificar(adminFallida, listaBloquesAReplanificar);
-			copia* copiaACargar = obtenerCopiaDeReplanificacion(info);
+			copia* copiaACargar = obtenerCopiaDeReplanificacion(info, nodoFallido);
+			if(copiaACargar == NULL){
+				return -1;
+			}
 			administracionYAMA* nuevaTransformacion = generarAdministracion(obtenerJobDeNodo(listaEntradasAReplanificar),nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
 			nuevaTransformacion->nroBloque = copiaACargar->nroBloque;
 			nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
