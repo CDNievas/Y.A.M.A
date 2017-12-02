@@ -239,7 +239,6 @@ void recibirSolicitudTransformacion(int socketYAMA){
     	datosTransformacion* nodoActual = (datosTransformacion*) malloc(sizeof(datosTransformacion));
         nodoActual->conexion.nombreNodo = recibirString(socketYAMA);
         nodoActual->conexion.ipNodo = recibirString(socketYAMA);
-        log_debug(loggerMaster, "%s", nodoActual->conexion.ipNodo);
         nodoActual->conexion.puertoNodo = recibirUInt(socketYAMA);
         nodoActual->nroBloque = recibirUInt(socketYAMA);
         nodoActual->bytesOcupados = recibirUInt(socketYAMA);
@@ -263,6 +262,32 @@ int recvDeNotificacionMaster(int socketMaster){
 	return notificacion;
 }
 
+void eliminarHilos(char* nombreNodo,uint32_t nroBloque){
+	uint32_t posicion;
+	for(posicion=0;posicion<list_size(listaHilosTransformacion);posicion++){
+		datosHilo* unDatoHilo = list_get(listaHilosTransformacion,posicion);
+		if((strcmp(unDatoHilo->nombreNodo,nombreNodo)==0) && (nroBloque!=unDatoHilo->numeroBloque)){
+			list_remove(listaHilosTransformacion,posicion);
+			posicion--;
+			free(unDatoHilo->nombreNodo);
+			if(pthread_cancel(unDatoHilo->hiloManejadorNodo) == 0)
+			{
+				log_debug(loggerMaster,"Se finalizo correctamente el hilo. \n");
+				pthread_join(unDatoHilo->hiloManejadorNodo, (void**) NULL);
+			}else{
+				log_error(loggerMaster,"No se pudo finalizar el hilo. \n");
+			}
+			free(unDatoHilo);
+		}
+		else if((strcmp(unDatoHilo->nombreNodo,nombreNodo)==0) && (nroBloque==unDatoHilo->numeroBloque)){
+			list_remove(listaHilosTransformacion,posicion);
+			posicion--;
+			free(unDatoHilo->nombreNodo);
+			free(unDatoHilo);
+		}
+	}
+}
+
 void eliminarHiloListaTransformacion(char* nombreNodo,uint32_t nroBloque){
 	uint32_t posicion;
 	for(posicion=0;posicion<list_size(listaHilosTransformacion);posicion++){
@@ -272,20 +297,6 @@ void eliminarHiloListaTransformacion(char* nombreNodo,uint32_t nroBloque){
 			free(unDatoHilo->nombreNodo);
 			free(unDatoHilo);
 			break;
-		}
-	}
-}
-
-void eliminarHilos(char* nombreNodo,uint32_t nroBloque){
-	uint32_t posicion;
-	for(posicion=0;posicion<list_size(listaHilosTransformacion);posicion++){
-		datosHilo* unDatoHilo = list_get(listaHilosTransformacion,posicion);
-		if((strcmp(unDatoHilo->nombreNodo,nombreNodo)==0) && (nroBloque!=unDatoHilo->numeroBloque)){
-			list_remove(listaHilosTransformacion,posicion);
-			posicion--;
-			free(unDatoHilo->nombreNodo);
-			pthread_cancel(unDatoHilo->hiloManejadorNodo);
-			free(unDatoHilo);
 		}
 	}
 }
@@ -314,24 +325,17 @@ void replanificarTransformacion(datosTransformacion* datoNodoTransformacion,uint
 	pthread_mutex_unlock(&mutexNodos);
 
 	void* datosAEnviarAYAMA = malloc(tamanioNombreNodo+sizeof(uint32_t));
-
 	memcpy(datosAEnviarAYAMA,&tamanioNombreNodo,sizeof(uint32_t));
 	memcpy(datosAEnviarAYAMA+sizeof(uint32_t),datoNodoTransformacion->conexion.nombreNodo,tamanioNombreNodo);
 
 	log_debug(loggerMaster, "Datos de replanificacion para ser enviados a YAMA serializados con exito.\n");
 
+	sendRemasterizado(datoNodoTransformacion->infoGeneral.socketYAMA,REPLANIFICAR,tamanioNombreNodo+sizeof(uint32_t),datosAEnviarAYAMA);
+
 	free(datoNodoTransformacion->conexion.ipNodo);
 	free(datoNodoTransformacion->nombreTemporal);
 	free(datoNodoTransformacion->infoGeneral.scriptTransformacion);
-
-	pthread_mutex_lock(&mutexNodos);
-	eliminarHiloListaTransformacion(datoNodoTransformacion->conexion.nombreNodo,datoNodoTransformacion->nroBloque);
-	pthread_mutex_unlock(&mutexNodos);
-
 	free(datoNodoTransformacion->conexion.nombreNodo);
-
-	sendRemasterizado(datoNodoTransformacion->infoGeneral.socketYAMA,REPLANIFICAR,tamanioNombreNodo+sizeof(uint32_t),datosAEnviarAYAMA);
-
 	free(datosAEnviarAYAMA);
 	free(datoNodoTransformacion);
 
@@ -890,10 +894,16 @@ void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
 	infoEncargado->conexion.ipNodo = string_new();
 	infoEncargado->conexion.nombreNodo = string_new();
 	infoEncargado->temporalReduccion = string_new();
-	string_append(&(infoEncargado->conexion.nombreNodo),recibirString(socketYAMA));
-	string_append(&(infoEncargado->conexion.ipNodo),recibirString(socketYAMA));
+	char* nombreNodoRecibidoEncargado = recibirString(socketYAMA);
+	string_append(&(infoEncargado->conexion.nombreNodo),nombreNodoRecibidoEncargado);
+	free(nombreNodoRecibidoEncargado);
+	char* ipRecibidoEncargado = recibirString(socketYAMA);
+	string_append(&(infoEncargado->conexion.ipNodo),ipRecibidoEncargado);
+	free(ipRecibidoEncargado);
 	infoEncargado->conexion.puertoNodo = recibirUInt(socketYAMA);
-	string_append(&(infoEncargado->temporalReduccion),recibirString(socketYAMA));
+	char* temporalReduccionRecibidoEncargado = recibirString(socketYAMA);
+	string_append(&(infoEncargado->temporalReduccion),temporalReduccionRecibidoEncargado);
+	free(temporalReduccionRecibidoEncargado);
 	t_list* listaInfoGlobal = list_create();
 	list_add(listaInfoGlobal,infoEncargado);
 
@@ -906,10 +916,16 @@ void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
 		unaInfoReduxGlobal->conexion.ipNodo = string_new();
 		unaInfoReduxGlobal->conexion.nombreNodo = string_new();
 		unaInfoReduxGlobal->temporalReduccion = string_new();
-		string_append(&(unaInfoReduxGlobal->conexion.nombreNodo),recibirString(socketYAMA));
-		string_append(&(unaInfoReduxGlobal->conexion.ipNodo),recibirString(socketYAMA));
+		char* nombreNodoRecibido = recibirString(socketYAMA);
+		string_append(&(unaInfoReduxGlobal->conexion.nombreNodo),nombreNodoRecibido);
+		free(nombreNodoRecibido);
+		char* ipRecibido = recibirString(socketYAMA);
+		string_append(&(unaInfoReduxGlobal->conexion.ipNodo),ipRecibido);
+		free(ipRecibido);
 		unaInfoReduxGlobal->conexion.puertoNodo = recibirUInt(socketYAMA);
-		string_append(&(unaInfoReduxGlobal->temporalReduccion),recibirString(socketYAMA));
+		char* temporalReduccionRecibido = recibirString(socketYAMA);
+		string_append(&(unaInfoReduxGlobal->temporalReduccion),temporalReduccionRecibido);
+		free(temporalReduccionRecibido);
 		list_add(listaInfoGlobal,unaInfoReduxGlobal);
 	}
 	log_info(loggerMaster,"Se recibio todos los datos de la reduccion global de YAMA. \n");
@@ -1096,7 +1112,6 @@ int main(int argc, char **argv) {
     darPermisosAScripts(argv[3]);
     while(1){
     	int operacion = recvDeNotificacion(socketYAMA);
-    	log_debug(loggerMaster,"%d",operacion);
     	switch(operacion){
     	case TRANSFORMACION:{
     		recibirSolicitudTransformacion(socketYAMA);
@@ -1139,7 +1154,6 @@ int main(int argc, char **argv) {
     		break;
     	}
     	default:{
-    		log_debug(loggerMaster,"%d",operacion);
     		log_error(loggerMaster,"La conexion recibida es erronea.\n");
     		close(socketYAMA);
     		exit(-1);
