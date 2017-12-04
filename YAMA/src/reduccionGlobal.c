@@ -17,7 +17,7 @@ bool sePuedeHacerReduccionGlobal(int nroMaster){
 }
 
 
-t_list *filtrarReduccionesDelNodo(int nroMaster){
+t_list *filtrarReduccionesDelNodo(uint32_t nroMaster){
 	bool esRLocalTerminada(administracionYAMA* admin){
 		return admin->etapa == REDUCCION_LOCAL && admin->nroMaster == nroMaster;
 	}

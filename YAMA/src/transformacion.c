@@ -262,7 +262,7 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
 		sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
 		free(infoReplanificacionSerializada);
-		list_destroy(listaParaMaster);
+		list_destroy_and_destroy_elements(listaParaMaster, (void*)liberarInfoNodo);
 		list_destroy(listaBloquesAReplanificar);
 		list_destroy(listaEntradasAReplanificar);
 		list_destroy(listaParaWL);

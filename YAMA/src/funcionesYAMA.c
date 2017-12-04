@@ -54,6 +54,12 @@ void liberarCopia(copia* copiaAEnviar) {
 	free(copiaAEnviar);
 }
 
+void liberarInfoNodo(infoNodo* info){
+	free(info->nombreTemporal);
+	liberarConexion(info->conexion);
+	free(info);
+}
+
 void liberarDatosBalanceo(datosBalanceo* datos){
 	list_destroy(datos->bloques);
 	free(datos);
