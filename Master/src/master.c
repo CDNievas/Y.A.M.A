@@ -615,7 +615,6 @@ void eliminarHiloListaReduccion(){
 		if(pthread_equal(pthread_self(),unIdentificadorHilo->hiloManejadorReduccion)!=0){
 			list_remove(listaHilosReduccion,posicion);
 			free(unIdentificadorHilo);
-			pthread_mutex_unlock(&mutexReducciones);
 			break;
 		}
 	}
@@ -629,7 +628,6 @@ void eliminarDatosTemporales(infoReduccionLocal* infoNodoReduccion){
 		infoReduccionLocal* unaInfoTemporalNodo = list_get(listaTemporales,posicion);
 		if(strcmp(unaInfoTemporalNodo->conexion.nombreNodo,infoNodoReduccion->conexion.nombreNodo)==0){
 			list_remove(listaTemporales,posicion);
-			pthread_mutex_unlock(&mutexTemporales);
 			list_destroy_and_destroy_elements(unaInfoTemporalNodo->archivosTemporales, free);
 			free(unaInfoTemporalNodo->temporalReduccionLocal);
 			free(unaInfoTemporalNodo->conexion.ipNodo);
