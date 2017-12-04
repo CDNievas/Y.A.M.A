@@ -27,16 +27,14 @@ size_t dataBinTamanio;
 bool dataBinLiberado;
 
 void sigchld_handler(int s){
-	int saved_errno = errno;
-	while(waitpid((pid_t)(WAIT_ANY), NULL, WNOHANG) > NULL);
-	errno = saved_errno;
+	while(wait(NULL) > 0);
 }
 
 void eliminarProcesosMuertos(){
 	struct sigaction sa;
-	sa.sa_handler = &sigchld_handler;
+	sa.sa_handler = sigchld_handler;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+	sa.sa_flags = SA_RESTART;
 	if (sigaction(SIGCHLD, &sa, NULL) == -1) {
 		log_error(loggerWorker,"Error de sigaction al eliminar procesos muertos.\n");
 		free(IP_FILESYSTEM);
