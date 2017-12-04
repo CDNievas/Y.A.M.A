@@ -33,7 +33,6 @@ int main(int argc, char **argv) {
 	// Envio nombre de nodo y cantidad de bloques al FS
 	enviarInfoNodo(socketServerFS);
 	
-	munmap(mapArchivo,cantBloques);
 	corte = 1;
 	while(corte){
 
@@ -115,7 +114,7 @@ int main(int argc, char **argv) {
 
 	// LIBERO MEMORIA
 	close(socketServerFS);
-	//munmap(mapArchivo,cantBloques);
+	munmap(mapArchivo,cantBloques);
 	log_destroy(loggerDatanode);
 
 	return EXIT_SUCCESS;
