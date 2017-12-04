@@ -549,9 +549,9 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			liberarComandoDesarmado(rutaDirectorio);
 			uint32_t tamAux = 0;
 
-			bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
+			//bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
 
-			if(sePuedeAlmacenarEnElSistema==true){
+			if((tablaGlobalNodos->libres*1024*1024)<(tamanio*2)){
 				if(tamanio!=0){
 					if (strcmp(tipo,"B")==0) {
 							while (tamanio > 0) {
