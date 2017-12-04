@@ -105,7 +105,9 @@ void cargarBin(){
 }
 
 int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
-
+	
+	cargarBin();
+	
 	if(nroBloque > cantBloques){
 
 		log_warning(loggerDatanode,"Escritura en bloque inexistente numero: %d de %d.",nroBloque, cantBloques);
@@ -130,11 +132,15 @@ int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
 		return 0;
 
 	}
+	
+	munmap(mapArchivo,cantBloques);
 
 }
 
 void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
 
+	cargarBin();
+	
 	if(nroBloque >= cantBloques){
 
 		log_warning(loggerDatanode,"Lectura de bloque inexistente numero: %d de %d.",nroBloque,cantBloques);
@@ -148,6 +154,8 @@ void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
 		return dataBloque;
 
 	}
+	
+	munmap(mapArchivo,cantBloques);
 
 }
 
