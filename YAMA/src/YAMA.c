@@ -175,9 +175,9 @@ int main(int argc, char *argv[])
 	signal(SIGUSR1, chequeameLaSignal);
 	signal(SIGINT, laParca);
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
-	chequearParametros(argc,2);
-	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
-//	t_config* configuracionYAMA = generarTConfig("Debug/off_yama.ini", 6);
+//	chequearParametros(argc,2);
+//	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
+	t_config* configuracionYAMA = generarTConfig("Debug/off_yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
 	log_debug(loggerYAMA, "Se cargo exitosamente YAMA.");
 	nodosSistema = list_create();

@@ -355,7 +355,7 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 			list_add(datoCopia1->bloques, informacionAOrdenar->nroBloque);
 		}else{
 			datosBalanceo* datosAAgregar = generarDatosBalanceo();
-			datosAAgregar->nombreNodo = informacionAOrdenar->copia1->nombreNodo;
+			string_append(&datosAAgregar->nombreNodo, informacionAOrdenar->copia1->nombreNodo);
 			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
 			list_add(datosAAgregar->bloques, informacionAOrdenar->nroBloque);
 			list_add(listaDeBalanceo, datosAAgregar);
@@ -364,7 +364,7 @@ t_list* armarDatosBalanceo(t_list* listaDeBloques){
 			list_add(datoCopia2->bloques, informacionAOrdenar->nroBloque);
 		}else{
 			datosBalanceo* datosAAgregar = generarDatosBalanceo();
-			datosAAgregar->nombreNodo = informacionAOrdenar->copia2->nombreNodo;
+			string_append(&datosAAgregar->nombreNodo, informacionAOrdenar->copia2->nombreNodo);
 			datosAAgregar->availability = calculoAvailability(datosAAgregar->nombreNodo);
 			list_add(datosAAgregar->bloques, informacionAOrdenar->nroBloque);
 			list_add(listaDeBalanceo, datosAAgregar);
