@@ -114,6 +114,7 @@ char* obtenerNombreUltimoPath(char** rutaDesmembrada){
 
 }
 
+
 void borrarArchivo(char * path){
 
 	char ** pathDesc = string_split(path,"/");
@@ -137,7 +138,7 @@ void borrarArchivo(char * path){
 				return (strcmp(archivo->nombreArchivo,nombreArchivo)==0 && archivo->directorioPadre==idPadre);
 			}
 
-			tablaArchivos* archivo=list_remove_by_condition(tablaGlobalNodos->contenidoXNodo,(void*)eliminarArchivo);
+			tablaArchivos* archivo=list_remove_by_condition(tablaGlobalArchivos,(void*)eliminarArchivo);
 
 			if(archivo!=NULL){
 
@@ -195,113 +196,97 @@ int obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
 
 }
 
-//void copiaArchivo(tablaArchivos* entradaArchivo,char* directorioFilesystem){
-//	uint32_t bloquesDelArchivo=list_size(entradaArchivo->bloques);
-//	uint32_t cont=0;
-//
-//	while(cont<bloquesDelArchivo){
-//		copiasXBloque* entradaNodo=list_get(entradaArchivo->bloques,cont);
-//
-//
-//		void* mensaje=malloc(sizeof(uint32_t)*3+tamanio);
-//		uint32_t posicionActual=0;
-//		contenidoNodo* nodo0;
-//		contenidoNodo* nodo1;
-//		bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
-//			return(nodoSeleccionado1->porcentajeOcioso > nodoSeleccionado2->porcentajeOcioso);
-//		}
-//		list_sort(tablaGlobalNodos->contenidoXNodo,(void*)ordenarPorPorcentajeOcioso);
-//
-//		nodo0=list_get(tablaGlobalNodos->contenidoXNodo,0);
-//
-//		nodo0->libre--;
-//		nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
-//		tablaGlobalNodos->libres--;
-//
-//		nodo1=list_get(tablaGlobalNodos->contenidoXNodo,1);
-//		nodo1->libre--;
-//		nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
-//		tablaGlobalNodos->libres--;
-//
-//		persistirTablaNodo();
-//
-//		uint32_t bloqueAsignado=asignarBloqueNodo(nodo0);
-//
-//		copiaBloque->copia1=malloc(sizeof(copia));
-//
-//		copiaBloque->copia1->nodo=nodo0->nodo;
-//		copiaBloque->copia1->bloque=bloqueAsignado;
-//
-//
-//		memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
-//		posicionActual+=sizeof(uint32_t);
-//
-//		memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
-//		posicionActual+=sizeof(uint32_t);
-//
-//		memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
-//		posicionActual+=sizeof(uint32_t);
-//
-//		memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
-//		posicionActual+=tamanio;
-//
-//		sendRemasterizado(nodo0->socket,ENV_ESCRIBIR,posicionActual,mensaje);
-//
-//
-//		if(recvDeNotificacion(nodo0->socket)==ESC_INCORRECTA){
-//				//CACHER ERROR
-//		}
-//
-//		mensaje=realloc(mensaje,sizeof(uint32_t)*3+tamanio);
-//
-//		bloqueAsignado=asignarBloqueNodo(nodo1);
-//			posicionActual = 0;
-//			memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
-//			posicionActual+=sizeof(uint32_t);
-//
-//			memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
-//			posicionActual+=sizeof(uint32_t);
-//
-//			memcpy(mensaje+posicionActual,&tamanio,sizeof(uint32_t));
-//			posicionActual+=sizeof(uint32_t);
-//
-//			memcpy(mensaje+posicionActual,contenidoAEnviar,tamanio);
-//			posicionActual+=tamanio;
-//
-//
-//			sendRemasterizado(nodo1->socket,ENV_ESCRIBIR,posicionActual,mensaje);
-//
-//			copiaBloque->copia2=malloc(sizeof(copia));
-//
-//			copiaBloque->copia2->nodo=nodo1->nodo;
-//			copiaBloque->copia2->bloque=bloqueAsignado;
-//
-//
-//			if(recvDeNotificacion(nodo1->socket)==ESC_INCORRECTA){
-//					//CACHER ERROR
-//			}
-//
-//			free(mensaje);
-//
-//
-//		}
-//}
-//
-//
-//
-//void copiaArchivoYamafsAlLocal(char* pathArchivoOrigen,char* directorioFilesystem){
-//
-//	if(existePath(pathArchivoOrigen)==true){
-//		char* nombreArchivo=obtenerNombreUltimoPath(pathArchivoOrigen);
-//		bool esElArchivo(tablaArchivos* entradaArchivo){
-//			return(strcmp(entradaArchivo->nombreArchivo,nombreArchivo)==0);
-//		}
-//		tablaArchivos* archivoSeleccionado=list_find(tablaGlobalArchivos,(void*)esElArchivo);
-//		if(archivoSeleccionado!=NULL){
-//			copiaArchivo(archivoSeleccionado,directorioFilesystem);
-//		}
-//	}
-//
-//
-//}
-//
+
+void borrarDirectorio(char * path){
+
+	char ** pathDesc = string_split(path,"/");
+	int indice = buscarYamafs(pathDesc);
+
+	if(indice == -1){
+		log_warning(loggerFileSystem,"El directorio no corresponde a yamafs");
+	} else {
+
+		int idPadreDir, idDir;
+		obtenerIdPadreDirectorio(pathDesc,indice,-1, &idPadreDir, &idDir);
+
+		if(idPadreDir == -2){
+			log_error(loggerFileSystem,"El path es inexistente");
+		} else if (idPadreDir == -3){
+			log_error(loggerFileSystem,"No se puede hacer un rm -d de un archivo");
+		} else {
+
+			bool existenArchivosEnDir(tablaArchivos * archivo){
+				return archivo->directorioPadre==idDir;
+			}
+
+			if(list_any_satisfy(tablaGlobalArchivos,(void *) existenArchivosEnDir)){
+
+				log_error(loggerFileSystem, "No puedo borrar porque existen archivos :V :v :V");
+
+			} else {
+
+				char * nombreDirectorio = obtenerNombreUltimoPath(pathDesc);
+
+				bool eliminarDirectorio(t_directory * directorio){
+					return (strcmp(directorio->nombre,nombreDirectorio)==0 && directorio->padre==idPadreDir);
+				}
+
+				t_directory* directorio=list_remove_by_condition(listaDirectorios,(void*)eliminarDirectorio);
+
+				if(directorio!=NULL){
+
+					free(directorio->nombre);
+					free(directorio);
+
+				}
+
+				log_debug(loggerFileSystem, "Pude borrar porque no existen archivo xdxdxdf");
+
+			}
+
+		}
+
+	}
+
+}
+
+
+
+void obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre, int * idPadreDir, int * idDir){
+
+	char * pathAct = pathDesc[indice];
+	char * pathProx = pathDesc[indice+1];
+
+	tablaArchivos * archivo = esArchivoPath(pathAct,idPadre);
+
+	if (archivo != NULL){
+
+		if(pathProx == NULL){
+			// No se puede hacer un rm -d de un archivo
+			(*idPadreDir) = -3;
+		} else {
+			// Ruta incorrecta
+			(*idPadreDir) = -2;
+		}
+
+	} else {
+
+		t_directory * directorio = esDirectorioPath(pathAct,idPadre);
+		if (directorio != NULL){
+
+			if(pathProx == NULL){
+				(*idPadreDir) = directorio->padre;
+				(*idDir) = directorio->index;
+			} else {
+				obtenerIdPadreDirectorio(pathDesc,indice+1,directorio->index, idPadreDir, idDir);
+			}
+
+		} else {
+			// Ruta incorrecta
+			(*idPadreDir) = -2;
+		}
+
+	}
+
+}
+
