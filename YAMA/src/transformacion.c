@@ -94,7 +94,7 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		list_add(tablaDeEstados, nuevaAdministracion);
 		pthread_mutex_unlock(&semTablaEstados);
 		list_add(listaDatosPMaster, informacionDeNodo);
-		liberarInfoFS(infoDeBloque);
+	//	liberarInfoFS(infoDeBloque);
 		log_info(loggerYAMA, "Se agrego la operacion a la tabla de estados.");
 	}
 	void* informacionDeTransformacion =  serializarInfoTransformacion(listaDatosPMaster);
@@ -241,12 +241,13 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 			}
 			administracionYAMA* nuevaTransformacion = generarAdministracion(obtenerJobDeNodo(listaEntradasAReplanificar),nroMaster, TRANSFORMACION, obtenerNombreTemporalTransformacion());
 			nuevaTransformacion->nroBloque = copiaACargar->nroBloque;
-			nuevaTransformacion->nombreNodo = copiaACargar->nombreNodo;
+			nuevaTransformacion->nombreNodo = string_new();
+			string_append(&nuevaTransformacion->nombreNodo, copiaACargar->nombreNodo);
 			nuevaTransformacion->nroBloqueFile = info->nroBloque;
 			infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
 			if(datoPMaster == NULL){
 				list_destroy(listaParaMaster);
-				list_destroy(listaBloquesAReplanificar);
+				//list_destroy(listaBloquesAReplanificar);
 				list_destroy(listaEntradasAReplanificar);
 				list_destroy(listaParaWL);
 				return -1;
@@ -263,13 +264,15 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
 		free(infoReplanificacionSerializada);
 		list_destroy_and_destroy_elements(listaParaMaster, (void*)liberarInfoNodo);
-		list_destroy(listaBloquesAReplanificar);
+		//list_destroy(listaBloquesAReplanificar);
 		list_destroy(listaEntradasAReplanificar);
 		list_destroy(listaParaWL);
+		list_destroy_and_destroy_elements(listaBloquesAReplanificar, (void*)liberarInfoFS);
 		return 1;
 	}else{
-		list_destroy(listaBloquesAReplanificar);
+		//list_destroy(listaBloquesAReplanificar);
 		list_destroy(listaEntradasAReplanificar);
+		list_destroy_and_destroy_elements(listaBloquesAReplanificar, (void*)liberarInfoFS);
 		return 0;
 	}
 }

@@ -45,7 +45,7 @@ void manejadorMaster(void* socketMasterCliente){
 						log_error(loggerYAMA, "No se pueden llevar a cabo las peticiones del master %d debido a problemas en la conexion con FileSystem.", nroMaster);
 						log_error(loggerYAMA, "Liberando recursos del hilo del master %d.", nroMaster);
 					}
-					list_destroy(listaDeBloquesDeArchivo); //LEAKS AQUI (si hay...)
+					list_destroy_and_destroy_elements(listaDeBloquesDeArchivo, (void*)liberarInfoFS); //LEAKS AQUI (si hay...)
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
 				}else if(listaDeBloquesDeArchivo == NULL && estaFS){
@@ -69,7 +69,7 @@ void manejadorMaster(void* socketMasterCliente){
 					sendDeNotificacion(socketMaster, NO_REDU_LOCAL);
 				}
 				free(nombreNodo);
-				//list_destroy(listaDelJob);
+				list_destroy(listaDelJob);
 				break;
 			case REPLANIFICAR:
 				nodoFallido = recibirString(socketMaster); //RECIBO NOMBRE DEL NODO A REPLANIFICAR
@@ -80,7 +80,7 @@ void manejadorMaster(void* socketMasterCliente){
 				t_list* listaDeBloques = recibirInfoArchivo(); // RECIBO LOS DATOS DEL ARCHIVO
 				if(listaDeBloques != NULL){
 					pudoReplanificar = cargarReplanificacion(socketMaster, nroMaster, nodoFallido, listaDeBloques); // CARGO LA REPLANIFICACION EN LA TABLA DE ESTADOS (ACA REPLANIFICO)
-					list_destroy(listaDeBloques);
+					/*list_destroy(listaDeBloques);*/
 					if(pudoReplanificar == 0){
 						sendDeNotificacion(socketMaster, ABORTAR);
 						sigueProcesando = false;
@@ -90,7 +90,7 @@ void manejadorMaster(void* socketMasterCliente){
 				}else{
 					estaFS = false;
 				}
-				//list_destroy_and_destroy_elements(listaDeBloques, (void*)liberarInfoFS);
+				list_destroy_and_destroy_elements(listaDeBloques, (void*)liberarInfoFS);
 				free(nodoFallido);
 				break;
 			case REDUCCION_LOCAL_TERMINADA:

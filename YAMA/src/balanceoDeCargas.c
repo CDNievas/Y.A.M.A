@@ -170,7 +170,6 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	uint32_t posicion;
 	administracionYAMA* nodoBalanceado;
 	nodoSistema* nodoElegido = generarNodoSistema();
-	nodoElegido->nombreNodo = string_new();
 	bool esNodo(nodoSistema* nodo){
 		return strcmp(nodo->nombreNodo, nodoBalanceado->nombreNodo) == 0;
 	}
@@ -187,7 +186,7 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	}
 	char* nombreNodo = string_new();
 	string_append(&nombreNodo, nodoElegido->nombreNodo);
-//	liberarNodoSistema(nodoElegido);
+	//liberarNodoSistema(nodoElegido);
 	return nombreNodo;
 }
 
