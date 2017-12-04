@@ -195,7 +195,7 @@ bool falloNodo(char* nombreNodo, t_list* listaDeMaster){
 }
 
 bool chequearCopias(infoDeFs* info, t_list* listaDeEntradas){
-	return !falloNodo(info->copia1->nombreNodo, listaDeEntradas) && !falloNodo(info->copia2->nombreNodo, listaDeEntradas);
+	return falloNodo(info->copia1->nombreNodo, listaDeEntradas) && falloNodo(info->copia2->nombreNodo, listaDeEntradas);
 }
 
 bool puedoReplanificar(uint32_t nroMaster, char* nodoFallido, t_list* listaDeBloques){

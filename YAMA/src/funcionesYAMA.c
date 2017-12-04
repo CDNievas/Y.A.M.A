@@ -61,6 +61,7 @@ void liberarInfoNodo(infoNodo* info){
 }
 
 void liberarDatosBalanceo(datosBalanceo* datos){
+	free(datos->nombreNodo);
 	list_destroy(datos->bloques);
 	free(datos);
 }
@@ -72,7 +73,7 @@ void liberarNodoSistema(nodoSistema* nodo){
 
 void liberarAdminYAMA(administracionYAMA* admin){
 	free(admin->nameFile);
-	//free(admin->nombreNodo);
+	free(admin->nombreNodo);
 	free(admin);
 }
 
