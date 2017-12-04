@@ -9,6 +9,7 @@
 #include "FuncionesFS.h"
 
 void cargarEstructuraBitmap(){
+	log_debug(loggerFileSystem,"Cargando los bitmaps del sistema...");
 	uint32_t cantidadDeNodo = list_size(tablaGlobalNodos->nodo);
 	uint32_t cont=0;
 	while(cont<cantidadDeNodo){
@@ -30,6 +31,7 @@ void cargarEstructuraBitmap(){
 
 
 void cargarEstructuraDirectorio(t_config* archivoDirectorio){
+	log_debug(loggerFileSystem,"Cargando los directorios...");
 	uint32_t cantidadDeDirectorio=config_keys_amount(archivoDirectorio);
 	uint32_t posicion=0;
 	while(posicion<cantidadDeDirectorio){
@@ -48,6 +50,7 @@ void cargarEstructuraDirectorio(t_config* archivoDirectorio){
 }
 
 void cargarEstructuraNodos(t_config* arhivoNodos){
+	log_debug(loggerFileSystem,"Cargando las estrcutura de nodos...");
 	uint32_t tamanio = config_get_int_value(arhivoNodos, "TAMANIO");
 	tablaGlobalNodos->tamanio=tamanio;
 
@@ -94,6 +97,7 @@ void cargarEstructuraNodos(t_config* arhivoNodos){
 }
 
 void cargarTablaArchivo(char* pathArchivo){
+	log_debug(loggerFileSystem,"Cargando la tabla de archivos...");
 	char** rutaDesmembrada = string_split(pathArchivo, "/");
 	char* nombreArchivo=obtenerNombreDirectorio(rutaDesmembrada);
 
@@ -208,6 +212,7 @@ bool hayUnEstadoAnterior(){
 
 
 	if(!(archivoDirectorios==NULL) && !(archivoNodos==NULL) && !(archivoRegistroArchivos==NULL)){
+		log_debug(loggerFileSystem,"Se encontro un estado anterior en el sistema.");
 		cargarEstructuraDirectorio(archivoDirectorios);
 		cargarEstructuraNodos(archivoNodos);
 		cargarEstructuraArchivos(archivoRegistroArchivos);

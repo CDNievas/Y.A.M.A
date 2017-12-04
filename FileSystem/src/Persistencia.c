@@ -8,7 +8,7 @@
 #include "Persistencia.h"
 
 void persistirTablaNodo(){
-
+	log_debug(loggerFileSystem,"Se persiste la tabla de nodos");
 //	FILE* archivoNodos=fopen("/home/utnso/workspace/tp-2017-2c-ElTPEstaBien/FileSystem/metadata/nodos.bin","r+");
 	char * path = obtenerPathTablaNodo();
 	FILE* archivoNodos=fopen(path,"w+");
@@ -105,6 +105,8 @@ void persistirRegistroArchivo(){
 
 
 void persistirTablaArchivo(tablaArchivos* entradaArchivo){
+
+	log_debug(loggerFileSystem,"Se persiste el archivo &d", entradaArchivo->nombreArchivo);
 	char* path=string_new();
 	string_append(&path,PATH_ARCHIVOS);
 	string_append(&path,string_itoa(entradaArchivo->directorioPadre));
@@ -180,6 +182,8 @@ void persistirTablaArchivo(tablaArchivos* entradaArchivo){
 //}
 
 void persistirDirectorio(){
+
+	log_debug(loggerFileSystem,"Se persiste la tabla de directorios");
 	char* path=string_new();
 	string_append(&path,PATH_METADATA);
 	string_append(&path,"directorios.dat");

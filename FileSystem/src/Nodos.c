@@ -8,14 +8,29 @@
 #include "Nodos.h"
 #include "../../Biblioteca/src/Socket.h"
 
+uint32_t buscarIndexEnLaTablaGlobalNodos(contenidoNodo* nodoDesconectado){
+	uint32_t posicion=0;
+	uint32_t cantidadDeNodos=list_size(tablaGlobalNodos);
+	while(posicion<cantidadDeNodos){
+		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,posicion);
+		if(strcmp(nodoSeleccionado->nodo,nodoDesconectado->nodo)==0){
+			return posicion;
+		}
+		posicion++;
+	}
+	return -1;
+
+}
+
+
 void verificarQueNodo(int socket){
 	bool esElNodoDesconectado(contenidoNodo* nodoSeleccionado){
 		return (nodoSeleccionado->socket==socket);
 	}
 	contenidoNodo* nodoDesconectado=list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodoDesconectado);
-	if(nodoDesconectado==NULL){
-		log_error(loggerFileSystem,"No se ha desconectado un DataNode del sistema.");
-	}else{
+
+	if(nodoDesconectado!=NULL){
+		log_error(loggerFileSystem,"Se ha desconectado un DataNode del sistema.");
 		tablaGlobalNodos->tamanio-=nodoDesconectado->total;
 		tablaGlobalNodos->libres-=nodoDesconectado->libre;
 		nodoDesconectado->disponible=0;
@@ -79,6 +94,7 @@ bool hayUnEstadoEstable(){
 
 	if(list_all_satisfy(tablaGlobalArchivos,(void*)todosArchivosDisponibles)){
 		return true;
+		log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable.");
 	}else{
 		return false;
 	}
@@ -109,6 +125,7 @@ void verificarCopiasNodo(char* nombreNodo){
 
 		if(list_all_satisfy(entradaArchivos->bloques,(void*)todosBloquesDisponibles)){
 			entradaArchivos->disponible=1;
+			log_debug(loggerFileSystem,"El archivo %s ya cuenta con una copia por bloque.",nombreNodo);
 		}
 	}
 }
@@ -147,13 +164,28 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 	}
 }
 
+//uint32_t buscarIndexEnLaListaNodosDesconectados(contenidoNodo* nodoElegido){
+//	uint32_t posicion=0;
+//	uint32_t cantidadDeNodos=list_size(listaNodosDesconectacdos);
+//	while(posicion<cantidadDeNodos){
+//		contenidoNodo* nodoSeleccionado=list_get(listaNodosDesconectacdos,posicion);
+//		if(strcmp(nodoSeleccionado->nodo,nodoElegido->nodo)==0){
+//			return posicion;
+//		}
+//		posicion++;
+//	}
+//	return -1;
+//
+//}
+
 
 void verificarSiEsNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,uint32_t puerto){
-	bool estaEnElSistema(char* nodoSeleccionado){
-		return(strcmp(nodoSeleccionado,nombreNodo)==0);
-	}
-	bool estabaEnElEstadoAnterior=list_any_satisfy(tablaGlobalNodos->nodo,(void*)estaEnElSistema);
-	if(estabaEnElEstadoAnterior){
+
+	 bool estaEnElSistema(char* nodoSeleccionado){
+		 return(strcmp(nodoSeleccionado,nombreNodo)==0);
+	 }
+	 bool estabaEnElEstadoAnterior=list_any_satisfy(tablaGlobalNodos->nodo,(void*)estaEnElSistema);
+	 if(estabaEnElEstadoAnterior){
 		bool esElNodo(contenidoNodo* nodo){
 			return(strcmp(nodo->nodo,nombreNodo)==0);
 		}
@@ -164,6 +196,7 @@ void verificarSiEsNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,ui
 		tablaGlobalNodos->tamanio+=nodoElegido->total;
 		tablaGlobalNodos->libres+=nodoElegido->libre;
 
+		log_debug(loggerFileSystem,"%d desconectado registrado nuevamente al sistema.",nombreNodo);
 
 		bool todosNodosDisponibles(contenidoNodo* entradaNodo){
 			return(entradaNodo->disponible==1);
@@ -171,6 +204,7 @@ void verificarSiEsNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,ui
 
 		if(list_all_satisfy(tablaGlobalNodos->contenidoXNodo,(void*)todosNodosDisponibles)){
 			seDesconectoUnNodo=false;
+			log_debug(loggerFileSystem,"Todos los nodos del sistema se han conectado.");
 		}
 
 	}else{
@@ -188,7 +222,7 @@ void registrarNodo(int socket) {
 	cantBloques = recibirUInt(socket);
 	char * ip = recibirString(socket);
 
-
+	log_debug(loggerFileSystem,"Se ha registrado el %s con %d bloques libres.",nombreNodo,cantBloques);
 	puerto=recibirUInt(socket);
 
 	// Checkeo estado anterior
@@ -230,7 +264,7 @@ void registrarNodo(int socket) {
 			string_append(&datosConexion->ip, ip);
 			datosConexion->puerto=puerto;
 			list_add(listaConexionNodos,datosConexion);
-
+			log_debug(loggerFileSystem,"Nodo registrado correctamente.");
 		} else{
 			if(seDesconectoUnNodo==true){
 						verificarSiEsNodoDesconectado(nombreNodo,socket,ip,puerto);

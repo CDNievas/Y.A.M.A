@@ -353,6 +353,15 @@ uint32_t elegirElNodoOciosoDisponible(uint32_t ubicacionDelNodoElegido){
 	return -1;
 }
 
+void actualizarEstadoDelSistema(contenidoNodo* nodo0){
+	bool esElNodoElegidoEnElbalanceo(contenidoNodo* nodoSeleccionado){
+		return (strcmp(nodoSeleccionado->nodo,nodo0->nodo)==0);
+	}
+	contenidoNodo* nodoEnElSitema=list_find(tablaGlobalNodos->contenidoXNodo,(void*)esElNodoElegidoEnElbalanceo);
+	nodoEnElSitema->libre=nodo0->libre;
+	nodoEnElSitema->porcentajeOcioso=(nodoEnElSitema->libre*100)/nodoEnElSitema->total;
+}
+
 
 void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* copiaBloque){
 
@@ -361,35 +370,28 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	contenidoNodo* nodo0;
 	contenidoNodo* nodo1;
 
+	bool estaDisponible(contenidoNodo* nodoElegido){
+		return(nodoElegido->disponible==1);
+
+	}
+	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponible);
+
 	bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
 		return(nodoSeleccionado1->porcentajeOcioso > nodoSeleccionado2->porcentajeOcioso);
 	}
-	list_sort(tablaGlobalNodos->contenidoXNodo,(void*)ordenarPorPorcentajeOcioso);
+	list_sort(listaNodosDisponiblesEnElSistema,(void*)ordenarPorPorcentajeOcioso);
 
-//	uint32_t ubicacionDelNodoElegido=0;
-//	ubicacionDelNodoElegido=elegirElNodoOciosoDisponible(ubicacionDelNodoElegido);
-//
-//	if(ubicacionDelNodoElegido==-1){
-//		log_error(loggerFileSystem,"No encontro ningun nodo disponible");
-//		exit(-1);
-//	}
-	//nodo0=list_get(tablaGlobalNodos->contenidoXNodo,ubicacionDelNodoElegido);
-	nodo0=list_get(tablaGlobalNodos->contenidoXNodo,0);
+	nodo0=list_get(listaNodosDisponiblesEnElSistema,0);
 
 	nodo0->libre--;
-	nodo0->porcentajeOcioso=sacarPorcentajeOcioso(nodo0->libre,nodo0->total);
 	tablaGlobalNodos->libres--;
+	actualizarEstadoDelSistema(nodo0);
 
-//	ubicacionDelNodoElegido=elegirElNodoOciosoDisponible(ubicacionDelNodoElegido);
-//	if(ubicacionDelNodoElegido==-1){
-//		log_error(loggerFileSystem,"No encontro ningun nodo disponible");
-//		exit(-1);
-//	}
-//	nodo1=list_get(tablaGlobalNodos->contenidoXNodo,ubicacionDelNodoElegido);
-	nodo1=list_get(tablaGlobalNodos->contenidoXNodo,1);
+
+	nodo1=list_get(listaNodosDisponiblesEnElSistema,1);
 	nodo1->libre--;
-	nodo1->porcentajeOcioso=sacarPorcentajeOcioso(nodo1->libre,nodo1->total);
 	tablaGlobalNodos->libres--;
+	actualizarEstadoDelSistema(nodo1);
 
 	persistirTablaNodo();
 
@@ -484,24 +486,35 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 		list_add(archivoAGuardar->bloques,copia);
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
-	list_add(tablaGlobalArchivos, archivoAGuardar);
 }
 bool elSistemaAguantaElArchivo(uint32_t tamanio){
-	uint32_t cantidadDeNodos=list_size(tablaGlobalNodos->nodo);
+	bool estaDisponible(contenidoNodo* nodoElegido){
+		return(nodoElegido->disponible==1);
+
+	}
+	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponible);
+
+	bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
+		return(nodoSeleccionado1->libre < nodoSeleccionado2->libre);
+	}
+	list_sort(listaNodosDisponiblesEnElSistema,(void*)ordenarPorPorcentajeOcioso);
+
+	uint32_t cantidadDeNodosDisponibles=list_size(listaNodosDisponiblesEnElSistema);
 	uint32_t cont=0;
+
 	uint32_t nodosConCapacidadDeCopia=0;
 	uint32_t contadorCapacidad=0;
-	while(cont<cantidadDeNodos){
+	while(cont<cantidadDeNodosDisponibles){
 		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
 		contadorCapacidad+=nodoSeleccionado->libre;
 		if(nodoSeleccionado->disponible==1){
 				if((contadorCapacidad*1024*1024)>tamanio){
 					nodosConCapacidadDeCopia++;
-					contadorCapacidad-=tamanio;
+					contadorCapacidad=0;
 				}
-				}else{
-					contadorCapacidad-=nodoSeleccionado->libre;
-				}
+		}else{
+			contadorCapacidad-=nodoSeleccionado->libre;
+		}
 		cont++;
 	}
 	if(nodosConCapacidadDeCopia>=2){
@@ -542,17 +555,17 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
 			char** rutaDirectorio = string_split(pathDirectorio,"/");
 
-			log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 			archivoAGuardar->tipo=tipo;
 			archivoAGuardar->directorioPadre=obtenerDirectorioPadre(rutaDirectorio);
 			liberarComandoDesarmado(rutaArchivo);
 			liberarComandoDesarmado(rutaDirectorio);
 			uint32_t tamAux = 0;
 
-			//bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
+			bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
 
-			if((tablaGlobalNodos->libres*1024*1024)<(tamanio*2)){
+			if(sePuedeAlmacenarEnElSistema==true){
 				if(tamanio!=0){
+					log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 					if (strcmp(tipo,"B")==0) {
 							while (tamanio > 0) {
 								if (tamanio < 1048576) {
@@ -593,14 +606,8 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 						enviarDatosANodo(posicionBloquesAGuardar,archivo,archivoAGuardar);
 						persistirTablaArchivo(archivoAGuardar);
 
-						char* comandoCopiarArchivo = string_new();
-						string_append(&comandoCopiarArchivo, "cp -a ");
-						string_append(&comandoCopiarArchivo, pathArchivo);
-						string_append(&comandoCopiarArchivo, " ");
-						string_append(&comandoCopiarArchivo, pathDirectorio);
-						system(comandoCopiarArchivo);
+						list_add(tablaGlobalArchivos, archivoAGuardar);
 
-						free(comandoCopiarArchivo);
 						log_info(loggerFileSystem,"Se ha almacenado correctamente el archivo.");
 						return true;
 				}else{

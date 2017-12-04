@@ -10,6 +10,7 @@
 #include "FuncionesFS.h"
 
 void almacenarArchivoWorker(int socket){
+	log_debug(loggerFileSystem,"Se ha conectado un Worker al sistema.");
 	uint32_t tipo;
 	char* contenido  = recibirString(socket);
 	char* nombreArchivo  = recibirString(socket);
@@ -31,8 +32,10 @@ void almacenarArchivoWorker(int socket){
 	fclose(archivo);
 
 	if(tipo==21){
+		log_debug(loggerFileSystem,"Se procede alamcenar el contenido...");
 		if(almacenarArchivo(nombreArchivo,path,"B")==true){
 			sendDeNotificacion(socket,ALMACENADO_FINAL_TERMINADO);
+			log_debug(loggerFileSystem,"El almacenado final ha terminado correctamente.");
 		}else{
 			sendDeNotificacion(socket,ERROR_ALMACENADO_FINAL);
 		}

@@ -22,6 +22,8 @@ int sacarTamanioMensaje() {
 }
 
 void enviarListaNodos(int socket) {
+	log_info(loggerFileSystem,"Enviando lista de nodos a YAMA.");
+
 	void* mensaje = malloc(sacarTamanioMensaje());
 	int posicionActual = 0;
 	int i = 0;
@@ -123,14 +125,19 @@ void enviarDatoArchivo(int socket){
   char* archivoABuscar=recibirString(socket);
   char** ruta = string_split(archivoABuscar, "/");
   char* nombreArchivo = obtenerNombreDirectorio(ruta);
-	bool esArchivo(tablaArchivos* archivo){
+  log_info(loggerFileSystem,"Enviando la metadata del archivo: %s a YAMA.",nombreArchivo);
+    bool esArchivo(tablaArchivos* archivo){
 		return(string_equals_ignore_case(archivo->nombreArchivo,nombreArchivo));
 	}
 	tablaArchivos* entradaArchivo = list_find(tablaGlobalArchivos,(void*)esArchivo);
 	if(entradaArchivo==NULL){
 		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
+		log_error(loggerFileSystem,"Error al enviar la metadata del archivo: %s a YAMA.",nombreArchivo);
+
 	} else {
 		enviarTablaAYama(socket,entradaArchivo);
+		log_info(loggerFileSystem,"Se ha enviado correctamen la metadata del archivo: %s a YAMA.",nombreArchivo);
+
 	}
 	free(archivoABuscar);
 	free(nombreArchivo);
@@ -140,10 +147,13 @@ void enviarDatoArchivo(int socket){
 //ENVIAR IP Y PUERTO
 void enviarDatosConexionNodo(int socket){
 	char* nodo=recibirString(socket);
+	log_info(loggerFileSystem,"Enviando IP y puerto de nodo: %s a YAMA.",nodo);
+
 	bool esNodo(datosConexionNodo* nodoSeleccionado){
 		return(string_equals_ignore_case(nodoSeleccionado->nodo,nodo));
 	}
 	datosConexionNodo* datosNodo = list_find(listaConexionNodos,(void*)esNodo);
+
 	void* mensaje=malloc(sizeof(uint32_t)*2+string_length(datosNodo->ip));
 	int tamanioIp=string_length(datosNodo->ip);
 	int posicionActual=0;

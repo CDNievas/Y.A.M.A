@@ -90,6 +90,7 @@ int main(int argc, char **argv) {
 							break;
 						case ES_YAMA:
 							if (esEstadoSeguro) {
+								log_debug(loggerFileSystem,"Se aconectado Yama en el sistema.");
 								enviarListaNodos(socketClienteChequeado);
 							} else {
 								log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");

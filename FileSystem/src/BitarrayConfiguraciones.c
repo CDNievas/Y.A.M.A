@@ -15,6 +15,7 @@ void chequearParametrosFs(int argc, char* flag){
 
 	if(argc==3){
 		if(strcmp(flag,"--clean")==0){
+			log_debug(loggerFileSystem,"Ejecutando FileSystem con el flag --clean, se ignora el estado anterior");
 			char* comandoReseteo=string_new();
 			string_append(&comandoReseteo,"rm -r ");
 			string_append(&comandoReseteo,PATH_PADRE);
