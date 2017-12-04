@@ -1112,7 +1112,7 @@ void darPermisosAScripts(char* script){
 	struct stat infoScript;
 
 	char* comandoAEjecutar = string_new();
-	string_append(&comandoAEjecutar,"chmod 777 ");
+	string_append(&comandoAEjecutar,"chmod 0777 ");
 	string_append(&comandoAEjecutar,script);
 
 	int resultado = system(comandoAEjecutar);
@@ -1138,7 +1138,7 @@ void darPermisosAScripts(char* script){
 	free(comandoAEjecutar);
 }
 
-void laMardita(int signal){
+void laVioladora(int signal){
 	log_info(loggerMaster, "Se recibio la senial SIGINT, muriendo con estilo... \n");
 	mostrarMetricas();
 	free(YAMA_IP);
@@ -1183,7 +1183,7 @@ void inicializarVariablesGlobales(){
 
 int main(int argc, char **argv) {
 	inicializarVariablesGlobales();
-	signal(SIGINT, laMardita);
+	signal(SIGINT, laVioladora);
 	chequearParametros(argc,6);
 	t_config* configuracionMaster = generarTConfig(argv[1], 2);
 	//t_config* configuracionMaster = generarTConfig("Debug/master.ini", 2);
@@ -1227,6 +1227,7 @@ int main(int argc, char **argv) {
     		break;
     	}
     	case NO_REDU_LOCAL:{
+    		log_debug(loggerMaster,"Se esta esperando a que finalicen las transformaciones en los nodos correspondientes para empezar a realizar la reduccion local. \n");
     		break;
     	}
     	case ABORTAR:{

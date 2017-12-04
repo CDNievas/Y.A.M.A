@@ -536,7 +536,6 @@ void eliminarArchivosLista(t_list* listaInfoApareo){
 	for(posicion=0;posicion<tamanioLista;posicion++){
 		char* nombreTemporalGlobal = list_remove(listaInfoApareo,0);
 		eliminarArchivo(nombreTemporalGlobal);
-		free(nombreTemporalGlobal);
 	}
 	list_destroy(listaInfoApareo);
 }
@@ -560,7 +559,6 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			guardarScript(contenidoTemporal,nombreTemporal,ERROR_REDUCCION_GLOBAL,socketMaster);
 			string_append(&comandoOrdenacionArchivos," ");
 			string_append(&comandoOrdenacionArchivos,nombreTemporal);
-			free(contenidoTemporal);
 			close(unSocketWorker);
 			list_add(listaInfoApareo,nombreTemporal);
 		}
@@ -717,9 +715,10 @@ void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombre
 
 	log_info(loggerWorker, "Datos serializados correctamente para ser enviados al FileSystem\n");
 	sendRemasterizado(socketFS,ALMACENADO_FINAL,tamanioTotalAEnviar,datosAEnviar);
+
+	free(contenidoArchivoReduccionGlobal);
+	free(datosAEnviar);
 }
-
-
 
 void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
 	FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
@@ -933,7 +932,6 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 					exit(-1);
 				}
 				free(ipWorker);
-				free(archivoTemporal);
 			}
 
 			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
