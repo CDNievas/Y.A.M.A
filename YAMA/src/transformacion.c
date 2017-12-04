@@ -166,6 +166,7 @@ infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBl
 	return list_remove_by_condition(listaDeBloques, (void*)buscarDatoAReplanificar);
 }
 
+
 copia* obtenerCopiaDeReplanificacion(infoDeFs* info, char* nodoFallido){
 	bool esCopia1(nodoSistema* nodo){
 		return strcmp(nodo->nombreNodo, info->copia1->nombreNodo) == 0;
