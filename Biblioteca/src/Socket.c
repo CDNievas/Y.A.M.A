@@ -93,7 +93,7 @@ int conectarAServer(char *ip, int puerto) { //Recibe ip y puerto, devuelve socke
 
 }
 
-int conectarAWorker(char *ip, int puerto) { //Recibe ip y puerto, devuelve socket que se conecto
+int conectarWorker(char *ip, int puerto) { //Recibe ip y puerto, devuelve socket que se conecto
 
 	int socket_server = socket(AF_INET, SOCK_STREAM, 0);
 	struct hostent *infoDelServer;

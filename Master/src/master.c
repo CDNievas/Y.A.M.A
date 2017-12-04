@@ -409,7 +409,7 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 
 	uint32_t tamanioNombreNodo = string_length(datoNodoTransformacion->conexion.nombreNodo);
 
-	int socketWorker = conectarAWorker(datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
+	int socketWorker = conectarWorker(datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
 
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
@@ -648,7 +648,7 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 		log_info(loggerMaster,"Esperando a que terminen las transformaciones en el Nodo: %s ... \n",infoNodoReduccion->conexion.nombreNodo);
 	}
 
-	int socketWorker = conectarAWorker(infoNodoReduccion->conexion.ipNodo, infoNodoReduccion->conexion.puertoNodo);
+	int socketWorker = conectarWorker(infoNodoReduccion->conexion.ipNodo, infoNodoReduccion->conexion.puertoNodo);
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",infoNodoReduccion->conexion.ipNodo, infoNodoReduccion->conexion.puertoNodo);
 
@@ -859,9 +859,8 @@ uint32_t obtenerTamanioLista(t_list* listaInfoGlobal){
 	for(posicion=0;posicion<list_size(listaInfoGlobal);posicion++){
 		infoReduccionGlobal* infoEncargado = list_get(listaInfoGlobal,posicion);
 		uint32_t tamanioIp = strlen(infoEncargado->conexion.ipNodo);
-		uint32_t tamanioNombreNodo = strlen(infoEncargado->conexion.nombreNodo);
 		uint32_t tamanioTemporal = strlen(infoEncargado->temporalReduccion);
-		tamanioTotal += tamanioIp+tamanioNombreNodo+tamanioTemporal+(sizeof(uint32_t)*4);
+		tamanioTotal += tamanioIp+tamanioTemporal+(sizeof(uint32_t)*3);
 	}
 	return tamanioTotal;
 }
@@ -881,14 +880,14 @@ void destruirListaInfoGlobal(t_list* listaInfoGlobal){
 
 void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaReduxGlobal,char* scriptReductor,int socketYAMA){
 	while(reduccionesNoTerminadas()){
-		log_info(loggerMaster,"Esperando a que terminen las reducciones locales... \n");
+		log_info(loggerMaster,"Esperando a que terminen las transformaciones y reducciones locales... \n");
 	}
 
-	log_info(loggerMaster,"Reducciones locales terminadas, se procede a realizar la reduccion global... \n");
+	log_info(loggerMaster,"Transformaciones y reducciones locales terminadas, se procede a realizar la reduccion global... \n");
 
 	infoReduccionGlobal* unaInfoReduxGlobalEncargado = list_remove(listaInfoGlobal,0);
 
-	int socketWorker = conectarAWorker(unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
+	int socketWorker = conectarWorker(unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
 
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
@@ -920,7 +919,6 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 			for(posicion=0;posicion<cantRedux-1;posicion++){
 				infoReduccionGlobal* unaInfoReduxGlobal = list_remove(listaInfoGlobal,0);
 				uint32_t tamanioIP = strlen(unaInfoReduxGlobal->conexion.ipNodo);
-				uint32_t tamanioNombreNodo = strlen(unaInfoReduxGlobal->conexion.nombreNodo);
 				uint32_t tamanioArchivoTemporal = strlen(unaInfoReduxGlobal->temporalReduccion);
 				memcpy(datosAEnviar+posicionActual,&tamanioArchivoTemporal,sizeof(uint32_t));
 				posicionActual += sizeof(uint32_t);
@@ -930,19 +928,13 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 				posicionActual += sizeof(uint32_t);
 				memcpy(datosAEnviar+posicionActual,unaInfoReduxGlobal->conexion.ipNodo,tamanioIP);
 				posicionActual += tamanioIP;
-				memcpy(datosAEnviar+posicionActual,&tamanioNombreNodo,sizeof(uint32_t));
-				posicionActual += sizeof(uint32_t);
-				memcpy(datosAEnviar+posicionActual,unaInfoReduxGlobal->conexion.nombreNodo,tamanioNombreNodo);
-				posicionActual += tamanioNombreNodo;
 				memcpy(datosAEnviar+posicionActual,&(unaInfoReduxGlobal->conexion.puertoNodo),sizeof(uint32_t));
 				posicionActual += sizeof(uint32_t);
 				free(unaInfoReduxGlobal->conexion.ipNodo);
-				free(unaInfoReduxGlobal->conexion.nombreNodo);
 				free(unaInfoReduxGlobal->temporalReduccion);
 				free(unaInfoReduxGlobal);
 			}
 			free(unaInfoReduxGlobalEncargado->conexion.ipNodo);
-			free(unaInfoReduxGlobalEncargado->conexion.nombreNodo);
 			free(unaInfoReduxGlobalEncargado->temporalReduccion);
 			free(unaInfoReduxGlobalEncargado);
 
@@ -990,10 +982,8 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
 	infoReduccionGlobal* infoEncargado = (infoReduccionGlobal*)malloc(sizeof(infoReduccionGlobal));
 	infoEncargado->conexion.ipNodo = string_new();
-	infoEncargado->conexion.nombreNodo = string_new();
 	infoEncargado->temporalReduccion = string_new();
 	char* nombreNodoRecibidoEncargado = recibirString(socketYAMA);
-	string_append(&(infoEncargado->conexion.nombreNodo),nombreNodoRecibidoEncargado);
 	free(nombreNodoRecibidoEncargado);
 	char* ipRecibidoEncargado = recibirString(socketYAMA);
 	string_append(&(infoEncargado->conexion.ipNodo),ipRecibidoEncargado);
@@ -1012,10 +1002,8 @@ void recibirSolicitudReduccionGlobal(int socketYAMA, char* scriptReduccion){
 	for(posicion=0;posicion<cantidadReducciones;posicion++){
 		infoReduccionGlobal* unaInfoReduxGlobal = (infoReduccionGlobal*)malloc(sizeof(infoReduccionGlobal));
 		unaInfoReduxGlobal->conexion.ipNodo = string_new();
-		unaInfoReduxGlobal->conexion.nombreNodo = string_new();
 		unaInfoReduxGlobal->temporalReduccion = string_new();
 		char* nombreNodoRecibido = recibirString(socketYAMA);
-		string_append(&(unaInfoReduxGlobal->conexion.nombreNodo),nombreNodoRecibido);
 		free(nombreNodoRecibido);
 		char* ipRecibido = recibirString(socketYAMA);
 		string_append(&(unaInfoReduxGlobal->conexion.ipNodo),ipRecibido);
@@ -1053,7 +1041,7 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 	uint32_t puertoWorker = recibirUInt(socketYAMA);
 	char* archivoReduxGlobal = recibirString(socketYAMA);
 
-	int socketWorker = conectarAWorker(ipWorker, puertoWorker);
+	int socketWorker = conectarWorker(ipWorker, puertoWorker);
 
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",ipWorker, puertoWorker);
