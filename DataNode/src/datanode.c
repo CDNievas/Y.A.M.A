@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
 	// Cargo binario
-	//cargarBin(mapArchivo);
+	cargarBin(mapArchivo);
 
 	// Conexion con FS
 	socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
@@ -32,7 +32,8 @@ int main(int argc, char **argv) {
 
 	// Envio nombre de nodo y cantidad de bloques al FS
 	enviarInfoNodo(socketServerFS);
-
+	
+	munmap(mapArchivo,cantBloques);
 	corte = 1;
 	while(corte){
 
