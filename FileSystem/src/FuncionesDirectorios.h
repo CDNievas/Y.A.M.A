@@ -16,6 +16,9 @@ t_directory* esDirectorioPath(char *, int );
 bool recorrerPath(char **,int ,int );
 bool existePath(char * pathDirectorio);
 void borrarArchivo(char * path);
+void borrarDirectorio(char * path);
 int obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre);
+void obtenerIdPadreDirectorio(char ** ,int ,int , int * , int * );
 
 #endif /* FUNCIONESDIRECTORIOS_H_ */
+
