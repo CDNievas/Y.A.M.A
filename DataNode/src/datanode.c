@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
 	// Envio nombre de nodo y cantidad de bloques al FS
 	enviarInfoNodo(socketServerFS);
-	
+
 	corte = 1;
 	while(corte){
 
