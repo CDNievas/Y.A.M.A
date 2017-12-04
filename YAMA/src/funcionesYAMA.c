@@ -337,6 +337,7 @@ datosBalanceo* obtenerDatosDeCopia(t_list* listaDeBalanceo, copia* copiaAChequea
 
 datosBalanceo* generarDatosBalanceo(){
 	datosBalanceo* datos = malloc(sizeof(datosBalanceo));
+	datos->nombreNodo = string_new();
 	datos->bloques = list_create();
 	return datos;
 }
