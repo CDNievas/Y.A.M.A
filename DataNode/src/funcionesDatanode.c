@@ -117,13 +117,13 @@ int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
 		memcpy(mapArchivo+(nroBloque*SIZEBLOQUE), dataBloque, cantBytes);
 
 		// Actualizo el archivo
-		/*if(msync(mapArchivo,nroBloque*SIZEBLOQUE,MS_SYNC)){
+		if(msync(mapArchivo,nroBloque*SIZEBLOQUE,MS_SYNC)){
 
 			// Error de msync()
 			log_error(loggerDatanode,"Fallo msync().");
 			exit(-3);
 
-		}*/
+		}
 
 		log_info(loggerDatanode,"Escritura en bloque numero: %d", nroBloque);
 
