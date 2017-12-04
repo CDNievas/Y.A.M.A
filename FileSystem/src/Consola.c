@@ -83,10 +83,10 @@ void analizeCommand(char* cmd){
     		break;
     case 2:
     	if(strcmp(disarmedCmd[1], "-d") == 0){
+    		borrarDirectorio(disarmedCmd[2]);
     	} else if(strcmp(disarmedCmd[1], "-b") == 0){
     	} else {
-    		char * path = disarmedCmd[1];
-    		borrarArchivo(path);
+    		borrarArchivo(disarmedCmd[1]);
     	}
     break;
     case 3:{
@@ -110,8 +110,7 @@ void analizeCommand(char* cmd){
     }
     break;
     case 5:{
-      char * path = disarmedCmd[1];
-      if(existePath(path)){
+      if(existePath(disarmedCmd[1])){
     	  printf("Existe path");
       } else {
     	  printf("No existe path");
