@@ -144,24 +144,24 @@ tiempo dividirTiempo(tiempo unTiempo,double factorDivision){
 void mostrarMetricas(){
 	tiempo tiempoF = obtenerTiempo();
 	tiempo tiempoDuracion = get_tiempo_total(tiempoI,tiempoF);
-	log_trace(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
-	log_trace(loggerMaster,"La cantidad de fallos obtenidos en la realizacion del job fue de: %d \n", cantidadFallos);
-	log_trace(loggerMaster,"La cantidad total de tareas de transformacion realizadas durante el job fue de: %d \n", transformacionesRealizadas);
-	log_trace(loggerMaster,"La cantidad total de tareas de reduccion local realizadas durante el job fue de: %d \n", reduccionesLocalesRealizadas);
-	log_trace(loggerMaster,"La cantidad maxima de tareas de transformacion ejecutadas en paralelo fue de: %d \n", paralelismoMaximoTransformaciones);
-	log_trace(loggerMaster,"La cantidad maxima de tareas de reduccion ejecutadas en paralelo fue de: %d \n", paralelismoMaximoReducciones);
+	log_debug(loggerMaster,"El tiempo total de ejecucion del job fue %i:%i:%i \n", tiempoDuracion.hora, tiempoDuracion.minuto,tiempoDuracion.segundo);
+	log_debug(loggerMaster,"La cantidad de fallos obtenidos en la realizacion del job fue de: %f \n", cantidadFallos);
+	log_debug(loggerMaster,"La cantidad total de tareas de transformacion realizadas durante el job fue de: %f \n", transformacionesRealizadas);
+	log_debug(loggerMaster,"La cantidad total de tareas de reduccion local realizadas durante el job fue de: %f \n", reduccionesLocalesRealizadas);
+	log_debug(loggerMaster,"La cantidad maxima de tareas de transformacion ejecutadas en paralelo fue de: %f \n", paralelismoMaximoTransformaciones);
+	log_debug(loggerMaster,"La cantidad maxima de tareas de reduccion ejecutadas en paralelo fue de: %f \n", paralelismoMaximoReducciones);
 
 	if(transformacionesRealizadas!=0){
 		tiempo tiempoTransformacionPromedio = dividirTiempo(tiempoTransformacion,transformacionesRealizadas);
-		log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa transformacion fue %i:%i:%i \n",tiempoTransformacionPromedio.hora, tiempoTransformacionPromedio.minuto,tiempoTransformacionPromedio.segundo);
+		log_debug(loggerMaster,"El tiempo promedio de ejecucion de la etapa transformacion fue %i:%i:%i \n",tiempoTransformacionPromedio.hora, tiempoTransformacionPromedio.minuto,tiempoTransformacionPromedio.segundo);
 	}
 
 	if(reduccionesLocalesRealizadas!=0){
 		tiempo tiempoReduccionLocalPromedio = dividirTiempo(tiempoReduccionLocal,reduccionesLocalesRealizadas);
-		log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion local fue %i:%i:%i \n",tiempoReduccionLocalPromedio.hora, tiempoReduccionLocalPromedio.minuto,tiempoReduccionLocalPromedio.segundo);
+		log_debug(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion local fue %i:%i:%i \n",tiempoReduccionLocalPromedio.hora, tiempoReduccionLocalPromedio.minuto,tiempoReduccionLocalPromedio.segundo);
 	}
 
-	log_trace(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion global fue %i:%i:%i \n",tiempoReduccionGlobal.hora, tiempoReduccionGlobal.minuto,tiempoReduccionGlobal.segundo);
+	log_debug(loggerMaster,"El tiempo promedio de ejecucion de la etapa reduccion global fue %i:%i:%i \n",tiempoReduccionGlobal.hora, tiempoReduccionGlobal.minuto,tiempoReduccionGlobal.segundo);
 }
 
 void cargarMaster(t_config* configuracionMaster){
@@ -325,7 +325,6 @@ void eliminarHilos(char* nombreNodo,uint32_t nroBloque){
 			if(pthread_cancel(unDatoHilo->hiloManejadorNodo) == 0)
 			{
 				log_debug(loggerMaster,"Se finalizo correctamente el hilo. \n");
-				pthread_join(unDatoHilo->hiloManejadorNodo, (void**) NULL);
 			}else{
 				log_error(loggerMaster,"No se pudo finalizar el hilo. \n");
 			}
