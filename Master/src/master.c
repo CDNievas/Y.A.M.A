@@ -844,8 +844,8 @@ void liberarListas(){
 	pthread_mutex_unlock(&mutexTemporales);
 }
 
-bool reduccionesNoTerminadas(){
-	if((list_size(listaInfoNodos)!=0) && (list_size(listaTemporales)!=0) && (list_size(listaHilosTransformacion)!=0) && (list_size(listaHilosReduccion)!=0)){
+bool procesosNoTerminados(){
+	if((list_size(listaInfoNodos)!=0) || (list_size(listaTemporales)!=0) || (list_size(listaHilosTransformacion)!=0) || (list_size(listaHilosReduccion)!=0)){
 		return true;
 	}
 	else{
@@ -871,7 +871,6 @@ void destruirListaInfoGlobal(t_list* listaInfoGlobal){
 	for(posicion=0;posicion<tamanioLista;posicion++){
 		infoReduccionGlobal* unaInfoReduxGlobal = list_remove(listaInfoGlobal,0);
 		free(unaInfoReduxGlobal->conexion.ipNodo);
-		free(unaInfoReduxGlobal->conexion.nombreNodo);
 		free(unaInfoReduxGlobal->temporalReduccion);
 		free(unaInfoReduxGlobal);
 	}
@@ -879,7 +878,7 @@ void destruirListaInfoGlobal(t_list* listaInfoGlobal){
 }
 
 void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaReduxGlobal,char* scriptReductor,int socketYAMA){
-	while(reduccionesNoTerminadas()){
+	while(procesosNoTerminados()){
 		log_info(loggerMaster,"Esperando a que terminen las transformaciones y reducciones locales... \n");
 	}
 
@@ -890,11 +889,11 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 	int socketWorker = conectarWorker(unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
 
 	if(socketWorker!=-1){
-		log_info(loggerMaster,"Se ha conectado con WORKER. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
+		log_info(loggerMaster,"Se ha conectado con el worker encargado. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
 		uint32_t resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
 
 		if(resultadoHandshake!=-1){
-			log_info(loggerMaster,"Handshake con Worker realizado exitosamente.\n");
+			log_info(loggerMaster,"Handshake con worker encargado realizado exitosamente.\n");
 
 			char* codigoScript = obtenerContenido(scriptReductor);
 			uint32_t tamanioScript = string_length(codigoScript);
