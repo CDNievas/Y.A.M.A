@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	log_info(loggerDatanode, "Se cargo correctamente DataNode cuyo nombre es %s.", NOMBRE_NODO);
 
 	// Cargo binario
-	cargarBin(mapArchivo);
+	//cargarBin(mapArchivo);
 
 	// Conexion con FS
 	socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
 
 	// LIBERO MEMORIA
 	close(socketServerFS);
-	munmap(mapArchivo,cantBloques);
+	//munmap(mapArchivo,cantBloques);
 	log_destroy(loggerDatanode);
 
 	return EXIT_SUCCESS;
