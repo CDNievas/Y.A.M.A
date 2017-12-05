@@ -83,7 +83,7 @@ void cargarBin(){
 		}
 
 		// Lo mapeo a memoria
-		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, archivo, 0);
 
 		if(mapArchivo == MAP_FAILED){
 			// Error al mapear
