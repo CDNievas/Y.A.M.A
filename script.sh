@@ -11,7 +11,7 @@ cd DataNode/src/
 gcc funcionesDatanode.c datanode.c -o datanode -lcommons
 echo "Compilando FileSystem"
 cd ../../FileSystem/src/
-gcc filesystem.c nodos.c principalesFS.c -o filesystem -lcommons -lpthread -lreadline
+gcc BitarrayConfiguraciones.c Consola.c EstadoAnterior.c FS.c FuncionesDirectorios.c FuncionesFS.c Nodos.c YAMA.c Worker.c Persistencia.c -o filesystem -lcommons -lpthread -lreadline
 echo "Compilando YAMA"
 cd ../../YAMA/src/
 gcc balanceoDeCargas.c funcionesYAMA.c reduccionGlobal.c reduccionLocal.c serializaciones.c transformacion.c YAMA.c -o yama -lcommons -lpthread
