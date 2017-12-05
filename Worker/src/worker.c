@@ -2,6 +2,7 @@
 #include "../../Biblioteca/src/configParser.c"
 #include <sys/mman.h>
 
+#define CORTO 0
 #define TRANSFORMACION 1
 #define TRANSFORMACION_TERMINADA 2
 #define ERROR_TRANSFORMACION 18
@@ -936,6 +937,8 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 					log_error(loggerWorker, "Hubo un error en el FileSystem al almacenar el archivo.\n");
 					sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
 				}
+
+				close(socketFS);
 			}
 			else{
 				log_error(loggerWorker, "No se pudo conectar con el FileSystem.\n");
@@ -947,8 +950,6 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 				log_destroy(loggerWorker);
 				exit(-1);
 			}
-
-			close(socketFS);
 
 			break;
 		}
@@ -1012,6 +1013,11 @@ int main(int argc, char **argv) {
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
 			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
+			close(socketAceptado);
+			break;
+		}
+		case CORTO:{
+			log_debug(loggerWorker,"Corto el master.\n");
 			close(socketAceptado);
 			break;
 		}
