@@ -77,7 +77,7 @@ copia* obtenerCopia(datosBalanceo* nodo, infoDeFs* bloque){
 	}else if(strcmp(nodo->nombreNodo, bloque->copia2->nombreNodo)==0){
 		return bloque->copia2;
 	}else{
-		log_error(loggerYAMA, "Error al obtener los datos de la copia a utilizar.");
+		log_error(loggerYAMA, "ERROR - COPIA A UTILIZAR NO ENCONTRADA");
 		exit(-1);
 	}
 }

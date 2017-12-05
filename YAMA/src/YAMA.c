@@ -63,7 +63,7 @@ void manejadorMaster(void* socketMasterCliente){
 						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 				}else{
-					log_warning(loggerYAMA, "REDUCCION LOCAL NO PERMITIDA - MASTER %d -NODO %s", nroMaster, nombreNodo);
+					log_warning(loggerYAMA, "REDUCCION LOCAL NO PERMITIDA - NODO %s", nroMaster, nombreNodo);
 					sendDeNotificacion(socketMaster, NO_REDU_LOCAL);
 				}
 				free(nombreNodo);
@@ -157,6 +157,7 @@ void manejadorMaster(void* socketMasterCliente){
 		log_error(loggerYAMA, "ERROR - CORTO FILESYSTEM");
 		log_warning(loggerYAMA, "MUERE HILO - MASTER %d", nroMaster);
 		log_warning(loggerYAMA, "CIERRA YAMA");
+		free(nombreArchivoPeticion);
 		close(socketMaster);
 		pthread_cancel(pthread_self());
 //		usleep(20000);
@@ -179,6 +180,7 @@ int main(int argc, char *argv[])
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
 //	t_config* configuracionYAMA = generarTConfig("Debug/off_yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
+	imprimirConfigs();
 	log_debug(loggerYAMA, "CARGA EXITOSA DE YAMA");
 	nodosSistema = list_create();
 	socketFS = conectarAServer(FS_IP, FS_PUERTO);

@@ -148,7 +148,7 @@ int obtenerNumeroDeMaster(){
 
 void deserializarIPYPuerto(conexionNodo* conexion){
 	if(recibirUInt(socketFS) != DATOS_NODO){
-		log_error(loggerYAMA, "Error al recibir la IP y el puerto del nodo.");
+		log_error(loggerYAMA, "ERROR - IP Y PUERTO DE NODO");
 		conexion->puertoNodo = -1;
 		conexion->ipNodo = NULL;
 	}else{
@@ -194,34 +194,34 @@ char* obtenerNombreNodo(t_list* listaDelNodo){
 //PUESTA EN MARCHA DE YAMA
 void cargarYAMA(t_config* configuracionYAMA){
     if(!config_has_property(configuracionYAMA, "FS_IP")){
-        log_error(loggerYAMA, "No se encuentra el parametro FS_IP en el archivo de configuracion");
+        log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA FS_IP EN CONFIG");
         exit(-1);
     }
     FS_IP = string_new();
 	string_append(&FS_IP, config_get_string_value(configuracionYAMA, "FS_IP"));
     if(!config_has_property(configuracionYAMA, "FS_PUERTO")){
-        log_error(loggerYAMA, "No se encuentra el parametro FS_PUERTO en el archivo de configuracion");
+        log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA FS_PUERTO EN CONFIG");
         exit(-1);
     }
     FS_PUERTO = config_get_int_value(configuracionYAMA, "FS_PUERTO");
     if(!config_has_property(configuracionYAMA, "RETARDO_PLANIFICACION")){
-        log_error(loggerYAMA, "No se encuentra el parametro RETARDO_PLANIFICACION en el archivo de configuracion");
+        log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA RETARDO_PLANIFICACION EN CONFIG");
         exit(-1);
     }
     RETARDO_PLANIFICACION = config_get_int_value(configuracionYAMA, "RETARDO_PLANIFICACION");
     if(!config_has_property(configuracionYAMA, "ALGORITMO_BALANCEO")){
-    	log_error(loggerYAMA, "No se encuentra el parametro RETARDO_PLANIFICACION en el archivo de configuracion");
+    	log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA ALGORITMO_BALANCEO EN CONFIG");
     	exit(-1);
     }
     ALGORITMO_BALANCEO = string_new();
     string_append(&ALGORITMO_BALANCEO, config_get_string_value(configuracionYAMA, "ALGORITMO_BALANCEO"));
     if(!config_has_property(configuracionYAMA, "PUERTO_MASTERS")){
-    	log_error(loggerYAMA, "No se encuentra el parametro PUERTO_MASTERS en el archivo de configuracion");
+    	log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA PUERTO_MASTERS EN CONFIG");
     	exit(-1);
     }
     PUERTO_MASTERS = config_get_int_value(configuracionYAMA, "PUERTO_MASTERS");
     if(!config_has_property(configuracionYAMA, "BASE_AVAILABILITY")){
-    	log_error(loggerYAMA, "No se encuentra el parametro BASE_AVAILABILITY en el archivo de configuracion");
+    	log_error(loggerYAMA, "ERROR - NO SE ENCUENTRA BASE_AVAILABILITY EN CONFIG");
     	exit(-1);
     }
     BASE_AVAILABILITY = config_get_int_value(configuracionYAMA, "BASE_AVAILABILITY");
@@ -232,39 +232,39 @@ void cargarYAMA(t_config* configuracionYAMA){
 //CHEQUEO DE SIGNAL
 void chequeameLaSignal(int signal){
 	//PASO A RECARGAR EL ARCHIVO
-	log_info(loggerYAMA, "Se ha recibido la signal SIGUSR1");
-	t_config* configuracionNueva = generarTConfig("Debug/yama.ini", 5);
+	log_info(loggerYAMA, "SIGNAL - SIGUSR1");
+	t_config* configuracionNueva = generarTConfig("on_yama.ini", 5);
 	if(!config_has_property(configuracionNueva, "RETARDO_PLANIFICACION")){
-		log_error(loggerYAMA, "Al recargar la configuracion no se encontro RETARDO_PLANIFICACION en el archivo.");
+		log_error(loggerYAMA, "ERROR - NO SE ECONTRO RETARDO_PLANIFICACION EN CONFIG");
 		exit(-1);
 	}else{
 		RETARDO_PLANIFICACION = config_get_int_value(configuracionNueva, "RETARDO_PLANIFICACION");
-		log_info(loggerYAMA, "Se ha actualizado el valor de RETARDO_PLANIFICACION a %d", RETARDO_PLANIFICACION);
+		log_info(loggerYAMA, "CONFIG - RETARDO_PLANIFICACION %d", RETARDO_PLANIFICACION);
 	}
 	if(!config_has_property(configuracionNueva, "ALGORITMO_BALANCEO")){
-		log_error(loggerYAMA, "Al recargar la configuracion no se encontro ALGORITMO_BALANCEO en el archivo");
+		log_error(loggerYAMA, "ERROR - NO SE ENCONTRO ALGORITMO_BALANCEO EN CONFIG");
 		exit(-1);
 	}else{
 		ALGORITMO_BALANCEO = string_new();
 		string_append(&ALGORITMO_BALANCEO, config_get_string_value(configuracionNueva, "ALGORITMO_BALANCEO"));
-		log_info(loggerYAMA, "Se ha actualizado el valor de ALGORITMO_BALANCEO a %s", ALGORITMO_BALANCEO);
+		log_info(loggerYAMA, "CONFIG - ALGORITMO_BALANCEO %s", ALGORITMO_BALANCEO);
 	}
 	config_destroy(configuracionNueva);
 }
 
 void laParca(int signal){
 	//Se prosigue a morir elegantemente
-	log_info(loggerYAMA, "Se recibio SIGINT.");
-	log_info(loggerYAMA, "Muriendo con estilo.");
+	log_trace(loggerYAMA, "SIGNAL - SIGINT");
+	log_info(loggerYAMA, "MURIENDO CON ESTILO");
 	list_destroy_and_destroy_elements(nodosSistema, (void*)liberarNodoSistema);
 	list_destroy_and_destroy_elements(tablaDeEstados, (void*)liberarAdminYAMA);
 	free(FS_IP);
 	free(ALGORITMO_BALANCEO);
-	log_info(loggerYAMA, "Todas las estructuras liberadas.");
-	log_info(loggerYAMA, "Cerrando sockets.");
+	log_trace(loggerYAMA, "ESTRUCTURAS LIBERADAS");
+	log_trace(loggerYAMA, "CERRANDO SOCKETS");
 	close(socketEscuchaMasters);
 	close(socketFS);
-	log_info(loggerYAMA, "Muriendo...");
+	log_debug(loggerYAMA, "CIERRA YAMA");
 	log_destroy(loggerYAMA);
 	exit(0);
 }
@@ -283,11 +283,11 @@ void laParca(int signal){
 void handshakeFS(){
 	sendDeNotificacion(socketFS, ES_YAMA);
 	if(recibirUInt(socketFS) != ES_FS){
-		log_error(loggerYAMA, "La conexion efectuada no es con FileSystem.");
+		log_error(loggerYAMA, "ERROR - CONEXION CON FILESYSTEM ERRONEA");
 		exit(-1);
 	}
 	uint32_t cantidadDeNodos = recibirUInt(socketFS);
-	log_info(loggerYAMA, "Cantidad de nodos del sistema: %d", cantidadDeNodos);
+	log_info(loggerYAMA, "CANTIDAD DE NODOS DEL SISTEMA %d", cantidadDeNodos);
 	uint32_t i;
 	for(i = 0; i<cantidadDeNodos; i++){
 		nodoSistema* nuevoNodo = generarNodoSistema();
@@ -295,7 +295,7 @@ void handshakeFS(){
 		nuevoNodo->wl = 0;
 		list_add(nodosSistema, nuevoNodo);
 	}
-	log_info(loggerYAMA, "Se han recibido todos los nodos del sistema correctamente.");
+	log_debug(loggerYAMA, "INFORMACION DE NODOS RECIBIDA CORRECTAMENTE");
 }
 
 //FUNCIONES PARA MANEJAR LA AVAILABILITY
@@ -395,4 +395,16 @@ t_list* filtrarTablaMaster(uint32_t nroMaster){
   }
   t_list* listaMaster = list_filter(tablaDeEstados, (void*)esDeMaster);
   return listaMaster;
+}
+
+
+void imprimirConfigs(){
+	printf("-------CONFIGURACION-------\n");
+	printf("FS_IP: %s\n", FS_IP);
+	printf("FS_PUERTO: %d\n", FS_PUERTO);
+	printf("RETARDO_PLANIFICACION: %d\n", RETARDO_PLANIFICACION);
+	printf("ALGORITMO_BALANCEO: %s\n", ALGORITMO_BALANCEO);
+	printf("PUERTO_MASTERS: %d\n", PUERTO_MASTERS);
+	printf("BASE_AVAILABILITY: %d\n", BASE_AVAILABILITY);
+	printf("---------------------------\n");
 }
