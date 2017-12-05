@@ -12,3 +12,6 @@ truncate -s N nombreArchivo
 
 Crear archivo lleno de basura de N bytes
 head -c N </dev/urandom >nombreArchivo
+
+Abrir script de compilacion
+. script.sh
