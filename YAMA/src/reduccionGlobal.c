@@ -93,7 +93,7 @@ char* obtenerNombreArchivoReduGlobal(int nroMaster){
 
 int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	char* nodoEncargado = buscarNodoEncargado(nroMaster);
-	log_info(loggerYAMA, "El nodo encargado para el almacenamiento final es %s.", nodoEncargado);
+	log_info(loggerYAMA, "ENCARGADO DE ALMACENAMIENTO - %s.", nodoEncargado);
 	conexionNodo* conect = generarConexionNodo();
 	conect->nombreNodo = string_new();
 	string_append(&conect->nombreNodo, nodoEncargado);
@@ -102,10 +102,10 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 		return -1;
 	}
 	char* nombreArchReduGlobal = obtenerNombreArchivoReduGlobal(nroMaster);
-	log_info(loggerYAMA, "Se prosigue a serializar la informacion para el almacenamiento final del master %d.", nroMaster);
+	log_info(loggerYAMA, "ALMACENAMIENTO FINAL - SERIALIZACION DE DATOS - MASTER %d", nroMaster);
 	void* infoAlmacenadoFinal = serializarInfoAlmacenamientoFinal(conect, nombreArchReduGlobal);
 	sendRemasterizado(socketMaster, ALMACENAMIENTO_FINAL, obtenerTamanioInfoAlmacenamientoFinal(conect, nombreArchReduGlobal), infoAlmacenadoFinal);
-	log_info(loggerYAMA, "Se enviaron los datos para el almacenamiento final al master %d.", nroMaster);
+	log_info(loggerYAMA, "ALMACENAMIENTO FINAL - INFORMACION ENVIADA - MASTER %d", nroMaster);
 	free(infoAlmacenadoFinal);
 	liberarConexion(conect);
 	free(nombreArchReduGlobal);

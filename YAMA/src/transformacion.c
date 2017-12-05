@@ -16,7 +16,7 @@ t_list *recibirInfoArchivo(){
 	//RECV REMASTERIZADO CHEQUEAR POR ERROR, QUE SEA TODO LO QUE NECESITO
 	int tipoMsj = recvDeNotificacion(socketFS);
 	if(tipoMsj == 0){
-		log_error(loggerYAMA, "Error al recibir paquete con informacion de archivo de FileSystem");
+		log_error(loggerYAMA, "ERROR - RECIBIR INFORMACION DE ARCHIVO");
 		estaFS = false;
 		return NULL;
 	}else if(tipoMsj == PATH_FILE_INCORRECTO){
@@ -69,7 +69,7 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
 //CARGO LOS DATOS DE LA TRANSFORMACION EN LA TABLA DE ESTADOS
 int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques, t_list* listaDeCopias){
 	int numeroDeJobPTarea = obtenerNumeroDeJob();
-	log_info(loggerYAMA, "El master %d tiene el numero de Job %d.", nroMaster, numeroDeJobPTarea);
+	log_info(loggerYAMA, "MASTER %d - JOB %d", nroMaster, numeroDeJobPTarea);
 	t_list* listaDatosPMaster = list_create();
 	int posicion;
 	for(posicion = 0; posicion<list_size(listaDeBloques); posicion++){
@@ -79,9 +79,8 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		infoDeFs* infoDeBloque = list_get(listaDeBloques, posicion);
 		nuevaAdministracion->nroBloqueFile = infoDeBloque->nroBloque;
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
-		log_trace(loggerYAMA, "El Nodo elegido es: %s.", copiaAUsar->nombreNodo);
-		log_trace(loggerYAMA, "Su archivo temporal sera: %s.", nuevaAdministracion->nameFile);
-		log_trace(loggerYAMA, "Su numero de bloque a transformar es: %d. Corresponde al bloque del archivo: %d", copiaAUsar->nroBloque, infoDeBloque->nroBloque);
+		log_trace(loggerYAMA, "NODO ELEGIDO %s - BLOQUE NODO %d - BLOQUE ARCHIVO %d", copiaAUsar->nombreNodo, copiaAUsar->nroBloque, infoDeBloque->nroBloque);
+		log_trace(loggerYAMA, "NODO %s - TEMPORAL %s", nuevaAdministracion->nameFile);
 		nuevaAdministracion->nombreNodo = string_new();
 		string_append(&nuevaAdministracion->nombreNodo, copiaAUsar->nombreNodo);
 //		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
@@ -95,11 +94,12 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		pthread_mutex_unlock(&semTablaEstados);
 		list_add(listaDatosPMaster, informacionDeNodo);
 	//	liberarInfoFS(infoDeBloque);
-		log_info(loggerYAMA, "Se agrego la operacion a la tabla de estados.");
+		log_debug(loggerYAMA, "TABLA DE ESTADOS - TRANSFORMACION AGREGADA.");
 	}
+	log_info(loggerYAMA, "TRANSFORMACION - SERIALIZACION DE DATOS - MASTER %d", nroMaster);
 	void* informacionDeTransformacion =  serializarInfoTransformacion(listaDatosPMaster);
 	sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaDatosPMaster), informacionDeTransformacion);
-	log_info(loggerYAMA, "Se envio correctamente la informacion de la transformacion al master %d", nroMaster);
+	log_debug(loggerYAMA, "TRANSFORMACION - INFORMACION ENVIADA - MASTER %d", nroMaster);
 	list_destroy_and_destroy_elements(listaDatosPMaster, (void*)liberarDatoMaster);
 	free(informacionDeTransformacion);
 	return 1;
@@ -108,7 +108,6 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 //FINALIZO LA TRANSFORMACION
 void terminarTransformacion(int nroMaster, int socketMaster, char* nombreNodo){
 	uint32_t nroBloque = recibirUInt(socketMaster);
-	log_info(loggerYAMA, "La transformacion a finalizar es la del nodo %s en el bloque %d.", nombreNodo, nroBloque);
 	int buscarNodo(administracionYAMA* adminAChequear){
 		return (adminAChequear->nroMaster == nroMaster && adminAChequear->nroBloque == nroBloque && strcmp(adminAChequear->nombreNodo, nombreNodo)==0  && adminAChequear->etapa == TRANSFORMACION);
 	}
@@ -116,7 +115,7 @@ void terminarTransformacion(int nroMaster, int socketMaster, char* nombreNodo){
 	administracionYAMA *adminAModificar = list_find(tablaDeEstados, (void*)buscarNodo);
 	adminAModificar->estado = FINALIZADO;
 	pthread_mutex_unlock(&semTablaEstados);
-	log_info(loggerYAMA, "Se actualizo la tabla de estados, finalizando la transformacion del nodo %s sobre el bloque %d.", nombreNodo, nroBloque);
+	log_info(loggerYAMA, "TABLA DE ESTADOS - TRANSFORMACION TERMINADA - NODO %s - BLOQUE %d", nombreNodo, nroBloque);
 }
 
 t_list* obtenerBloquesFallidos(uint32_t nroMaster, char* nodoFallido){
@@ -163,7 +162,7 @@ infoDeFs* obtenerDatosAReplanificar(administracionYAMA* admin, t_list* listaDeBl
 	bool buscarDatoAReplanificar(infoDeFs* info){
 		return admin->nroBloqueFile == info->nroBloque;
 	}
-	return list_remove_by_condition(listaDeBloques, (void*)buscarDatoAReplanificar);
+	return list_find(listaDeBloques, (void*)buscarDatoAReplanificar);
 }
 
 
@@ -229,12 +228,14 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 	}
 	t_list* listaBloquesAReplanificar = list_filter(listaDeBloques, (void*)esBloqueFallido);
 	if(puedoReplanificar(nroMaster, nodoFallido, listaBloquesAReplanificar)){
+		log_debug(loggerYAMA, "SE PUEDE REPLANIFICAR");
 		t_list* listaParaMaster = list_create();
 		t_list* listaParaWL = list_create();
 		uint32_t posicion;
 		for(posicion = 0; posicion < list_size(listaEntradasAReplanificar); posicion++){
 			administracionYAMA* adminFallida = list_get(listaEntradasAReplanificar, posicion);
 			infoDeFs* info = obtenerDatosAReplanificar(adminFallida, listaBloquesAReplanificar);
+			log_warning(loggerYAMA, "BLOQUE A REPLANIFICAR %d", info->nroBloque);
 			copia* copiaACargar = obtenerCopiaDeReplanificacion(info, nodoFallido);
 			if(copiaACargar == NULL){
 				return -1;
@@ -244,6 +245,7 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 			nuevaTransformacion->nombreNodo = string_new();
 			string_append(&nuevaTransformacion->nombreNodo, copiaACargar->nombreNodo);
 			nuevaTransformacion->nroBloqueFile = info->nroBloque;
+			log_trace(loggerYAMA, "NODO ELEGIDO %s - BLOQUE NODO %d - BLOQUE ARCHIVO %d", nuevaTransformacion->nombreNodo, nuevaTransformacion->nroBloque, nuevaTransformacion->nroBloqueFile);
 			infoNodo* datoPMaster = generarInfoParaMaster(nuevaTransformacion, info);
 			if(datoPMaster == NULL){
 				list_destroy(listaParaMaster);
@@ -260,19 +262,22 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 			reducirWL(nodoFallido);
 		}
 		actualizarWLTransformacion(listaParaWL);
+		log_info(loggerYAMA, "REPLANIFICACION - SERIALIZACION DE DATOS - MASTER %d", nroMaster);
 		void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
 		sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
+		log_debug(loggerYAMA, "REPLANIFICACION - INFORMACION ENVIADA - MASTER %d", nroMaster);
 		free(infoReplanificacionSerializada);
 		list_destroy_and_destroy_elements(listaParaMaster, (void*)liberarInfoNodo);
 		//list_destroy(listaBloquesAReplanificar);
 		list_destroy(listaEntradasAReplanificar);
 		list_destroy(listaParaWL);
-		list_destroy_and_destroy_elements(listaBloquesAReplanificar, (void*)liberarInfoFS);
+		list_destroy(listaBloquesAReplanificar);
 		return 1;
 	}else{
+		log_error(loggerYAMA,"ERROR - NO SE PUEDE REPLANIFICAR");
 		//list_destroy(listaBloquesAReplanificar);
 		list_destroy(listaEntradasAReplanificar);
-		list_destroy_and_destroy_elements(listaBloquesAReplanificar, (void*)liberarInfoFS);
+		list_destroy(listaBloquesAReplanificar);
 		return 0;
 	}
 }

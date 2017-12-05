@@ -50,16 +50,15 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 //TERMINAR REDUCCION LOCAL
 void terminarReduccionLocal(int nroMaster, int socketMaster){
 	char* nombreNodo = recibirString(socketMaster);
-	log_info(loggerYAMA, "La reducciono local terminada es del nodo %s.", nombreNodo);
+	log_info(loggerYAMA, "REDUCCION LOCAL TERMINADA - MASTER %d - NODO %s", nroMaster, nombreNodo);
 	bool esReducLocalBuscada(administracionYAMA* admin){
 		return admin->etapa == REDUCCION_LOCAL && !strcmp(admin->nombreNodo, nombreNodo) && admin->nroMaster == nroMaster;
 	}
-	log_info(loggerYAMA, "Se prosigue a actualizar la tabla de estados.");
+	log_info(loggerYAMA, "TABLA DE ESTADOS - REDUCCION TERMINADA - NODO %s", nombreNodo);
 	pthread_mutex_lock(&semTablaEstados);
 	administracionYAMA* admin = list_find(tablaDeEstados, (void*)esReducLocalBuscada);
 	admin->estado = FINALIZADO;
 	pthread_mutex_unlock(&semTablaEstados);
-	log_info(loggerYAMA, "Tabla de estados actualizada.");
 	free(nombreNodo);
 }
 

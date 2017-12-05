@@ -22,54 +22,53 @@ void manejadorMaster(void* socketMasterCliente){
 	char* nombreArchivoPeticion;
 	char* nodoFallido;
 	uint32_t nroMaster = obtenerNumeroDeMaster();
-	log_info(loggerYAMA, "El numero de master del socket %d es %d.", socketMaster, nroMaster);
+	log_trace(loggerYAMA, "SOCKET %d - MASTER %d", socketMaster, nroMaster);
 	bool pudoReplanificar = 1;
 	while(sigueProcesando && estaFS){ //USAR BOOLEAN PARA CORTAR CUANDO TERMINE LA OPERACION Y MATAR EL HILO
 		int operacionMaster = recvDeNotificacion(socketMaster);
 		switch (operacionMaster){
 			case TRANSFORMACION:
-				log_trace(loggerYAMA, "Se recibio una peticion del socket %d para llevar a cabo una transformacion.", socketMaster);
+				log_debug(loggerYAMA, "TRANSFORMACION - MASTER %d", nroMaster);
 				nombreArchivoPeticion = recibirNombreArchivo(socketMaster); //RECIBO TAMANIO DE NOMBRE Y NOMBRE
 				solicitarArchivo(nombreArchivoPeticion);
-				log_info(loggerYAMA, "Se envio la peticion del archivo a FileSystem.");
+				log_info(loggerYAMA, "PETICION INFORMACION DE ARCHIVO - ARCHIVO %s", nombreArchivoPeticion);
 				t_list* listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
 				if(listaDeBloquesDeArchivo != NULL && estaFS){
-					log_debug(loggerYAMA, "Se recibieron los datos del archivo de FileSystem.");
-					log_trace(loggerYAMA, "Preparando los datos para el balanceo de cargas.");
+					log_debug(loggerYAMA, "INFORMACION DE ARCHIVO RECIBIDA");
+					log_trace(loggerYAMA, "PREPARANDO BALANCEO DE CARGAS - ALGORITMO %s", ALGORITMO_BALANCEO);
 					t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
-					log_info(loggerYAMA, "Llevando a cabo el balanceo de cargas con el algoritmo %s.", ALGORITMO_BALANCEO);
 					t_list* listaDeCopias = balancearTransformacion(listaDeBloquesDeArchivo, listaBalanceo);
-					log_info(loggerYAMA, "Se prosigue a cargar la transformacion en la tabla de estados.");
+					log_info(loggerYAMA, "REGISTRANDO TRANSFORMACION");
 					if(cargarTransformacion(socketMaster, nroMaster, listaDeBloquesDeArchivo, listaDeCopias) != 1){
 						estaFS = false;
-						log_error(loggerYAMA, "No se pueden llevar a cabo las peticiones del master %d debido a problemas en la conexion con FileSystem.", nroMaster);
-						log_error(loggerYAMA, "Liberando recursos del hilo del master %d.", nroMaster);
+						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 					list_destroy_and_destroy_elements(listaDeBloquesDeArchivo, (void*)liberarInfoFS); //LEAKS AQUI (si hay...)
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
 				}else if(listaDeBloquesDeArchivo == NULL && estaFS){
-					log_error(loggerYAMA, "El archivo %s solicitado por el master %d no existe en el FileSystem.", nombreArchivoPeticion, nroMaster);
+					log_error(loggerYAMA, "ARCHIVO %s INEXISTENTE - MASTER %d", nombreArchivoPeticion, nroMaster);
 					sigueProcesando = 0;
 				}
 				break;
-			case TRANSFORMACION_TERMINADA:
-				log_trace(loggerYAMA, "Se recibio una peticion del master %d para finalizar una transformacion.", nroMaster);
+			case TRANSFORMACION_TERMINADA:{
 				char* nombreNodo = recibirString(socketMaster);
 				terminarTransformacion(nroMaster, socketMaster, nombreNodo); //RECIBO TAMANIO NOMBRE NODO, NODO, NRO DE BLOQUE
 				t_list* listaDelJob = obtenerListaDelNodo(nroMaster, socketMaster, nombreNodo);
-				log_trace(loggerYAMA, "Se prosigue a chequear si se puede llevar a cabo la reduccion local en el nodo %s.", nombreNodo);
+				log_debug(loggerYAMA, "TRANSFORMACION TERMINADA - MASTER %d - NODO %s.", nroMaster, nombreNodo);
 				if(sePuedeHacerReduccionLocal(listaDelJob)){
-					log_debug(loggerYAMA, "Se puede llevar a cabo la reduccion local.");
+					log_debug(loggerYAMA, "REDUCCION LOCAL - MASTER %d - NODO %s", nroMaster, nombreNodo);
 					if(cargarReduccionLocal(socketMaster, nroMaster, listaDelJob) != 1){
 						estaFS = false;
+						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 				}else{
-					log_warning(loggerYAMA, "No se puede llevar a cabo la reduccion local aun.");
+					log_warning(loggerYAMA, "REDUCCION LOCAL NO PERMITIDA - MASTER %d -NODO %s", nroMaster, nombreNodo);
 					sendDeNotificacion(socketMaster, NO_REDU_LOCAL);
 				}
 				free(nombreNodo);
 				list_destroy(listaDelJob);
+			}
 				break;
 			case REPLANIFICAR:
 				nodoFallido = recibirString(socketMaster); //RECIBO NOMBRE DEL NODO A REPLANIFICAR
@@ -86,6 +85,7 @@ void manejadorMaster(void* socketMasterCliente){
 						sigueProcesando = false;
 					}else if(pudoReplanificar == -1){
 						estaFS = false;
+						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 				}else{
 					estaFS = false;
@@ -94,59 +94,59 @@ void manejadorMaster(void* socketMasterCliente){
 				free(nodoFallido);
 				break;
 			case REDUCCION_LOCAL_TERMINADA:
-				log_trace(loggerYAMA, "Se recibio una notificacion para finalizar con una reduccion local por parte del master %d.", nroMaster);
 				terminarReduccionLocal(nroMaster, socketMaster); //RECIBO NOMBRE NODO VA A HABER UNA UNICA INSTANCIA DE NODO HACIENDO REDUCCION LOCAL
-				log_trace(loggerYAMA, "Se prosigue a chequear si se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
 				if(sePuedeHacerReduccionGlobal(nroMaster)){ //CHEQUEO SI TODOS LOS NODOS TERMINARON DE REDUCIR
-					log_debug(loggerYAMA, "Se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
+					log_debug(loggerYAMA, "REDUCCION GLOBAL - MASTER %d", nroMaster);
 					t_list* bloquesReducidos = filtrarReduccionesDelNodo(nroMaster); //OBTENGO TODAS LAS REDUCCIONES LOCALES QUE HIZO EL MASTER
 					if(cargarReduccionGlobal(socketMaster, nroMaster, bloquesReducidos) != 1){
 						estaFS = false;
+						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 					list_destroy(bloquesReducidos);
 				}else{
-					log_info(loggerYAMA, "Todavia no se puede llevar a cabo la reduccion global en el master %d.", nroMaster);
+					log_info(loggerYAMA, "REDUCCION GLOBAL NO PERMITIDA - MASTER %d", nroMaster);
 				}
 				break;
 			case REDUCCION_GLOBAL_TERMINADA:
-				log_trace(loggerYAMA, "Se recibio una notificacion para finalizar la reduccion global por parte del master %d.", nroMaster);
+				log_debug(loggerYAMA, "REDUCCION GLOBAL TERMINADA - MASTER %d", nroMaster);
 				terminarReduccionGlobal(nroMaster);
-				log_trace(loggerYAMA, "Se prosigue a realizar el almacenado final para el master %d.", nroMaster);
+				log_debug(loggerYAMA, "ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
 				if(almacenadoFinal(socketMaster, nroMaster) != 1){
 					estaFS = false;
 				}
 				break;
 			case FINALIZO:
 				reestablecerWL(nroMaster);
-				log_debug(loggerYAMA, "El Master %d termino su Job.\nTerminando su ejecucioin.\nCerrando la conexion.", nroMaster);
+				log_debug(loggerYAMA, "FINALIZACION DE JOB - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				fallaReduccionLocal(nroMaster);
-				log_warning(loggerYAMA, "Error de reduccion local.");
-				log_warning(loggerYAMA,"Abortando el Job.");
+				log_warning(loggerYAMA, "ERROR - REDUCCION LOCAL - MASTER %d", nroMaster);
+				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
-				log_warning(loggerYAMA, "Error de reduccion global.");
-				log_warning(loggerYAMA,"Abortando el Job.");
+				log_warning(loggerYAMA, "ERROR - REDUCCION GLOBAL - MASTER %d", nroMaster);
+				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
 				break;
 			case ERROR_ALMACENAMIENTO_FINAL:
-				log_warning(loggerYAMA, "El master %d fallo a la hora de llevar a cabo el almacenamiento final.");
-				log_warning(loggerYAMA, "Abortando Job.");
+				log_warning(loggerYAMA, "ERROR - ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
+				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
 				break;
 			case CORTO:
-				log_warning(loggerYAMA, "El master %d corto.", nroMaster);
+				log_warning(loggerYAMA, "CORTO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 			default:
-				log_error(loggerYAMA, "La peticion recibida por el master %d es erronea.", socketMaster);
+				log_error(loggerYAMA, "PETICION ERRONEA - MASTER %", nroMaster);
+				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				sigueProcesando = 0;
 				break;
@@ -154,17 +154,16 @@ void manejadorMaster(void* socketMasterCliente){
 	}
 	if(!estaFS){
 		sendDeNotificacion(socketMaster, ABORTAR);
-		log_info(loggerYAMA, "Se le informo al master %d del error de conexion.", nroMaster);
-		log_info(loggerYAMA, "Se cerro el hilo del master %d.", nroMaster);
-		log_info(loggerYAMA, "El FileSystem corto la conexion.");
-		log_info(loggerYAMA, "Se cierra YAMA.");
+		log_error(loggerYAMA, "ERROR - CORTO FILESYSTEM");
+		log_warning(loggerYAMA, "MUERE HILO - MASTER %d", nroMaster);
+		log_warning(loggerYAMA, "CIERRA YAMA");
 		close(socketMaster);
 		pthread_cancel(pthread_self());
 //		usleep(20000);
 		exit(0);
 	}
 	if(!sigueProcesando){
-		log_info(loggerYAMA, "Se le informo al master %d que debe cortar la conexion.", nroMaster);
+		log_info(loggerYAMA, "CORTA CONEXION - MASTER %d", nroMaster);
 		free(nombreArchivoPeticion);
 		close(socketMaster);
 		pthread_cancel(pthread_self());
@@ -180,15 +179,15 @@ int main(int argc, char *argv[])
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
 //	t_config* configuracionYAMA = generarTConfig("Debug/off_yama.ini", 6);
 	cargarYAMA(configuracionYAMA);
-	log_debug(loggerYAMA, "Se cargo exitosamente YAMA.");
+	log_debug(loggerYAMA, "CARGA EXITOSA DE YAMA");
 	nodosSistema = list_create();
 	socketFS = conectarAServer(FS_IP, FS_PUERTO);
-	log_debug(loggerYAMA, "Conexion con FileSystem realizada.");
+	log_debug(loggerYAMA, "CONEXION CON FILESYSTEM");
 	handshakeFS();
 	estaFS = true;
-	log_info(loggerYAMA, "Handshake con FileSystem realizado.");
+	log_debug(loggerYAMA, "HANDSHAKE CON FILESYSTEM");
 	socketEscuchaMasters = ponerseAEscucharClientes(PUERTO_MASTERS, 0);
- 	log_info(loggerYAMA, "Escuchando clientes...");
+ 	log_info(loggerYAMA, "SOCKET ESCUCHA ACTIVADO");
 	int socketMaximo = socketEscuchaMasters, socketClienteChequeado, socketAceptado;
 	fd_set socketsMasterCPeticion, socketMastersAuxiliares;
 	FD_ZERO(&socketMastersAuxiliares);
@@ -216,31 +215,31 @@ int main(int argc, char *argv[])
 		int selectVal = select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL);
 		if(selectVal<0){
 			if(selectVal != EINTR){
-				log_error(loggerYAMA, "Fallo el select.");
+				log_error(loggerYAMA, "ERROR - FALLO SELECT");
+				log_error(loggerYAMA, "ERROR - MUERE YAMA");
 				exit(-1);
 			}
 		}
-		log_info(loggerYAMA, "Un socket realizo una peticion a YAMA.");
+		log_info(loggerYAMA, "PETICION DE SOCKET");
 		for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
 			if(FD_ISSET(socketClienteChequeado, &socketMastersAuxiliares)){
 				if(socketClienteChequeado == socketEscuchaMasters){
 					socketAceptado = aceptarConexionDeCliente(socketEscuchaMasters);
 					FD_SET(socketAceptado, &socketsMasterCPeticion);
 					socketMaximo = calcularSocketMaximo(socketAceptado, socketMaximo);
-					log_info(loggerYAMA, "Se recibio una nueva conexion del socket %d.", socketAceptado);
+					log_info(loggerYAMA, "NUEVA CONEXION - SOCKET %d", socketAceptado);
 				}else{
 					int notificacion = recvDeNotificacion(socketClienteChequeado);
 					if(notificacion != ES_MASTER){
-						log_error(loggerYAMA, "La conexion del socket %d es erronea.", socketClienteChequeado);
+						log_error(loggerYAMA, "CONEXION ERRONEA - SOCKET %d", socketClienteChequeado);
 						FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
 						close(socketClienteChequeado);
 					}else{
 						sendDeNotificacion(socketClienteChequeado, ES_YAMA);
-		        		log_trace(loggerYAMA, "Se establecio la conexion con el socket master %d - Handshake realizado.", socketClienteChequeado);
+		        		log_trace(loggerYAMA, "MASTER %d - HANDSHAKE REALIZADO", socketClienteChequeado);
 		       			int* socketCliente = malloc(sizeof(int));
 		            	*socketCliente = socketClienteChequeado;
 		            	pthread_create(&hiloManejadorMaster, &attr, (void*)manejadorMaster, (void*)socketCliente);
-		            	log_trace(loggerYAMA, "Pasando a atender la peticion del socket master %d.", socketClienteChequeado);
 		           		FD_CLR(socketClienteChequeado, &socketsMasterCPeticion);
 					}
 				}
