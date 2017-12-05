@@ -185,7 +185,7 @@ void cargarMaster(t_config* configuracionMaster){
 
 void realizarHandshake(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    uint32_t notificacion = recvDeNotificacion(unSocket);
+    int notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         mostrarMetricas();
@@ -195,7 +195,7 @@ void realizarHandshake(int unSocket, int proceso){
 
 int realizarHandshakeWorker(int unSocket, int proceso){
     sendDeNotificacion(unSocket, ES_MASTER);
-    uint32_t notificacion = recvDeNotificacion(unSocket);
+    int notificacion = recvDeNotificacion(unSocket);
     if(notificacion != proceso){
         log_error(loggerMaster, "La conexion establecida no es correcta");
         notificacion = -1;
@@ -885,7 +885,7 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 
 	if(socketWorker!=-1){
 		log_info(loggerMaster,"Se ha conectado con el worker encargado. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
-		uint32_t resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
+		int resultadoHandshake = realizarHandshakeWorker(socketWorker,ES_WORKER);
 
 		if(resultadoHandshake!=-1){
 			log_info(loggerMaster,"Handshake con worker encargado realizado exitosamente.\n");
@@ -1196,7 +1196,7 @@ int main(int argc, char **argv) {
     darPermisosAScripts(argv[2]);
     darPermisosAScripts(argv[3]);
     while(1){
-    	uint32_t operacion = recvDeNotificacion(socketYAMA);
+    	int operacion = recvDeNotificacion(socketYAMA);
     	switch(operacion){
     	case TRANSFORMACION:{
     		recibirSolicitudTransformacion(socketYAMA);
