@@ -80,7 +80,7 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		nuevaAdministracion->nroBloqueFile = infoDeBloque->nroBloque;
 		copia* copiaAUsar = list_get(listaDeCopias, posicion);
 		log_trace(loggerYAMA, "NODO ELEGIDO %s - BLOQUE NODO %d - BLOQUE ARCHIVO %d", copiaAUsar->nombreNodo, copiaAUsar->nroBloque, infoDeBloque->nroBloque);
-		log_trace(loggerYAMA, "NODO %s - TEMPORAL %s", nuevaAdministracion->nameFile);
+		log_trace(loggerYAMA, "TEMPORAL %s", nuevaAdministracion->nameFile);
 		nuevaAdministracion->nombreNodo = string_new();
 		string_append(&nuevaAdministracion->nombreNodo, copiaAUsar->nombreNodo);
 //		nuevaAdministracion->nombreNodo = copiaAUsar->nombreNodo; //CARGO LOS DATOS DE LA COPIA EN LA ESTRUCTURA ADMINISTRATIVA
