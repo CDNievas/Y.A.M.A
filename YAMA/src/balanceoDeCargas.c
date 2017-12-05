@@ -128,7 +128,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				usleep(RETARDO_PLANIFICACION);
 				//paso a buscar el bloque con un puntero auxiliar
 			}else if(laTieneOtroNodo(bloqueABuscar, listaDeBalanceo)){
-				log_warning(loggerYAMA, "NODO %s - NO TIENE BLOQUE %s", nodoAChequear->nombreNodo, bloqueABuscar->nroBloque);
+				log_warning(loggerYAMA, "NODO %s - NO TIENE BLOQUE %d", nodoAChequear->nombreNodo, bloqueABuscar->nroBloque);
 				log_trace(loggerYAMA, "BUSCANDO OTRO NODO.");
 				nodoAuxiliar = buscarBloque(listaDeBalanceo, bloqueABuscar, posicion);
 				log_debug(loggerYAMA, "NODO ELEGIDO %s - BLOQUE %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
