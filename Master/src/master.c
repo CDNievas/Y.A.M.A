@@ -783,13 +783,13 @@ void finalizarHilos(){
 	uint32_t cantidadHilosTransformacion = list_size(listaHilosTransformacion);
 	for(posicionTransformacion=0;posicionTransformacion<cantidadHilosTransformacion;posicionTransformacion++){
 		datosHilo* unDatoHilo = list_remove(listaHilosTransformacion,0);
-		free(unDatoHilo->nombreNodo);
 		if(pthread_cancel(unDatoHilo->hiloManejadorNodo) == 0)
 		{
 			log_info(loggerMaster,"Se finalizo correctamente el hilo del nodo: %s y numero de bloque: %d \n",unDatoHilo->nombreNodo,unDatoHilo->numeroBloque);
 		}else{
 			log_error(loggerMaster,"No se pudo matar el hilo del nodo: %s y numero de bloque: %d \n",unDatoHilo->nombreNodo,unDatoHilo->numeroBloque);
 		}
+		free(unDatoHilo->nombreNodo);
 		free(unDatoHilo);
 	}
 	list_destroy(listaHilosTransformacion);
