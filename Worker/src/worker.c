@@ -24,7 +24,6 @@ int PUERTO_FILESYSTEM;
 int PUERTO_WORKER;
 void* dataBinBloque;
 size_t dataBinTamanio;
-bool dataBinLiberado;
 
 void sigchld_handler(int s){
 	while(wait(NULL) > 0);
@@ -40,6 +39,7 @@ void eliminarProcesosMuertos(){
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		munmap(dataBinBloque,dataBinTamanio);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -98,8 +98,6 @@ void darPermisosAScripts(char* script, int casoError, int socketMaster){
 		if(WIFSIGNALED(resultado)){
 			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
 		}
-
-		sendDeNotificacion(socketMaster,casoError);
 	}
 	else{
 		log_info(loggerWorker, "System para permisos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
@@ -138,9 +136,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 
 	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -153,9 +149,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 
 	if(tamanioArchivo==-1){
 		log_error(loggerWorker,"Error de ftell.\n");
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -173,9 +167,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 
 	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -188,9 +180,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 
 	if(contenidoArchivo==NULL){
 		log_error(loggerWorker,"Error al asignar memoria para leer el archivo.\n");
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -209,9 +199,7 @@ char* obtenerContenido(char* unPath){
 
 	if(archivoALeer==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo: %s.\n",unPath);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -241,7 +229,7 @@ void eliminarArchivo(char* nombreScript){
 
 void* dataBinMapear() {
 	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDWR);
-	if (descriptorArchivo<0) {
+	if (descriptorArchivo==-1) {
 		log_error(loggerWorker,"No se pudo abrir el data.bin \n");
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
@@ -298,9 +286,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	if(archivoScript==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(comandoAEjecutar);
 		free(numeroBloque);
 		free(numeroPID);
@@ -319,9 +305,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	if(pedazoDataBin==NULL){
 		log_error(loggerWorker,"No se pudo pedir memoria para allocar el bloque del databin.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -339,9 +323,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	if(fwrite(pedazoDataBin,sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -360,9 +342,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	if(fclose(archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo cerrar el archivo donde se guarda el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -388,9 +368,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		}
 
 		sendDeNotificacion(socketMaster,ERROR_TRANSFORMACION);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -466,9 +444,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 	if(archivoScript==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el contenido.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -484,9 +460,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 	if(fputs(script,archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el contenido.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -502,9 +476,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 	if(fclose(archivoScript)==EOF){
 		log_error(loggerWorker,"No se pudo cerrar el archivo donde se guardara el contenido.\n");
 		sendDeNotificacion(socketMaster,casoError);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -629,9 +601,7 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 
 		sendDeNotificacion(socketMaster,casoError);
 
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
+		munmap(dataBinBloque,dataBinTamanio);
 
 		eliminarArchivo(unArchivo);
 		eliminarArchivo(otroArchivo);
@@ -776,9 +746,6 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 		free(numeroPID);
 		free(nombreArchivoApareado);
 		list_destroy(archivosTemporales);
-		if(!dataBinLiberado){
-			munmap(dataBinBloque,dataBinTamanio);
-		}
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -899,10 +866,6 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			break;
 		}
 		case REDUCCION_GLOBAL:{
-			if(!dataBinLiberado){
-				munmap(dataBinBloque,dataBinTamanio);
-				dataBinLiberado = true;
-			}
 			char* script = recibirString(socketMaster);
 			char* nombreScript = recibirString(socketMaster);
 			char* pathDestino = recibirString(socketMaster);
@@ -991,9 +954,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 		}
 		default:{
 			log_error(loggerWorker, "Error al recibir mensaje de Master\n");
-			if(!dataBinLiberado){
-				munmap(dataBinBloque,dataBinTamanio);
-			}
+			munmap(dataBinBloque,dataBinTamanio);
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
 			free(NOMBRE_NODO);
@@ -1014,9 +975,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 void laMardita(int signal){
 	log_info(loggerWorker, "Se recibio la senial SIGINT, muriendo con estilo... \n");
-	if(!dataBinLiberado){
-		munmap(dataBinBloque,dataBinTamanio);
-	}
+	munmap(dataBinBloque,dataBinTamanio);
 	free(IP_FILESYSTEM);
 	free(RUTA_DATABIN);
 	free(NOMBRE_NODO);
@@ -1026,7 +985,6 @@ void laMardita(int signal){
 }
 
 int main(int argc, char **argv) {
-	dataBinLiberado = true;
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
 	signal(SIGINT, laMardita);
 	chequearParametros(argc,2);
@@ -1039,7 +997,6 @@ int main(int argc, char **argv) {
 	eliminarProcesosMuertos();
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
-	dataBinLiberado = false;
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
@@ -1052,10 +1009,6 @@ int main(int argc, char **argv) {
 			break;
 		}
 		case ES_WORKER:{
-			if(!dataBinLiberado){
-				munmap(dataBinBloque,dataBinTamanio);
-				dataBinLiberado = true;
-			}
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
 			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
@@ -1065,9 +1018,7 @@ int main(int argc, char **argv) {
 		default:{
 			log_error(loggerWorker, "La conexion recibida es erronea.\n");
 			close(socketAceptado);
-			if(!dataBinLiberado){
-				munmap(dataBinBloque,dataBinTamanio);
-			}
+			munmap(dataBinBloque,dataBinTamanio);
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
 			free(NOMBRE_NODO);
