@@ -13,7 +13,6 @@ void solicitarArchivo(char* nombreArchivo){
 }
 
 t_list *recibirInfoArchivo(){
-	//RECV REMASTERIZADO CHEQUEAR POR ERROR, QUE SEA TODO LO QUE NECESITO
 	int tipoMsj = recvDeNotificacion(socketFS);
 	if(tipoMsj == 0){
 		log_error(loggerYAMA, "ERROR - RECIBIR INFORMACION DE ARCHIVO");
@@ -132,6 +131,8 @@ void cargarFallo(uint32_t nroMaster, char* nodoFallido){
 	t_list* listaDeFallados = obtenerBloquesFallidos(nroMaster, nodoFallido);
 	uint32_t posicion;
 
+	//LIST ITERATE
+
 	for(posicion = 0; posicion < list_size(listaDeFallados); posicion++){
 		pthread_mutex_lock(&semTablaEstados);
 		administracionYAMA* admin = list_get(listaDeFallados, posicion);
@@ -145,6 +146,8 @@ t_list* filtrarTablaFallida(uint32_t nroMaster, char* nodoFallido){
 	bool esEntradaFallida(administracionYAMA* admin){
 		return nroMaster == admin->nroMaster && strcmp(admin->nombreNodo, nodoFallido) == 0 && admin->estado == FALLO && admin->etapa == TRANSFORMACION;
 	}
+
+	//HACERLO EN LA FUNCION
 	pthread_mutex_lock(&semTablaEstados);
 	t_list* lista = list_filter(tablaDeEstados, (void*)esEntradaFallida);
 	pthread_mutex_unlock(&semTablaEstados);
