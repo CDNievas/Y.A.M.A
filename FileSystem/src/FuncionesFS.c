@@ -391,7 +391,7 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	nodo1=list_get(listaNodosDisponiblesEnElSistema,1);
 	if(nodo1==NULL){
 		nodo1=list_get(listaNodosDisponiblesEnElSistema,0);
-		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede almacenar la copia en el mismo nodo que el original.");
+		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede almacenar la copia en el mismo %s que el original.", nodo0->nodo);
 	}
 	nodo1->libre--;
 	tablaGlobalNodos->libres--;
