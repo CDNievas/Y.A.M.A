@@ -21,7 +21,9 @@ t_list *filtrarReduccionesDelNodo(uint32_t nroMaster){
 	bool esRLocalTerminada(administracionYAMA* admin){
 		return admin->etapa == REDUCCION_LOCAL && admin->nroMaster == nroMaster;
 	}
+	pthread_mutex_lock(&semTablaEstados);
 	t_list* listaDeMaster = list_filter(tablaDeEstados, (void*)esRLocalTerminada);
+	pthread_mutex_unlock(&semTablaEstados);
 	return listaDeMaster;
 }
 
@@ -109,6 +111,7 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	free(infoAlmacenadoFinal);
 	liberarConexion(conect);
 	free(nombreArchReduGlobal);
+	free(nodoEncargado);
 	return 1;
 }
 
