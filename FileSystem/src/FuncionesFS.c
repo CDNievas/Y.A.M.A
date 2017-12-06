@@ -371,7 +371,7 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 	contenidoNodo* nodo1;
 
 	bool estaDisponible(contenidoNodo* nodoElegido){
-		return(nodoElegido->disponible==1);
+		return(nodoElegido->disponible==1 && nodoElegido->porcentajeOcioso>0);
 
 	}
 	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponible);
@@ -389,6 +389,10 @@ void asignarEnviarANodo(void* contenidoAEnviar,uint32_t tamanio,copiasXBloque* c
 
 
 	nodo1=list_get(listaNodosDisponiblesEnElSistema,1);
+	if(nodo1==NULL){
+		nodo1=list_get(listaNodosDisponiblesEnElSistema,0);
+		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede almacenar la copia en el mismo nodo que el original.");
+	}
 	nodo1->libre--;
 	tablaGlobalNodos->libres--;
 	actualizarEstadoDelSistema(nodo1);
@@ -487,43 +491,44 @@ void enviarDatosANodo(t_list* posiciones,FILE* archivo, tablaArchivos* archivoAG
 	}
 	list_iterate(posiciones,(void*) enviarNodoPorPosicion);
 }
-bool elSistemaAguantaElArchivo(uint32_t tamanio){
-	bool estaDisponible(contenidoNodo* nodoElegido){
-		return(nodoElegido->disponible==1);
 
-	}
-	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponible);
-
-	bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
-		return(nodoSeleccionado1->libre < nodoSeleccionado2->libre);
-	}
-	list_sort(listaNodosDisponiblesEnElSistema,(void*)ordenarPorPorcentajeOcioso);
-
-	uint32_t cantidadDeNodosDisponibles=list_size(listaNodosDisponiblesEnElSistema);
-	uint32_t cont=0;
-
-	uint32_t nodosConCapacidadDeCopia=0;
-	uint32_t contadorCapacidad=0;
-	while(cont<cantidadDeNodosDisponibles){
-		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
-		contadorCapacidad+=nodoSeleccionado->libre;
-		if(nodoSeleccionado->disponible==1){
-				if((contadorCapacidad*1024*1024)>tamanio){
-					nodosConCapacidadDeCopia++;
-					contadorCapacidad=0;
-				}
-		}else{
-			contadorCapacidad-=nodoSeleccionado->libre;
-		}
-		cont++;
-	}
-	if(nodosConCapacidadDeCopia>=2){
-		return true;
-	}else{
-		return false;
-	}
-
-}
+//bool elSistemaAguantaElArchivo(uint32_t tamanio){
+//	bool estaDisponible(contenidoNodo* nodoElegido){
+//		return(nodoElegido->disponible==1);
+//
+//	}
+//	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaGlobalNodos->contenidoXNodo,(void*)estaDisponible);
+//
+//	bool ordenarPorPorcentajeOcioso(contenidoNodo* nodoSeleccionado1, contenidoNodo* nodoSeleccionado2){
+//		return(nodoSeleccionado1->libre < nodoSeleccionado2->libre);
+//	}
+//	list_sort(listaNodosDisponiblesEnElSistema,(void*)ordenarPorPorcentajeOcioso);
+//
+//	uint32_t cantidadDeNodosDisponibles=list_size(listaNodosDisponiblesEnElSistema);
+//	uint32_t cont=0;
+//
+//	uint32_t nodosConCapacidadDeCopia=0;
+//	uint32_t contadorCapacidad=0;
+//	while(cont<cantidadDeNodosDisponibles){
+//		contenidoNodo* nodoSeleccionado=list_get(tablaGlobalNodos->contenidoXNodo,cont);
+//		contadorCapacidad+=nodoSeleccionado->libre;
+//		if(nodoSeleccionado->disponible==1){
+//				if((contadorCapacidad*1024*1024)>tamanio){
+//					nodosConCapacidadDeCopia++;
+//					contadorCapacidad=0;
+//				}
+//		}else{
+//			contadorCapacidad-=nodoSeleccionado->libre;
+//		}
+//		cont++;
+//	}
+//	if(nodosConCapacidadDeCopia>=2){
+//		return true;
+//	}else{
+//		return false;
+//	}
+//
+//}
 
 bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 
@@ -561,9 +566,10 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio,char* tipo) {
 			liberarComandoDesarmado(rutaDirectorio);
 			uint32_t tamAux = 0;
 
-			bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
-
-			if(sePuedeAlmacenarEnElSistema==true){
+//			bool sePuedeAlmacenarEnElSistema=elSistemaAguantaElArchivo(tamanio);
+//
+//			if(sePuedeAlmacenarEnElSistema==true){
+			if((tablaGlobalNodos->libres*1024*1024)>tamanio*2){
 				if(tamanio!=0){
 					log_info(loggerFileSystem, "Se procede a almacenar el archivo %s en %s.", archivoAGuardar->nombreArchivo, pathDirectorio);
 					if (strcmp(tipo,"B")==0) {
