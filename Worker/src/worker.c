@@ -645,8 +645,9 @@ void realizarHandshakeWorker(char* unArchivoTemporal, int unSocketWorker){
 
 void realizarHandshakeFS(int socketFS){
 	sendDeNotificacion(socketFS, ES_WORKER);
+	int notificacion = recvDeNotificacion(socketFS);
 
-	if(recibirUInt(socketFS) != ES_FS){
+	if(notificacion != ES_FS){
 		log_error(loggerWorker, "La conexion efectuada no es con FileSystem.\n");
 		close(socketFS);
 		free(IP_FILESYSTEM);
@@ -804,7 +805,7 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 
 		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
-		uint32_t tipoEtapa = recibirUInt(socketMaster);
+		int tipoEtapa = recvDeNotificacion(socketMaster);
 
 		switch(tipoEtapa){
 		case TRANSFORMACION:{
