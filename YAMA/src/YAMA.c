@@ -63,7 +63,7 @@ void manejadorMaster(void* socketMasterCliente){
 						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
 					}
 				}else{
-					log_warning(loggerYAMA, "REDUCCION LOCAL NO PERMITIDA - NODO %s", nroMaster, nombreNodo);
+					log_warning(loggerYAMA, "REDUCCION LOCAL NO PERMITIDA - NODO %s", nombreNodo);
 					sendDeNotificacion(socketMaster, NO_REDU_LOCAL);
 				}
 				free(nombreNodo);
