@@ -44,18 +44,18 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 			incrementarAvailability(listaDeBalanceo);
 		}
 		//Si llegue al maximo, vuelvo a empezar
-		if(posicionActual+1 >= list_size(listaDeBalanceo)){
+		if(posicionActual >= list_size(listaDeBalanceo)){
 			posicionActual = 0;
 		}
 		nodo = list_get(listaDeBalanceo, posicionActual);
 		if(tieneAvailability(nodo) && tieneBloqueBuscado(nodo, bloque)){
-			usleep(RETARDO_PLANIFICACION);
 			break;
 		}else{
-			usleep(RETARDO_PLANIFICACION);
 			posicionActual++;
+			usleep(RETARDO_PLANIFICACION);
 		}
 	}
+	usleep(RETARDO_PLANIFICACION);
 	return nodo;
 }
 
