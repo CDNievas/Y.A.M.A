@@ -86,6 +86,7 @@ int cargarTransformacion(int socketMaster, int nroMaster, t_list* listaDeBloques
 		nuevaAdministracion->nroBloque = copiaAUsar->nroBloque;
 		infoNodo* informacionDeNodo = generarInfoParaMaster(nuevaAdministracion, infoDeBloque);
 		if(informacionDeNodo == NULL){
+			log_error(loggerYAMA, "ERROR - IP Y PUERTO DE NODO");
 			return -1;
 		}
 		pthread_mutex_lock(&semTablaEstados);

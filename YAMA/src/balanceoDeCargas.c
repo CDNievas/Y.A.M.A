@@ -44,7 +44,7 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 			incrementarAvailability(listaDeBalanceo);
 		}
 		//Si llegue al maximo, vuelvo a empezar
-		if(posicionActual >= list_size(listaDeBalanceo)){
+		if(posicionActual+1 >= list_size(listaDeBalanceo)){
 			posicionActual = 0;
 		}
 		nodo = list_get(listaDeBalanceo, posicionActual);
@@ -108,12 +108,14 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		}
 		//chequeo si el que viene es igual al que tuvo el bloque en el recorrido auxiliar
 		if(list_get(listaDeBalanceo, posicion) == nodoAuxiliar){
+			log_info(loggerYAMA, "NODO %s - ELEGIDO PREVIAMENTE", nodoAuxiliar->nombreNodo);
 			incrementarAvailabilityDeNodo(nodoAuxiliar);
 			if(posicion+1 >= list_size(listaDeBalanceo)){
 				posicion = 0;
 			}else{
 				posicion++;
 			}
+			log_info(loggerYAMA, "PASANDO AL SIGUIENTE NODO");
 		}
 		datosBalanceo* nodoAChequear = list_get(listaDeBalanceo, posicion);
 		log_trace(loggerYAMA, "NODO %s - AVAILABILITY %d.", nodoAChequear->nombreNodo, nodoAChequear->availability);
@@ -134,14 +136,18 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				log_debug(loggerYAMA, "NODO ELEGIDO %s - BLOQUE %d.", nodoAuxiliar->nombreNodo, bloqueABuscar->nroBloque);
 				list_add(copiasElegidas, obtenerCopia(nodoAuxiliar, bloqueABuscar));
 				cantidadAsignados++;
-				nodoAChequear->availability--;
+				nodoAuxiliar->availability--;
 				usleep(RETARDO_PLANIFICACION);
 			}else{
 				log_error(loggerYAMA, "ERROR DE ALGORITMO - CIERRA YAMA");
 				exit(-1);
 			}
 		}else{
+			log_warning(loggerYAMA, "NODO %s - SIN AVAILABILITY", nodoAChequear->nombreNodo);
 			nodoAChequear->availability = BASE_AVAILABILITY;
+			log_strace(loggerYAMA, "NODO %s - AVAILABILITY RESTAURADA A %d", nodoAChequear->nombreNodo, BASE_AVAILABILITY);
+			log_info(loggerYAMA, "PASANDO AL SIGUIENTE NODO");
+			posicion++;
 			usleep(RETARDO_PLANIFICACION);
 		}
 	}
