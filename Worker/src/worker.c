@@ -294,6 +294,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -314,6 +315,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(numeroBloque);
 		free(numeroPID);
 		free(pedazoDataBin);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -332,6 +334,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(numeroBloque);
 		free(numeroPID);
 		free(pedazoDataBin);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -351,6 +354,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(numeroBloque);
 		free(numeroPID);
 		free(pedazoDataBin);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -377,6 +381,7 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(numeroBloque);
 		free(numeroPID);
 		free(pedazoDataBin);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -450,6 +455,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
 		free(script);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -466,6 +472,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
 		free(script);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -482,6 +489,7 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
 		free(script);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -537,6 +545,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		}
 		else{
 			log_error(loggerWorker, "La conexion con el otro worker es erronea.\n");
+			sendDeNotificacion(socketMaster,casoError);
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
 			free(NOMBRE_NODO);
@@ -574,6 +583,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -612,6 +622,7 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 		free(command);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
+		close(socketMaster);
 		exit(-1);
 	}
 	else{
@@ -643,12 +654,14 @@ void realizarHandshakeWorker(char* unArchivoTemporal, int unSocketWorker){
 	free(datosAEnviar);
 }
 
-void realizarHandshakeFS(int socketFS){
+void realizarHandshakeFS(int socketFS, int socketAceptado){
 	sendDeNotificacion(socketFS, ES_WORKER);
 	int notificacion = recvDeNotificacion(socketFS);
 
 	if(notificacion != ES_FS){
 		log_error(loggerWorker, "La conexion efectuada no es con FileSystem.\n");
+		sendDeNotificacion(socketAceptado,ERROR_ALMACENADO_FINAL);
+		close(socketAceptado);
 		close(socketFS);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
@@ -692,24 +705,38 @@ void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombre
 	free(datosAEnviar);
 }
 
-void enviarDatosAWorkerDesignado(int socketAceptado,char* nombreArchivoTemporal){
-	FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
-	char* contenidoTemporal = obtenerContenido(nombreArchivoTemporal);
-	uint32_t tamanioTemporal = string_length(contenidoTemporal);
-	void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioTemporal);
-	memcpy(datosAEnviar,&tamanioTemporal,sizeof(uint32_t));
-	memcpy(datosAEnviar+sizeof(uint32_t),contenidoTemporal,tamanioTemporal);
+void enviarDatosAWorkerDesignado(int socketAceptado, int socketEscuchaWorker){
+	if(!fork()){
 
-	sendRemasterizado(socketAceptado,ES_OTRO_WORKER,tamanioTemporal+sizeof(uint32_t),datosAEnviar);
+		close(socketEscuchaWorker);
 
-	free(contenidoTemporal);
-	free(datosAEnviar);
+		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
+		char* nombreArchivoTemporal = recibirString(socketAceptado);
+		FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
+		char* contenidoTemporal = obtenerContenido(nombreArchivoTemporal);
+		uint32_t tamanioTemporal = string_length(contenidoTemporal);
+		void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioTemporal);
+		memcpy(datosAEnviar,&tamanioTemporal,sizeof(uint32_t));
+		memcpy(datosAEnviar+sizeof(uint32_t),contenidoTemporal,tamanioTemporal);
 
-	log_info(loggerWorker, "El archivo temporal reducido del worker fue exitosamente enviado al worker encargado\n");
+		sendRemasterizado(socketAceptado,ES_OTRO_WORKER,tamanioTemporal+sizeof(uint32_t),datosAEnviar);
 
-	if(fclose(archivoTemporal)==EOF){
-		log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
+		free(contenidoTemporal);
+		free(datosAEnviar);
+
+		log_info(loggerWorker, "El archivo temporal reducido del worker fue exitosamente enviado al worker encargado\n");
+
+		if(fclose(archivoTemporal)==EOF){
+			log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
+		}
+
+		close(socketAceptado);
+		exit(0);
 	}
+
+	close(socketAceptado);
+
+	log_info(loggerWorker,"Soy el proceso padre con pid: %d \n ",getpid());
 }
 
 char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError){
@@ -753,6 +780,7 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 		free(NOMBRE_NODO);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
+		close(socketMaster);
 		exit(-1);
 
 	}
@@ -796,99 +824,163 @@ char* obtenerNombreScriptReductor(char* nombreScript,char* archivoApareado){
 	return nombreScriptSinExtension;
 }
 
-void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
-	log_info(loggerWorker, "Se recibio un job del socket de master %d.\n",socketMaster);
+void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 
 	if(!fork())
 	{
 		close(socketEscuchaWorker);
 
-		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
+		log_debug(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
-		int tipoEtapa = recvDeNotificacion(socketMaster);
+		int notificacion = recvDeNotificacion(socketAceptado);
 
-		switch(tipoEtapa){
-		case TRANSFORMACION:{
-			uint32_t nroBloque = recibirUInt(socketMaster);
-			uint32_t bytesOcupados = recibirUInt(socketMaster);
-			char* script = recibirString(socketMaster);
-			char* nombreScript = recibirString(socketMaster);
-			char* pathDestino = recibirString(socketMaster);
+		switch(notificacion){
+		case ES_MASTER:{
+			log_info(loggerWorker, "Se recibio una conexion de master.\n");
+			sendDeNotificacion(socketAceptado, ES_WORKER);
 
-			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
+			int tipoEtapa = recvDeNotificacion(socketAceptado);
 
-			char* nombreScriptRemasterizado = obtenerNombreScriptTransformador(nombreScript,nroBloque);
+			log_info(loggerWorker, "Se recibio un job del socket de master %d.\n",socketAceptado);
 
-			guardarScript(script,nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketMaster);
+			switch(tipoEtapa){
+			case TRANSFORMACION:{
+				uint32_t nroBloque = recibirUInt(socketAceptado);
+				uint32_t bytesOcupados = recibirUInt(socketAceptado);
+				char* script = recibirString(socketAceptado);
+				char* nombreScript = recibirString(socketAceptado);
+				char* pathDestino = recibirString(socketAceptado);
 
-			darPermisosAScripts(nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketMaster);
+				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
 
-			char* bloque = obtenerBloque(nroBloque,bytesOcupados,socketMaster,ERROR_TRANSFORMACION);
+				char* nombreScriptRemasterizado = obtenerNombreScriptTransformador(nombreScript,nroBloque);
 
-			char* command = crearComandoScriptTransformador(nombreScriptRemasterizado,pathDestino,nroBloque,bytesOcupados,socketMaster,bloque);
+				guardarScript(script,nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketAceptado);
 
-			ejecutarPrograma(command,socketMaster,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA,bloque,nombreScriptRemasterizado);
+				darPermisosAScripts(nombreScriptRemasterizado,ERROR_TRANSFORMACION,socketAceptado);
 
-			eliminarArchivo(nombreScriptRemasterizado);
+				char* bloque = obtenerBloque(nroBloque,bytesOcupados,socketAceptado,ERROR_TRANSFORMACION);
 
-			eliminarArchivo(bloque);
+				char* command = crearComandoScriptTransformador(nombreScriptRemasterizado,pathDestino,nroBloque,bytesOcupados,socketAceptado,bloque);
 
-			break;
-		}
-		case REDUCCION_LOCAL:{
-			char* script = recibirString(socketMaster);
-			char* nombreScript = recibirString(socketMaster);
-			char* pathDestino = recibirString(socketMaster);
-			uint32_t cantidadTemporales = recibirUInt(socketMaster);
-			uint32_t posicion;
-			t_list* archivosTemporales = list_create();
-			for(posicion = 0; posicion < cantidadTemporales; posicion++){
-				char* unArchivoTemporal = recibirString(socketMaster);
-				list_add(archivosTemporales,unArchivoTemporal);
+				ejecutarPrograma(command,socketAceptado,ERROR_TRANSFORMACION,TRANSFORMACION_TERMINADA,bloque,nombreScriptRemasterizado);
+
+				eliminarArchivo(nombreScriptRemasterizado);
+
+				eliminarArchivo(bloque);
+
+				break;
 			}
+			case REDUCCION_LOCAL:{
+				char* script = recibirString(socketAceptado);
+				char* nombreScript = recibirString(socketAceptado);
+				char* pathDestino = recibirString(socketAceptado);
+				uint32_t cantidadTemporales = recibirUInt(socketAceptado);
+				uint32_t posicion;
+				t_list* archivosTemporales = list_create();
+				for(posicion = 0; posicion < cantidadTemporales; posicion++){
+					char* unArchivoTemporal = recibirString(socketAceptado);
+					list_add(archivosTemporales,unArchivoTemporal);
+				}
 
-			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
+				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
 
-			char* archivoApareado = aparearArchivos(archivosTemporales,socketMaster,ERROR_REDUCCION_LOCAL);
+				char* archivoApareado = aparearArchivos(archivosTemporales,socketAceptado,ERROR_REDUCCION_LOCAL);
 
-			char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
+				char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
 
-			guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketMaster);
+				guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketAceptado);
 
-			darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketMaster);
+				darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_LOCAL,socketAceptado);
 
-			char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
+				char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
 
-			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA,nombreScriptRemasterizado,archivoApareado);
+				ejecutarPrograma(command,socketAceptado,ERROR_REDUCCION_LOCAL,REDUCCION_LOCAL_TERMINADA,nombreScriptRemasterizado,archivoApareado);
 
-			eliminarArchivo(nombreScriptRemasterizado);
+				eliminarArchivo(nombreScriptRemasterizado);
 
-			eliminarArchivo(archivoApareado);
+				eliminarArchivo(archivoApareado);
 
-			break;
-		}
-		case REDUCCION_GLOBAL:{
-			char* script = recibirString(socketMaster);
-			char* nombreScript = recibirString(socketMaster);
-			char* pathDestino = recibirString(socketMaster);
-			char* temporalEncargado = recibirString(socketMaster);
-			uint32_t cantidadWorkers = recibirUInt(socketMaster);
-			uint32_t posicionWorker;
-			t_list* listaSocketsApareo = list_create();
+				break;
+			}
+			case REDUCCION_GLOBAL:{
+				char* script = recibirString(socketAceptado);
+				char* nombreScript = recibirString(socketAceptado);
+				char* pathDestino = recibirString(socketAceptado);
+				char* temporalEncargado = recibirString(socketAceptado);
+				uint32_t cantidadWorkers = recibirUInt(socketAceptado);
+				uint32_t posicionWorker;
+				t_list* listaSocketsApareo = list_create();
 
-			for(posicionWorker = 0; posicionWorker < (cantidadWorkers-1); posicionWorker++){
-				char* archivoTemporal = recibirString(socketMaster);
-				char* ipWorker = recibirString(socketMaster);
-				uint32_t puertoWorker = recibirUInt(socketMaster);
-				int unSocketWorker = conectarWorker(ipWorker, puertoWorker);
-				if(unSocketWorker!=-1){
-					log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
-					realizarHandshakeWorker(archivoTemporal,unSocketWorker);
-					list_add(listaSocketsApareo, unSocketWorker);
+				for(posicionWorker = 0; posicionWorker < (cantidadWorkers-1); posicionWorker++){
+					char* archivoTemporal = recibirString(socketAceptado);
+					char* ipWorker = recibirString(socketAceptado);
+					uint32_t puertoWorker = recibirUInt(socketAceptado);
+					int unSocketWorker = conectarWorker(ipWorker, puertoWorker);
+					if(unSocketWorker!=-1){
+						log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
+						realizarHandshakeWorker(archivoTemporal,unSocketWorker);
+						list_add(listaSocketsApareo, unSocketWorker);
+					}
+					else{
+						log_error(loggerWorker,"Error al conectarse al worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
+						sendDeNotificacion(socketAceptado,ERROR_REDUCCION_GLOBAL);
+						free(IP_FILESYSTEM);
+						free(RUTA_DATABIN);
+						free(NOMBRE_NODO);
+						log_info(loggerWorker, "¡¡Adios logger!! \n");
+						log_destroy(loggerWorker);
+						exit(-1);
+					}
+					free(ipWorker);
+				}
+
+				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
+
+				char* archivoApareado = realizarApareoGlobal(listaSocketsApareo,temporalEncargado,ERROR_REDUCCION_GLOBAL,socketAceptado);
+
+				char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
+
+				guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketAceptado);
+
+				darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketAceptado);
+
+				char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
+
+				ejecutarPrograma(command,socketAceptado,ERROR_REDUCCION_GLOBAL,REDUCCION_GLOBAL_TERMINADA,nombreScriptRemasterizado,archivoApareado);
+
+				eliminarArchivo(nombreScriptRemasterizado);
+
+				eliminarArchivo(archivoApareado);
+
+				break;
+			}
+			case ALMACENADO_FINAL:{
+				char* nombreArchivoReduccionGlobal = recibirString(socketAceptado);
+				char* nombreResultante = recibirString(socketAceptado);
+				char* rutaResultante = recibirString(socketAceptado);
+				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar el almacenado final");
+
+				int socketFS = conectarWorker(IP_FILESYSTEM, PUERTO_FILESYSTEM);
+				if(socketFS!=-1){
+					realizarHandshakeFS(socketFS,socketAceptado);
+					enviarDatosAFS(socketFS,nombreArchivoReduccionGlobal,nombreResultante,rutaResultante);
+
+					int notificacion = recvDeNotificacion(socketFS);
+
+					if(notificacion==ALMACENADO_FINAL_TERMINADO){
+						sendDeNotificacion(socketAceptado,ALMACENADO_FINAL_TERMINADO);
+					} else{
+						log_error(loggerWorker, "Hubo un error en el FileSystem al almacenar el archivo.\n");
+						sendDeNotificacion(socketAceptado,ERROR_ALMACENADO_FINAL);
+					}
+
+					close(socketFS);
 				}
 				else{
-					log_error(loggerWorker,"Error al conectarse al worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
-					sendDeNotificacion(socketMaster,ERROR_REDUCCION_GLOBAL);
+					log_error(loggerWorker, "No se pudo conectar con el FileSystem.\n");
+					sendDeNotificacion(socketAceptado,ERROR_ALMACENADO_FINAL);
+					close(socketAceptado);
 					free(IP_FILESYSTEM);
 					free(RUTA_DATABIN);
 					free(NOMBRE_NODO);
@@ -896,54 +988,13 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 					log_destroy(loggerWorker);
 					exit(-1);
 				}
-				free(ipWorker);
+
+				break;
 			}
-
-			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
-
-			char* archivoApareado = realizarApareoGlobal(listaSocketsApareo,temporalEncargado,ERROR_REDUCCION_GLOBAL,socketMaster);
-
-			char* nombreScriptRemasterizado = obtenerNombreScriptReductor(nombreScript,archivoApareado);
-
-			guardarScript(script,nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketMaster);
-
-			darPermisosAScripts(nombreScriptRemasterizado,ERROR_REDUCCION_GLOBAL,socketMaster);
-
-			char* command = crearComandoScriptReductor(archivoApareado,nombreScriptRemasterizado,pathDestino);
-
-			ejecutarPrograma(command,socketMaster,ERROR_REDUCCION_GLOBAL,REDUCCION_GLOBAL_TERMINADA,nombreScriptRemasterizado,archivoApareado);
-
-			eliminarArchivo(nombreScriptRemasterizado);
-
-			eliminarArchivo(archivoApareado);
-
-			break;
-		}
-		case ALMACENADO_FINAL:{
-			char* nombreArchivoReduccionGlobal = recibirString(socketMaster);
-			char* nombreResultante = recibirString(socketMaster);
-			char* rutaResultante = recibirString(socketMaster);
-			log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar el almacenado final");
-
-			int socketFS = conectarWorker(IP_FILESYSTEM, PUERTO_FILESYSTEM);
-			if(socketFS!=-1){
-				realizarHandshakeFS(socketFS);
-				enviarDatosAFS(socketFS,nombreArchivoReduccionGlobal,nombreResultante,rutaResultante);
-
-				int notificacion = recvDeNotificacion(socketFS);
-
-				if(notificacion==ALMACENADO_FINAL_TERMINADO){
-					sendDeNotificacion(socketMaster,ALMACENADO_FINAL_TERMINADO);
-				} else{
-					log_error(loggerWorker, "Hubo un error en el FileSystem al almacenar el archivo.\n");
-					sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
-				}
-
-				close(socketFS);
-			}
-			else{
-				log_error(loggerWorker, "No se pudo conectar con el FileSystem.\n");
-				sendDeNotificacion(socketMaster,ERROR_ALMACENADO_FINAL);
+			default:{
+				log_error(loggerWorker, "Error al recibir el tipo de etapa de Master\n");
+				munmap(dataBinBloque,dataBinTamanio);
+				close(socketAceptado);
 				free(IP_FILESYSTEM);
 				free(RUTA_DATABIN);
 				free(NOMBRE_NODO);
@@ -951,11 +1002,40 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 				log_destroy(loggerWorker);
 				exit(-1);
 			}
+			}
 
 			break;
 		}
+		case ES_WORKER:{
+			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
+			char* nombreArchivoTemporal = recibirString(socketAceptado);
+			FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
+			char* contenidoTemporal = obtenerContenido(nombreArchivoTemporal);
+			uint32_t tamanioTemporal = string_length(contenidoTemporal);
+			void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioTemporal);
+			memcpy(datosAEnviar,&tamanioTemporal,sizeof(uint32_t));
+			memcpy(datosAEnviar+sizeof(uint32_t),contenidoTemporal,tamanioTemporal);
+
+			sendRemasterizado(socketAceptado,ES_OTRO_WORKER,tamanioTemporal+sizeof(uint32_t),datosAEnviar);
+
+			free(contenidoTemporal);
+			free(datosAEnviar);
+
+			log_info(loggerWorker, "El archivo temporal reducido del worker fue exitosamente enviado al worker encargado\n");
+
+			if(fclose(archivoTemporal)==EOF){
+				log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
+			}
+
+			break;
+		}
+		case CORTO:{
+			log_debug(loggerWorker,"Corto un master.\n");
+			break;
+		}
 		default:{
-			log_error(loggerWorker, "Error al recibir mensaje de Master\n");
+			log_error(loggerWorker, "La conexion recibida es erronea.\n");
+			close(socketAceptado);
 			munmap(dataBinBloque,dataBinTamanio);
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
@@ -965,14 +1045,12 @@ void crearProcesoHijo(int socketMaster, int socketEscuchaWorker){
 			exit(-1);
 		}
 		}
-
-		close(socketMaster);
+		close(socketAceptado);
 		exit(0);
 	}
 
-	close(socketMaster);
+	close(socketAceptado);
 
-	log_info(loggerWorker,"Soy el proceso padre con pid: %d \n ",getpid());
 }
 
 void laMardita(int signal){
@@ -1002,38 +1080,7 @@ int main(int argc, char **argv) {
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
-		int notificacion = recvDeNotificacion(socketAceptado);
-		switch(notificacion){
-		case ES_MASTER:{
-			log_info(loggerWorker, "Se recibio una conexion de master.\n");
-			sendDeNotificacion(socketAceptado, ES_WORKER);
-			crearProcesoHijo(socketAceptado,socketEscuchaWorker);
-			break;
-		}
-		case ES_WORKER:{
-			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
-			char* nombreArchivoTemporal = recibirString(socketAceptado);
-			enviarDatosAWorkerDesignado(socketAceptado,nombreArchivoTemporal);
-			close(socketAceptado);
-			break;
-		}
-		case CORTO:{
-			log_debug(loggerWorker,"Corto el master.\n");
-			close(socketAceptado);
-			break;
-		}
-		default:{
-			log_error(loggerWorker, "La conexion recibida es erronea.\n");
-			close(socketAceptado);
-			munmap(dataBinBloque,dataBinTamanio);
-			free(IP_FILESYSTEM);
-			free(RUTA_DATABIN);
-			free(NOMBRE_NODO);
-			log_info(loggerWorker, "¡¡Adios logger!! \n");
-			log_destroy(loggerWorker);
-			exit(-1);
-		}
-		}
+		crearProcesoHijo(socketAceptado,socketEscuchaWorker);
 	}
 	close(socketEscuchaWorker);
 	return EXIT_SUCCESS;
