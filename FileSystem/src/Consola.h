@@ -7,6 +7,7 @@
 
 #include "Estructuras.h"
 #include "FuncionesFS.h"
+#include "FuncionesDirectorios.h"
 #include <readline/readline.h>
 
 
