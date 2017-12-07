@@ -20,10 +20,10 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
 	admin->nroBloqueFile = 0;
-	log_info(loggerYAMA, "Se prosigue a hacer la reduccion local en el nodo %s.", admin->nombreNodo);
+	log_strace(loggerYAMA, "REDUCCION LOCAL - CARGANDO... - NODO %s", admin->nombreNodo);
 	//FALTA NRO DE BLOQUE, PQ NO TENGO LA MAS PALIDA IDEA DE QUE TENGO QUE PONER xd
 	admin->nroBloque = 0;
-	log_info(loggerYAMA, "El nombre del temporal de reduccion local para el nodo %s es %s", admin->nombreNodo, admin->nameFile);
+	log_info(loggerYAMA, "REDUCCION LOCAL - NODO %s - NOMBRE TEMPORAL %s", admin->nombreNodo, admin->nameFile);
 	conexionNodo* conexion = generarConexionNodo();
 	conexion->nombreNodo = string_new();
 	string_append(&conexion->nombreNodo, admin->nombreNodo);
@@ -32,17 +32,18 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	if(conexion->ipNodo == NULL && conexion->puertoNodo == -1){
 		return -1;
 	}
-	log_info(loggerYAMA, "Se obtuvieron los datos para llevar a cabo las conexiones con los otros nodos.");
+	log_debug(loggerYAMA, "CONEXIONES - DATOS DE CONEXIONES OBTENIDOS");
 	void* temporalesSerializados = serializarInfoReduccionLocal(conexion, admin->nameFile, listaDelNodo);
-	log_info(loggerYAMA, "Se prosigue a enviar los datos para la reduccion local al Master %d.", nroMaster);
+	log_info(loggerYAMA, "REDUCCION LOCAL - DATOS SERIALIZADOS - MASTER %d", nroMaster);
 	sendRemasterizado(socket, REDUCCION_LOCAL, obtenerTamanioInfoReduccionLocal(conexion, admin->nameFile, listaDelNodo), temporalesSerializados);
+	log_debug(loggerYAMA, "REDUCCION LOCAL - DATOS ENVIADOS - MASTER %d", nroMaster);
 	actualizarWLRLocal(admin->nombreNodo, list_size(listaDelNodo));
-	log_info(loggerYAMA, "Se actualizo el WL del nodo %s.", admin->nombreNodo);
+	log_trace(loggerYAMA, "BALANCEO DE CARGAS - WL ACTUALIZADO - NODO %s", admin->nombreNodo);
 	free(temporalesSerializados);
 	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, admin);
 	pthread_mutex_unlock(&semTablaEstados);
-	log_info(loggerYAMA, "Se agrego la informacion de la reduccion local del master %d en la tabla de estados.", nroMaster);
+	log_info(loggerYAMA, "TABLA DE ESTADOS - REDUCCION LOCAL AGREGADA", nroMaster);
 	liberarConexion(conexion);
 	return 1;
 }
