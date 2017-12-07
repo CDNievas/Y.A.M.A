@@ -124,21 +124,21 @@ void manejadorMaster(void* socketMasterCliente){
 			case ERROR_REDUCCION_LOCAL:
 				fallaReduccionLocal(nroMaster);
 				log_warning(loggerYAMA, "ERROR - REDUCCION LOCAL - MASTER %d", nroMaster);
-				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
+				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
 				log_warning(loggerYAMA, "ERROR - REDUCCION GLOBAL - MASTER %d", nroMaster);
-				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
+				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 			case ERROR_ALMACENAMIENTO_FINAL:
 				log_warning(loggerYAMA, "ERROR - ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
-				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
+				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 			case CORTO:
@@ -147,8 +147,8 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			default:
 				log_error(loggerYAMA, "PETICION ERRONEA - MASTER %", nroMaster);
-				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
+				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
 		}
