@@ -42,7 +42,7 @@
 
 //PROTOCOLO
 
-#define BACKLOG 10
+#define BACKLOG 5
 
 #define ES_FS 5001
 #define ES_WORKER 5002
