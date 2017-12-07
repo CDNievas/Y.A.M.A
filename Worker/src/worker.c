@@ -705,40 +705,6 @@ void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombre
 	free(datosAEnviar);
 }
 
-void enviarDatosAWorkerDesignado(int socketAceptado, int socketEscuchaWorker){
-	if(!fork()){
-
-		close(socketEscuchaWorker);
-
-		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
-		char* nombreArchivoTemporal = recibirString(socketAceptado);
-		FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
-		char* contenidoTemporal = obtenerContenido(nombreArchivoTemporal);
-		uint32_t tamanioTemporal = string_length(contenidoTemporal);
-		void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioTemporal);
-		memcpy(datosAEnviar,&tamanioTemporal,sizeof(uint32_t));
-		memcpy(datosAEnviar+sizeof(uint32_t),contenidoTemporal,tamanioTemporal);
-
-		sendRemasterizado(socketAceptado,ES_OTRO_WORKER,tamanioTemporal+sizeof(uint32_t),datosAEnviar);
-
-		free(contenidoTemporal);
-		free(datosAEnviar);
-
-		log_info(loggerWorker, "El archivo temporal reducido del worker fue exitosamente enviado al worker encargado\n");
-
-		if(fclose(archivoTemporal)==EOF){
-			log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
-		}
-
-		close(socketAceptado);
-		exit(0);
-	}
-
-	close(socketAceptado);
-
-	log_info(loggerWorker,"Soy el proceso padre con pid: %d \n ",getpid());
-}
-
 char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError){
 	char* nombreArchivoApareado = string_new();
 	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
