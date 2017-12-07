@@ -547,11 +547,11 @@ infoReduccionLocal* recibirSolicitudReduccionLocal(int socketYAMA, char* scriptR
 	for(posicion=0;posicion<list_size(listaTemporales);posicion++){
 		infoReduccionLocal* unaInfoTemporalNodo = list_get(listaTemporales,posicion);
 		if(strcmp(unaInfoTemporalNodo->conexion.nombreNodo,nombreNodo)==0){
-			pthread_mutex_unlock(&mutexTemporales);
 			for(i=0;i<cantidadTemporales;i++){
 				char* unArchivoTemporal = recibirString(socketYAMA);
 				list_add(unaInfoTemporalNodo->archivosTemporales,unArchivoTemporal);
 			}
+			pthread_mutex_unlock(&mutexTemporales);
 			free(temporalReduccionLocal);
 			free(ipNodo);
 			free(nombreNodo);
