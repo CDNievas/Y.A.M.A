@@ -1043,6 +1043,7 @@ int main(int argc, char **argv) {
 	eliminarProcesosMuertos();
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
+	mkdir("../../../tmp",0777);
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
