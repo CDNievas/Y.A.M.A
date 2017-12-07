@@ -81,6 +81,8 @@ void cargarBin(){
 			log_error(loggerDatanode,"Error al tratar de abrir el archivo.");
 			exit(-1);
 		}
+		
+		dataBinTamanio = infoDatabin.st_size;
 
 		// Lo mapeo a memoria
 		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, archivo, 0);
