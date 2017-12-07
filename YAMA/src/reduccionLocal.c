@@ -20,7 +20,6 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
 	admin->nroBloqueFile = 0;
-	log_trace(loggerYAMA, "REDUCCION LOCAL - CARGANDO... - NODO %s", admin->nombreNodo);
 	//FALTA NRO DE BLOQUE, PQ NO TENGO LA MAS PALIDA IDEA DE QUE TENGO QUE PONER xd
 	admin->nroBloque = 0;
 	log_info(loggerYAMA, "REDUCCION LOCAL - NODO %s - NOMBRE TEMPORAL %s", admin->nombreNodo, admin->nameFile);
@@ -43,7 +42,7 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	pthread_mutex_lock(&semTablaEstados);
 	list_add(tablaDeEstados, admin);
 	pthread_mutex_unlock(&semTablaEstados);
-	log_info(loggerYAMA, "TABLA DE ESTADOS - REDUCCION LOCAL AGREGADA", nroMaster);
+	log_info(loggerYAMA, "TABLA DE ESTADOS - REDUCCION LOCAL AGREGADA");
 	liberarConexion(conexion);
 	return 1;
 }

@@ -35,7 +35,7 @@ void manejadorMaster(void* socketMasterCliente){
 				t_list* listaDeBloquesDeArchivo = recibirInfoArchivo(); //RECIBO LOS DATOS DE LOS BLOQUES (CADA CHAR* CON SU LONGITUD ANTES)
 				if(listaDeBloquesDeArchivo != NULL && estaFS){
 					log_debug(loggerYAMA, "INFORMACION DE ARCHIVO RECIBIDA");
-					log_trace(loggerYAMA, "PREPARANDO BALANCEO DE CARGAS - ALGORITMO %s", ALGORITMO_BALANCEO);
+					log_trace(loggerYAMA, "TRANSFORMACION - BALANCEO DE CARGAS - ALGORITMO %s", ALGORITMO_BALANCEO);
 					t_list* listaBalanceo = armarDatosBalanceo(listaDeBloquesDeArchivo);
 					t_list* listaDeCopias = balancearTransformacion(listaDeBloquesDeArchivo, listaBalanceo);
 					log_info(loggerYAMA, "REGISTRANDO TRANSFORMACION");
@@ -58,6 +58,7 @@ void manejadorMaster(void* socketMasterCliente){
 				log_debug(loggerYAMA, "TRANSFORMACION TERMINADA - MASTER %d - NODO %s.", nroMaster, nombreNodo);
 				if(sePuedeHacerReduccionLocal(listaDelJob)){
 					log_debug(loggerYAMA, "REDUCCION LOCAL - MASTER %d - NODO %s", nroMaster, nombreNodo);
+					log_info(loggerYAMA, "REGISTRANDO REDUCCION LOCAL");
 					if(cargarReduccionLocal(socketMaster, nroMaster, listaDelJob) != 1){
 						estaFS = false;
 						log_error(loggerYAMA, "ERROR - PROBLEMAS DE CONEXION CON FILESYSTEM");
@@ -72,8 +73,8 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case REPLANIFICAR:
 				nodoFallido = recibirString(socketMaster); //RECIBO NOMBRE DEL NODO A REPLANIFICAR
-				log_warning(loggerYAMA, "El nodo %s fallo en su etapa de transformacion.", nodoFallido);
-				log_trace(loggerYAMA, "Se prosigue a replanificar los bloques del nodo %s.", nodoFallido);
+				log_warning(loggerYAMA, "REPLANIFICACION - FALLO NODO %s", nodoFallido);
+				log_trace(loggerYAMA, "REPLANIFICANDO SUS BLOQUES");
 				cargarFallo(nroMaster, nodoFallido); //MODIFICO LA TABLA DE ESTADOS (PONGO EN FALLO LAS ENTRADAS DEL NODO)
 				solicitarArchivo(nombreArchivoPeticion); // PIDO NUEVAMENTE LOS DATOS A FS
 				t_list* listaDeBloques = recibirInfoArchivo(); // RECIBO LOS DATOS DEL ARCHIVO
