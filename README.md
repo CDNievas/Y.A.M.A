@@ -7,7 +7,7 @@
 
 ### Integrantes:
 - 155.900-0 / Christian Dario Nievas
-- 156.607-6 / Lautaro Gomez Odriozola - RIP
+- 156.607-6 / Lautaro Gomez Odriozola - Rest In Pizza
 - 155.467-0 / Lucas Ezequiel Romano
 - 155.468-2 / Gustavo Ayrton Bitocchi
 - 155.553-4 / German Caceres
