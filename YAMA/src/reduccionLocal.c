@@ -20,7 +20,7 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	administracionYAMA* admin = generarAdministracion(obtenerJobDeNodo(listaDelNodo), nroMaster, REDUCCION_LOCAL, obtenerNombreTemporalLocal());
 	admin->nombreNodo = obtenerNombreNodo(listaDelNodo);
 	admin->nroBloqueFile = 0;
-	log_strace(loggerYAMA, "REDUCCION LOCAL - CARGANDO... - NODO %s", admin->nombreNodo);
+	log_trace(loggerYAMA, "REDUCCION LOCAL - CARGANDO... - NODO %s", admin->nombreNodo);
 	//FALTA NRO DE BLOQUE, PQ NO TENGO LA MAS PALIDA IDEA DE QUE TENGO QUE PONER xd
 	admin->nroBloque = 0;
 	log_info(loggerYAMA, "REDUCCION LOCAL - NODO %s - NOMBRE TEMPORAL %s", admin->nombreNodo, admin->nameFile);
