@@ -86,7 +86,7 @@ char* obtenerNombreTemporalLocal(){
 	numeroDeTemporalLocal++;
 	pthread_mutex_unlock(&semReducLocales);
 
-	string_append(&nombreArchivo, "tempFileLocal");
+	string_append(&nombreArchivo, "../../../tmp/tempFileLocal");
 	char* numero = string_itoa(nro);
 	string_append(&nombreArchivo, numero);
 
@@ -102,7 +102,7 @@ char* obtenerNombreTemporalGlobal(){
 	numeroDeTemporalGlobal++;
 	pthread_mutex_unlock(&semReducGlobales);
 
-	string_append(&nombreArchivo, "tempFileGlobal");
+	string_append(&nombreArchivo, "../../../tmp/tempFileGlobal");
 	char* numero = string_itoa(nro);
 	string_append(&nombreArchivo, numero);
 	free(numero);
@@ -118,7 +118,7 @@ char* obtenerNombreTemporalTransformacion(){
 	pthread_mutex_unlock(&semTransformaciones);
 
 	char* numero = string_itoa(nro);
-	string_append(&nombreArchivo, "tempFileTransformacion");
+	string_append(&nombreArchivo, "../../../tmp/tempFileTransformacion");
 	string_append(&nombreArchivo, numero);
 	free(numero);
 	return nombreArchivo;
