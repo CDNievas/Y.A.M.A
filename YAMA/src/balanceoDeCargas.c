@@ -145,7 +145,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 		}else{
 			log_warning(loggerYAMA, "NODO %s - SIN AVAILABILITY", nodoAChequear->nombreNodo);
 			nodoAChequear->availability = BASE_AVAILABILITY;
-			log_strace(loggerYAMA, "NODO %s - AVAILABILITY RESTAURADA A %d", nodoAChequear->nombreNodo, BASE_AVAILABILITY);
+			log_trace(loggerYAMA, "NODO %s - AVAILABILITY RESTAURADA A %d", nodoAChequear->nombreNodo, BASE_AVAILABILITY);
 			log_info(loggerYAMA, "PASANDO AL SIGUIENTE NODO");
 			posicion++;
 			usleep(RETARDO_PLANIFICACION);
