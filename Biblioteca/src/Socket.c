@@ -9,6 +9,19 @@ void verificarErrorSocket(int unSocket) {
 	}
 }
 
+int sendRemasterizadoWorker(int aQuien, int tipoMsj, int tamanioMsj, void* peticionDeArchivo){
+	void* bufferMensaje = malloc(tamanioMsj+sizeof(tipoMsj));
+	memcpy(bufferMensaje, &tipoMsj, sizeof(int));
+	memcpy(bufferMensaje+sizeof(int), peticionDeArchivo, tamanioMsj);
+	int retorno = 0;
+	if(send(aQuien, bufferMensaje, tamanioMsj+sizeof(int), 0) == -1){
+		perror("Error al enviar mensaje.");
+		retorno = -1;
+	}
+	free(bufferMensaje);
+	return retorno;
+}
+
 void verificarErrorSetsockopt(int unSocket) {
 	int yes = 1;
 	if (setsockopt(unSocket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
