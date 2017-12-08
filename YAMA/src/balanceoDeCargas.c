@@ -39,18 +39,26 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 	datosBalanceo* nodo;
 	uint32_t posicionActual = posicionIncial + 1;
 	while(1){
-		//Si doy toda la vuelta y no encontre el bloque, incremento la availability de todos
-		if(posicionActual == posicionIncial){
-			incrementarAvailability(listaDeBalanceo);
-		}
 		//Si llegue al maximo, vuelvo a empezar
 		if(posicionActual >= list_size(listaDeBalanceo)){
+			usleep(RETARDO_PLANIFICACION);
+			log_trace(loggerYAMA, "LLEGO AL MAXIMO - VUELVO A EMPEZAR");
 			posicionActual = 0;
+		}
+		//Si doy toda la vuelta y no encontre el bloque, incremento la availability de todos
+		if(posicionActual == posicionIncial){
+			usleep(RETARDO_PLANIFICACION);
+			log_trace(loggerYAMA, "NINGUN NODO ELEGIDO - INCREMENTANDO AVAILABILITY");
+			incrementarAvailability(listaDeBalanceo);
 		}
 		nodo = list_get(listaDeBalanceo, posicionActual);
 		if(tieneAvailability(nodo) && tieneBloqueBuscado(nodo, bloque)){
+			usleep(RETARDO_PLANIFICACION);
+			log_debug(loggerYAMA, "BLOQUE ENCONTRADO");
 			break;
 		}else{
+			usleep(RETARDO_PLANIFICACION);
+			log_warning(loggerYAMA, "EL NODO %s NO PUEDE SER ELEGIDO.", nodo->nombreNodo);
 			posicionActual++;
 		}
 	}
