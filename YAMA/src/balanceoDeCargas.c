@@ -52,7 +52,6 @@ datosBalanceo* buscarBloque(t_list* listaDeBalanceo, infoDeFs* bloque, int posic
 			break;
 		}else{
 			posicionActual++;
-			usleep(RETARDO_PLANIFICACION);
 		}
 	}
 	usleep(RETARDO_PLANIFICACION);
