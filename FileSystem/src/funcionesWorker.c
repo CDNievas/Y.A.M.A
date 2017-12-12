@@ -9,7 +9,7 @@
 
 void almacenarArchivoWorker (int socket){
 	log_debug(loggerFileSystem,"Se ha conectado un worker al sistema para el almacenado final.");
-	char* contenidoArchivo =recibirString(socket);
+	char* contenidoArchivo =recibirStringModificado(socket);
 	char* nombreArchivo=recibirString(socket);
 	char* pathDestino=recibirString(socket);
 	uint32_t tipo=recibirUInt(socket);
