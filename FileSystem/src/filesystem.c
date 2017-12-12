@@ -82,7 +82,6 @@ int main(int argc, char **argv) {
 			pthread_mutex_unlock(&mutex);
 
 			if (fd_isset) {
-
 				if (socketCliente == socketListener) {
 
 					// Nueva conexion

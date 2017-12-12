@@ -360,7 +360,7 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
-	meterSocket(nodoCopia->socket);
+	sacarSocket(nodoCopia->socket);
 
 	sendRemasterizado(nodoCopia->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
 
@@ -368,8 +368,8 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 		log_error(loggerFileSystem,"No se pudo almacenar el archivo en el %d", nodoCopia->nombre);
 		return false;
 	}
+	meterSocket(nodoCopia->socket);
 
-	sacarSocket(nodoCopia->socket);
 
 	free(mensaje);
 	list_destroy(listaNodosDisponiblesEnElSistema);
