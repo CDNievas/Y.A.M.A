@@ -14,7 +14,8 @@
 #define SIZEBLOQUE 1048576
 
 // PROTOCOLO
-#define ENV_INFONODO 100
+#define ENV_INFONODO 99
+#define INFONODO 100
 #define ENV_BLOQUE 101
 #define ESC_CORRECTA 102
 #define ESC_INCORRECTA 103
@@ -32,7 +33,7 @@ uint32_t PUERTO_WORKER;
 char* IP_WORKER;
 
 t_log * loggerDatanode; // Logger
-size_t dataBinTamanio; // Guarda el tamaño del Databin
+u_int32_t sizeDataBin; // Guarda el tamaño del Databin
 u_int32_t cantBloques; // Guarda cantidad de bloques
 void * mapArchivo; // Memoria del mmap
 struct stat infoDatabin; // Guarda informacion del archivo

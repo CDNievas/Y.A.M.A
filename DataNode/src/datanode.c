@@ -30,15 +30,17 @@ int main(int argc, char **argv) {
 	socketServerFS = conectarAServer(IP_FILESYSTEM, PUERTO_FILESYSTEM);
 	realizarHandshakeFS(socketServerFS);
 
-	// Envio nombre de nodo y cantidad de bloques al FS
-	enviarInfoNodo(socketServerFS);
-
 	corte = 1;
 	while(corte){
 
 		u_int32_t operacion = recvDeNotificacion(socketServerFS);
 
 		switch (operacion){
+			case ENV_INFONODO:{
+				enviarInfoNodo(socketServerFS);
+				break;
+			}
+
 			case REC_LEER:{
 
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
@@ -114,7 +116,7 @@ int main(int argc, char **argv) {
 
 	// LIBERO MEMORIA
 	close(socketServerFS);
-	munmap(mapArchivo,dataBinTamanio);
+	munmap(mapArchivo,cantBloques);
 	log_destroy(loggerDatanode);
 
 	return EXIT_SUCCESS;
