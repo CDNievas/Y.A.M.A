@@ -34,7 +34,6 @@ int main(int argc, char **argv) {
 	FD_ZERO(&socketClientesAuxiliares);
 	FD_SET(socketListener, &socketClientes);
 
-
 	// Inicio las estructuras tipo listas
 	iniciarEstructuras();
 
@@ -66,17 +65,24 @@ int main(int argc, char **argv) {
 	// Funcion principal
 	while(corte) {
 
+		//LOCK
 		socketClientesAuxiliares = socketClientes;
+		//UNLOCK 2
 
 		if (select(socketMaximo + 1, &socketClientesAuxiliares, NULL, NULL,NULL) == -1) {
 			log_error(loggerFileSystem, "No se pudo llevar a cabo el select");
 			liberarMemoria();
 			exit(-1);
 		}
+		//UNLOCK 2
 
 		for (socketCliente = 0; socketCliente <= socketMaximo; socketCliente++) {
 
-			if (FD_ISSET(socketCliente, &socketClientesAuxiliares)) {
+			//LOCK
+			bool fd_isset = FD_ISSET(socketCliente, &socketClientesAuxiliares);
+			//UNLOCK
+
+			if (fd_isset) {
 
 				if (socketCliente == socketListener) {
 
