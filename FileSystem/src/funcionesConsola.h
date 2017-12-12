@@ -19,5 +19,6 @@ int crearDirectorio(char *);
 bool almacenarArchivo(char*, char*, char*);
 int borrarDirectorio(char *);
 uint32_t sacarTamanioArchivo (FILE*);
+int renombrarPath(char *, char *);
 
 #endif /* FUNCIONESCONSOLA_H_ */
