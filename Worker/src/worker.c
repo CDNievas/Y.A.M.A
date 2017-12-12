@@ -535,7 +535,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 
 		if(notificacion==ES_OTRO_WORKER){
 			log_info(loggerWorker, "Se conecto con otro worker.\n");
-			char* contenidoTemporal = recibirString(unSocketWorker);
+			char* contenidoTemporal = recibirStringModificado(unSocketWorker);
 			char* nombreTemporal = obtenerNombreTemporal(posicion,numeroPID);
 			guardarScript(contenidoTemporal,nombreTemporal,ERROR_REDUCCION_GLOBAL,socketMaster);
 			string_append(&comandoOrdenacionArchivos," ");
