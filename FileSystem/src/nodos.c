@@ -257,20 +257,172 @@ void registrarNodo(int socket){
 
 }
 
-void simulaBalanceo(int cantBloques){
 
-	int i=0;
-	while(i < cantBloques){
 
-		char * bloqueA = string_from_format("A%d",i);
-		char * bloqueB = string_from_format("B%d",i);
+bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBloqueArchivo* copiasBloque){
 
-		i++;
+	//ARMO EL MENSAJE QUE LE VOY A ENVIAR A DATANODE
+	void* mensaje=malloc(sizeof(uint32_t)*3+tamanioContenido);
+	uint32_t posicionActualDelMensaje=0;
 
+	//FILTRO LA LISTA GLOBAL DE NODOS POR SI ESTAN DISPONIBLES Y SI TIENEN ESPACIO LIBRE
+	bool estaDisponible(strNodo* nodoSeleccionado){
+		return (nodoSeleccionado->conectado==true && nodoSeleccionado->porcentajeOscioso>0);
 	}
-	// Copia bloque
-	cantBloques = cantBloques * 2;
+	t_list* listaNodosDisponiblesEnElSistema=list_filter(tablaNodos->nodos,(void*)estaDisponible);
+
+	//ORDENO LA LISTA FILTRADA POR EL POCENTAJE QUE TENGA OCIOSO
+	bool ordenarPorPorcentajeOcioso(strNodo* nodoSeleccionado1, strNodo* nodoSeleccionado2){
+		return(nodoSeleccionado1->porcentajeOscioso > nodoSeleccionado2->porcentajeOscioso);
+	}
+	list_sort(listaNodosDisponiblesEnElSistema,(void*)ordenarPorPorcentajeOcioso);
+
+	//ELiJO EL NODO QUE TENGA EL ORIGINAL
+	strNodo* nodoOriginal=list_get(listaNodosDisponiblesEnElSistema,0);
+
+	if(nodoOriginal==NULL){
+		log_error(loggerFileSystem,"No se pudo asignar un nodo para el bloque original del archivo. No hay nodos suficientes.");
+		exit (-1);
+	}
+		//MODIFICO LOS DATOS DEL NODO
+	nodoOriginal->tamanioLibre--;
+	nodoOriginal->porcentajeOscioso=(nodoOriginal->tamanioLibre*100)/nodoOriginal->tamanioTotal;
+	//DISMINUYO LA CANTIDAD DE BLOQUES LIBRES DEL FS
+	tablaNodos->tamanioFSLibre--;
+
+		//ASIGNO UN BLOQUE LIBRE AL NODO
+	uint32_t bloqueAsignado=asignarBloqueNodo(nodoOriginal);
+
+	//ENVIO EL ORIGINAL
+	copiasBloque->copia1=malloc(sizeof(strCopiaArchivo));
+	copiasBloque->copia1->nroBloque=bloqueAsignado;
+	copiasBloque->copia1->nodo=string_new();
+
+	string_append(&copiasBloque->copia1->nodo,nodoOriginal->nombre);
+
+	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,&tamanioContenido,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,&tamanioContenido,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
+	posicionActualDelMensaje+=tamanioContenido;
+
+	sendRemasterizado(nodoOriginal->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
+
+	pthread_mutex_lock(&mutexEnvioANodos);
+
+	if(envioDeInformacionADataNode==false){
+		log_error(loggerFileSystem,"No se pudo almacenar el archivo en el %d", nodoOriginal->nombre);
+		return false;
+	}
+
+	//ELIJO EL NODO QUE TIENE LA COPIA
+	strNodo* nodoCopia=list_get(listaNodosDisponiblesEnElSistema,1);
+	if(nodoCopia==NULL){
+		nodoCopia=list_get(listaNodosDisponiblesEnElSistema,0);
+		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede a guardar la copia en el mismo lugar que el original.");
+	}
+		//MODIFICO LOS DATOS DEL NODO
+	nodoCopia->tamanioLibre--;
+	nodoCopia->porcentajeOscioso=(nodoCopia->tamanioLibre*100)/nodoCopia->tamanioTotal;
+	//DISMINUYO LA CANTIDAD DE BLOQUES LIBRES DEL FS
+	tablaNodos->tamanioFSLibre--;
+
+	bloqueAsignado=asignarBloqueNodo(nodoCopia);
+
+	//ENVIO LA COPIA
+	mensaje=realloc(mensaje,sizeof(uint32_t)*3+tamanioContenido);
+
+	posicionActualDelMensaje=0;
+
+	copiasBloque->copia2=malloc(sizeof(strCopiaArchivo));
+	copiasBloque->copia2->nroBloque=bloqueAsignado;
+	copiasBloque->copia2->nodo=string_new();
+
+	string_append(&copiasBloque->copia2->nodo,nodoCopia->nombre);
+
+	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,&tamanioContenido,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,&tamanioContenido,sizeof(uint32_t));
+	posicionActualDelMensaje+=sizeof(uint32_t);
+
+	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
+	posicionActualDelMensaje+=tamanioContenido;
+
+	sendRemasterizado(nodoCopia->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
+
+	pthread_mutex_lock(&mutexEnvioANodos);
+
+	if(envioDeInformacionADataNode==false){
+		log_error(loggerFileSystem,"No se pudo almacenar el archivo en el %d", nodoCopia->nombre);
+		return false;
+	}
+	free(mensaje);
+	return true;
 
 
+}
 
+
+void enviarDatosANodo(t_list* posicionesBloquesAGuardar,FILE* archivoALeer,strArchivo* entradaArchivoAGuardar){
+	uint32_t bloqueActual=0;
+
+	void enviarInfoNodoPorPosicion(uint32_t posicion){
+		//GENERO LAS INSTANCIAS DE LOS BLOQUES DEL ARCHIVO
+		strBloqueArchivo* copiasBloque=malloc(sizeof(strBloqueArchivo));
+		copiasBloque->nro=bloqueActual;
+
+		if(bloqueActual==0){
+			void* contenidoAEnviar=malloc(posicion);
+			fread(contenidoAEnviar,posicion,1,archivoALeer);
+			//ASIGNO LOS BYTES QUE OCUPA EL BLOQUE
+			copiasBloque->bytes=posicion;
+			//ASIGNO LOS NODOS A DONDO QUIERO GUARDAR EL CONTENIDO
+			if(asignarEnviarANodo(contenidoAEnviar,posicion,copiasBloque)==false){
+				return;
+			}
+			free(contenidoAEnviar);
+		}else{
+			uint32_t posicionAnterior = (uint32_t) list_get(posicionesBloquesAGuardar,bloqueActual-1);
+			//DETERMINO LA CANTIDAD EXACTA QUE TENGO QUE GUARDAR DEL BLOQUE
+			uint32_t tamanioALeer=posicion-posicionAnterior;
+			void* contenidoAEnviar=malloc(tamanioALeer);
+			fread(contenidoAEnviar,tamanioALeer,1,archivoALeer);
+			//ASIGNO LOS BYTES QUE OCUPA EL BLOQUE
+			copiasBloque->bytes=tamanioALeer;
+			//ASIGNO LOS NODOS DONDE QUIERO GUARDAR EL CONTENIDO
+			if(asignarEnviarANodo(contenidoAEnviar,tamanioALeer,copiasBloque)==false){
+				return;
+			}
+			free(contenidoAEnviar);
+		}
+		bloqueActual++;
+		list_add(entradaArchivoAGuardar->bloques,copiasBloque);
+	}
+	list_iterate(posicionesBloquesAGuardar,(void*) enviarInfoNodoPorPosicion);
+}
+
+
+int asignarBloqueNodo(strNodo* nodoOriginal){
+	int posicionEnELBitarray=0;
+	bool esElNodo(strBitmaps* BitmapNodo){
+		return (strcmp(nodoOriginal->nombre,BitmapNodo->nodo)==0);
+	}
+	strBitmaps* BitarrayNodo = list_find(listaBitmaps,(void*)esElNodo);
+	for(;posicionEnELBitarray < nodoOriginal->tamanioTotal; posicionEnELBitarray++){
+		if(!bitarray_test_bit(BitarrayNodo->bitarray,posicionEnELBitarray)){
+			bitarray_set_bit(BitarrayNodo->bitarray,posicionEnELBitarray);
+			return posicionEnELBitarray;
+		}
+	}
+	return 0;//TENGO QUE CACHEAR ESTE ERROR?
 }

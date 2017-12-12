@@ -7,6 +7,7 @@
 
 #include "estructuras.h"
 #include "persistencia.h"
+#include "funcionesPath.h"
 
 #ifndef FUNCIONESCONSOLA_H_
 #define FUNCIONESCONSOLA_H_
