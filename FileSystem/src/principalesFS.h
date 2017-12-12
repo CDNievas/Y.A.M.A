@@ -32,5 +32,7 @@ int iniciarServidor(int);
 void atenderConexion();
 void atenderNotificacion();
 void verificarSiNodo();
+void meterSocket(int);
+void sacarSocket(int);
 
 #endif /* PRINCIPALESFS_H_ */

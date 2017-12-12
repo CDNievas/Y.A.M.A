@@ -312,14 +312,16 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
+	sacarSocket(nodoOriginal->socket);
+
 	sendRemasterizado(nodoOriginal->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
 
-	pthread_mutex_lock(&mutexEnvioANodos);
-
-	if(envioDeInformacionADataNode==false){
+	if(recvDeNotificacion(nodoOriginal->socket)==ESC_INCORRECTA){
 		log_error(loggerFileSystem,"No se pudo almacenar el archivo en el %d", nodoOriginal->nombre);
 		return false;
 	}
+
+	meterSocket(nodoOriginal->socket);
 
 	//ELIJO EL NODO QUE TIENE LA COPIA
 	strNodo* nodoCopia=list_get(listaNodosDisponiblesEnElSistema,1);
@@ -358,14 +360,17 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
+	meterSocket(nodoCopia->socket);
+
 	sendRemasterizado(nodoCopia->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
 
-	pthread_mutex_lock(&mutexEnvioANodos);
-
-	if(envioDeInformacionADataNode==false){
+	if(recvDeNotificacion(nodoCopia->socket)==ESC_INCORRECTA){
 		log_error(loggerFileSystem,"No se pudo almacenar el archivo en el %d", nodoCopia->nombre);
 		return false;
 	}
+
+	sacarSocket(nodoCopia->socket);
+
 	free(mensaje);
 	list_destroy(listaNodosDisponiblesEnElSistema);
 	return true;

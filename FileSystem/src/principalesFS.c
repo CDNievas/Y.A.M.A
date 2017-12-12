@@ -92,7 +92,6 @@ void handlerSIGINT(){
 
 void liberarMemoria(){
 //	free(commandChar);
-	pthread_mutex_unlock(&mutexEnvioANodos);
 	pthread_cancel(hiloConsolaFS);
 //	liberarListaRegistroArchivos();
 //	liberarlistaConexionNodos();
@@ -101,7 +100,6 @@ void liberarMemoria(){
 //	liberarTablaArchivos();
 //	liberarBitmaps();
 //	list_destroy_and_destroy_elements(socketsDatanode,(void *)free);
-	pthread_mutex_destroy(&mutexEnvioANodos);
 	//log_destroy(loggerFileSystem);
 }
 
@@ -310,11 +308,23 @@ int iniciarServidor(int puerto){
 	return socketListener;
 }
 
+void sacarSocket(int socket){
+	pthread_mutex_lock(&mutex);
+	FD_CLR(socket,&socketClientes);
+	FD_CLR(socket,&socketClientesAuxiliares);
+	pthread_mutex_unlock(&mutex);
+}
+
+void meterSocket(int socket){
+	pthread_mutex_lock(&mutex);
+	FD_SET(socket,&socketClientes);
+	pthread_mutex_unlock(&mutex);
+}
+
 void iniciarEstructuras(){
 
 	//Inicio mutex
-	pthread_mutex_init(&mutexEnvioANodos,NULL);
-	pthread_mutex_lock(&mutexEnvioANodos);
+    pthread_mutex_init(&mutex, NULL);
 
 	// Sockets antes de formatear
 	socketsDatanode = list_create();
@@ -347,6 +357,7 @@ void iniciarEstructuras(){
 	seDesconectoUnNodo=false;
 
 	envioDeInformacionADataNode=true;
+
 }
 
 void atenderConexion(int socketNuevo){
@@ -391,15 +402,13 @@ void atenderNotificacion(int socket){
 			sendDeNotificacion( socket,PEDIR_INFONODO);
 			break;
 
-		case ESC_INCORRECTA:
+/*		case ESC_INCORRECTA:
 			envioDeInformacionADataNode=false;
-			pthread_mutex_unlock(&mutexEnvioANodos);
 			break;
 		case ESC_CORRECTA:
 			envioDeInformacionADataNode=true;
-			pthread_mutex_unlock(&mutexEnvioANodos);
 			break;
-
+*/
 		case ES_WORKER:
 			log_info(loggerFileSystem,"Se ha conectado un Worker");
 			if(!estadoSeguro){
@@ -446,19 +455,15 @@ void atenderNotificacion(int socket){
 			log_warning(loggerFileSystem, "El socket %d corto la conexion", socket);
 			verificarSiNodo(socket);
 			//verificarSiNodoCliente(socket);
-
-			//LOCK
-			FD_CLR(socket, &socketClientes);
-			//UNLOCK
-
+			sacarSocket(socket);
+			//FD_CLR(socket, &socketClientes);
 			close(socket);
 			break;
 
 		default:
 			log_warning(loggerFileSystem, "La conexion recibida es erronea");
-			//LOCK
-			FD_CLR(socket, &socketClientes);
-			//UNLOCK
+			sacarSocket(socket);
+			//FD_CLR(socket, &socketClientes);
 			close(socket);
 			break;
 

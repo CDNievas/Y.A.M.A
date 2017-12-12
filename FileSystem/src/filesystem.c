@@ -65,22 +65,21 @@ int main(int argc, char **argv) {
 	// Funcion principal
 	while(corte) {
 
-		//LOCK
+		pthread_mutex_lock(&mutex);
 		socketClientesAuxiliares = socketClientes;
-		//UNLOCK 2
+		pthread_mutex_unlock(&mutex);
 
 		if (select(socketMaximo + 1, &socketClientesAuxiliares, NULL, NULL,NULL) == -1) {
 			log_error(loggerFileSystem, "No se pudo llevar a cabo el select");
 			liberarMemoria();
 			exit(-1);
 		}
-		//UNLOCK 2
 
 		for (socketCliente = 0; socketCliente <= socketMaximo; socketCliente++) {
 
-			//LOCK
+			pthread_mutex_lock(&mutex);
 			bool fd_isset = FD_ISSET(socketCliente, &socketClientesAuxiliares);
-			//UNLOCK
+			pthread_mutex_unlock(&mutex);
 
 			if (fd_isset) {
 
