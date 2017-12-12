@@ -52,6 +52,14 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 		nodoElegido->conectado=true;
 		nodoElegido->socket=socket;
 
+		strConexiones* conexionesNodo=malloc(sizeof(strConexiones));
+		conexionesNodo->nodo=string_new();
+		conexionesNodo->ip=string_new();
+		string_append(&conexionesNodo->nodo,nombreNodo);
+		string_append(&conexionesNodo->ip,ip);
+		conexionesNodo->puerto=puerto;
+		list_add(listaConexionesNodos,conexionesNodo);
+
 
 		bool todosNodosDisponibles(strNodo* entradaNodo){
 			return(entradaNodo->conectado==true);
