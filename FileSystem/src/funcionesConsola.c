@@ -267,3 +267,50 @@ int borrarDirectorio(char * pathDir){
 
 }
 
+int renombrarPath(char * path, char * nuevoNombre){
+
+	char ** pathDesc = string_split(path,"/");
+
+	int idPadreArchivo = obtenerIdPadreArchivo(pathDesc,0,-1);
+	char * viejoNombre = obtenerNombreUltimoPath(pathDesc);
+
+	if(!existeArchivoPath(viejoNombre,idPadreArchivo)){
+
+		int idPadreDirectorio = obtenerIdPadreDirectorio(pathDesc,0,-1);
+
+		if(!existeDirectorioPath(viejoNombre,idPadreDirectorio)){
+
+			return -1;
+
+		} else {
+
+			bool yaExisteDir(strDirectorio * directorio){
+				return(directorio->padre==idPadreDirectorio && strcmp(directorio->nombre,nuevoNombre)==0);
+			}
+
+			if(list_any_satisfy(tablaDirectorios, (void *) yaExisteDir)){
+				return -2;
+			} else {
+
+				bool buscaDirViejo(strDirectorio * directorio){
+					return(directorio->padre==idPadreDirectorio && strcmp(directorio->nombre,viejoNombre)==0);
+				}
+
+				strDirectorio * dir = list_find(tablaDirectorios,(void *) buscaDirViejo);
+
+				dir->nombre = string_new();
+				string_append(&dir->nombre,nuevoNombre);
+
+				return 0;
+
+			}
+
+		}
+
+	} else {
+
+		return 0;
+
+	}
+
+}
