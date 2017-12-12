@@ -29,9 +29,7 @@ char* obtenerNombreUltimoPath(char** rutaDesmembrada){//FIJAR SI TENGO QUE LIBER
 bool existePath(char * path){
 
 	char ** pathDesc = string_split(path,"/");
-	bool existe = recorrerPath(pathDesc,0,-1);
-	liberarRutaDesarmada(pathDesc);
-	return existe;
+	return recorrerPath(pathDesc,0,-1);
 
 }
 
@@ -194,6 +192,38 @@ int obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
 				return directorio->padre;
 			} else {
 				return obtenerIdPadreDirectorio(pathDesc,indice+1,directorio->index);
+			}
+		} else {
+			// Ruta incorrecta
+			return -2;
+		}
+	}
+}
+
+
+
+int obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
+
+	char * pathAct = pathDesc[indice];
+	char * pathProx = pathDesc[indice+1];
+
+	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+
+	if (archivo != NULL){
+		if(pathProx == NULL){
+			// Ruta
+			return archivo->directorioPadre;
+		} else {
+			// Ruta incorrecta
+			return -2;
+		}
+	} else {
+		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		if (directorio != NULL){
+			if(pathProx == NULL){
+				return -2;
+			} else {
+				return obtenerIdPadreArchivo(pathDesc,indice+1,directorio->index);
 			}
 		} else {
 			// Ruta incorrecta
