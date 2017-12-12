@@ -9,6 +9,7 @@
 #define CONSOLA_H_
 
 #include "estructuras.h"
+#include "funcionesConsola.h"
 
 typedef struct {
 	int flag;
