@@ -19,5 +19,6 @@ int directorioInexistente(char **, int , int );
 bool existePathLocal(char *);
 int obtenerIdDirectorio(char **,int, int);
 int obtenerIdPadreDirectorio(char **,int, int);
+int obtenerIdPadreArchivo(char **,int, int);
 
 #endif /* FUNCIONESPATH_H_ */
