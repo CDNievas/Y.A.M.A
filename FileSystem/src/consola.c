@@ -235,10 +235,10 @@ void ejecutarComando(uint32_t nro, char ** param){
 								almacenarArchivo(param[1], param[2], param[3]);
 
 							}
-
+							free(nombreArchivo);
 							free(path);
 							free(pathDesc);
-
+							//liberarRutaDesarmada(pathDesc);
 						}
 
 					}
@@ -372,5 +372,5 @@ void analizarComando(char* cmd){
 	}
 
 	ejecutarComando(commandNumber,disarmedCmd);
-
+	liberarRutaDesarmada(disarmedCmd);
 }

@@ -151,7 +151,7 @@ void enviarDatoArchivo(int socket){
 
 	free(archivoABuscar);
 	free(nombreArchivo);
-
+	liberarRutaDesarmada(ruta);
 }
 
 //ENVIAR DATOS DE CONEXION DE UN NODO
