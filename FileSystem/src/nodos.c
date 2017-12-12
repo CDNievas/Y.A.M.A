@@ -197,9 +197,10 @@ void registrarNodo(int socket){
 				log_error(loggerFileSystem,"No se puede registrar el Datanode al sistema, ya ha sido formateado");
 			}
 		}
-		free(nombreNodo);
-		free(ip);
+
 	}
+	free(nombreNodo);
+	free(ip);
 
 	/*bool buscaEnlista(strNodo * unNodo){
 		return(strcmp(unNodo->nombre,nombreNodo)==0);

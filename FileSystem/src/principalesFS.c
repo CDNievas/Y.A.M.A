@@ -86,24 +86,23 @@ char * obtenerPathBitmap(char * nombreNodo){
 
 
 void handlerSIGINT(){
-	printf("Me han matao");
 	log_warning(loggerFileSystem, "SIGINT enviado, cerrando el proceso");
 	liberarMemoria();
 }
 
 void liberarMemoria(){
-	free(commandChar);
+//	free(commandChar);
 	pthread_mutex_unlock(&mutexEnvioANodos);
 	pthread_cancel(hiloConsolaFS);
-	liberarListaRegistroArchivos();
-	liberarlistaConexionNodos();
-	liberarTablaDirectorios();
-	liberarTablaNodos();
-	liberarTablaArchivos();
-	liberarBitmaps();
-	list_destroy_and_destroy_elements(socketsDatanode,(void *)free);
+//	liberarListaRegistroArchivos();
+//	liberarlistaConexionNodos();
+//	liberarTablaDirectorios();
+//	liberarTablaNodos();
+//	liberarTablaArchivos();
+//	liberarBitmaps();
+//	list_destroy_and_destroy_elements(socketsDatanode,(void *)free);
 	pthread_mutex_destroy(&mutexEnvioANodos);
-	log_destroy(loggerFileSystem);
+	//log_destroy(loggerFileSystem);
 }
 
 void liberarListaRegistroArchivos(){
@@ -164,17 +163,17 @@ void liberarTablaNodos(){
 		list_destroy_and_destroy_elements(tablaNodos->nodos, (void *) destruirElemento);
 	}
 
-	void destruirNombres(char * nombreNodo){
-		free(nombreNodo);
-	}
-
-	if(list_is_empty(tablaNodos->listaNodos)){
-		list_destroy(tablaNodos->listaNodos);
-	} else {
-		list_destroy_and_destroy_elements(tablaNodos->listaNodos, (void *) destruirNombres);
-	}
-
-	free(tablaNodos);
+//	void destruirNombres(char * nombreNodo){
+//		free(nombreNodo);
+//	}
+//
+//	if(list_is_empty(tablaNodos->listaNodos)){
+//		list_destroy(tablaNodos->listaNodos);
+//	} else {
+//		list_destroy_and_destroy_elements(tablaNodos->listaNodos, (void *) destruirNombres);
+//	}
+	list_destroy(tablaNodos->listaNodos);
+	//free(tablaNodos);
 
 }
 

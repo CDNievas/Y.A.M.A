@@ -24,6 +24,7 @@ void cargarEstructuraDirectorio(t_config* archivoDirectorio){
 		list_add(tablaDirectorios,entradaDirectorio);
 		posicion++;
 		free(etiqueta);
+		liberarRutaDesarmada(arrayDirectorioPosicion);
 	}
 }
 
@@ -100,9 +101,7 @@ void cargarEstructuraNodos(t_config* archivoNodos){
 		free(etiqueta1);
 		free(etiqueta2);
 		free(etiqueta3);
-		free(nombreDelNodo);//PUEDO LIBERAR ESTO??
 	}
-
 }
 
 
@@ -170,7 +169,7 @@ void cargarTablaArchivo(char* pathArchivo){
 		copiaBloque->copia1->nroBloque=atoi(copia0[1]);
 
 		free(etiqueta1);
-		//liberarComandoDesarmado(copia0);
+		liberarRutaDesarmada(copia0);
 
 		char* etiqueta2=string_from_format("BLOQUE%dCOPIA1",contBloque);
 		char** copia1=config_get_array_value(archivo,etiqueta2);//TENGO QUE LIBERARLO
@@ -179,7 +178,7 @@ void cargarTablaArchivo(char* pathArchivo){
 		copiaBloque->copia2->nroBloque=atoi(copia1[1]);
 
 		free(etiqueta2);
-		//liberarComandoDesarmado(copia1);
+		liberarRutaDesarmada(copia1);
 
 		char* etiqueta3=string_from_format("BLOQUE%dBYTES",contBloque);
 		copiaBloque->bytes=config_get_int_value(archivo,etiqueta3);
@@ -191,6 +190,8 @@ void cargarTablaArchivo(char* pathArchivo){
 	}
 	list_add(tablaArchivos,entradaArchivo);
 	free(nombreArchivo);
+//	config_destroy(archivo);
+	liberarRutaDesarmada(rutaDesmembrada);
 }
 
 void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
@@ -219,8 +220,6 @@ bool presentaUnEstadoAnterior(){
 	string_append(&pathNodo,PATH_METADATA);
 	string_append(&pathNodo,"/nodos.bin");
 	t_config* archivoNodos2=config_create(pathNodo);
-	free(pathNodo);
-
 
 	char* pathRegistroArchivos=string_new();
 	string_append(&pathRegistroArchivos,PATH_METADATA);
@@ -235,12 +234,23 @@ bool presentaUnEstadoAnterior(){
 		cargarEstructuraArchivos(archivoRegistroArchivos);
 
 		config_destroy(archivoDirectorios);
-		//config_destroy(archivoNodos2);
+		config_destroy(archivoNodos2);
 		config_destroy(archivoRegistroArchivos);
 		estadoAnterior=true;
 		sistemaFormateado=true;
+		free(pathNodo);
 		return true;
 	}else{
+		if(archivoDirectorios != NULL){
+			config_destroy(archivoDirectorios);
+		}
+		if(archivoNodos2 != NULL){
+			config_destroy(archivoNodos2);
+		}
+		if(archivoRegistroArchivos != NULL){
+			config_destroy(archivoRegistroArchivos);
+		}
+		free(pathNodo);
 		return false;
 	}
 }
