@@ -29,7 +29,9 @@ char* obtenerNombreUltimoPath(char** rutaDesmembrada){//FIJAR SI TENGO QUE LIBER
 bool existePath(char * path){
 
 	char ** pathDesc = string_split(path,"/");
-	return recorrerPath(pathDesc,0,-1);
+	bool existe = recorrerPath(pathDesc,0,-1);
+	liberarRutaDesarmada(pathDesc);
+	return existe;
 
 }
 

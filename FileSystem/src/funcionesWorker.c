@@ -48,7 +48,7 @@ void almacenarArchivoWorker (int socket){
 		}
 	}
 
-	if(tipo==21){
+	if(tipo==22){
 		if(almacenarArchivo(nombreArchivo,pathDestino,"T")==true){
 			sendDeNotificacion(socket,ALMACENADO_FINAL_TERMINADO);
 			log_trace(loggerFileSystem,"El almacenado final ha terminado correctamente.");

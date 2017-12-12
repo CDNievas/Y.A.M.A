@@ -367,6 +367,7 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 		return false;
 	}
 	free(mensaje);
+	list_destroy(listaNodosDisponiblesEnElSistema);
 	return true;
 
 
