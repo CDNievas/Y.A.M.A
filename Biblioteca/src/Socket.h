@@ -22,6 +22,7 @@ void sendDeNotificacion(int , int );
 void sendRemasterizado(int, int, int, void*);
 uint32_t recibirUInt(int);
 char* recibirString(int);
+char* recibirStringModificado(int);
 int calcularSocketMaximo(int, int);
 void destruirPaquete(paquete*);
 int calcularTamanioTotalPaquete(int);
