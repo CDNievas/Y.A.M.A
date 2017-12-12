@@ -82,8 +82,6 @@ void ejecutarComando(uint32_t nro, char ** param){
 							log_info(loggerFileSystem, "Se ha borrado el directorio correctamente");
 						}
 
-					} else {
-						//borrarArchivo(param[1]);
 					}
 
 				}
@@ -93,7 +91,52 @@ void ejecutarComando(uint32_t nro, char ** param){
 		}
 		break;
 
+		//RENAME
+		case 3:{
 
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+
+				if(!chequearParamCom(param,3,3)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+
+					if(!contieneYamafs(param[1])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+
+							int cod = renombrarPath(param[1],param[2]);
+
+							if(cod == -1){
+								printf("No existe un path con ese nombre \n");
+								log_warning(loggerFileSystem, "No existe un pah con ese nombre");
+							} else if(cod == -2){
+								printf("Ya existe un path con ese nombre \n");
+								log_warning(loggerFileSystem, "Ya existe un path con ese nombre");
+							} else {
+								printf("Se ha cambiado el nombre correctamente \n");
+								log_info(loggerFileSystem, "Se ha cambiado el nombre correctamente");
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+		break;
 
 		//MKDIR
 		case 6:{
