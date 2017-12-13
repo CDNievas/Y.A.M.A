@@ -231,9 +231,11 @@ void ejecutarComando(uint32_t nro, char ** param){
 								log_warning(loggerFileSystem,"Ya existe un archivo con ese nombre");
 
 							} else {
-
+								
+								pthread_mutex_lock(&mutex);
 								almacenarArchivo(param[1], param[2], param[3]);
-
+								pthread_mutex_unlock(&mutex);
+								
 							}
 							free(nombreArchivo);
 							free(path);
