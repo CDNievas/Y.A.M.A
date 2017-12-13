@@ -566,10 +566,13 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 
 			if(retornoSend==-1){
 				log_error(loggerMaster,"Falla al realizar send con Worker.\n");
+				close(socketWorker);
 				replanificarTransformacion(datoNodoTransformacion,tamanioNombreNodo);
 			}
 			else{
 				int resultadoTransformacion = recvDeNotificacionMaster(socketWorker);
+
+				close(socketWorker);
 
 				calcularMaximoParalelos();
 
@@ -614,10 +617,9 @@ void manejadorTransformacionWorker(void* unDatoTransformacion){
 		}
 		else{
 			log_error(loggerMaster,"Falla al realizar handshake con Worker.\n");
+			close(socketWorker);
 			replanificarTransformacion(datoNodoTransformacion,tamanioNombreNodo);
 		}
-
-		close(socketWorker);
 	}
 	else{
 		log_error(loggerMaster,"No se pudo conectar con el WORKER. IP: %s - PUERTO: %d \n",datoNodoTransformacion->conexion.ipNodo, datoNodoTransformacion->conexion.puertoNodo);
@@ -838,13 +840,13 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 			int retornoSend = sendRemasterizadoWorker(socketWorker,REDUCCION_LOCAL,tamanioAEnviar,datosAEnviar);
 
 			if(retornoSend==-1){
+				close(socketWorker);
 				eliminarDatosTemporales(infoNodoReduccion);
 
 				cantidadFallos++;
 
 				free(datosAEnviar);
 				free(codigoScript);
-				close(socketWorker);
 
 				log_error(loggerMaster, "Se enviara notificacion de error en reduccion local a YAMA.\n");
 
@@ -858,6 +860,8 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 			}
 			else{
 				int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
+
+				close(socketWorker);
 
 				calcularMaximoParalelos();
 
@@ -875,7 +879,6 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 
 				free(datosAEnviar);
 				free(codigoScript);
-				close(socketWorker);
 
 				if(resultadoReduccion==REDUCCION_LOCAL_TERMINADA){
 					reduccionesLocalesRealizadas++;
@@ -914,9 +917,9 @@ void manejadorReduccionWorker(void* unaInfoReduccionLocal){
 		}
 		else{
 			log_error(loggerMaster,"No se pudo realizar el handshake con el worker.\n");
+			close(socketWorker);
 			cantidadFallos++;
 			sendDeNotificacion(infoNodoReduccion->infoGeneral.socketYAMA,ERROR_REDUCCION_LOCAL);
-			close(socketWorker);
 			pthread_detach(pthread_self());
 		}
 	}
@@ -1052,12 +1055,15 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 
 			if(retornoSend==-1){
 				log_error(loggerMaster,"Falla al enviar datos de reduccion global al worker\n");
+				close(socketWorker);
 				cantidadFallos++;
 				free(datosAEnviar);
 				sendDeNotificacion(socketYAMA,ERROR_REDUCCION_GLOBAL);
 			}
 			else{
 				int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
+
+				close(socketWorker);
 
 				tiempo tiempoFinalReduccionGlobal = obtenerTiempo();
 
@@ -1076,12 +1082,11 @@ void enviarDatosAWorker(t_list* listaInfoGlobal,uint32_t cantRedux,char* rutaRed
 		}
 		else{
 			log_error(loggerMaster,"Falla al realizar handshake con Worker.\n");
+			close(socketWorker);
 			cantidadFallos++;
 			destruirListaInfoGlobal(listaInfoGlobal);
 			sendDeNotificacion(socketYAMA,ERROR_REDUCCION_GLOBAL);
 		}
-
-		close(socketWorker);
 	}
 	else{
 		log_error(loggerMaster,"No se pudo conectar con el WORKER. IP: %s - PUERTO: %d \n",unaInfoReduxGlobalEncargado->conexion.ipNodo, unaInfoReduxGlobalEncargado->conexion.puertoNodo);
@@ -1191,11 +1196,14 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 
 			if(retornoSend==-1){
 				log_error(loggerMaster,"Falla al enviar datos de almacenado final al worker.\n");
+				close(socketWorker);
 				cantidadFallos++;
 				sendDeNotificacion(socketYAMA,ERROR_ALMACENADO_FINAL);
 			}
 			else{
 				int resultadoReduccion = recvDeNotificacionMaster(socketWorker);
+
+				close(socketWorker);
 
 				if(resultadoReduccion==ALMACENADO_FINAL_TERMINADO){
 					sendDeNotificacion(socketYAMA,ALMACENADO_FINAL_TERMINADO);
@@ -1218,10 +1226,10 @@ void recibirSolicitudAlmacenamiento(int socketYAMA,char* rutaCompleta){
 		}
 		else{
 			log_error(loggerMaster,"Falla al realizar handshake con Worker.\n");
+			close(socketWorker);
 			cantidadFallos++;
 			sendDeNotificacion(socketYAMA,ERROR_ALMACENADO_FINAL);
 		}
-		close(socketWorker);
 	}
 	else{
 		log_error(loggerMaster,"No se pudo conectar con el WORKER. IP: %s - PUERTO: %d \n",ipWorker, puertoWorker);
