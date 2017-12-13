@@ -505,7 +505,6 @@ void replanificarTransformacion(datosTransformacion* datoNodoTransformacion,uint
 	free(datoNodoTransformacion->conexion.ipNodo);
 	free(datoNodoTransformacion->nombreTemporal);
 	free(datoNodoTransformacion->infoGeneral.scriptTransformacion);
-	free(datoNodoTransformacion->conexion.nombreNodo);
 	free(datosAEnviarAYAMA);
 	free(datoNodoTransformacion);
 
