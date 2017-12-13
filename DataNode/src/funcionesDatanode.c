@@ -81,9 +81,11 @@ void cargarBin(){
 			log_error(loggerDatanode,"Error al tratar de abrir el archivo.");
 			exit(-1);
 		}
+		
+		dataBinTamanio = infoDatabin.st_size;
 
 		// Lo mapeo a memoria
-		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ, MAP_SHARED, archivo, 0);
+		mapArchivo = mmap(0, infoDatabin.st_size, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, archivo, 0);
 
 		if(mapArchivo == MAP_FAILED){
 			// Error al mapear
@@ -195,7 +197,7 @@ char * recvDeBloque(u_int32_t socket){
 
 void handlerSIGINT(int signal){
 	log_info(loggerDatanode, "Se recibio SIGINT. Finalizando proceso");
-	munmap(mapArchivo,cantBloques);
+	munmap(mapArchivo,dataBinTamanio);
 	log_destroy(loggerDatanode);
 	close(socketServerFS);
 	exit(0);
