@@ -250,7 +250,7 @@ void* dataBinMapear() {
 		exit(-1);
 	}
 	dataBinTamanio = estadoArchivo.st_size;
-	void* puntero = mmap(0, dataBinTamanio, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_SHARED, descriptorArchivo, 0);
+	void* puntero = mmap(0, dataBinTamanio, PROT_READ, MAP_SHARED, descriptorArchivo, 0);
 	if (puntero == MAP_FAILED) {
 		log_error(loggerWorker,"Fallo el mmap \n");
 		free(IP_FILESYSTEM);
