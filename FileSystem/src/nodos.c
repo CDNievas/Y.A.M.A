@@ -203,6 +203,8 @@ void registrarNodo(int socket){
 				verificarSiEsUnNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
 				log_error(loggerFileSystem,"No se puede registrar el Datanode al sistema, ya ha sido formateado");
+				//close(socket);
+				sendDeNotificacion(socket, 0);
 			}
 		}
 

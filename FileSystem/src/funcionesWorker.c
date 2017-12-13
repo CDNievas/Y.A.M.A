@@ -21,7 +21,7 @@ void almacenarArchivoWorker (int socket){
 		free(pathDestino);
 		free(contenidoArchivo);
 		free(nombreArchivo);
-		fclose(archivoWorker);
+		sendDeNotificacion(socket,ERROR_ALMACENADO_FINAL);
 		return ;
 	}
 
@@ -31,6 +31,7 @@ void almacenarArchivoWorker (int socket){
 		free(contenidoArchivo);
 		free(nombreArchivo);
 		fclose(archivoWorker);
+		sendDeNotificacion(socket,ERROR_ALMACENADO_FINAL);
 		return ;
 	}
 

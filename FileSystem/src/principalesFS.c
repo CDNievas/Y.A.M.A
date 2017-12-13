@@ -84,25 +84,6 @@ char * obtenerPathBitmap(char * nombreNodo){
 	return path;
 }
 
-
-void handlerSIGINT(){
-	log_warning(loggerFileSystem, "SIGINT enviado, cerrando el proceso");
-	liberarMemoria();
-}
-
-void liberarMemoria(){
-//	free(commandChar);
-	pthread_cancel(hiloConsolaFS);
-//	liberarListaRegistroArchivos();
-//	liberarlistaConexionNodos();
-//	liberarTablaDirectorios();
-//	liberarTablaNodos();
-//	liberarTablaArchivos();
-//	liberarBitmaps();
-//	list_destroy_and_destroy_elements(socketsDatanode,(void *)free);
-	//log_destroy(loggerFileSystem);
-}
-
 void liberarListaRegistroArchivos(){
 	void destruirElemento(char* rutaArchivo ){
 		free(rutaArchivo);
@@ -130,6 +111,27 @@ void liberarlistaConexionNodos(){
 		list_destroy_and_destroy_elements(listaConexionesNodos, (void *) destruirElemento);
 	}
 
+}
+
+
+void handlerSIGINT(){
+	log_warning(loggerFileSystem, "SIGINT enviado, cerrando el proceso");
+	liberarMemoria();
+}
+
+void liberarMemoria(){
+	pthread_cancel(hiloConsolaFS);
+	liberarListaRegistroArchivos();
+	liberarlistaConexionNodos();
+	liberarTablaDirectorios();
+	liberarTablaNodos();
+	liberarTablaArchivos();
+	liberarBitmaps();
+	//list_destroy_and_destroy_elements(socketsDatanode,(void *)free);
+	free(commandChar);
+	free(PATH_METADATA);
+	log_destroy(loggerFileSystem);
+	exit(0);
 }
 
 
@@ -362,7 +364,7 @@ void iniciarEstructuras(){
 
 void atenderConexion(int socketNuevo){
 
-	int socketAceptado = aceptarConexionDeCliente(socketListener);
+	int socketAceptado = aceptarConexionDeCliente(socketNuevo);
 	FD_SET(socketAceptado, &socketClientes);
 	socketMaximo = calcularSocketMaximo(socketAceptado,socketMaximo);
 	log_info(loggerFileSystem,"Se ha recibido una nueva conexion");

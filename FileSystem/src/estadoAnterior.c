@@ -202,6 +202,7 @@ void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
 		char* pathArchivoSeleccionado = config_get_string_value(archivoRegistroArchivos, etiqueta);
 		cargarTablaArchivo(pathArchivoSeleccionado);
 		posicion++;
+		list_add(listaRegistroDeArchivosGuardados,pathArchivoSeleccionado);
 		free(etiqueta);
 	}
 }
