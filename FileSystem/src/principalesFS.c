@@ -310,19 +310,6 @@ int iniciarServidor(int puerto){
 	return socketListener;
 }
 
-void sacarSocket(int socket){
-	pthread_mutex_lock(&mutex);
-	FD_CLR(socket,&socketClientes);
-	FD_CLR(socket,&socketClientesAuxiliares);
-	pthread_mutex_unlock(&mutex);
-}
-
-void meterSocket(int socket){
-	pthread_mutex_lock(&mutex);
-	FD_SET(socket,&socketClientes);
-	pthread_mutex_unlock(&mutex);
-}
-
 void iniciarEstructuras(){
 
 	//Inicio mutex
