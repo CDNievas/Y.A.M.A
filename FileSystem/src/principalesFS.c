@@ -363,11 +363,7 @@ void iniciarEstructuras(){
 void atenderConexion(int socketNuevo){
 
 	int socketAceptado = aceptarConexionDeCliente(socketListener);
-
-	//LOCK
 	FD_SET(socketAceptado, &socketClientes);
-	//UNLOCK
-
 	socketMaximo = calcularSocketMaximo(socketAceptado,socketMaximo);
 	log_info(loggerFileSystem,"Se ha recibido una nueva conexion");
 
@@ -455,15 +451,15 @@ void atenderNotificacion(int socket){
 			log_warning(loggerFileSystem, "El socket %d corto la conexion", socket);
 			verificarSiNodo(socket);
 			//verificarSiNodoCliente(socket);
-			sacarSocket(socket);
-			//FD_CLR(socket, &socketClientes);
+			//sacarSocket(socket);
+			FD_CLR(socket, &socketClientes);
 			close(socket);
 			break;
 
 		default:
 			log_warning(loggerFileSystem, "La conexion recibida es erronea");
-			sacarSocket(socket);
-			//FD_CLR(socket, &socketClientes);
+			//sacarSocket(socket);
+			FD_CLR(socket, &socketClientes);
 			close(socket);
 			break;
 
