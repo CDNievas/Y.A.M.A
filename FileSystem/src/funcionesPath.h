@@ -17,8 +17,8 @@ strArchivo * existeArchivoPath(char * ,int );
 strDirectorio * existeDirectorioPath(char * , int );
 int directorioInexistente(char **, int , int );
 bool existePathLocal(char *);
-int obtenerIdDirectorio(char **,int, int);
-int obtenerIdPadreDirectorio(char **,int, int);
-int obtenerIdPadreArchivo(char **,int, int);
+uint32_t obtenerIdDirectorio(char **,int, int);
+uint32_t obtenerIdPadreDirectorio(char **,int, int);
+uint32_t obtenerIdPadreArchivo(char **,int, int);
 
 #endif /* FUNCIONESPATH_H_ */

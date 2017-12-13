@@ -82,6 +82,18 @@ void ejecutarComando(uint32_t nro, char ** param){
 							log_info(loggerFileSystem, "Se ha borrado el directorio correctamente");
 						}
 
+					} else {
+
+						int cod = borrarArchivo(param[1]);
+
+						if(cod == -2){
+							printf("Path inexistente \n");
+							log_warning(loggerFileSystem, "Path inexistente");
+						} else {
+							printf("Se ha borrado el archivo correctamente \n");
+							log_info(loggerFileSystem, "Se ha borrado el archivo correctamente");
+						}
+
 					}
 
 				}
@@ -133,6 +145,40 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 				}
 
+			}
+
+		}
+		break;
+
+		//MV
+		case 4:{
+
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+
+				if(!chequearParamCom(param,3,3)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+
+					if(!contieneYamafs(param[1]) || !contieneYamafs(param[2])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+
+							//int cod = moverPath(param[1],param[2]);
+
+						}
+
+					}
+				}
 			}
 
 		}

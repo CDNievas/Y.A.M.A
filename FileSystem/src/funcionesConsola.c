@@ -267,6 +267,43 @@ int borrarDirectorio(char * pathDir){
 
 }
 
+int borrarArchivo(char * pathDir){
+
+	if(!contieneYamafs(pathDir)){
+		return -1;
+	} else {
+
+		char ** pathDesc = string_split(pathDir,"/");
+
+		int idDirPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
+
+		if(idDirPadre == -2){
+			return idDirPadre;
+		} else {
+
+			char * nombreArchivo = obtenerNombreUltimoPath(pathDesc);
+			bool eliminarArchivo(strArchivo * archivo){
+				return (strcmp(archivo->nombre,nombreArchivo)==0 && archivo->directorioPadre==idDirPadre);
+			}
+
+			strArchivo * archivo=list_remove_by_condition(tablaArchivos,(void*)eliminarArchivo);
+
+			if(archivo!=NULL){
+				free(archivo->nombre);
+				free(archivo);
+
+				//BORRAR ARCHIVO DEL BITARRAY
+
+			}
+
+			return 0;
+
+		}
+
+	}
+
+}
+
 int renombrarPath(char * path, char * nuevoNombre){
 
 	char ** pathDesc = string_split(path,"/");
@@ -298,6 +335,7 @@ int renombrarPath(char * path, char * nuevoNombre){
 
 				strDirectorio * dir = list_find(tablaDirectorios,(void *) buscaDirViejo);
 
+				free(dir->nombre);
 				dir->nombre = string_new();
 				string_append(&dir->nombre,nuevoNombre);
 
@@ -309,8 +347,27 @@ int renombrarPath(char * path, char * nuevoNombre){
 
 	} else {
 
-		return 0;
+		bool yaExisteArchivo(strArchivo * archivo){
+			return(archivo->directorioPadre==idPadreArchivo && strcmp(archivo->nombre,nuevoNombre)==0);
+		}
 
+		if(list_any_satisfy(tablaArchivos, (void *) yaExisteArchivo)){
+			return -2;
+		} else {
+
+			bool buscaArchivoviejo(strArchivo * archivo){
+				return(archivo->directorioPadre==idPadreArchivo && strcmp(archivo->nombre,viejoNombre)==0);
+			}
+
+			strArchivo * archivo = list_find(tablaArchivos,(void *) buscaArchivoviejo);
+
+			free(archivo->nombre);
+			archivo->nombre = string_new();
+			string_append(&archivo->nombre,nuevoNombre);
+
+			return 0;
+
+		}
 	}
 
 }

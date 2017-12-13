@@ -18,6 +18,7 @@ bool contieneYamafs(char *);
 int crearDirectorio(char *);
 bool almacenarArchivo(char*, char*, char*);
 int borrarDirectorio(char *);
+int borrarArchivo(char *);
 uint32_t sacarTamanioArchivo (FILE*);
 int renombrarPath(char *, char *);
 

@@ -142,7 +142,7 @@ bool existePathLocal(char * path){
 }
 
 
-int obtenerIdDirectorio(char ** pathDesc,int indice,int idPadre){
+uint32_t obtenerIdDirectorio(char ** pathDesc,int indice,int idPadre){
 
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
@@ -172,7 +172,7 @@ int obtenerIdDirectorio(char ** pathDesc,int indice,int idPadre){
 	}
 }
 
-int obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
+uint32_t obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
 
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
@@ -204,7 +204,7 @@ int obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
 
 
 
-int obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
+uint32_t obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
 
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];

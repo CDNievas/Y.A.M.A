@@ -1,0 +1,39 @@
+[INFO] 13:32:38:834 FileSystem/(3433:3433): Estructuras iniciadas
+[INFO] 13:32:38:834 FileSystem/(3433:3433): Consola iniciada
+[INFO] 13:32:38:834 FileSystem/(3433:3433): Esperando conexiones
+[INFO] 13:37:10:465 FileSystem/(3433:3433): Se ha recibido una nueva conexion
+[INFO] 13:37:10:465 FileSystem/(3433:3433): Registrando Datanode
+[INFO] 13:37:21:345 FileSystem/(3433:3433): Se ha recibido una nueva conexion
+[INFO] 13:37:21:346 FileSystem/(3433:3433): Registrando Datanode
+[INFO] 13:37:23:504 FileSystem/(3433:3440): Se ha formateado correctamente el sistema
+[TRACE] 13:37:41:782 FileSystem/(3433:3440): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[WARNING] 13:37:57:4 FileSystem/(3433:3440): El tamaño del archivo supera la capacidad de almacenamiento del sistema
+[INFO] 13:38:33:44 FileSystem/(3628:3628): Estructuras iniciadas
+[INFO] 13:38:33:44 FileSystem/(3628:3628): Consola iniciada
+[INFO] 13:38:33:44 FileSystem/(3628:3628): Esperando conexiones
+[INFO] 13:38:33:808 FileSystem/(3628:3628): Se ha recibido una nueva conexion
+[INFO] 13:38:33:808 FileSystem/(3628:3628): Registrando Datanode
+[INFO] 13:38:34:447 FileSystem/(3628:3628): Se ha recibido una nueva conexion
+[INFO] 13:38:34:448 FileSystem/(3628:3628): Registrando Datanode
+[INFO] 13:38:35:838 FileSystem/(3628:3637): Se ha formateado correctamente el sistema
+[TRACE] 13:38:51:158 FileSystem/(3628:3637): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[WARNING] 13:39:06:959 FileSystem/(3628:3637): El tamaño del archivo supera la capacidad de almacenamiento del sistema
+[WARNING] 13:39:35:542 FileSystem/(3628:3628): El socket 5 corto la conexion
+[ERROR] 13:39:35:542 FileSystem/(3628:3628): Se ha desconectado un DataNode del sistema.
+[WARNING] 13:39:35:918 FileSystem/(3628:3628): SIGINT enviado, cerrando el proceso
+[INFO] 13:39:37:917 FileSystem/(3649:3649): Estructuras iniciadas
+[INFO] 13:39:37:917 FileSystem/(3649:3649): Consola iniciada
+[INFO] 13:39:37:917 FileSystem/(3649:3649): Esperando conexiones
+[INFO] 13:39:39:574 FileSystem/(3649:3649): Se ha recibido una nueva conexion
+[INFO] 13:39:39:574 FileSystem/(3649:3649): Registrando Datanode
+[INFO] 13:39:40:110 FileSystem/(3649:3649): Se ha recibido una nueva conexion
+[INFO] 13:39:40:110 FileSystem/(3649:3649): Registrando Datanode
+[INFO] 13:39:41:701 FileSystem/(3649:3658): Se ha formateado correctamente el sistema
+[TRACE] 13:40:51:12 FileSystem/(3649:3658): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 13:41:06:816 FileSystem/(3649:3658): Se Procede almacenar el nombres.csv.
+[INFO] 13:41:16:552 FileSystem/(3649:3658): Se ha almacenado correctamente el archivo nombres.csv.
+[WARNING] 13:43:29:26 FileSystem/(3649:3649): SIGINT enviado, cerrando el proceso
+[INFO] 13:47:56:206 FileSystem/(3868:3868): Estructuras iniciadas
+[INFO] 13:47:56:206 FileSystem/(3868:3868): Consola iniciada
+[INFO] 13:47:56:206 FileSystem/(3868:3868): Esperando conexiones
+[WARNING] 13:47:58:967 FileSystem/(3868:3868): SIGINT enviado, cerrando el proceso
