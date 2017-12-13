@@ -99,6 +99,7 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	conexionNodo* conect = generarConexionNodo();
 	conect->nombreNodo = string_new();
 	string_append(&conect->nombreNodo, nodoEncargado);
+	free(nodoEncargado);
 	obtenerIPYPuerto(conect);
 	if(conect->nombreNodo == NULL && conect->puertoNodo == -1){
 		return -1;
@@ -111,7 +112,6 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	free(infoAlmacenadoFinal);
 	liberarConexion(conect);
 	free(nombreArchReduGlobal);
-	free(nodoEncargado);
 	return 1;
 }
 

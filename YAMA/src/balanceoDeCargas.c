@@ -198,7 +198,7 @@ char* balancearReduccionGlobal(t_list* listaDeBalanceo){
 	}
 	char* nombreNodo = string_new();
 	string_append(&nombreNodo, nodoElegido->nombreNodo);
-	//liberarNodoSistema(nodoElegido);
+	free(nodoElegido);
 	return nombreNodo;
 }
 
@@ -229,6 +229,7 @@ void eliminarTrabajosGlobales(int nroMaster, t_list* listaReducLocales){
   for(i = 0; i < cantidadWLAReducir; i++){
     reducirWL(nodoEncargado);
   }
+  free(nodoEncargado);
 }
 
 void actualizarWLRGlobal(char* nombreNodo, int cantidadReducs){

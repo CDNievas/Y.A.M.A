@@ -147,7 +147,7 @@ void cargarTablaArchivo(char* pathArchivo){
 
 	char* tipo=config_get_string_value(archivo,"TIPO");
 	string_append(&entradaArchivo->tipo,tipo);
-	free(tipo);
+	//free(tipo);
 
 	uint32_t cantidadDeCopiasXBloque=(config_keys_amount(archivo)-2)/3;
 	uint32_t contBloque=0;
@@ -190,7 +190,7 @@ void cargarTablaArchivo(char* pathArchivo){
 	}
 	list_add(tablaArchivos,entradaArchivo);
 	free(nombreArchivo);
-//	config_destroy(archivo);
+	config_destroy(archivo);
 	liberarRutaDesarmada(rutaDesmembrada);
 }
 

@@ -237,8 +237,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 							}
 							free(nombreArchivo);
 							free(path);
-							free(pathDesc);
-							//liberarRutaDesarmada(pathDesc);
+							//free(pathDesc);
+							liberarRutaDesarmada(pathDesc);
 						}
 
 					}
