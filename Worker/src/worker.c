@@ -303,21 +303,6 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el bloque: %s.\n",nombreBloque);
 	}
 
-	if(pedazoDataBin==NULL){
-		log_error(loggerWorker,"No se pudo pedir memoria para allocar el bloque del databin.\n");
-		sendDeNotificacion(socketMaster,casoError);
-		munmap(dataBinBloque,dataBinTamanio);
-		free(IP_FILESYSTEM);
-		free(RUTA_DATABIN);
-		free(NOMBRE_NODO);
-		free(comandoAEjecutar);
-		free(numeroBloque);
-		free(numeroPID);
-		close(socketMaster);
-		log_info(loggerWorker, "¡¡Adios logger!! \n");
-		log_destroy(loggerWorker);
-		exit(-1);
-	}
 	if(fwrite(dataBinBloque+(1048576*nroBloque),sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
