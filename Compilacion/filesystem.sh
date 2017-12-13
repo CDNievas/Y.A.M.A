@@ -1,5 +1,5 @@
 #!/bin/sh
 cd ../FileSystem/src
 echo "Compilando FileSystem"
-gcc BitarrayConfiguraciones.c Consola.c EstadoAnterior.c FS.c FuncionesDirectorios.c FuncionesFS.c Nodos.c Persistencia.c Worker.c YAMA.c -o filesystem -lcommons -lpthread -lreadline
+gcc consola.c estadoAnterior.c filesystem.c funcionesConsola.c funcionesPath.c funcionesWorker.c funcionesYama.c nodos.c persistencia.c principalesFS.c -o filesystem -lcommons -lpthread -lreadline
 cd ../../Compilacion/
