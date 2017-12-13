@@ -34,6 +34,7 @@ char* IP_WORKER;
 
 t_log * loggerDatanode; // Logger
 u_int32_t sizeDataBin; // Guarda el tamaño del Databin
+size_t dataBinTamanio; // Guarda el tamaño del Databin
 u_int32_t cantBloques; // Guarda cantidad de bloques
 void * mapArchivo; // Memoria del mmap
 struct stat infoDatabin; // Guarda informacion del archivo
