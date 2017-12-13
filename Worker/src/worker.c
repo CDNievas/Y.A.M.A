@@ -302,7 +302,6 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	else{
 		log_info(loggerWorker, "Se pudo abrir el archivo donde se guardara el bloque: %s.\n",nombreBloque);
 	}
-	void* pedazoDataBin = malloc(bytesOcupados);
 
 	if(pedazoDataBin==NULL){
 		log_error(loggerWorker,"No se pudo pedir memoria para allocar el bloque del databin.\n");
@@ -314,16 +313,12 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(comandoAEjecutar);
 		free(numeroBloque);
 		free(numeroPID);
-		free(pedazoDataBin);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
-
-	memcpy(pedazoDataBin,dataBinBloque+(1048576*nroBloque),bytesOcupados);
-
-	if(fwrite(pedazoDataBin,sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
+	if(fwrite(dataBinBloque+(1048576*nroBloque),sizeof(char),bytesOcupados,archivoScript)!=bytesOcupados){
 		log_error(loggerWorker,"No se pudo escribir en el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
 		munmap(dataBinBloque,dataBinTamanio);
@@ -333,7 +328,6 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(comandoAEjecutar);
 		free(numeroBloque);
 		free(numeroPID);
-		free(pedazoDataBin);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -353,7 +347,6 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		free(comandoAEjecutar);
 		free(numeroBloque);
 		free(numeroPID);
-		free(pedazoDataBin);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -363,37 +356,9 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el bloque: %s.\n",nombreBloque);
 	}
 
-	int resultado = system(comandoAEjecutar);
-
-	if(!WIFEXITED(resultado)){
-		log_error(loggerWorker,"Error al guardar el bloque a transformar del databin.\n");
-
-		if(WIFSIGNALED(resultado)){
-			log_error(loggerWorker, "La llamada al sistema termino con la senial %d\n",WTERMSIG(resultado));
-		}
-
-		sendDeNotificacion(socketMaster,ERROR_TRANSFORMACION);
-		munmap(dataBinBloque,dataBinTamanio);
-		free(IP_FILESYSTEM);
-		free(RUTA_DATABIN);
-		free(NOMBRE_NODO);
-		free(comandoAEjecutar);
-		free(numeroBloque);
-		free(numeroPID);
-		free(pedazoDataBin);
-		close(socketMaster);
-		log_info(loggerWorker, "¡¡Adios logger!! \n");
-		log_destroy(loggerWorker);
-		exit(-1);
-	}
-	else{
-		log_info(loggerWorker, "System para obtener bloque ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
-	}
-
 	free(comandoAEjecutar);
 	free(numeroBloque);
 	free(numeroPID);
-	free(pedazoDataBin);
 	return nombreBloque;
 }
 
