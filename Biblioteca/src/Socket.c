@@ -168,7 +168,7 @@ void sendDeNotificacion(int aQuien, int notificacion){
 
 uint32_t recibirUInt(int socket){
 	uint32_t uintRecibido;
-	if(recv(socket, &uintRecibido, sizeof(uint32_t), 0) == -1){
+	if(recv(socket, &uintRecibido, sizeof(uint32_t), MSG_WAITALL) == -1){
 		perror("Error al recibir un uint.");
 		exit(-1);
 	}
@@ -201,7 +201,7 @@ char* recibirString(int socket){ //EL TAMAÑO DEL STRING SE RECIBE ADENTRO DE ES
 
 int recvDeNotificacion(int deQuien){
 	int notificacion;
-	int resultadoRecv = recv(deQuien, &notificacion, sizeof(int), 0);
+	int resultadoRecv = recv(deQuien, &notificacion, sizeof(int), MSG_WAITALL);
 	if(resultadoRecv <= 0){
 		return 0;
 	}
