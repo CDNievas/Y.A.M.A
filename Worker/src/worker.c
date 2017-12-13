@@ -990,7 +990,7 @@ int main(int argc, char **argv) {
 	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
-	eliminarProcesosMuertos();
+	//eliminarProcesosMuertos();
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
 	mkdir("../../../tmp",0777);
