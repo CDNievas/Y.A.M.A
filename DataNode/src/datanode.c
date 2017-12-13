@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
 
 	// LIBERO MEMORIA
 	close(socketServerFS);
-	munmap(mapArchivo,cantBloques);
+	munmap(mapArchivo,dataBinTamanio);
 	log_destroy(loggerDatanode);
 
 	return EXIT_SUCCESS;
