@@ -1020,7 +1020,7 @@ int main(int argc, char **argv) {
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
-		while(*numerosParalelos>25)
+		while((*numerosParalelos)>1)
 		{
 
 		}
