@@ -314,8 +314,8 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
-	if(FD_ISSET(socket,&socketClientesAuxiliares){
-		FD_CLR(socket,&socketClientesAuxiliares);
+	if(FD_ISSET(nodoOriginal->socket,&socketClientesAuxiliares)){
+		FD_CLR(nodoOriginal->socket,&socketClientesAuxiliares);
 	}
 	
 	sendRemasterizado(nodoOriginal->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
@@ -362,8 +362,8 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
-	if(FD_ISSET(socket,&socketClientesAuxiliares){
-		FD_CLR(socket,&socketClientesAuxiliares);
+	if(FD_ISSET(nodoCopia->socket,&socketClientesAuxiliares)){
+		FD_CLR(nodoCopia->socket,&socketClientesAuxiliares);
 	}
 	   
 	sendRemasterizado(nodoCopia->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);

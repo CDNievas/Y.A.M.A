@@ -391,7 +391,7 @@ int renombrarPath(char * path, char * nuevoNombre){
 
 char * obtenerBloque(int socket, uint32_t nroBloque){
 	
-	if(FD_ISSET(socket,&socketClientesAuxiliares){
+	if(FD_ISSET(socket,&socketClientesAuxiliares)){
 		FD_CLR(socket,&socketClientesAuxiliares);
 	}
 	
