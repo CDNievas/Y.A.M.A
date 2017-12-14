@@ -148,7 +148,7 @@ int obtenerNumeroDeMaster(){
 
 void deserializarIPYPuerto(conexionNodo* conexion){
 	if(recibirUInt(socketFS) != DATOS_NODO){
-		conexion->puertoNodo = -1;
+		conexion->puertoNodo = 0;
 		conexion->ipNodo = NULL;
 	}else{
 		conexion->puertoNodo = recibirUInt(socketFS);
