@@ -412,7 +412,6 @@ char * obtenerBloque(int socket, uint32_t nroBloque){
 }
 
 
-
 int funcionCat(strBloqueArchivo * bloque){
 
 	char * nombreNodo = bloque->copia1->nodo;
@@ -424,6 +423,7 @@ int funcionCat(strBloqueArchivo * bloque){
 
 	strNodo * nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
 	strNodo * nodoElegido;
+	strCopiaArchivo* copiaElegida;
 
 	if(nodo == NULL){
 		log_error(loggerFileSystem,"Volo todo a la verga");
@@ -433,6 +433,7 @@ int funcionCat(strBloqueArchivo * bloque){
 		if(nodo->conectado){
 
 			nodoElegido = nodo;
+			copiaElegida=bloque->copia1;
 
 		} else {
 
@@ -447,6 +448,7 @@ int funcionCat(strBloqueArchivo * bloque){
 				if(nodo->conectado){
 
 					nodoElegido = nodo;
+					copiaElegida=bloque->copia2;
 
 				} else {
 
@@ -460,7 +462,7 @@ int funcionCat(strBloqueArchivo * bloque){
 
 	}
 
-	char * stringArchivo = obtenerBloque(nodoElegido->socket,bloque->nro);
+	char * stringArchivo = obtenerBloque(nodoElegido->socket,copiaElegida->nroBloque);
 	//char* stringFinal = string_substring_until(stringArchivo, bloque->bytes);
 	//free(stringArchivo);
 
