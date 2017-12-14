@@ -27,6 +27,7 @@ void liberarArchivoYPersistir(strArchivo* );
 int sacarCantidadbloqueLibre(strNodo* );
 void actualizarEstructurasNodos();
 void borrarBloquesArchivos(strArchivo* );
+void crearDirectorios(char* , char* );
 
 
 #endif /* FUNCIONESCONSOLA_H_ */
