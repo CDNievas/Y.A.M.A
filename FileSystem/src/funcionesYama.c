@@ -166,21 +166,28 @@ void enviarDatosConexionNodo(int socket){
 	}
 	strConexiones* datosNodo = list_find(listaConexionesNodos,(void*)esNodo);
 
-	void* mensaje=malloc(sizeof(uint32_t)*2+string_length(datosNodo->ip));
+	if(datosNodo==NULL){
+		sendDeNotificacion(socket,IP_NODO_NO_ENCONTRADO);
+		log_error(loggerFileSystem,"Error al enviar los datos de conexion de %s a YAMA.",nodo);
+	}else{
+		void* mensaje=malloc(sizeof(uint32_t)*2+string_length(datosNodo->ip));
 
-	int tamanioIp=string_length(datosNodo->ip);
-	int posicionActual=0;
+		int tamanioIp=string_length(datosNodo->ip);
+		int posicionActual=0;
 
-	memcpy(mensaje,&datosNodo->puerto,sizeof(uint32_t));
-	posicionActual+=sizeof(uint32_t);
+		memcpy(mensaje,&datosNodo->puerto,sizeof(uint32_t));
+		posicionActual+=sizeof(uint32_t);
 
-	memcpy(mensaje+posicionActual,&tamanioIp,sizeof(uint32_t));
-	posicionActual+=sizeof(uint32_t);
+		memcpy(mensaje+posicionActual,&tamanioIp,sizeof(uint32_t));
+		posicionActual+=sizeof(uint32_t);
 
-	memcpy(mensaje+posicionActual,datosNodo->ip,tamanioIp);
-	posicionActual+=tamanioIp;
+		memcpy(mensaje+posicionActual,datosNodo->ip,tamanioIp);
+		posicionActual+=tamanioIp;
 
-	sendRemasterizado(socket,DATOS_NODO,posicionActual,mensaje);
-	free(mensaje);
+		sendRemasterizado(socket,DATOS_NODO,posicionActual,mensaje);
+		log_info(loggerFileSystem,"Se ha enviado correctamente los datos de conexion de: %s a YAMA.",nodo);
+		free(mensaje);
+	}
+	
 	free(nodo);
 }
