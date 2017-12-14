@@ -148,7 +148,6 @@ int obtenerNumeroDeMaster(){
 
 void deserializarIPYPuerto(conexionNodo* conexion){
 	if(recibirUInt(socketFS) != DATOS_NODO){
-		log_error(loggerYAMA, "ERROR - IP Y PUERTO DE NODO");
 		conexion->puertoNodo = -1;
 		conexion->ipNodo = NULL;
 	}else{
