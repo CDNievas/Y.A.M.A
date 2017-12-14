@@ -314,6 +314,10 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
+	if(FD_ISSET(socket,&socketClientesAuxiliares){
+		FD_CLR(socket,&socketClientesAuxiliares);
+	}
+	
 	sendRemasterizado(nodoOriginal->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
 
 	if(recvDeNotificacion(nodoOriginal->socket)==ESC_INCORRECTA){
@@ -358,6 +362,10 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	memcpy(mensaje+posicionActualDelMensaje,contenidoAEnviar,tamanioContenido);
 	posicionActualDelMensaje+=tamanioContenido;
 
+	if(FD_ISSET(socket,&socketClientesAuxiliares){
+		FD_CLR(socket,&socketClientesAuxiliares);
+	}
+	   
 	sendRemasterizado(nodoCopia->socket,ENV_ESCRIBIR,posicionActualDelMensaje,mensaje);
 
 	if(recvDeNotificacion(nodoCopia->socket)==ESC_INCORRECTA){
