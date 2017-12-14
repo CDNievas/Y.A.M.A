@@ -23,6 +23,7 @@ char* RUTA_DATABIN;
 char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
 int contadorRandom;
+int* numerosParalelos;
 int PUERTO_WORKER;
 void* dataBinBloque;
 size_t dataBinTamanio;
@@ -761,6 +762,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 
 	if(!fork())
 	{
+		(*numerosParalelos)++;
 		close(socketEscuchaWorker);
 
 		log_debug(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
@@ -979,6 +981,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 		}
 		}
 		close(socketAceptado);
+		(*numerosParalelos)--;
 		exit(0);
 	}
 
@@ -1011,10 +1014,16 @@ int main(int argc, char **argv) {
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
 	contadorRandom = 0;
+	numerosParalelos = malloc(sizeof(int));
+	*numerosParalelos = 0;
 	mkdir("../../../tmp",0777);
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
+		while(*numerosParalelos>25)
+		{
+
+		}
 		crearProcesoHijo(socketAceptado,socketEscuchaWorker);
 	}
 	close(socketEscuchaWorker);
