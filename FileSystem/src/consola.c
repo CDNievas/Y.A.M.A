@@ -332,7 +332,23 @@ void ejecutarComando(uint32_t nro, char ** param){
 			}
 		}
 		break;
+		
+		case 13:{
+			if(!chequearParamCom(param,3,3)){
+				printf("Cantidad incorrecta de parametros \n");
+				log_warning(loggerFileSystem,"Error en la cantidad de parametros");
 
+			} else{
+				if(!existePath(param[1])){
+					printf("Ah ingresado una raiz que no existe \n");
+					log_warning(loggerFileSystem,"Error al ingresar la raiz. No existe");
+				}else{
+					crearDirectorios(param[1],param[2]);
+				}
+
+			}
+
+		}
 
 		// PATH
 		case 14:{
