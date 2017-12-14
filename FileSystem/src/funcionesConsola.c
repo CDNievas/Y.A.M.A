@@ -390,10 +390,14 @@ int renombrarPath(char * path, char * nuevoNombre){
 
 
 char * obtenerBloque(int socket, uint32_t nroBloque){
-
+	
+	if(FD_ISSET(socket,&socketClientesAuxiliares){
+		FD_CLR(socket,&socketClientesAuxiliares);
+	}
+	
 	int tamanioMsg = sizeof(uint32_t) + sizeof(uint32_t);
 	void * msg = malloc(tamanioMsg);
-
+	
 	memcpy(msg,&nroBloque,sizeof(uint32_t));
 	uint32_t cantBytes = 1048576;
 	memcpy(msg+sizeof(uint32_t),&cantBytes,sizeof(uint32_t));
@@ -406,6 +410,7 @@ char * obtenerBloque(int socket, uint32_t nroBloque){
 		perror("Error al recibir un string.");
 		exit(-1);
 	}
+	
 	char* stringRecibido = string_substring_until(string, cantBytes);
 	free(string);
 	return stringRecibido;
