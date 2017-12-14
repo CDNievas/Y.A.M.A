@@ -743,3 +743,45 @@
 [INFO] 20:57:50:266 FileSystem/(6891:6891): Registrando Datanode
 [DEBUG] 20:57:50:266 FileSystem/(6891:6891): El archivo nombres.csv ya cuenta con una copia por bloque.
 [INFO] 20:57:54:273 FileSystem/(6891:6898): Se ha formateado correctamente el sistema
+[INFO] 00:58:45:456 FileSystem/(3418:3418): Estructuras iniciadas
+[INFO] 00:58:45:495 FileSystem/(3418:3418): Consola iniciada
+[INFO] 00:58:45:495 FileSystem/(3418:3418): Esperando conexiones
+[INFO] 01:01:20:603 FileSystem/(3418:3418): Se ha recibido una nueva conexion
+[INFO] 01:01:20:614 FileSystem/(3418:3418): Registrando Datanode
+[INFO] 01:01:26:154 FileSystem/(3418:3418): Se ha recibido una nueva conexion
+[INFO] 01:01:26:159 FileSystem/(3418:3418): Registrando Datanode
+[INFO] 01:01:32:668 FileSystem/(3418:3418): Se ha recibido una nueva conexion
+[INFO] 01:01:32:672 FileSystem/(3418:3418): Registrando Datanode
+[INFO] 01:01:41:314 FileSystem/(3418:3418): Se ha recibido una nueva conexion
+[INFO] 01:01:41:318 FileSystem/(3418:3418): Registrando Datanode
+[INFO] 01:01:44:583 FileSystem/(3418:3433): Se ha formateado correctamente el sistema
+[TRACE] 01:02:04:329 FileSystem/(3418:3433): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 01:02:08:11 FileSystem/(3418:3433): Se Procede almacenar el nombres.csv.
+[INFO] 01:02:16:164 FileSystem/(3418:3433): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 01:06:01:320 FileSystem/(3418:3433): Se ha borrado el archivo correctamente
+[INFO] 01:08:19:583 FileSystem/(3733:3733): Estructuras iniciadas
+[INFO] 01:08:19:607 FileSystem/(3733:3733): Consola iniciada
+[INFO] 01:08:19:607 FileSystem/(3733:3733): Esperando conexiones
+[INFO] 01:08:23:794 FileSystem/(3733:3733): Se ha recibido una nueva conexion
+[INFO] 01:08:23:803 FileSystem/(3733:3733): Registrando Datanode
+[INFO] 01:08:24:583 FileSystem/(3733:3733): Se ha recibido una nueva conexion
+[INFO] 01:08:24:589 FileSystem/(3733:3733): Registrando Datanode
+[INFO] 01:08:25:299 FileSystem/(3733:3733): Se ha recibido una nueva conexion
+[INFO] 01:08:25:306 FileSystem/(3733:3733): Registrando Datanode
+[INFO] 01:08:25:955 FileSystem/(3733:3733): Se ha recibido una nueva conexion
+[INFO] 01:08:25:967 FileSystem/(3733:3733): Registrando Datanode
+[INFO] 01:08:28:778 FileSystem/(3733:3750): Se ha formateado correctamente el sistema
+[TRACE] 01:10:05:496 FileSystem/(3733:3750): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 01:10:08:370 FileSystem/(3733:3750): Se Procede almacenar el nombres.csv.
+[INFO] 01:10:13:219 FileSystem/(3733:3750): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 01:12:11:591 FileSystem/(3733:3750): Se ha borrado el archivo correctamente
+[DEBUG] 01:15:52:641 FileSystem/(4113:4113): Se encontro un estado anterior en el sistema.
+[DEBUG] 01:15:55:729 FileSystem/(4113:4113): Cargando los directorios...
+[DEBUG] 01:15:56:291 FileSystem/(4113:4113): Cargando las estrcutura de nodos...
+[DEBUG] 01:15:56:291 FileSystem/(4113:4113): Cargando el bitmap del NODO1
+[DEBUG] 01:15:56:291 FileSystem/(4113:4113): Cargando el bitmap del NODO2
+[DEBUG] 01:15:56:292 FileSystem/(4113:4113): Cargando el bitmap del NODO3
+[DEBUG] 01:15:56:292 FileSystem/(4113:4113): Cargando el bitmap del NODO4
+[INFO] 01:16:05:184 FileSystem/(4113:4113): Estructuras iniciadas
+[INFO] 01:16:07:154 FileSystem/(4113:4113): Consola iniciada
+[INFO] 01:16:07:155 FileSystem/(4113:4113): Esperando conexiones

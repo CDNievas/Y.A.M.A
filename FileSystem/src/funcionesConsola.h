@@ -22,5 +22,11 @@ int borrarArchivo(char *);
 uint32_t sacarTamanioArchivo (FILE*);
 int renombrarPath(char *, char *);
 void catArchivo(char *);
+void liberarBloque(char* , uint32_t );
+void liberarArchivoYPersistir(strArchivo* );
+int sacarCantidadbloqueLibre(strNodo* );
+void actualizarEstructurasNodos();
+void borrarBloquesArchivos(strArchivo* );
+
 
 #endif /* FUNCIONESCONSOLA_H_ */

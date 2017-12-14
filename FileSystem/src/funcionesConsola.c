@@ -289,9 +289,10 @@ int borrarArchivo(char * pathDir){
 			strArchivo * archivo=list_remove_by_condition(tablaArchivos,(void*)eliminarArchivo);
 
 			if(archivo!=NULL){
+
+				borrarBloquesArchivos(archivo);
 				free(archivo->nombre);
 				free(archivo);
-
 				//BORRAR ARCHIVO DEL BITARRAY
 
 			}
@@ -489,4 +490,108 @@ void catArchivo(char *path){
 
 	}
 
+}
+
+void liberarBloque(char* nombreNodo, uint32_t nroBloque){
+	bool esElNodoBitmap(strBitmaps* nodoBitmapSeleccionado){
+		return (strcmp(nodoBitmapSeleccionado->nodo,nombreNodo)==0);
+	}
+	strBitmaps* nodoBitmap=list_find(listaBitmaps,(void*)esElNodoBitmap);
+
+	if(nodoBitmap==NULL){
+		log_error(loggerFileSystem,"No se encontro el %s con su bitmaps",nombreNodo);
+		exit(-1);
+	}
+
+	bitarray_clean_bit(nodoBitmap->bitarray, nroBloque);
+
+}
+
+void liberarArchivoYPersistir(strArchivo* archivoVictima){
+
+	char* pathArchivoEnMetadata=string_new();
+	string_append(&pathArchivoEnMetadata,PATH_METADATA);
+	string_append(&pathArchivoEnMetadata,"/archivos/");
+	char* idPapa=string_itoa(archivoVictima->directorioPadre);
+	string_append(&pathArchivoEnMetadata,idPapa);
+	string_append(&pathArchivoEnMetadata,"/");
+	string_append(&pathArchivoEnMetadata,archivoVictima->nombre);
+	free(idPapa);
+
+	bool esElPathMetadata(char* pathSeleccionado){
+		return (strcmp(pathSeleccionado,pathArchivoEnMetadata)==0);
+	}
+	char* pathVictima=list_remove_by_condition(listaRegistroDeArchivosGuardados,(void*)esElPathMetadata);
+	free(pathVictima);
+
+	char* comando=string_new();
+	string_append(&comando,"rm ");
+	string_append(&comando,pathArchivoEnMetadata);
+	system(comando);
+	free(comando);
+
+	persistirRegistroArchivo();
+}
+
+int sacarCantidadbloqueLibre(strNodo* nodo){
+	int cantBloquesLibre=0;
+	int contador=0;
+
+	bool esElNodoBitmap(strBitmaps* nodoBitmapSeleccionado){
+		return (strcmp(nodoBitmapSeleccionado->nodo,nodo->nombre)==0);
+	}
+	strBitmaps* nodoBitmap=list_find(listaBitmaps,(void*)esElNodoBitmap);
+
+
+	for(;contador < nodo->tamanioTotal;contador++){
+		if(!bitarray_test_bit(nodoBitmap->bitarray,contador)){
+			cantBloquesLibre++;
+		}
+	}
+	return cantBloquesLibre;
+}
+
+void actualizarEstructurasNodos(){
+	uint32_t cantidadDeNodoEnElSistema=list_size(tablaNodos->nodos);
+	uint32_t contador=0;
+	tablaNodos->tamanioFSLibre=0;
+	while(contador<cantidadDeNodoEnElSistema){
+		strNodo* nodoElegido=list_get(tablaNodos->nodos,contador);
+		nodoElegido->tamanioLibre=sacarCantidadbloqueLibre(nodoElegido);
+		tablaNodos->tamanioFSLibre+=nodoElegido->tamanioLibre;
+		nodoElegido->porcentajeOscioso=(nodoElegido->tamanioLibre*100)/nodoElegido->tamanioTotal;
+		contador++;
+	}
+	persistirTablaNodo();
+}
+
+void borrarBloquesArchivos(strArchivo* archivoVictima){
+
+
+	uint32_t cantidadDeBloques=list_size(archivoVictima->bloques);
+	uint32_t contador=0;
+
+	while(contador<cantidadDeBloques){
+		strBloqueArchivo* bloqueArchivo=list_get(archivoVictima->bloques,contador);
+
+		liberarBloque(bloqueArchivo->copia1->nodo,bloqueArchivo->copia1->nroBloque);
+		//tablaNodos->tamanioFSLibre++;
+
+		liberarBloque(bloqueArchivo->copia2->nodo,bloqueArchivo->copia2->nroBloque);
+		//tablaNodos->tamanioFSLibre++;
+
+		contador++;
+	}
+
+	bool destruirBloques(strBloqueArchivo* bloqueSeleccionado){
+		free(bloqueSeleccionado->copia1->nodo);
+		free(bloqueSeleccionado->copia2->nodo);
+		free(bloqueSeleccionado->copia1);
+		free(bloqueSeleccionado->copia2);
+		free(bloqueSeleccionado);
+	}
+	list_destroy_and_destroy_elements(archivoVictima->bloques,(void*)destruirBloques);
+
+	liberarArchivoYPersistir(archivoVictima);
+	actualizarEstructurasNodos();
 }

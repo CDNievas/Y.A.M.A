@@ -14,7 +14,7 @@ void persistirTablaBitmap(char* );
 
 void persistirTablaNodo();
 
-void persistirRegistroArchivo(char* );
+void persistirRegistroArchivo();
 
 void persistirArchivo(strArchivo* );
 

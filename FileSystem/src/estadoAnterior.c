@@ -197,9 +197,11 @@ void cargarTablaArchivo(char* pathArchivo){
 void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
 	uint32_t cantidadDeDirectorio=config_keys_amount(archivoRegistroArchivos);
 	uint32_t posicion=0;
+
 	while(posicion<cantidadDeDirectorio){
 		char* etiqueta=string_from_format("ARCHIVO%d",posicion);
-		char* pathArchivoSeleccionado = config_get_string_value(archivoRegistroArchivos, etiqueta);
+		char* pathArchivoSeleccionado =string_new();
+		pathArchivoSeleccionado= config_get_string_value(archivoRegistroArchivos, etiqueta);
 		cargarTablaArchivo(pathArchivoSeleccionado);
 		posicion++;
 		list_add(listaRegistroDeArchivosGuardados,pathArchivoSeleccionado);

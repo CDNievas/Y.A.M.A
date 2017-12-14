@@ -74,7 +74,7 @@ void persistirTablaNodo(){
 
 //PERSISTENCIA DE ARCHIVO
 
-void persistirRegistroArchivo(char* pathArchivo){
+void persistirRegistroArchivo(){
 	char* path=string_new();
 	string_append(&path,PATH_METADATA);
 	string_append(&path,"/archivos/registroArchivo.dat");
@@ -99,6 +99,7 @@ void persistirRegistroArchivo(char* pathArchivo){
 	fclose(archivoRegistro);
 
 }
+
 
 void persistirArchivo(strArchivo* archivoElegido){
 	char* directorioArchivo=obtenerPathArchivo(archivoElegido->directorioPadre);
