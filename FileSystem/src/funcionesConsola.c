@@ -311,33 +311,31 @@ int renombrarPath(char * path, char * nuevoNombre){
 	int idPadreArchivo = obtenerIdPadreArchivo(pathDesc,0,-1);
 	char * viejoNombre = obtenerNombreUltimoPath(pathDesc);
 
-	if(!existeArchivoPath(viejoNombre,idPadreArchivo)){
+	strArchivo * archivo = buscaArchivo(viejoNombre,idPadreArchivo);
+
+	if(archivo == NULL){
 
 		int idPadreDirectorio = obtenerIdPadreDirectorio(pathDesc,0,-1);
 
-		if(!existeDirectorioPath(viejoNombre,idPadreDirectorio)){
+		strDirectorio * directorio = buscaDirectorio(viejoNombre,idPadreDirectorio);
+
+		if(directorio == NULL){
 
 			return -1;
 
 		} else {
 
-			bool yaExisteDir(strDirectorio * directorio){
-				return(directorio->padre==idPadreDirectorio && strcmp(directorio->nombre,nuevoNombre)==0);
+			bool yaExisteDir(strDirectorio * x){
+				return(x->padre==idPadreDirectorio && strcmp(x->nombre,nuevoNombre)==0);
 			}
 
 			if(list_any_satisfy(tablaDirectorios, (void *) yaExisteDir)){
 				return -2;
 			} else {
 
-				bool buscaDirViejo(strDirectorio * directorio){
-					return(directorio->padre==idPadreDirectorio && strcmp(directorio->nombre,viejoNombre)==0);
-				}
-
-				strDirectorio * dir = list_find(tablaDirectorios,(void *) buscaDirViejo);
-
-				free(dir->nombre);
-				dir->nombre = string_new();
-				string_append(&dir->nombre,nuevoNombre);
+				free(directorio->nombre);
+				directorio->nombre = string_new();
+				string_append(&directorio->nombre,nuevoNombre);
 
 				return 0;
 
@@ -347,19 +345,13 @@ int renombrarPath(char * path, char * nuevoNombre){
 
 	} else {
 
-		bool yaExisteArchivo(strArchivo * archivo){
-			return(archivo->directorioPadre==idPadreArchivo && strcmp(archivo->nombre,nuevoNombre)==0);
+		bool yaExisteArchivo(strArchivo * x){
+			return(x->directorioPadre==idPadreArchivo && strcmp(x->nombre,nuevoNombre)==0);
 		}
 
 		if(list_any_satisfy(tablaArchivos, (void *) yaExisteArchivo)){
 			return -2;
 		} else {
-
-			bool buscaArchivoviejo(strArchivo * archivo){
-				return(archivo->directorioPadre==idPadreArchivo && strcmp(archivo->nombre,viejoNombre)==0);
-			}
-
-			strArchivo * archivo = list_find(tablaArchivos,(void *) buscaArchivoviejo);
 
 			free(archivo->nombre);
 			archivo->nombre = string_new();
@@ -368,6 +360,133 @@ int renombrarPath(char * path, char * nuevoNombre){
 			return 0;
 
 		}
+	}
+
+}
+
+
+char * obtenerBloque(int socket, uint32_t nroBloque){
+
+	int tamanioMsg = sizeof(uint32_t) + sizeof(uint32_t);
+	void * msg = malloc(tamanioMsg);
+
+	memcpy(msg,&nroBloque,sizeof(uint32_t));
+	uint32_t cantBytes = 1048576;
+	memcpy(msg+sizeof(uint32_t),&cantBytes,sizeof(uint32_t));
+	sendRemasterizado(socket,ENV_LEER,tamanioMsg,msg);
+
+	char* string = recibirString(socket);
+	return string;
+
+}
+
+
+
+int funcionCat(strBloqueArchivo * bloque,char * cat){
+
+	char * nombreNodo = bloque->copia1->nodo;
+
+	bool buscaNodo(strNodo * x){
+		return (strcmp(x->nombre,nombreNodo)==0);
+	}
+
+
+	strNodo * nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
+	strNodo * nodoElegido;
+
+	if(nodo == NULL){
+		log_error(loggerFileSystem,"Volo todo a la verga");
+		exit(-1);
+	} else {
+
+		if(nodo->conectado){
+
+			nodoElegido = nodo;
+
+		} else {
+
+			nombreNodo = bloque->copia2->nodo;
+			nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
+
+			if(nodo == NULL){
+				log_error(loggerFileSystem,"Volo todo a la verga");
+				exit(-1);
+			} else {
+
+				if(nodo->conectado){
+
+					nodoElegido = nodo;
+
+				} else {
+
+					return -1;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	char * stringArchivo = obtenerBloque(nodoElegido->socket,bloque->nro);
+	stringArchivo = string_substring_until(stringArchivo, bloque->bytes);
+
+	string_append(&cat,stringArchivo);
+
+	free(stringArchivo);
+
+	return 0;
+
+}
+
+void catArchivo(char *path){
+
+	char ** pathDesc = string_split(path,"/");
+	char * nombre = obtenerNombreUltimoPath(pathDesc);
+
+	int idPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
+
+	if(idPadre == -2){
+		printf("Path inexistente \n");
+		log_warning(loggerFileSystem,"Path inexistente");
+	} else {
+
+		strArchivo * archivo = buscaArchivo(nombre,idPadre);
+
+		if(archivo == NULL){
+			printf("Path inexistente \n");
+			log_warning(loggerFileSystem,"Path inexistente");
+		} else {
+
+			char * cat = string_new();
+
+			t_list * listaBloques = archivo->bloques;
+
+			int i=0;
+			int cod=0;
+			while(i<list_size(listaBloques)){
+
+				strBloqueArchivo * bloque = list_get(listaBloques,i);
+
+				if((cod = funcionCat(bloque,cat)) == -1){
+					break;
+				}
+
+				i++;
+			}
+
+			if(cod == -1){
+				free(cat);
+				printf("%s","No hay suficientes copias de bloques.");
+				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
+			} else {
+				printf("%s",cat);
+				free(cat);
+			}
+
+		}
+
 	}
 
 }

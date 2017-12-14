@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
 				u_int32_t cantBytes = recibirUInt(socketServerFS);
 
+				printf("asd - %d \n",cantBytes);
+
 				if(cantBytes > SIZEBLOQUE){
 					log_error(loggerDatanode, "Se estan tratando de leer %d bytes.",cantBytes);
 					exit(-96);
@@ -53,7 +55,6 @@ int main(int argc, char **argv) {
 
 				//Leo el bloque
 				void * bloque = leerBloque(nroBloque,cantBytes);
-
 
 				if(bloque == NULL){
 					// Bloque inexistente

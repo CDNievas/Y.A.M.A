@@ -59,7 +59,6 @@ typedef struct _archivo{
 	t_list* bloques;
 } strArchivo;
 
-
 typedef struct _copia{
 	char * nodo;
 	u_int32_t nroBloque;

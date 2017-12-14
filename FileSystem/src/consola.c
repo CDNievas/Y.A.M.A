@@ -184,6 +184,42 @@ void ejecutarComando(uint32_t nro, char ** param){
 		}
 		break;
 
+
+		//CAT
+		case 5:{
+
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+
+				if(!chequearParamCom(param,2,2)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+
+					if(!contieneYamafs(param[1])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+
+							pthread_mutex_lock(&mutex);
+							catArchivo(param[1]);
+							pthread_mutex_unlock(&mutex);
+
+						}
+
+					}
+				}
+			}
+
+		}
+		break;
 		//MKDIR
 		case 6:{
 

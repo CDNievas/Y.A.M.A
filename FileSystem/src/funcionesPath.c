@@ -40,7 +40,7 @@ bool recorrerPath(char ** pathDesc,int indice,int idPadre){
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
 
-	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+	strArchivo * archivo = buscaArchivo(pathAct,idPadre);
 
 	if (archivo != NULL){
 
@@ -52,7 +52,7 @@ bool recorrerPath(char ** pathDesc,int indice,int idPadre){
 
 	} else {
 
-		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		strDirectorio * directorio = buscaDirectorio(pathAct,idPadre);
 		if (directorio != NULL){
 
 			if(pathProx == NULL){
@@ -69,14 +69,14 @@ bool recorrerPath(char ** pathDesc,int indice,int idPadre){
 
 }
 
-strArchivo * existeArchivoPath(char * nombreArchivo,int idPadre){
+strArchivo * buscaArchivo(char * nombreArchivo,int idPadre){
 	bool buscaPorNombre(strArchivo * archivo){
 		return strcmp(archivo->nombre,nombreArchivo) == 0 && archivo->directorioPadre == idPadre;
 	}
-	return list_find(tablaArchivos, (void *)buscaPorNombre);;
+	return list_find(tablaArchivos, (void *)buscaPorNombre);
 }
 
-strDirectorio * existeDirectorioPath(char * nombreDirectorio, int idPadre){
+strDirectorio * buscaDirectorio(char * nombreDirectorio, int idPadre){
 	bool buscaPorNombre(strDirectorio * directorio){
 		return strcmp(directorio->nombre,nombreDirectorio) == 0 && directorio->padre==idPadre;
 	}
@@ -89,7 +89,7 @@ int directorioInexistente(char ** pathDesc, int indice, int idPadre){
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
 
-	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+	strArchivo * archivo = buscaArchivo(pathAct,idPadre);
 
 	if (archivo != NULL){
 
@@ -98,7 +98,7 @@ int directorioInexistente(char ** pathDesc, int indice, int idPadre){
 
 	} else {
 
-		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		strDirectorio * directorio = buscaDirectorio(pathAct,idPadre);
 
 		if (directorio == NULL){
 
@@ -147,7 +147,7 @@ uint32_t obtenerIdDirectorio(char ** pathDesc,int indice,int idPadre){
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
 
-	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+	strArchivo * archivo = buscaArchivo(pathAct,idPadre);
 
 	if (archivo != NULL){
 		if(pathProx == NULL){
@@ -158,7 +158,7 @@ uint32_t obtenerIdDirectorio(char ** pathDesc,int indice,int idPadre){
 			return -2;
 		}
 	} else {
-		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		strDirectorio * directorio = buscaDirectorio(pathAct,idPadre);
 		if (directorio != NULL){
 			if(pathProx == NULL){
 				return directorio->index;
@@ -177,7 +177,7 @@ uint32_t obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
 
-	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+	strArchivo * archivo = buscaArchivo(pathAct,idPadre);
 
 	if (archivo != NULL){
 		if(pathProx == NULL){
@@ -188,7 +188,7 @@ uint32_t obtenerIdPadreDirectorio(char ** pathDesc,int indice,int idPadre){
 			return -2;
 		}
 	} else {
-		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		strDirectorio * directorio = buscaDirectorio(pathAct,idPadre);
 		if (directorio != NULL){
 			if(pathProx == NULL){
 				return directorio->padre;
@@ -209,7 +209,7 @@ uint32_t obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
 	char * pathAct = pathDesc[indice];
 	char * pathProx = pathDesc[indice+1];
 
-	strArchivo * archivo = existeArchivoPath(pathAct,idPadre);
+	strArchivo * archivo = buscaArchivo(pathAct,idPadre);
 
 	if (archivo != NULL){
 		if(pathProx == NULL){
@@ -220,7 +220,7 @@ uint32_t obtenerIdPadreArchivo(char ** pathDesc,int indice,int idPadre){
 			return -2;
 		}
 	} else {
-		strDirectorio * directorio = existeDirectorioPath(pathAct,idPadre);
+		strDirectorio * directorio = buscaDirectorio(pathAct,idPadre);
 		if (directorio != NULL){
 			if(pathProx == NULL){
 				return -2;

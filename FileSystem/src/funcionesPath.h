@@ -13,8 +13,8 @@
 char* obtenerNombreUltimoPath(char**);
 bool existePath(char *);
 bool recorrerPath(char **,int,int);
-strArchivo * existeArchivoPath(char * ,int );
-strDirectorio * existeDirectorioPath(char * , int );
+strArchivo * buscaArchivo(char * ,int );
+strDirectorio * buscaDirectorio(char * , int );
 int directorioInexistente(char **, int , int );
 bool existePathLocal(char *);
 uint32_t obtenerIdDirectorio(char **,int, int);

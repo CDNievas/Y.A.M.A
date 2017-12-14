@@ -143,7 +143,8 @@ void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
 
 	} else {
 
-		void * dataBloque = miMalloc(cantBytes,loggerDatanode,"Fallo en leerBloque()");
+		void * dataBloque = malloc(cantBytes);
+		//void * dataBloque = miMalloc(cantBytes+sizeof(uint32_t),loggerDatanode,"Fallo en leerBloque()");
 		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),cantBytes);
 
 		return dataBloque;

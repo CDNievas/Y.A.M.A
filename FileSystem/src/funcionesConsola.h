@@ -21,5 +21,6 @@ int borrarDirectorio(char *);
 int borrarArchivo(char *);
 uint32_t sacarTamanioArchivo (FILE*);
 int renombrarPath(char *, char *);
+void catArchivo(char *);
 
 #endif /* FUNCIONESCONSOLA_H_ */
