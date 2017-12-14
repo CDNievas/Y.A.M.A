@@ -190,7 +190,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 int crearDirectorio(char * path){
 
 	int indexDir = list_size(tablaDirectorios);
-	if(indexDir<=100){
+	if(indexDir<100){
 
 		char ** pathDesc = string_split(path,"/");
 
