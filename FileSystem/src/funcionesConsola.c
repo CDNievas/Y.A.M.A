@@ -621,3 +621,38 @@ void borrarBloquesArchivos(strArchivo* archivoVictima){
 	liberarArchivoYPersistir(archivoVictima);
 	actualizarEstructurasNodos();
 }
+
+
+void crearDirectorios(char* raiz, char* cantDirectorios){
+	uint32_t contador=0;
+	int nDirectorios=atoi(cantDirectorios);
+	while(contador<nDirectorios){
+		char* directorioBase=string_from_format("%s%d",raiz,(contador+1));
+		int cod = crearDirectorio(directorioBase);
+
+		if(cod == -1){
+			printf("Se ha alcanzado el limite de directorios posibles \n");
+			log_warning(loggerFileSystem, "Se ha alcanzado el limite de directorios posibles");
+			return;
+		} else if(cod == -2){
+			printf("Path incorrecto. Contenia archivos \n");
+			log_warning(loggerFileSystem, "Path incorrecto. Contenia archivos");
+			return;
+		} else if(cod == -3){
+			printf("Path inexistente \n");
+			log_warning(loggerFileSystem, "Path inexistente");
+			return;
+		} else if(cod == -4){
+			printf("Ya existe un directorio con ese nombre \n");
+			log_warning(loggerFileSystem, "Ya existe un directorio con ese nombre");
+			return;
+		} else {
+			printf("Se ha creado el directorio correctamente \n");
+			log_info(loggerFileSystem,"Se ha creado el directorio correctamente");
+		}
+
+		contador++;
+	}
+
+}
+
