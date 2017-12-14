@@ -22,6 +22,7 @@ char* IP_FILESYSTEM;
 char* RUTA_DATABIN;
 char* NOMBRE_NODO;
 int PUERTO_FILESYSTEM;
+int contadorRandom;
 int PUERTO_WORKER;
 void* dataBinBloque;
 size_t dataBinTamanio;
@@ -280,11 +281,14 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 	char* nombreBloque = string_new();
 	char* numeroBloque = string_itoa(nroBloque);
 	char* numeroPID = string_itoa((int)getpid());
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
 	string_append(&nombreBloque,"temporalBloque");
 	string_append(&nombreBloque,numeroBloque);
+	string_append(&nombreBloque,numeroRandom);
 	string_append(&nombreBloque,numeroPID);
 	FILE* archivoScript = fopen(nombreBloque,"w");
-
+	free(numeroRandom);
 	if(archivoScript==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
@@ -660,6 +664,10 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 	char* nombreArchivoApareado = string_new();
 	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
 	char* numeroPID = string_itoa((int)getpid());
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
+	string_append(&nombreArchivoApareado,numeroRandom);
+	free(numeroRandom);
 	string_append(&nombreArchivoApareado,numeroPID);
 	char* comandoOrdenacionArchivos = string_new();
 	string_append(&comandoOrdenacionArchivos,"sort -m ");
@@ -717,13 +725,17 @@ char* obtenerNombreScriptTransformador(char* nombreScript,uint32_t nroBloque){
 	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
 	char* numeroBloque = string_itoa(nroBloque);
 	char* numeroPID = string_itoa((int)getpid());
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
 	string_append(&nombreScriptSinExtension,numeroBloque);
 	string_append(&nombreScriptSinExtension,numeroPID);
+	string_append(&nombreScriptSinExtension,numeroRandom);
 	char* extensionScript = obtenerParteScript(nombreScript,1);
 	string_append(&nombreScriptSinExtension,extensionScript);
 	free(nombreScript);
 	free(extensionScript);
 	free(numeroBloque);
+	free(numeroRandom);
 	free(numeroPID);
 	return nombreScriptSinExtension;
 }
@@ -731,7 +743,11 @@ char* obtenerNombreScriptTransformador(char* nombreScript,uint32_t nroBloque){
 char* obtenerNombreScriptReductor(char* nombreScript,char* archivoApareado){
 	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
 	char* numeroPID = string_itoa((int)getpid());
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
 	string_append(&nombreScriptSinExtension,numeroPID);
+	string_append(&nombreScriptSinExtension,numeroRandom);
+	free(numeroRandom);
 	string_append(&nombreScriptSinExtension,archivoApareado);
 	char* extensionScript = obtenerParteScript(nombreScript,1);
 	string_append(&nombreScriptSinExtension,extensionScript);
@@ -991,9 +1007,10 @@ int main(int argc, char **argv) {
 	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
-	eliminarProcesosMuertos();
+	//eliminarProcesosMuertos();
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
+	contadorRandom = 0;
 	mkdir("../../../tmp",0777);
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
