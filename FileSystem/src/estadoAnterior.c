@@ -200,11 +200,12 @@ void cargarEstructuraArchivos(t_config* archivoRegistroArchivos){
 
 	while(posicion<cantidadDeDirectorio){
 		char* etiqueta=string_from_format("ARCHIVO%d",posicion);
-		char* pathArchivoSeleccionado =string_new();
-		pathArchivoSeleccionado= config_get_string_value(archivoRegistroArchivos, etiqueta);
+		char* pathRegistroArchivo =string_new();
+		char* pathArchivoSeleccionado= config_get_string_value(archivoRegistroArchivos, etiqueta);
+		string_append(&pathRegistroArchivo,pathArchivoSeleccionado);
 		cargarTablaArchivo(pathArchivoSeleccionado);
 		posicion++;
-		list_add(listaRegistroDeArchivosGuardados,pathArchivoSeleccionado);
+		list_add(listaRegistroDeArchivosGuardados,pathRegistroArchivo);
 		free(etiqueta);
 	}
 }

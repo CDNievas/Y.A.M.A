@@ -785,3 +785,45 @@
 [INFO] 01:16:05:184 FileSystem/(4113:4113): Estructuras iniciadas
 [INFO] 01:16:07:154 FileSystem/(4113:4113): Consola iniciada
 [INFO] 01:16:07:155 FileSystem/(4113:4113): Esperando conexiones
+[INFO] 12:12:40:563 FileSystem/(4862:4862): Estructuras iniciadas
+[INFO] 12:12:40:566 FileSystem/(4862:4862): Consola iniciada
+[INFO] 12:12:40:566 FileSystem/(4862:4862): Esperando conexiones
+[INFO] 12:12:47:387 FileSystem/(4862:4862): Se ha recibido una nueva conexion
+[INFO] 12:12:47:387 FileSystem/(4862:4862): Registrando Datanode
+[INFO] 12:12:48:83 FileSystem/(4862:4862): Se ha recibido una nueva conexion
+[INFO] 12:12:48:83 FileSystem/(4862:4862): Registrando Datanode
+[INFO] 12:12:49:35 FileSystem/(4862:4862): Se ha recibido una nueva conexion
+[INFO] 12:12:49:35 FileSystem/(4862:4862): Registrando Datanode
+[INFO] 12:12:51:131 FileSystem/(4862:4862): Se ha recibido una nueva conexion
+[INFO] 12:12:51:131 FileSystem/(4862:4862): Registrando Datanode
+[INFO] 12:12:54:746 FileSystem/(4862:4876): Se ha formateado correctamente el sistema
+[TRACE] 12:13:15:979 FileSystem/(4862:4876): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 12:13:18:135 FileSystem/(4862:4876): Se Procede almacenar el nombres.csv.
+[INFO] 12:13:19:330 FileSystem/(4862:4876): Se ha almacenado correctamente el archivo nombres.csv.
+[WARNING] 12:14:23:717 FileSystem/(4862:4876): Error con los parametros al ejecutar mkdir
+[INFO] 12:14:49:51 FileSystem/(4862:4876): Se ha creado el directorio correctamente
+[WARNING] 12:15:28:463 FileSystem/(4862:4876): Comando no reconocido
+[INFO] 12:18:48:854 FileSystem/(4862:4876): Se ha cambiado el nombre correctamente
+[INFO] 12:37:07:763 FileSystem/(5434:5434): Estructuras iniciadas
+[INFO] 12:37:07:766 FileSystem/(5434:5434): Consola iniciada
+[INFO] 12:37:07:766 FileSystem/(5434:5434): Esperando conexiones
+[INFO] 12:37:11:80 FileSystem/(5434:5434): Se ha recibido una nueva conexion
+[INFO] 12:37:11:81 FileSystem/(5434:5434): Registrando Datanode
+[INFO] 12:37:11:816 FileSystem/(5434:5434): Se ha recibido una nueva conexion
+[INFO] 12:37:11:816 FileSystem/(5434:5434): Registrando Datanode
+[INFO] 12:37:12:856 FileSystem/(5434:5434): Se ha recibido una nueva conexion
+[INFO] 12:37:12:857 FileSystem/(5434:5434): Registrando Datanode
+[INFO] 12:37:13:536 FileSystem/(5434:5434): Se ha recibido una nueva conexion
+[INFO] 12:37:13:536 FileSystem/(5434:5434): Registrando Datanode
+[INFO] 12:37:16:544 FileSystem/(5434:5450): Se ha formateado correctamente el sistema
+[INFO] 12:37:27:312 FileSystem/(5434:5450): Se ha creado el directorio correctamente
+[TRACE] 12:37:47:927 FileSystem/(5434:5450): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 12:37:50:108 FileSystem/(5434:5450): Se Procede almacenar el nombres.csv.
+[INFO] 12:37:51:538 FileSystem/(5434:5450): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 12:38:37:702 FileSystem/(5434:5450): Se ha cambiado el nombre correctamente
+[INFO] 12:39:32:734 FileSystem/(5434:5450): Se ha cambiado el nombre correctamente
+[WARNING] 12:42:03:194 FileSystem/(5434:5450): Path inexistente
+[WARNING] 12:42:28:778 FileSystem/(5434:5450): Path inexistente
+[WARNING] 12:42:57:962 FileSystem/(5434:5450): Path inexistente
+[WARNING] 12:43:42:669 FileSystem/(5434:5450): Path inexistente
+[INFO] 12:44:00:300 FileSystem/(5434:5450): Se ha borrado el directorio correctamente

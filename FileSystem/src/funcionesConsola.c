@@ -256,6 +256,7 @@ int borrarDirectorio(char * pathDir){
 					free(directorio->nombre);
 					free(directorio);
 				}
+				persistirTablaDirectorio();
 
 				return 0;
 
@@ -338,6 +339,8 @@ int renombrarPath(char * path, char * nuevoNombre){
 				directorio->nombre = string_new();
 				string_append(&directorio->nombre,nuevoNombre);
 
+				persistirTablaDirectorio();
+
 				return 0;
 
 			}
@@ -354,9 +357,29 @@ int renombrarPath(char * path, char * nuevoNombre){
 			return -2;
 		} else {
 
+			char* pathArchivoEnMetadata=obtenerPathArchivo(idPadreArchivo);
+			string_append(&pathArchivoEnMetadata,viejoNombre);
+
+			char* comando=string_new();
+			string_append(&comando,"rm ");
+			string_append(&comando,pathArchivoEnMetadata);
+			system(comando);
+
+			bool esElPathMetadata(char* pathSeleccionado){
+				return (strcmp(pathSeleccionado,pathArchivoEnMetadata)==0);
+			}
+			char* pathVictima=list_remove_by_condition(listaRegistroDeArchivosGuardados,(void*)esElPathMetadata);
+
+			free(pathVictima);
+			free(comando);
+			free(pathArchivoEnMetadata);
+
+
 			free(archivo->nombre);
 			archivo->nombre = string_new();
 			string_append(&archivo->nombre,nuevoNombre);
+
+			persistirArchivo(archivo);
 
 			return 0;
 
@@ -516,14 +539,8 @@ void liberarBloque(char* nombreNodo, uint32_t nroBloque){
 
 void liberarArchivoYPersistir(strArchivo* archivoVictima){
 
-	char* pathArchivoEnMetadata=string_new();
-	string_append(&pathArchivoEnMetadata,PATH_METADATA);
-	string_append(&pathArchivoEnMetadata,"/archivos/");
-	char* idPapa=string_itoa(archivoVictima->directorioPadre);
-	string_append(&pathArchivoEnMetadata,idPapa);
-	string_append(&pathArchivoEnMetadata,"/");
+	char* pathArchivoEnMetadata=obtenerPathArchivo(archivoVictima->directorioPadre);
 	string_append(&pathArchivoEnMetadata,archivoVictima->nombre);
-	free(idPapa);
 
 	bool esElPathMetadata(char* pathSeleccionado){
 		return (strcmp(pathSeleccionado,pathArchivoEnMetadata)==0);
