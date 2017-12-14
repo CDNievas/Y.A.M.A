@@ -391,7 +391,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 				} else {
 					printf("El path NO existe \n");
 				}
-				thread_mutex_unlock(&mutex);
+				pthread_mutex_unlock(&mutex);
 
 
 			}
