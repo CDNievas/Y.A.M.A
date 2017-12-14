@@ -58,8 +58,9 @@ void ejecutarComando(uint32_t nro, char ** param){
 					log_warning(loggerFileSystem, "Error con los parametros al ejecutar format");
 				} else {
 
-					if(strcmp(param[1],"-d")==0){
-
+					if(strcmp(param[1],"-d")==0 && chequearParamCom(param,3,3)){
+						
+						pthread_mutex_lock(&mutex);
 						int cod = borrarDirectorio(param[2]);
 
 						if(cod == -1){
@@ -81,9 +82,11 @@ void ejecutarComando(uint32_t nro, char ** param){
 							printf("Se ha borrado el directorio correctamente \n");
 							log_info(loggerFileSystem, "Se ha borrado el directorio correctamente");
 						}
+						pthread_mutex_unlock(&mutex);
+						
+					} else if(chequearParamCom(param,2,2)){
 
-					} else {
-
+						pthread_mutex_lock(&mutex);
 						int cod = borrarArchivo(param[1]);
 
 						if(cod == -2){
@@ -93,7 +96,14 @@ void ejecutarComando(uint32_t nro, char ** param){
 							printf("Se ha borrado el archivo correctamente \n");
 							log_info(loggerFileSystem, "Se ha borrado el archivo correctamente");
 						}
+						pthread_mutex_unlock(&mutex);
 
+
+					} else {
+						
+						printf("Error con los parametros \n");
+						log_warning(loggerFileSystem, "Error con los parametros");
+						
 					}
 
 				}
@@ -121,6 +131,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
 
+						pthread_mutex_lock(&mutex);
 						if(!existePath(param[1])){
 							printf("El path no existe \n");
 							log_warning(loggerFileSystem, "El path no existe");
@@ -140,6 +151,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 							}
 
 						}
+						pthread_mutex_unlock(&mutex);
+
 
 					}
 
@@ -167,7 +180,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 						printf("El path no pertenece a yamafs \n");
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
-
+						
+						pthread_mutex_lock(&mutex);
 						if(!existePath(param[1])){
 							printf("El path no existe \n");
 							log_warning(loggerFileSystem, "El path no existe");
@@ -176,6 +190,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 							//int cod = moverPath(param[1],param[2]);
 
 						}
+						pthread_mutex_unlock(&mutex);
 
 					}
 				}
@@ -202,17 +217,17 @@ void ejecutarComando(uint32_t nro, char ** param){
 						printf("El path no pertenece a yamafs \n");
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
-
+						
+						pthread_mutex_lock(&mutex);
 						if(!existePath(param[1])){
 							printf("El path no existe \n");
 							log_warning(loggerFileSystem, "El path no existe");
 						} else {
 
-							pthread_mutex_lock(&mutex);
 							catArchivo(param[1]);
-							pthread_mutex_unlock(&mutex);
 
 						}
+						pthread_mutex_unlock(&mutex);
 
 					}
 				}
@@ -237,7 +252,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 						printf("El path no pertenece a yamafs \n");
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
-
+						
+						pthread_mutex_lock(&mutex);
 						if(existePath(param[1])){
 							printf("Ya existe un directorio con ese nombre \n");
 							log_warning(loggerFileSystem, "Ya existe un directorio con ese nombre");
@@ -263,6 +279,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 							}
 
 						}
+						pthread_mutex_unlock(&mutex);
 
 					}
 
@@ -292,7 +309,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 						log_warning(loggerFileSystem,"Error en la cantidad de parametros");
 
 					} else {
-
+						
 						if(!existePathLocal(param[1])){
 
 							printf("El archivo local no existe \n");
@@ -307,18 +324,18 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 							string_append(&path,param[2]);
 							string_append(&path,nombreArchivo);
-
+							
+							pthread_mutex_lock(&mutex);
 							if(existePath(path)){
 								printf("Ya existe un archivo con ese nombre \n");
 								log_warning(loggerFileSystem,"Ya existe un archivo con ese nombre");
 
 							} else {
 								
-								pthread_mutex_lock(&mutex);
 								almacenarArchivo(param[1], param[2], param[3]);
-								pthread_mutex_unlock(&mutex);
 								
 							}
+							pthread_mutex_unlock(&mutex);
 							free(nombreArchivo);
 							free(path);
 							//free(pathDesc);
@@ -339,12 +356,15 @@ void ejecutarComando(uint32_t nro, char ** param){
 				log_warning(loggerFileSystem,"Error en la cantidad de parametros");
 
 			} else{
+				
+				pthread_mutex_lock(&mutex);
 				if(!existePath(param[1])){
 					printf("Ah ingresado una raiz que no existe \n");
 					log_warning(loggerFileSystem,"Error al ingresar la raiz. No existe");
 				}else{
 					crearDirectorios(param[1],param[2]);
 				}
+				pthread_mutex_unlock(&mutex);
 
 			}
 
@@ -364,12 +384,15 @@ void ejecutarComando(uint32_t nro, char ** param){
 				log_warning(loggerFileSystem,"Error, el path no corresponde a yamafs");
 
 			} else {
-
+	
+				pthread_mutex_lock(&mutex);
 				if(existePath(param[1])){
 					printf("El path existe \n");
 				} else {
 					printf("El path NO existe \n");
 				}
+				thread_mutex_unlock(&mutex);
+
 
 			}
 
