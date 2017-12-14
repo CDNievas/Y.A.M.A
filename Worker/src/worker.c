@@ -229,7 +229,8 @@ void eliminarArchivo(char* nombreScript){
 }
 
 void* dataBinMapear() {
-	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDWR);
+	//int descriptorArchivo = open(RUTA_DATABIN, O_RDONLY);
+	int descriptorArchivo = open(RUTA_DATABIN, O_CLOEXEC | O_RDONLY);
 	if (descriptorArchivo==-1) {
 		log_error(loggerWorker,"No se pudo abrir el data.bin \n");
 		free(IP_FILESYSTEM);
@@ -250,7 +251,7 @@ void* dataBinMapear() {
 		exit(-1);
 	}
 	dataBinTamanio = estadoArchivo.st_size;
-	void* puntero = mmap(0, dataBinTamanio, PROT_READ, MAP_SHARED, descriptorArchivo, 0);
+	void* puntero = mmap(0, dataBinTamanio, PROT_READ, MAP_PRIVATE, descriptorArchivo, 0);
 	if (puntero == MAP_FAILED) {
 		log_error(loggerWorker,"Fallo el mmap \n");
 		free(IP_FILESYSTEM);
@@ -990,7 +991,7 @@ int main(int argc, char **argv) {
 	log_info(loggerWorker, "Se cargo correctamente Worker.\n");
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
-	//eliminarProcesosMuertos();
+	eliminarProcesosMuertos();
 	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
 	mkdir("../../../tmp",0777);
