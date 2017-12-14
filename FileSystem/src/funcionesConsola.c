@@ -661,3 +661,116 @@ void crearDirectorios(char* raiz, char* cantDirectorios){
 
 }
 
+
+int funcionesRemasterizadaCat(strBloqueArchivo * bloque,FILE* archivoFSLocal){
+
+	char * nombreNodo = bloque->copia1->nodo;
+
+	bool buscaNodo(strNodo * x){
+		return (strcmp(x->nombre,nombreNodo)==0);
+	}
+
+
+	strNodo * nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
+	strNodo * nodoElegido;
+	strCopiaArchivo* copiaElegida;
+
+	if(nodo == NULL){
+		log_error(loggerFileSystem,"Volo todo a la verga");
+		exit(-1);
+	} else {
+
+		if(nodo->conectado){
+
+			nodoElegido = nodo;
+			copiaElegida=bloque->copia1;
+
+		} else {
+
+			nombreNodo = bloque->copia2->nodo;
+			nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
+
+			if(nodo == NULL){
+				log_error(loggerFileSystem,"Volo todo a la verga");
+				exit(-1);//ARREGLAR
+			} else {
+
+				if(nodo->conectado){
+
+					nodoElegido = nodo;
+					copiaElegida=bloque->copia2;
+
+				} else {
+
+					return -1;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	char * stringArchivo = obtenerBloque(nodoElegido->socket,copiaElegida->nroBloque);
+
+	fwrite(stringArchivo,string_length(stringArchivo),1,archivoFSLocal);
+	fseek(archivoFSLocal,0,SEEK_END);
+
+	free(stringArchivo);
+
+	return 0;
+
+}
+
+void cpto(char * pathYamaFs, char* pathLocal){
+
+	char ** pathDesc = string_split(pathYamaFs,"/");
+	char * nombre = obtenerNombreUltimoPath(pathDesc);
+
+	string_append(&pathLocal,nombre);
+	FILE* archivoFSLocal=fopen(pathLocal,"w+");
+
+	int idPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
+
+	if(idPadre == -2){
+		printf("Path inexistente \n");
+		log_warning(loggerFileSystem,"Path inexistente");
+	} else {
+
+		strArchivo * archivo = buscaArchivo(nombre,idPadre);
+
+		if(archivo == NULL){
+			printf("Path inexistente \n");
+			log_warning(loggerFileSystem,"Path inexistente");
+		} else {
+
+			t_list * listaBloques = archivo->bloques;
+
+			int i=0;
+			int cod=0;
+			while(i<list_size(listaBloques)){
+
+				strBloqueArchivo * bloque = list_get(listaBloques,i);
+
+				if((cod = funcionesRemasterizadaCat(bloque,archivoFSLocal)) == -1){
+					break;
+				}
+
+				i++;
+			}
+
+			if(cod == -1){
+				//free(cat);
+				printf("%s","No hay suficientes copias de bloques.");
+				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
+			} else {
+				//printf("%s",cat);
+				//free(cat);
+			}
+
+		}
+
+	}
+
+}

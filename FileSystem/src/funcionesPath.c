@@ -132,7 +132,6 @@ bool existePathLocal(char * path){
 	FILE *archivo = fopen(path, "r");
 
 	if(archivo == NULL){
-		fclose(archivo);
 		return false;
 	} else {
 		fclose(archivo);
