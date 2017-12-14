@@ -59,7 +59,7 @@ infoNodo *generarInfoParaMaster(administracionYAMA* administracion, infoDeFs* in
   string_append(&informacion->conexion->nombreNodo, administracion->nombreNodo);
   string_append(&informacion->nombreTemporal, administracion->nameFile);
   obtenerIPYPuerto(informacion->conexion);
-  if(informacion->conexion->ipNodo == NULL && informacion->conexion->puertoNodo == -1){
+  if(informacion->conexion->ipNodo == NULL && informacion->conexion->puertoNodo == 0){
 	  return NULL;
   }
   return informacion;
