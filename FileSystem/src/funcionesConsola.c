@@ -375,15 +375,22 @@ char * obtenerBloque(int socket, uint32_t nroBloque){
 	uint32_t cantBytes = 1048576;
 	memcpy(msg+sizeof(uint32_t),&cantBytes,sizeof(uint32_t));
 	sendRemasterizado(socket,ENV_LEER,tamanioMsg,msg);
-
-	char* string = recibirString(socket);
-	return string;
-
+	free(msg);
+	uint32_t noti = recibirUInt(socket);
+	//uint32_t tamanio = recibirUInt(socket);
+	void* string = malloc(cantBytes);
+	if(recv(socket, string, cantBytes, MSG_WAITALL) == -1){
+		perror("Error al recibir un string.");
+		exit(-1);
+	}
+	char* stringRecibido = string_substring_until(string, cantBytes);
+	free(string);
+	return stringRecibido;
 }
 
 
 
-int funcionCat(strBloqueArchivo * bloque,char * cat){
+int funcionCat(strBloqueArchivo * bloque){
 
 	char * nombreNodo = bloque->copia1->nodo;
 
@@ -431,10 +438,10 @@ int funcionCat(strBloqueArchivo * bloque,char * cat){
 	}
 
 	char * stringArchivo = obtenerBloque(nodoElegido->socket,bloque->nro);
-	stringArchivo = string_substring_until(stringArchivo, bloque->bytes);
+	//char* stringFinal = string_substring_until(stringArchivo, bloque->bytes);
+	//free(stringArchivo);
 
-	string_append(&cat,stringArchivo);
-
+	printf("%s", stringArchivo);
 	free(stringArchivo);
 
 	return 0;
@@ -460,7 +467,7 @@ void catArchivo(char *path){
 			log_warning(loggerFileSystem,"Path inexistente");
 		} else {
 
-			char * cat = string_new();
+			//char * cat = string_new();
 
 			t_list * listaBloques = archivo->bloques;
 
@@ -470,7 +477,7 @@ void catArchivo(char *path){
 
 				strBloqueArchivo * bloque = list_get(listaBloques,i);
 
-				if((cod = funcionCat(bloque,cat)) == -1){
+				if((cod = funcionCat(bloque)) == -1){
 					break;
 				}
 
@@ -478,12 +485,12 @@ void catArchivo(char *path){
 			}
 
 			if(cod == -1){
-				free(cat);
+				//free(cat);
 				printf("%s","No hay suficientes copias de bloques.");
 				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
 			} else {
-				printf("%s",cat);
-				free(cat);
+				//printf("%s",cat);
+				//free(cat);
 			}
 
 		}

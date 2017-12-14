@@ -168,7 +168,7 @@ void sendDeNotificacion(int aQuien, int notificacion){
 
 uint32_t recibirUInt(int socket){
 	uint32_t uintRecibido;
-	if(recv(socket, &uintRecibido, sizeof(uint32_t), MSG_WAITALL) == -1){
+	if(recv(socket, &uintRecibido, sizeof(uint32_t), 0) == -1){
 		perror("Error al recibir un uint.");
 		exit(-1);
 	}

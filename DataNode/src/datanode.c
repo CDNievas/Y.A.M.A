@@ -42,9 +42,10 @@ int main(int argc, char **argv) {
 			}
 
 			case REC_LEER:{
-
+//				uint32_t tamMsj = recibirUInt(socketServerFS);
+//				printf("%d", tamMsj);
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
-				u_int32_t cantBytes = recibirUInt(socketServerFS);
+				uint32_t cantBytes = recibirUInt(socketServerFS);
 
 				printf("asd - %d \n",cantBytes);
 
