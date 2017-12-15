@@ -497,8 +497,8 @@ int funcionCat(strBloqueArchivo * bloque){
 	}
 
 	char * stringArchivo = obtenerBloque(nodoElegido->socket,copiaElegida->nroBloque);
-	//char* stringFinal = string_substring_until(stringArchivo, bloque->bytes);
-	//free(stringArchivo);
+	char * stringFinal = string_substring_until(stringArchivo, bloque->bytes);
+	free(stringArchivo);
 
 	printf("%s", stringArchivo);
 	free(stringArchivo);
@@ -547,9 +547,6 @@ void catArchivo(char *path){
 				//free(cat);
 				printf("%s","No hay suficientes copias de bloques.");
 				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
-			} else {
-				//printf("%s",cat);
-				//free(cat);
 			}
 
 		}
@@ -742,11 +739,13 @@ int funcionesRemasterizadaCat(strBloqueArchivo * bloque,FILE* archivoFSLocal){
 	}
 
 	char * stringArchivo = obtenerBloque(nodoElegido->socket,copiaElegida->nroBloque);
-
-	fwrite(stringArchivo,string_length(stringArchivo),1,archivoFSLocal);
+	char * stringFinal = string_substring_until(stringArchivo, bloque->bytes);
+	free(stringArchivo);
+	
+	fwrite(stringFinal,string_length(stringArchivo),1,archivoFSLocal);
 	fseek(archivoFSLocal,0,SEEK_END);
 
-	free(stringArchivo);
+	free(stringFinal);
 
 	return 0;
 
