@@ -7,6 +7,24 @@
 
 #include "funcionesConsola.h"
 
+bool buscarArchivo(char * path){
+
+	char ** pathDesc = string_split(path,"/");
+
+	int idPadreArchivo = obtenerIdPadreArchivo(pathDesc,0,-1);
+	char * nombreArchivo = obtenerNombreUltimoPath(pathDesc);
+
+	strArchivo * archivo = buscaArchivo(nombreArchivo,idPadreArchivo);
+
+	if(archivo == NULL){
+		return true;
+	} else {
+
+		return false;
+	}
+
+}
+
 
 void liberarRutaDesarmada(char** ruta){
 	uint32_t cont=0;
@@ -66,10 +84,25 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 		return false;
 	}
 
+
 	//SI existe el directorio
 	if(!existePath(pathDirectorio)){
 		printf("El directorio de yamafs no existe \n");
 		log_warning(loggerFileSystem,"El directorio de yamafs no existe.");
+		return false;
+	}
+
+	//OBTENGO EL NOMBRE DEL ARCHIVO
+	char** rutaArchivo=string_split(pathArchivo,"/");
+	char** rutaDirectorio = string_split(pathDirectorio,"/");
+	//TENGO QUE LIBERARLO
+	char* nombreArchivo=obtenerNombreUltimoPath(rutaArchivo);
+	string_append(&pathDirectorio,nombreArchivo);
+
+
+	//Si existe el archivo en ese directorio
+	if(!buscarArchivo(pathDirectorio)){
+		log_warning(loggerFileSystem,"El archivo que se desea alamacenar ya existe en yamafs.");
 		return false;
 	}
 
@@ -98,11 +131,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 	entradaArchivoAGuardar->nombre=string_new();
 	entradaArchivoAGuardar->tipo=string_new();
 
-		//OBTENGO EL NOMBRE DEL ARCHIVO
-	char** rutaArchivo=string_split(pathArchivo,"/");
-	char** rutaDirectorio = string_split(pathDirectorio,"/");
-	//TENGO QUE LIBERARLO
-	char* nombreArchivo=obtenerNombreUltimoPath(rutaArchivo);
+
 	string_append(&entradaArchivoAGuardar->nombre,nombreArchivo);
 
 		//HAY QUE LIBERAR RUTA ARHICHIVO

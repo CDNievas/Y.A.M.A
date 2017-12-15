@@ -130,6 +130,14 @@ void enviarDatoArchivo(int socket){
 	char* archivoABuscar=recibirString(socket);
 
 	char** ruta = string_split(archivoABuscar, "/");//TENGO QUE LIBERAR ESTO
+
+	//VERIFICO QUE PERTENEZCA A YAMAFS
+	if(!existePath(archivoABuscar)){
+		printf("No existe un archivo con ese nombre o directorio \n");
+		log_error(loggerFileSystem,"No existe un archivo con ese nombre o directorio");
+		sendDeNotificacion(socket,ARCHIVO_NO_ENCONTRADO);
+	}
+
 	//OBTENGO EL NOMBRE DEL ARCHIVO
 	char* nombreArchivo = obtenerNombreDirectorio(ruta);
 	log_info(loggerFileSystem,"Enviando la metadata del archivo: %s a YAMA.",nombreArchivo);

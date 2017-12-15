@@ -1095,3 +1095,438 @@
 [DEBUG] 12:41:50:98 FileSystem/(7274:7274): Todos los nodos del sistema se han conectado.
 [WARNING] 12:41:55:427 FileSystem/(7274:7274): El socket 8 corto la conexion
 [ERROR] 12:42:03:763 FileSystem/(7274:7274): Se ha desconectado un DataNode del sistema.
+[INFO] 14:48:14:945 FileSystem/(11564:11564): Estructuras iniciadas
+[INFO] 14:48:14:953 FileSystem/(11564:11564): Consola iniciada
+[INFO] 14:48:14:953 FileSystem/(11564:11564): Esperando conexiones
+[INFO] 14:48:28:705 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:48:28:705 FileSystem/(11564:11564): Registrando Datanode
+[INFO] 14:48:29:353 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:48:29:353 FileSystem/(11564:11564): Registrando Datanode
+[INFO] 14:48:29:945 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:48:29:945 FileSystem/(11564:11564): Registrando Datanode
+[INFO] 14:48:30:593 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:48:30:593 FileSystem/(11564:11564): Registrando Datanode
+[INFO] 14:48:37:345 FileSystem/(11564:11576): Se ha formateado correctamente el sistema
+[TRACE] 14:49:03:932 FileSystem/(11564:11576): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 14:49:06:252 FileSystem/(11564:11576): Se Procede almacenar el nombres.csv.
+[INFO] 14:49:07:540 FileSystem/(11564:11576): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 14:49:15:168 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:49:15:168 FileSystem/(11564:11564): Se ha conectado una YAMA
+[INFO] 14:49:15:168 FileSystem/(11564:11564): Enviado la lista de nodos a YAMA
+[INFO] 14:49:39:25 FileSystem/(11564:11564): Enviando la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:49:39:25 FileSystem/(11564:11564): Se ha enviado correctamente la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:34 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:35 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:36 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:37 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:37 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:37 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:37 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:39:39 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:42:702 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:42:703 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:43:290 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:43:290 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:43:430 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:43:430 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:44:415 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:44:415 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:47:87 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:47:88 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:49:47:89 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:49:49:776 FileSystem/(11564:11564): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:49:49:776 FileSystem/(11564:11564): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:49:49:779 FileSystem/(11564:11564): Se ha recibido una nueva conexion
+[INFO] 14:49:49:779 FileSystem/(11564:11564): Se ha conectado un Worker
+[DEBUG] 14:49:49:809 FileSystem/(11564:11564): Se ha conectado un worker al sistema para el almacenado final.
+[TRACE] 14:49:49:849 FileSystem/(11564:11564): Se procede a almacenar el archivo...
+[INFO] 14:52:56:709 FileSystem/(12083:12083): Estructuras iniciadas
+[INFO] 14:52:56:712 FileSystem/(12083:12083): Consola iniciada
+[INFO] 14:52:56:712 FileSystem/(12083:12083): Esperando conexiones
+[INFO] 14:53:01:469 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:53:01:469 FileSystem/(12083:12083): Registrando Datanode
+[INFO] 14:53:02:37 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:53:02:37 FileSystem/(12083:12083): Registrando Datanode
+[INFO] 14:53:02:589 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:53:02:589 FileSystem/(12083:12083): Registrando Datanode
+[INFO] 14:53:03:205 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:53:03:205 FileSystem/(12083:12083): Registrando Datanode
+[INFO] 14:53:05:732 FileSystem/(12083:12098): Se ha formateado correctamente el sistema
+[TRACE] 14:53:27:159 FileSystem/(12083:12098): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 14:53:29:457 FileSystem/(12083:12098): Se Procede almacenar el nombres.csv.
+[INFO] 14:53:30:649 FileSystem/(12083:12098): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 14:53:46:76 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:53:46:76 FileSystem/(12083:12083): Se ha conectado una YAMA
+[INFO] 14:53:46:76 FileSystem/(12083:12083): Enviado la lista de nodos a YAMA
+[INFO] 14:53:55:340 FileSystem/(12083:12083): Enviando la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:53:55:340 FileSystem/(12083:12083): Se ha enviado correctamente la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:350 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:351 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:352 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:353 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:55:353 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:55:355 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:53:58:854 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:53:58:854 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:53:59:457 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:53:59:457 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:53:59:616 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:53:59:616 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:54:00:557 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:54:00:557 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:54:03:209 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:54:03:209 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:54:03:210 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:54:05:778 FileSystem/(12083:12083): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:54:05:778 FileSystem/(12083:12083): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:54:05:782 FileSystem/(12083:12083): Se ha recibido una nueva conexion
+[INFO] 14:54:05:782 FileSystem/(12083:12083): Se ha conectado un Worker
+[DEBUG] 14:54:05:814 FileSystem/(12083:12083): Se ha conectado un worker al sistema para el almacenado final.
+[TRACE] 14:54:05:857 FileSystem/(12083:12083): Se procede a almacenar el archivo...
+[INFO] 14:55:28:850 FileSystem/(12541:12541): Estructuras iniciadas
+[INFO] 14:55:28:853 FileSystem/(12541:12541): Consola iniciada
+[INFO] 14:55:28:853 FileSystem/(12541:12541): Esperando conexiones
+[INFO] 14:55:32:522 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:55:32:522 FileSystem/(12541:12541): Registrando Datanode
+[INFO] 14:55:33:106 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:55:33:106 FileSystem/(12541:12541): Registrando Datanode
+[INFO] 14:55:33:690 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:55:33:690 FileSystem/(12541:12541): Registrando Datanode
+[INFO] 14:55:34:258 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:55:34:258 FileSystem/(12541:12541): Registrando Datanode
+[INFO] 14:55:36:586 FileSystem/(12541:12557): Se ha formateado correctamente el sistema
+[WARNING] 14:55:39:62 FileSystem/(12541:12557): Error en la cantidad de parametros
+[WARNING] 14:55:39:62 FileSystem/(12541:12557): Comando no reconocido
+[WARNING] 14:55:39:62 FileSystem/(12541:12557): Comando no reconocido
+[WARNING] 14:55:39:62 FileSystem/(12541:12557): Comando no reconocido
+[WARNING] 14:55:41:546 FileSystem/(12541:12557): Comando no reconocido
+[TRACE] 14:56:16:28 FileSystem/(12541:12557): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 14:56:18:210 FileSystem/(12541:12557): Se Procede almacenar el nombres.csv.
+[INFO] 14:56:19:417 FileSystem/(12541:12557): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 14:56:48:233 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:56:48:233 FileSystem/(12541:12541): Se ha conectado una YAMA
+[INFO] 14:56:48:233 FileSystem/(12541:12541): Enviado la lista de nodos a YAMA
+[INFO] 14:56:59:273 FileSystem/(12541:12541): Enviando la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:56:59:273 FileSystem/(12541:12541): Se ha enviado correctamente la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:283 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:284 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:285 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:286 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:56:59:287 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:03:95 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:03:95 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:03:550 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:03:550 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:03:650 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:03:650 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:04:605 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:04:605 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:07:339 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:10:81 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:10:81 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:10:84 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:57:10:84 FileSystem/(12541:12541): Se ha conectado un Worker
+[DEBUG] 14:57:10:113 FileSystem/(12541:12541): Se ha conectado un worker al sistema para el almacenado final.
+[TRACE] 14:57:10:152 FileSystem/(12541:12541): Se procede a almacenar el archivo...
+[TRACE] 14:57:12:572 FileSystem/(12541:12541): Se procede a calcular la cantidad de bloques que ocupa el archivo asd.txt
+[TRACE] 14:57:13:648 FileSystem/(12541:12541): Se Procede almacenar el asd.txt.
+[INFO] 14:57:14:197 FileSystem/(12541:12541): Se ha almacenado correctamente el archivo asd.txt.
+[TRACE] 14:57:14:201 FileSystem/(12541:12541): El almacenado final ha terminado correctamente.
+[WARNING] 14:57:14:201 FileSystem/(12541:12541): El socket 10 corto la conexion
+[INFO] 14:57:37:881 FileSystem/(12541:12541): Enviando la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:57:37:881 FileSystem/(12541:12541): Se ha enviado correctamente la metadata del archivo: nombres.csv a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:890 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:891 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:892 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:37:893 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:37:895 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:895 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:37:895 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:37:895 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:37:895 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:37:896 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:37:896 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:37:896 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:41:370 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:41:370 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:41:982 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:41:982 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:42:102 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:42:102 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:43:173 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:43:173 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:45:660 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:45:660 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:45:661 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO1 a YAMA.
+[INFO] 14:57:45:662 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO1 a YAMA.
+[INFO] 14:57:45:662 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO2 a YAMA.
+[INFO] 14:57:45:662 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO2 a YAMA.
+[INFO] 14:57:45:662 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO3 a YAMA.
+[INFO] 14:57:45:662 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO3 a YAMA.
+[INFO] 14:57:48:148 FileSystem/(12541:12541): Enviando IP y puerto de nodo: NODO4 a YAMA.
+[INFO] 14:57:48:148 FileSystem/(12541:12541): Se ha enviado correctamente los datos de conexion de: NODO4 a YAMA.
+[INFO] 14:57:48:151 FileSystem/(12541:12541): Se ha recibido una nueva conexion
+[INFO] 14:57:48:151 FileSystem/(12541:12541): Se ha conectado un Worker
+[DEBUG] 14:57:48:180 FileSystem/(12541:12541): Se ha conectado un worker al sistema para el almacenado final.
+[TRACE] 14:57:48:215 FileSystem/(12541:12541): Se procede a almacenar el archivo...
+[WARNING] 14:57:56:212 FileSystem/(12541:12541): El archivo que se desea alamacenar ya existe en yamafs.
+[WARNING] 14:58:00:162 FileSystem/(12541:12541): El socket 10 corto la conexion
+[WARNING] 14:58:10:688 FileSystem/(12541:12541): El socket 9 corto la conexion

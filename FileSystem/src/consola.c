@@ -51,7 +51,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 							listaRegistroDeArchivosGuardados=list_create();
 
 							actualizoBitmapsNodosDisponibles();
-							tablaNodos->tamanioFSLibre=0;
+							tablaNodos->tamanioFSLibre=tablaNodos->tamanioFSTotal;
 							persistirTablaNodo();
 							iniciarTablaDeDirectorios();
 

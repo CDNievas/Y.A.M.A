@@ -23,7 +23,8 @@ void actualizoBitmapsNodosDisponibles(){
 			bitarray_clean_bit(nodoBitmapSeleccionado->bitarray,contador);
 		}
 
-		nodo->tamanioLibre=0;
+		nodo->tamanioLibre=nodo->tamanioTotal;
+		nodo->porcentajeOscioso=(nodo->tamanioLibre*100)/nodo->tamanioTotal;
 		cont++;
 	}
 }
