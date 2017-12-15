@@ -155,7 +155,7 @@ void manejadorMaster(void* socketMasterCliente){
 				sigueProcesando = 0;
 				break;
 			default:
-				log_error(loggerYAMA, "PETICION ERRONEA - MASTER %", nroMaster);
+				log_error(loggerYAMA, "PETICION ERRONEA - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
