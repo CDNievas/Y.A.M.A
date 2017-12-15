@@ -424,23 +424,20 @@ char * obtenerBloque(int socket, uint32_t nroBloque){
 		FD_CLR(socket,&socketClientesAuxiliares);
 	}
 	
-	int tamanioMsg = sizeof(uint32_t) + sizeof(uint32_t);
+	int tamanioMsg = sizeof(uint32_t);
 	void * msg = malloc(tamanioMsg);
-	
 	memcpy(msg,&nroBloque,sizeof(uint32_t));
-	uint32_t cantBytes = 1048576;
-	memcpy(msg+sizeof(uint32_t),&cantBytes,sizeof(uint32_t));
+	
 	sendRemasterizado(socket,ENV_LEER,tamanioMsg,msg);
 	free(msg);
 	uint32_t noti = recibirUInt(socket);
-	//uint32_t tamanio = recibirUInt(socket);
-	void* string = malloc(cantBytes);
-	if(recv(socket, string, cantBytes, MSG_WAITALL) == -1){
+	void* string = malloc(SIZEBLOQUE);
+	if(recv(socket, string, SIZEBLOQUE, MSG_WAITALL) == -1){
 		perror("Error al recibir un string.");
 		exit(-1);
 	}
 	
-	char* stringRecibido = string_substring_until(string, cantBytes);
+	char* stringRecibido = string_substring_until(string, SIZEBLOQUE);
 	free(string);
 	return stringRecibido;
 }
