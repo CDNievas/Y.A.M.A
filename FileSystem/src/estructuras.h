@@ -103,6 +103,8 @@ typedef struct _conexiones{
 #define ERROR_ALMACENADO_FINAL 16
 #define DESCONECTAR_NODO 106
 
+#define SIZEBLOQUE 1048576
+
 // Variables archivo de configuracion
 int PUERTO_ESCUCHA;
 char * PATH_METADATA;
