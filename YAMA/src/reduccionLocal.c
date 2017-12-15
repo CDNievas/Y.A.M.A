@@ -28,7 +28,7 @@ int cargarReduccionLocal(int socket, int nroMaster, t_list* listaDelNodo){
 	string_append(&conexion->nombreNodo, admin->nombreNodo);
 	//CARGO LA CONEXION
 	obtenerIPYPuerto(conexion);
-	if(conexion->ipNodo == NULL && conexion->puertoNodo == -1){
+	if(conexion->ipNodo == NULL || conexion->puertoNodo == 0){
 		return -1;
 	}
 	log_debug(loggerYAMA, "CONEXIONES - DATOS DE CONEXIONES OBTENIDOS");

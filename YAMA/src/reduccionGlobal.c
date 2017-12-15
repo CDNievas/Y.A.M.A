@@ -101,7 +101,7 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	string_append(&conect->nombreNodo, nodoEncargado);
 	free(nodoEncargado);
 	obtenerIPYPuerto(conect);
-	if(conect->nombreNodo == NULL && conect->puertoNodo == -1){
+	if(conect->ipNodo == NULL || conect->puertoNodo == 0){
 		return -1;
 	}
 	char* nombreArchReduGlobal = obtenerNombreArchivoReduGlobal(nroMaster);
