@@ -42,31 +42,23 @@ int main(int argc, char **argv) {
 			}
 
 			case REC_LEER:{
-//				uint32_t tamMsj = recibirUInt(socketServerFS);
-//				printf("%d", tamMsj);
+
 				u_int32_t nroBloque = recibirUInt(socketServerFS);
-				uint32_t cantBytes = recibirUInt(socketServerFS);
-
-				printf("asd - %d \n",cantBytes);
-
-				if(cantBytes > SIZEBLOQUE){
-					log_error(loggerDatanode, "Se estan tratando de leer %d bytes.",cantBytes);
-					exit(-96);
-				}
 
 				//Leo el bloque
-				void * bloque = leerBloque(nroBloque,cantBytes);
+				void * bloque = leerBloque(nroBloque);
 
 				if(bloque == NULL){
 					// Bloque inexistente
 					exit(-99);
 				} else {
 					// Lo envio a FS
-					sendRemasterizado(socketServerFS, ENV_BLOQUE, cantBytes, bloque);
+					sendRemasterizado(socketServerFS, ENV_BLOQUE, SIZEBLOQUE, bloque);
 				}
 
 				free(bloque);
 				break;
+				
 			}
 
 			case REC_ESCRIBIR:{
