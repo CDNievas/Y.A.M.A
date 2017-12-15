@@ -500,8 +500,8 @@ int funcionCat(strBloqueArchivo * bloque){
 	char * stringFinal = string_substring_until(stringArchivo, bloque->bytes);
 	free(stringArchivo);
 
-	printf("%s", stringArchivo);
-	free(stringArchivo);
+	printf("%s", stringFinal);
+	free(stringFinal);
 
 	return 0;
 
@@ -742,7 +742,7 @@ int funcionesRemasterizadaCat(strBloqueArchivo * bloque,FILE* archivoFSLocal){
 	char * stringFinal = string_substring_until(stringArchivo, bloque->bytes);
 	free(stringArchivo);
 	
-	fwrite(stringFinal,string_length(stringArchivo),1,archivoFSLocal);
+	fwrite(stringFinal,string_length(stringFinal),1,archivoFSLocal);
 	fseek(archivoFSLocal,0,SEEK_END);
 
 	free(stringFinal);
