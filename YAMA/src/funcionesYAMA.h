@@ -45,6 +45,7 @@ void chequeameLaSignal(int);
 void laParca(int);
 
 void imprimirConfigs();
+void imprimirWLs();
 /*
  * ENVIO LA NUEVA COPIA A MASTER TRAS LA REPLANIFICACION
  */
@@ -52,7 +53,7 @@ void enviarCopiaAMaster(int, copia*);
 //HANDSHAKE CON FS
 void handshakeFS();
 //FUNCIONES PARA ADMINISTRACION DE BALANCEO
-int obtenerWLMax();
+uint32_t obtenerWLMax();
 int calculoAvailability(char*);
 t_list* armarDatosBalanceo(t_list*);
 

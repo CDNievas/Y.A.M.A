@@ -123,6 +123,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 				posicion++;
 			}
 			log_info(loggerYAMA, "PASANDO AL SIGUIENTE NODO");
+			nodoAuxiliar = NULL;
 		}
 		datosBalanceo* nodoAChequear = list_get(listaDeBalanceo, posicion);
 		log_trace(loggerYAMA, "NODO %s - AVAILABILITY %d.", nodoAChequear->nombreNodo, nodoAChequear->availability);
@@ -160,6 +161,7 @@ t_list* balancearTransformacion(t_list* listaDeBloques, t_list* listaDeBalanceo)
 	}
 	log_trace(loggerYAMA, "ACTUALIZACION DE WL.");
 	actualizarWLTransformacion(copiasElegidas);
+	imprimirWLs();
 	return copiasElegidas;
 }
 

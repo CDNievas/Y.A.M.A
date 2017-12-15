@@ -298,18 +298,19 @@ void handshakeFS(){
 }
 
 //FUNCIONES PARA MANEJAR LA AVAILABILITY
-int obtenerWLMax(){
+uint32_t obtenerWLMax(){
 	uint32_t maximo = 0;
-	bool maximoWL(nodoSistema* nodoAChequear){
-		if(nodoAChequear->wl>=maximo){
-			maximo = nodoAChequear->wl;
-			return true;
-		}else{
-			return false;
+	uint32_t posicion;
+	pthread_mutex_lock(&semNodosSistema);
+	for(posicion = 0; posicion < list_size(nodosSistema); posicion++){
+		nodoSistema* nodo = list_get(nodosSistema, posicion);
+		if(nodo->wl >= maximo){
+			maximo = nodo->wl;
 		}
 	}
-	nodoSistema* nodo = list_find(nodosSistema, (void*)maximoWL);
-	return nodo->wl;
+	pthread_mutex_unlock(&semNodosSistema);
+	printf("maximo wl: %d", maximo);
+	return maximo;
 }
 
 int calculoAvailability(char* nombreNodo){
@@ -321,8 +322,10 @@ int calculoAvailability(char* nombreNodo){
 		availability = BASE_AVAILABILITY;
 	}else{
 		int wlMax = obtenerWLMax();
+		pthread_mutex_lock(&semNodosSistema);
 		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
 		availability = BASE_AVAILABILITY + wlMax - nodo->wl;
+		pthread_mutex_unlock(&semNodosSistema);
 	}
 	return availability;
 }
@@ -407,4 +410,15 @@ void imprimirConfigs(){
 	printf("PUERTO_MASTERS: %d\n", PUERTO_MASTERS);
 	printf("BASE_AVAILABILITY: %d\n", BASE_AVAILABILITY);
 	printf("---------------------------\n");
+}
+
+void imprimirWLs(){
+	printf("-------WL ACTUALES-------\n");
+	uint32_t posicion;
+	pthread_mutex_lock(&semNodosSistema);
+	for(posicion = 0; posicion < list_size(nodosSistema); posicion++){
+		nodoSistema* nodo = list_get(nodosSistema, posicion);
+		printf("NODO: %s - WL: %d\n", nodo->nombreNodo, nodo->wl);
+	}
+	pthread_mutex_unlock(&semNodosSistema);
 }

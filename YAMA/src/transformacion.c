@@ -269,6 +269,7 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 			reducirWL(nodoFallido);
 		}
 		actualizarWLTransformacion(listaParaWL);
+		imprimirWLs();
 		log_info(loggerYAMA, "REPLANIFICACION - SERIALIZACION DE DATOS - MASTER %d", nroMaster);
 		void* infoReplanificacionSerializada = serializarInfoTransformacion(listaParaMaster);
 		sendRemasterizado(socketMaster, TRANSFORMACION, obtenerTamanioInfoTransformacion(listaParaMaster), infoReplanificacionSerializada);
