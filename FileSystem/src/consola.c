@@ -18,23 +18,29 @@ void ejecutarComando(uint32_t nro, char ** param){
 				printf("Error en la cantidad de parametros \n");
 				log_warning(loggerFileSystem, "Error con los parametros al ejecutar format");
 			} else {
-				if(estadoAnterior==false){
-					uint32_t cantidadNodosSistemas=list_size(tablaNodos->listaNodos);
-					if(cantidadNodosSistemas>=2){
-						registrarNodosConectados();
-						sistemaFormateado = true;
-						estadoSeguro=true;
-						printf("Se ha formateado correctamente el sistema \n");
-						log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
-					}else{
-						log_warning(loggerFileSystem,"No hay suficientes DataNode para dejar el FS en un estado Estable");
-					}
-				} else {
-					if(hayUnEstadoEstable()){
-						estadoSeguro=true;
-						log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
+				if(sistemaFormateado==true){
+					log_warning(loggerFileSystem,"El sistema ya esta formateado");
+				}else{
+
+					if(estadoAnterior==false){
+						uint32_t cantidadNodosSistemas=list_size(tablaNodos->listaNodos);
+						if(cantidadNodosSistemas>=2){
+							registrarNodosConectados();
+							sistemaFormateado = true;
+							estadoSeguro=true;
+							printf("Se ha formateado correctamente el sistema \n");
+							log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
+						}else{
+							log_warning(loggerFileSystem,"No hay suficientes DataNode para dejar el FS en un estado Estable");
+						}
 					} else {
-						log_warning(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
+						if(hayUnEstadoEstable()){
+							sistemaFormateado = true;
+							estadoSeguro=true;
+							log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
+						} else {
+							log_warning(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
+						}
 					}
 				}
 			}
@@ -350,6 +356,95 @@ void ejecutarComando(uint32_t nro, char ** param){
 		}
 		break;
 		
+		//CPTO
+		case 8:{
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+				if(!chequearParamCom(param,3,3)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+					if(!contieneYamafs(param[1])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+							if(existePathLocal(param[2])){
+								printf("El archivo local existe \n");
+								log_warning(loggerFileSystem,"El archivo local existe");
+
+							} else {
+								pthread_mutex_lock(&mutex);
+								cpto(param[1],param[2]);
+								pthread_mutex_unlock(&mutex);
+							}
+						}
+					}
+				}
+			}
+		}
+		break;
+
+		//MD5
+		case 10:{
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+				if(!chequearParamCom(param,2,2)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+					if(!contieneYamafs(param[1])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+
+							pthread_mutex_lock(&mutex);
+							char* pathFinal=string_new();
+							string_append(&pathFinal,PATH_METADATA);
+							string_append(&pathFinal,"/");
+
+							char ** pathDesc = string_split(param[1],"/");
+							char * nombre = obtenerNombreUltimoPath(pathDesc);
+
+							cpto(param[1],pathFinal);
+
+								//COMANDO MD5S
+							char* comandoMD5=string_new();
+							string_append(&comandoMD5,"md5sum ");
+							string_append(&comandoMD5,pathFinal);
+							string_append(&comandoMD5," | awk '{print $1}'");
+							system(comandoMD5);
+							free(comandoMD5);
+
+							char* comandoRM=string_new();
+							string_append(&comandoRM,"rm ");
+							string_append(&comandoRM,pathFinal);
+							system(comandoRM);
+
+
+							pthread_mutex_unlock(&mutex);
+
+						}
+					}
+				}
+			}
+		}
+		break;
+
+
 		case 13:{
 			if(!chequearParamCom(param,3,3)){
 				printf("Cantidad incorrecta de parametros \n");

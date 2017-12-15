@@ -487,6 +487,8 @@ void verificarSiNodo(int socket){
 			seDesconectoUnNodo=true;
 			persistirTablaNodo();
 		}
+
+
 	}
 
 
