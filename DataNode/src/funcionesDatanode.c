@@ -134,7 +134,7 @@ int escribirBloque(uint32_t nroBloque, char * dataBloque, uint32_t cantBytes){
 
 }
 
-void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
+void * leerBloque(uint32_t nroBloque){
 
 	if(nroBloque >= cantBloques){
 
@@ -143,10 +143,11 @@ void * leerBloque(uint32_t nroBloque, uint32_t cantBytes){
 
 	} else {
 
-		void * dataBloque = malloc(cantBytes);
-		//void * dataBloque = miMalloc(cantBytes+sizeof(uint32_t),loggerDatanode,"Fallo en leerBloque()");
-		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),cantBytes);
-
+		void * dataBloque = malloc(SIZEBLOQUE);
+		memcpy(dataBloque,mapArchivo+(nroBloque*SIZEBLOQUE),SIZEBLOQUE);
+		
+		log_info(loggerDatanode,"Lectura en bloque numero: %d", nroBloque);
+		
 		return dataBloque;
 
 	}
