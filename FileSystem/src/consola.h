@@ -10,6 +10,8 @@
 
 #include "estructuras.h"
 #include "funcionesConsola.h"
+#include "nodos.h"
+#include "principalesFS.h"
 
 typedef struct {
 	int flag;

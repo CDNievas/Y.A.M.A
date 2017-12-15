@@ -7,7 +7,7 @@
 
 #include "principalesFS.h"
 
-void 	destuirMetadata(){
+void destuirMetadata(){
 	char* comando=string_new();
 	string_append(&comando,"rm -r -f ");
 	string_append(&comando,PATH_METADATA);
@@ -15,7 +15,7 @@ void 	destuirMetadata(){
 	free(comando);
 }
 
-void limpiarEStructurasAdministrativas(){
+void limpiarEstructurasAdministrativas(){
 	liberarListaRegistroArchivos();
 	liberarTablaDirectorios();
 	liberarTablaArchivos();
@@ -59,7 +59,7 @@ char * obtenerPathDirectorio(){
 	return path;
 }
 
-char * obtenerPathArchivo(uint directorioPadre){
+char * obtenerPathArchivo(uint32_t directorioPadre){
 	char * path = string_new();
 	string_append(&path, PATH_METADATA);
 	string_append(&path, "/archivos/");
@@ -177,17 +177,7 @@ void liberarTablaNodos(){
 		list_destroy_and_destroy_elements(tablaNodos->nodos, (void *) destruirElemento);
 	}
 
-//	void destruirNombres(char * nombreNodo){
-//		free(nombreNodo);
-//	}
-//
-//	if(list_is_empty(tablaNodos->listaNodos)){
-//		list_destroy(tablaNodos->listaNodos);
-//	} else {
-//		list_destroy_and_destroy_elements(tablaNodos->listaNodos, (void *) destruirNombres);
-//	}
 	list_destroy(tablaNodos->listaNodos);
-	//free(tablaNodos);
 
 }
 

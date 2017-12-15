@@ -9,6 +9,8 @@
 #define NODOS_H_
 
 #include "estructuras.h"
+#include "persistencia.h"
+#include "principalesFS.h"
 
 void actualizoBitmapsNodosDisponibles();
 void limpiarNodosDesonectados();
@@ -17,7 +19,7 @@ int cantidadDeNodosDisponibles();
 void perteneceAlSistema(char* , int , char* , uint32_t );
 bool hayUnEstadoEstable();
 void registrarNodosConectados();
-void verificarSiEsNodoDesconectado(char* , uint32_t ,char* ,uint32_t );
+void verificarSiEsUnNodoDesconectado(char* , uint32_t ,char* ,uint32_t );
 int asignarBloqueNodo(strNodo* );
 void registrarNodo(int);
 void enviarDatosANodo(t_list* ,FILE* ,strArchivo* );

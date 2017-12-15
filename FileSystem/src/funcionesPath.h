@@ -9,6 +9,7 @@
 #define FUNCIONESPATH_H_
 
 #include "estructuras.h"
+#include "funcionesConsola.h"
 
 char* obtenerNombreUltimoPath(char**);
 bool existePath(char *);

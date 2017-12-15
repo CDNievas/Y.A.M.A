@@ -272,51 +272,6 @@ void registrarNodo(int socket){
 	free(nombreNodo);
 	free(ip);
 
-	/*bool buscaEnlista(strNodo * unNodo){
-		return(strcmp(unNodo->nombre,nombreNodo)==0);
-	}*/
-
-
-	/*
-	if(sistemaFormateado){
-
-		log_warning(loggerFileSystem,"El sistema ya se encuentra formateado. Cerrando conexion con el nodo");
-		sendDeNotificacion(socket,DESCONECTAR_NODO);
-		FD_CLR(socket, &socketClientes);
-		close(socket);
-
-	} else {
-
-		if(estadoAnterior){
-
-			nodo = list_find(tablaNodos->nodos,(void*)buscaEnlista);
-
-			// Nodo existia en estado anterior
-			if(nodo !=NULL){
-
-				nodo->conectado=1;
-				nodo->socket=socket;
-
-			// Nuevo nodo
-			} else {
-
-				log_warning(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema. Cerrando conexion con el nodo");
-				sendDeNotificacion(socket,DESCONECTAR_NODO);
-				FD_CLR(socket, &socketClientes);
-				close(socket);
-
-			}
-
-
-		} else {
-
-			// Aniado nodo a la lista
-
-		}
-
-	}
-	*/
-
 }
 
 

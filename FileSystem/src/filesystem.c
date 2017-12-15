@@ -5,6 +5,7 @@
 #include "principalesFS.h"
 #include "consola.h"
 #include <signal.h>
+#include "estadoAnterior.h"
 
 void iniciarModoDebug(char * pathConfig){
 	t_config* configuracionFS = generarTConfig(pathConfig, 2);

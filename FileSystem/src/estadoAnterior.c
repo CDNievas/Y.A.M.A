@@ -104,8 +104,7 @@ void cargarEstructuraNodos(t_config* archivoNodos){
 	}
 }
 
-
-char* obtenerNombreDirectorio(char** rutaDesmembrada){
+/*char* obtenerNombreDirectorio(char** rutaDesmembrada){
   int posicion = 0;
   char* nombreArchivo = string_new();
   while(1){
@@ -116,13 +115,13 @@ char* obtenerNombreDirectorio(char** rutaDesmembrada){
     posicion++;
   }
   return nombreArchivo;
-}
+}*/
 
 //CARGAR TABLA DE ARCHIVOS
 void cargarTablaArchivo(char* pathArchivo){
 	log_debug(loggerFileSystem,"Cargando la tabla de archivos...");
 	char** rutaDesmembrada = string_split(pathArchivo, "/");//TENGO QUE LBERARLO
-	char* nombreArchivo=obtenerNombreDirectorio(rutaDesmembrada);//DEBO LIBERARLO?
+	char* nombreArchivo=obtenerNombreUltimoPath(rutaDesmembrada);//DEBO LIBERARLO?
 
 	t_config* archivo=config_create(pathArchivo);
 

@@ -588,7 +588,7 @@ void liberarArchivoYPersistir(strArchivo* archivoVictima){
 	persistirRegistroArchivo();
 }
 
-int sacarCantidadbloqueLibre(strNodo* nodo){
+int sacarCantidadBloquesLibres(strNodo* nodo){
 	int cantBloquesLibre=0;
 	int contador=0;
 
@@ -612,7 +612,7 @@ void actualizarEstructurasNodos(){
 	tablaNodos->tamanioFSLibre=0;
 	while(contador<cantidadDeNodoEnElSistema){
 		strNodo* nodoElegido=list_get(tablaNodos->nodos,contador);
-		nodoElegido->tamanioLibre=sacarCantidadbloqueLibre(nodoElegido);
+		nodoElegido->tamanioLibre=sacarCantidadBloquesLibres(nodoElegido);
 		tablaNodos->tamanioFSLibre+=nodoElegido->tamanioLibre;
 		nodoElegido->porcentajeOscioso=(nodoElegido->tamanioLibre*100)/nodoElegido->tamanioTotal;
 		contador++;
@@ -638,7 +638,7 @@ void borrarBloquesArchivos(strArchivo* archivoVictima){
 		contador++;
 	}
 
-	bool destruirBloques(strBloqueArchivo* bloqueSeleccionado){
+	void destruirBloques(strBloqueArchivo* bloqueSeleccionado){
 		free(bloqueSeleccionado->copia1->nodo);
 		free(bloqueSeleccionado->copia2->nodo);
 		free(bloqueSeleccionado->copia1);

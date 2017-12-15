@@ -25,7 +25,7 @@ void enviarListaNodos(int socket){
 	log_info(loggerFileSystem,"Enviado la lista de nodos a YAMA");
 
 	//ARMO EL TAMANIO DEL MENSAJE
-	void* mensaje=malloc(sacarTamanioMensaje);
+	void* mensaje=malloc(sacarTamanioMensaje());
 	uint32_t posicionActual=0;
 	uint32_t cont=0;
 
@@ -139,7 +139,7 @@ void enviarDatoArchivo(int socket){
 	}
 
 	//OBTENGO EL NOMBRE DEL ARCHIVO
-	char* nombreArchivo = obtenerNombreDirectorio(ruta);
+	char* nombreArchivo = obtenerNombreUltimoPath(ruta);
 	log_info(loggerFileSystem,"Enviando la metadata del archivo: %s a YAMA.",nombreArchivo);
 
 	//BUSCO SI EL ARCHIVO SE ENCUENTRA EN EL SISTEMA

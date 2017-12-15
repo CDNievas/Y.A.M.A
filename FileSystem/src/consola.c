@@ -39,7 +39,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 							limpiarNodosDesonectados();
 							destuirMetadata();
 							inicializarDirectoriosPrincipales();
-							limpiarEStructurasAdministrativas();
+							limpiarEstructurasAdministrativas();
 
 							// Tabla de directorios
 							tablaDirectorios = list_create();
@@ -57,7 +57,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 							sistemaFormateado = true;
 							estadoAnterior=false;
-							estadoEstable==true;
+							estadoEstable=true;
 							log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
 						} else {
 							log_warning(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
@@ -437,12 +437,9 @@ void ejecutarComando(uint32_t nro, char ** param){
 							string_append(&pathFinal,PATH_METADATA);
 							string_append(&pathFinal,"/");
 
-							char ** pathDesc = string_split(param[1],"/");
-							char * nombre = obtenerNombreUltimoPath(pathDesc);
-
 							cpto(param[1],pathFinal);
 
-								//COMANDO MD5S
+							//COMANDO MD5S
 							char* comandoMD5=string_new();
 							string_append(&comandoMD5,"md5sum ");
 							string_append(&comandoMD5,pathFinal);
@@ -466,6 +463,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		break;
 
 
+		//MKDIRN
 		case 13:{
 			if(!chequearParamCom(param,3,3)){
 				printf("Cantidad incorrecta de parametros \n");
@@ -485,6 +483,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 			}
 
 		}
+		break;
 
 		// PATH
 		case 14:{
