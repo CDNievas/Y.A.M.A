@@ -46,6 +46,7 @@ void manejadorMaster(void* socketMasterCliente){
 					list_destroy_and_destroy_elements(listaDeBloquesDeArchivo, (void*)liberarInfoFS); //LEAKS AQUI (si hay...)
 					list_destroy(listaDeCopias);
 					list_destroy_and_destroy_elements(listaBalanceo, (void*)liberarDatosBalanceo);
+					sleep(1);
 				}else if(listaDeBloquesDeArchivo == NULL && estaFS){
 					log_error(loggerYAMA, "ARCHIVO %s INEXISTENTE - MASTER %d", nombreArchivoPeticion, nroMaster);
 					sigueProcesando = 0;
@@ -125,7 +126,7 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case ERROR_REDUCCION_LOCAL:
 				fallaReduccionLocal(nroMaster);
-				log_warning(loggerYAMA, "ERROR - REDUCCION LOCAL - MASTER %d", nroMaster);
+				log_error(loggerYAMA, "ERROR - REDUCCION LOCAL - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
@@ -134,7 +135,7 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
-				log_warning(loggerYAMA, "ERROR - REDUCCION GLOBAL - MASTER %d", nroMaster);
+				log_error(loggerYAMA, "ERROR - REDUCCION GLOBAL - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				reestablecerWLGlobal(nroMaster, FALLO);
@@ -142,7 +143,7 @@ void manejadorMaster(void* socketMasterCliente){
 				sigueProcesando = 0;
 				break;
 			case ERROR_ALMACENAMIENTO_FINAL:
-				log_warning(loggerYAMA, "ERROR - ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
+				log_error(loggerYAMA, "ERROR - ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				reestablecerWLGlobal(nroMaster, FINALIZADO);
 //				imprimirWLs();
