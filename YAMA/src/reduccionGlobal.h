@@ -19,7 +19,7 @@ t_list* obtenerConexionesDeNodos(t_list*, char*);
 int cargarReduccionGlobal(int, int, t_list*);
 void terminarReduccionGlobal(uint32_t);
 int almacenadoFinal(int, uint32_t);
-void reestablecerWL(int);
+void reestablecerWLGlobal(int, int);
 void fallaReduccionGlobal(int);
 
 #endif /* REDUCCIONGLOBAL_H_ */
