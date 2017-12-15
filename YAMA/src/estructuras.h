@@ -93,6 +93,7 @@ t_list* tablaDeEstados;
 uint32_t socketFS;
 int socketEscuchaMasters;
 bool estaFS;
+bool sigusr1Activa;
 
 //SEMAPHORE
 pthread_mutex_t semTablaEstados;

@@ -76,3 +76,26 @@ void fallaReduccionLocal(int nroMaster){
 	pthread_mutex_unlock(&semTablaEstados);
 }
 
+void reestablecerWLReducLocal(uint32_t nroMaster){
+	bool esTransformacion(administracionYAMA* admin){
+		return (admin->estado == EN_PROCESO || admin->estado == FINALIZADO) && admin->etapa == TRANSFORMACION && admin->nroMaster == nroMaster;
+	}
+
+	bool esReducLTerminada(administracionYAMA* admin){
+		return (admin->estado ==  FALLO || admin->estado == FINALIZADO || admin->estado == EN_PROCESO) && admin->etapa == REDUCCION_LOCAL && admin->nroMaster == nroMaster;
+	}
+
+	bool esTransformacionTerminada(administracionYAMA* admin){
+			return admin->estado == FINALIZADO && admin->etapa == TRANSFORMACION && admin->nroMaster == nroMaster;
+	}
+
+	pthread_mutex_lock(&semTablaEstados);
+	t_list* listaDeTransformaciones = list_filter(tablaDeEstados, (void*)esTransformacion);
+	t_list* listaDeTransfTerminadas = list_filter(tablaDeEstados, (void*)esTransformacionTerminada);
+	t_list* listaDeReducciones = list_filter(tablaDeEstados, (void*)esReducLTerminada);
+	pthread_mutex_unlock(&semTablaEstados);
+
+	eliminarTransformaciones(listaDeTransformaciones);
+	eliminarReduccionesLocales(listaDeReducciones, listaDeTransfTerminadas);
+}
+

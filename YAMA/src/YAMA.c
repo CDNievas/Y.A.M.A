@@ -69,6 +69,7 @@ void manejadorMaster(void* socketMasterCliente){
 				}
 				free(nombreNodo);
 				list_destroy(listaDelJob);
+				//imprimirWLs();
 			}
 				break;
 			case REPLANIFICAR:
@@ -117,7 +118,8 @@ void manejadorMaster(void* socketMasterCliente){
 				}
 				break;
 			case FINALIZO:
-				reestablecerWL(nroMaster);
+				reestablecerWLGlobal(nroMaster, FINALIZO);
+				imprimirWLs();
 				log_debug(loggerYAMA, "FINALIZACION DE JOB - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
@@ -127,18 +129,25 @@ void manejadorMaster(void* socketMasterCliente){
 				sendDeNotificacion(socketMaster, ABORTAR);
 				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
 				sigueProcesando = 0;
+//				reestablecerWLReducLocal(nroMaster);
+//				imprimirWLs();
 				break;
 			case ERROR_REDUCCION_GLOBAL:
 				fallaReduccionGlobal(nroMaster);
 				log_warning(loggerYAMA, "ERROR - REDUCCION GLOBAL - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
 				log_warning(loggerYAMA,"ABORTANDO - MASTER %d", nroMaster);
+				reestablecerWLGlobal(nroMaster, FALLO);
+//				imprimirWLs();
 				sigueProcesando = 0;
 				break;
 			case ERROR_ALMACENAMIENTO_FINAL:
 				log_warning(loggerYAMA, "ERROR - ALMACENAMIENTO FINAL - MASTER %d", nroMaster);
 				sendDeNotificacion(socketMaster, ABORTAR);
+				reestablecerWLGlobal(nroMaster, FINALIZADO);
+//				imprimirWLs();
 				log_warning(loggerYAMA, "ABORTANDO - MASTER %d", nroMaster);
+//				imprimirWLs();
 				sigueProcesando = 0;
 				break;
 			case CORTO:
@@ -176,6 +185,7 @@ int main(int argc, char *argv[])
 {
 	signal(SIGUSR1, chequeameLaSignal);
 	signal(SIGINT, laParca);
+	sigusr1Activa = false;
 	loggerYAMA = log_create("YAMA.log", "YAMA", 1, 0);
 	chequearParametros(argc,2);
 	t_config* configuracionYAMA = generarTConfig(argv[1], 6);
@@ -216,16 +226,19 @@ int main(int argc, char *argv[])
 	while(estaFS){
 		socketMastersAuxiliares = socketsMasterCPeticion;
 		int selectVal = select(socketMaximo+1, &socketMastersAuxiliares, NULL, NULL, NULL);
-		if(selectVal<0){
+		if(selectVal<0 && !sigusr1Activa){
 			if(selectVal != EINTR){
 				log_error(loggerYAMA, "ERROR - FALLO SELECT");
 				log_error(loggerYAMA, "ERROR - MUERE YAMA");
 				exit(-1);
 			}
+		}else{
+			sigusr1Activa = false;
 		}
-		log_info(loggerYAMA, "PETICION DE SOCKET");
+
 		for(socketClienteChequeado = 0; socketClienteChequeado <= socketMaximo; socketClienteChequeado++){
 			if(FD_ISSET(socketClienteChequeado, &socketMastersAuxiliares)){
+				log_info(loggerYAMA, "PETICION DE SOCKET");
 				if(socketClienteChequeado == socketEscuchaMasters){
 					socketAceptado = aceptarConexionDeCliente(socketEscuchaMasters);
 					FD_SET(socketAceptado, &socketsMasterCPeticion);

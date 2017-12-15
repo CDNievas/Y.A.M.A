@@ -115,12 +115,12 @@ int almacenadoFinal(int socketMaster, uint32_t nroMaster){
 	return 1;
 }
 
-void reestablecerWL(int nroMaster){
+void reestablecerWLGlobal(int nroMaster, int flag){
 	bool esTransformacion(administracionYAMA* admin){
-		return admin->etapa == TRANSFORMACION && admin->estado == FINALIZADO;
+		return admin->etapa == TRANSFORMACION && admin->estado == FINALIZADO && admin->nroMaster == nroMaster;
 	}
 	bool esReduLocal(administracionYAMA* admin){
-		return admin->etapa == REDUCCION_LOCAL && admin->estado == FINALIZADO;
+		return admin->etapa == REDUCCION_LOCAL && admin->estado == FINALIZADO && admin->nroMaster == nroMaster;
 	}
 	t_list* listaTransformaciones;
 	t_list* listaReduccionesLocales;
@@ -129,8 +129,9 @@ void reestablecerWL(int nroMaster){
 	listaReduccionesLocales = list_filter(tablaDeEstados, (void*)esReduLocal);
 	pthread_mutex_unlock(&semNodosSistema);
 	eliminarTrabajosLocales(listaTransformaciones);
-	eliminarTrabajosGlobales(nroMaster, listaReduccionesLocales);
-
+	if(flag == FINALIZO){
+		eliminarTrabajosGlobales(nroMaster, listaReduccionesLocales);
+	}
 	list_destroy(listaTransformaciones);
 	list_destroy(listaReduccionesLocales);
 }

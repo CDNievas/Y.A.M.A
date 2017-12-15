@@ -232,7 +232,8 @@ void cargarYAMA(t_config* configuracionYAMA){
 void chequeameLaSignal(int signal){
 	//PASO A RECARGAR EL ARCHIVO
 	log_info(loggerYAMA, "SIGNAL - SIGUSR1");
-	t_config* configuracionNueva = generarTConfig("on_yama.ini", 5);
+	sigusr1Activa = true;
+	t_config* configuracionNueva = generarTConfig("off_yama.ini", 6);
 	if(!config_has_property(configuracionNueva, "RETARDO_PLANIFICACION")){
 		log_error(loggerYAMA, "ERROR - NO SE ECONTRO RETARDO_PLANIFICACION EN CONFIG");
 		exit(-1);
@@ -422,3 +423,40 @@ void imprimirWLs(){
 	}
 	pthread_mutex_unlock(&semNodosSistema);
 }
+
+void eliminarTransformaciones(t_list* listaTransfMaster){
+	uint32_t posicion;
+	for(posicion = 0; posicion < list_size(listaTransfMaster); posicion++){
+		administracionYAMA* admin = list_get(listaTransfMaster, posicion);
+		bool esNodo(nodoSistema* nodo){
+			return strcmp(nodo->nombreNodo, admin->nombreNodo) == 0;
+		}
+		pthread_mutex_lock(&semNodosSistema);
+		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
+		nodo->wl--;
+		printf("%s %d", nodo->nombreNodo, nodo->wl);
+		pthread_mutex_unlock(&semNodosSistema);
+	}
+}
+
+void eliminarReduccionesLocales(t_list* listaReducLTerminadas, t_list* listaTransfTerminadas){
+	uint32_t posicion;
+	for(posicion = 0; posicion < list_size(listaReducLTerminadas); posicion++){
+		administracionYAMA* admin = list_get(listaReducLTerminadas, posicion);
+		bool esNodo(nodoSistema* nodo){
+			return strcmp(nodo->nombreNodo, admin->nombreNodo) == 0;
+		}
+		pthread_mutex_lock(&semNodosSistema);
+		nodoSistema* nodo = list_find(nodosSistema, (void*)esNodo);
+		nodo->wl--;
+		printf("%s %d", nodo->nombreNodo, nodo->wl);
+		pthread_mutex_unlock(&semNodosSistema);
+		admin = list_get(listaTransfTerminadas, posicion);
+		pthread_mutex_lock(&semNodosSistema);
+		nodoSistema* nodo2 = list_find(nodosSistema, (void*)esNodo);
+		nodo2->wl--;
+		printf("%s %d", nodo->nombreNodo, nodo->wl);
+		pthread_mutex_unlock(&semNodosSistema);
+	}
+}
+
