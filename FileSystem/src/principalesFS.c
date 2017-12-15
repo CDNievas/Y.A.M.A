@@ -7,6 +7,20 @@
 
 #include "principalesFS.h"
 
+void 	destuirMetadata(){
+	char* comando=string_new();
+	string_append(&comando,"rm -r -f ");
+	string_append(&comando,PATH_METADATA);
+	system(comando);
+	free(comando);
+}
+
+void limpiarEStructurasAdministrativas(){
+	liberarListaRegistroArchivos();
+	liberarTablaDirectorios();
+	liberarTablaArchivos();
+}
+
 void inicializarDirectoriosPrincipales(){
 
 	char* comandoPathDirectorioRaiz=string_new();
@@ -315,9 +329,6 @@ void iniciarEstructuras(){
 	//Inicio mutex
     pthread_mutex_init(&mutex, NULL);
 
-	// Sockets antes de formatear
-	socketsDatanode = list_create();
-
 	// Tabla de directorios
 	tablaDirectorios = list_create();
 
@@ -345,6 +356,8 @@ void iniciarEstructuras(){
 
 	seDesconectoUnNodo=false;
 
+	sistemaFormateado = false;
+
 	envioDeInformacionADataNode=true;
 
 }
@@ -365,38 +378,13 @@ void atenderNotificacion(int socket){
 	switch(nroNotificacion){
 
 		case ES_DATANODE:
-
-//			log_info(loggerFileSystem,"conectado un Datanode");
-//			sendDeNotificacion(socket, ES_FS);
-//
-//			if(estadoAnterior==true || seDesconectoUnNodo==true){
-//				sendDeNotificacion(socket,PEDIR_INFONODO);
-//			}else{
-//				if(sistemaFormateado){
-//					log_info(loggerFileSystem, "Se ha denegado la conexion porque el sistema ya se encuentra formateado");
-//					FD_CLR(socket, &socketClientes);
-//					close(socket);
-//				} else {
-//					int* socketNro = malloc(sizeof(int));
-//					(* socketNro) = socket;
-//					list_add(socketsDatanode,socketNro);
-//				}
-//			}
-//			break;
 			sendDeNotificacion(socket, ES_FS);
 			sendDeNotificacion( socket,PEDIR_INFONODO);
 			break;
 
-/*		case ESC_INCORRECTA:
-			envioDeInformacionADataNode=false;
-			break;
-		case ESC_CORRECTA:
-			envioDeInformacionADataNode=true;
-			break;
-*/
 		case ES_WORKER:
 			log_info(loggerFileSystem,"Se ha conectado un Worker");
-			if(!estadoSeguro){
+			if(!estadoEstable){
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con Worker");
 				FD_CLR(socket, &socketClientes);
 				close(socket);
@@ -407,7 +395,7 @@ void atenderNotificacion(int socket){
 
 		case ES_YAMA:
 			log_info(loggerFileSystem,"Se ha conectado una YAMA");
-			if (estadoSeguro) {
+			if (estadoEstable) {
 				enviarListaNodos(socket);
 			} else {
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");
@@ -422,9 +410,6 @@ void atenderNotificacion(int socket){
 			registrarNodo(socket);
 			break;
 
-//							case REC_BLOQUE:
-//									recibirBloque(socketClienteChequeado);
-//									break;
 		case INFO_ARCHIVO_FS:
 			enviarDatoArchivo(socket);
 			break;
@@ -439,8 +424,6 @@ void atenderNotificacion(int socket){
 		case 0:
 			log_warning(loggerFileSystem, "El socket %d corto la conexion", socket);
 			verificarSiNodo(socket);
-			//verificarSiNodoCliente(socket);
-			//sacarSocket(socket);
 			FD_CLR(socket, &socketClientes);
 			close(socket);
 			break;
@@ -462,21 +445,7 @@ void verificarSiNodo(int socket){
 			return (nodoSeleccionado->socket==socket);
 	}
 
-	if(sistemaFormateado==false){
-
-		strNodo * nodoDesconectado = list_remove_by_condition(tablaNodos->nodos,(void *)esElNodoDesconectado);
-
-		if(nodoDesconectado != NULL){
-			log_warning(loggerFileSystem,"Era un datanode, se ignora porque no se hizo format");
-			bool borrarNodo(char * nodoSeleccionado){
-				return(strcmp(nodoSeleccionado,nodoDesconectado->nombre)==0);
-			}
-			list_remove_by_condition(tablaNodos->listaNodos,(void *)borrarNodo);
-			tablaNodos->tamanioFSTotal-=nodoDesconectado->tamanioTotal;
-			tablaNodos->tamanioFSLibre-=nodoDesconectado->tamanioLibre;
-		}
-	}else{
-
+	if(estadoAnterior==true || sistemaFormateado==true){
 		strNodo* nodoDesconectado=list_find(tablaNodos->nodos,(void*)esElNodoDesconectado);
 
 		if(nodoDesconectado!=NULL){
@@ -487,31 +456,21 @@ void verificarSiNodo(int socket){
 			seDesconectoUnNodo=true;
 			persistirTablaNodo();
 		}
-
-
-	}
-
-
-	/*
-	bool esSocketNodo2(strNodo* unNodo){
-		return (unNodo->socket==socket);
-	}
-
-	strNodo* nodo=list_find(tablaNodos->nodos,(void*)esSocketNodo2);
-
-	if(nodo!=NULL){
-		log_warning(loggerFileSystem,"El socket que se desconecto era un DataNode");
-		log_debug(loggerFileSystem,"Actualizando estructuras");
-
 	}else{
 
-		log_debug(loggerFileSystem,"No se ha desconectado un DataNode del sistema.");
-		tablaNodos->tamanioTotal-=nodo->tamanioTotal;
-		tablaNodos->tamanioLibre-=nodo->tamanioLibre;
-		nodo->conectado=false;
-		//seDesconectoUnNodo=true;
+		if(sistemaFormateado==false || estadoAnterior==false){
 
-	}*/
+			strNodo * nodoDesconectado = list_remove_by_condition(tablaNodos->nodos,(void *)esElNodoDesconectado);
 
-
+			if(nodoDesconectado != NULL){
+				log_warning(loggerFileSystem,"Era un datanode, se ignora porque no se hizo format y el sistema no presenta estado anterior");
+				bool borrarNodo(char * nodoSeleccionado){
+					return(strcmp(nodoSeleccionado,nodoDesconectado->nombre)==0);
+				}
+				list_remove_by_condition(tablaNodos->listaNodos,(void *)borrarNodo);
+				tablaNodos->tamanioFSTotal-=nodoDesconectado->tamanioTotal;
+				tablaNodos->tamanioFSLibre-=nodoDesconectado->tamanioLibre;
+			}
+		}
+	}
 }

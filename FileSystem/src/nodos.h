@@ -9,7 +9,11 @@
 #define NODOS_H_
 
 #include "estructuras.h"
+
+void actualizoBitmapsNodosDisponibles();
+void limpiarNodosDesonectados();
 void verificarCopiasNodo(char* );
+int cantidadDeNodosDisponibles();
 void perteneceAlSistema(char* , int , char* , uint32_t );
 bool hayUnEstadoEstable();
 void registrarNodosConectados();

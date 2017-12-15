@@ -11,6 +11,8 @@
 
 #include "estructuras.h"
 
+void limpiarEStructurasAdministrativas();
+
 void inicializarDirectoriosPrincipales();
 //Funciones de bitmap
 t_bitarray * crearBitmap(int);
