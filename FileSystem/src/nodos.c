@@ -7,6 +7,67 @@
 
 #include "nodos.h"
 
+void actualizoBitmapsNodosDisponibles(){
+	int cont=0;
+	int cantidadNodos=list_size(listaBitmaps);
+	while(cont<cantidadNodos){
+		strBitmaps* nodoBitmapSeleccionado=list_get(listaBitmaps,cont);
+
+		bool esElNodo(strNodo* nodoSeleccionado){
+			return (strcmp(nodoSeleccionado->nombre,nodoBitmapSeleccionado->nodo)==0);
+		}
+		strNodo* nodo=list_find(tablaNodos->nodos,(void*)esElNodo);
+
+		int contador=0;
+		for(;contador < nodo->tamanioTotal;contador++){
+			bitarray_clean_bit(nodoBitmapSeleccionado->bitarray,contador);
+		}
+
+		nodo->tamanioLibre=0;
+		cont++;
+	}
+}
+
+
+void limpiarNodosDesonectados(){
+	int contador=0;
+	bool nodoDesconectado(strNodo* nodoElegido){
+		return(nodoElegido->conectado==false);
+	}
+	int cantidadNodos=list_count_satisfying(tablaNodos->nodos,(void*)nodoDesconectado);
+
+	while(contador<cantidadNodos){
+		//BORRO DE LA TABLA DE NODOS
+		strNodo* nodoSeleccionado=list_remove_by_condition(tablaNodos->nodos,(void*)nodoDesconectado);
+
+		//ACTUALIZO LA CAPACIDAD DEL FS
+		tablaNodos->tamanioFSLibre-=nodoSeleccionado->tamanioLibre;
+		tablaNodos->tamanioFSTotal-=nodoSeleccionado->tamanioTotal;
+
+		//BORRO DE LA LISTA DE NODOS
+		bool nodoVictima(char* nombreNodoElegido){
+			return(strcmp(nombreNodoElegido,nodoSeleccionado->nombre)==0);
+		}
+		char* nombreNodo=list_remove_by_condition(tablaNodos->listaNodos,(void*)nodoVictima);
+
+		//BORRO LA ESTRCUTURA DE BITMAPS
+		bool liberarBitmap(strBitmaps* nodoBitmapSeleccionado){
+			return(strcmp(nodoBitmapSeleccionado->nodo,nombreNodo)==0);
+		}
+		strBitmaps* nodoBitmap=list_remove_by_condition(listaBitmaps,(void*)liberarBitmap);
+		//TENGO QUE BORRAR EL ARCHIVO
+		free(nodoBitmap->nodo);
+		bitarray_destroy(nodoBitmap->bitarray);
+		free(nodoBitmap);
+
+			free(nombreNodo);
+		//free(nodoSeleccionado->nombre); ES NOMBRE NODO
+		free(nodoSeleccionado);
+		contador++;
+	}
+
+}
+
 void verificarCopiasNodo(char* nombreNodo){
 	uint32_t cantidadDeArchivos=list_size(tablaArchivos);
 	uint32_t cont=0;
@@ -34,8 +95,26 @@ void verificarCopiasNodo(char* nombreNodo){
 			entradaArchivos->disponible=true;
 			log_debug(loggerFileSystem,"El archivo %s ya cuenta con una copia por bloque.",entradaArchivos->nombre);
 		}
+		if(hayUnEstadoEstable()==true){
+			estadoEstable=true;
+			log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable.");
+		}
 	}
  }
+
+int cantidadDeNodosDisponibles(){
+	int contador=0;
+	int cont=0;
+	int cantidadNodos=list_size(tablaNodos->nodos);
+	while(cont<cantidadNodos){
+		strNodo* nodoSeleccionado=list_get(tablaNodos->nodos,contador);
+		if(nodoSeleccionado->conectado==true){
+			contador++;
+		}
+		cont++;
+	}
+	return contador;
+}
 
 void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto){
 
@@ -91,18 +170,6 @@ bool hayUnEstadoEstable(){
 	}
 }
 
-void registrarNodosConectados(){
-
-	void pidoInfo(int * socket){
-		sendDeNotificacion((* socket),PEDIR_INFONODO);
-	}
-
-	list_iterate(socketsDatanode,(void *)pidoInfo);
-	list_destroy(socketsDatanode);
-
-
-}
-
 void verificarSiEsUnNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,uint32_t puerto){
 
 	 bool estaEnElSistema(char* nodoSeleccionado){
@@ -152,15 +219,11 @@ void registrarNodo(int socket){
 	if(estadoAnterior==true){
 		perteneceAlSistema(nombreNodo,socket,ip,puerto);
 	}else{
-		if(sistemaFormateado==false && seDesconectoUnNodo==false){
+		if(sistemaFormateado==false){
 			t_bitarray* bitarray = crearBitmap(cantBloques);
 
 			// Creo el nuevo nodo
 			strNodo * nuevoNodo = malloc(sizeof(strNodo));
-
-//			int * socketNro = malloc(sizeof(int));
-//			(* socketNro) = socket;
-//			nuevoNodo->socket=(* socketNro);
 			nuevoNodo->socket=socket;
 			nuevoNodo->conectado=true;
 			nuevoNodo->nombre=string_new();
@@ -194,12 +257,8 @@ void registrarNodo(int socket){
 			conexionesNodo->puerto=puerto;
 			list_add(listaConexionesNodos,conexionesNodo);
 
-
-			//PERSISTO LA TABLA
-			persistirTablaNodo();
-
 		}else{
-			if(seDesconectoUnNodo){
+			if((seDesconectoUnNodo && estadoAnterior)||(seDesconectoUnNodo&&sistemaFormateado)){
 				verificarSiEsUnNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
 				log_error(loggerFileSystem,"No se puede registrar el Datanode al sistema, ya ha sido formateado");

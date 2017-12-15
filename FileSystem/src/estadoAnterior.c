@@ -241,7 +241,6 @@ bool presentaUnEstadoAnterior(){
 		config_destroy(archivoNodos2);
 		config_destroy(archivoRegistroArchivos);
 		estadoAnterior=true;
-		sistemaFormateado=true;
 		free(pathNodo);
 		return true;
 	}else{

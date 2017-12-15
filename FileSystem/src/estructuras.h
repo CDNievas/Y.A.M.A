@@ -114,13 +114,12 @@ t_list * tablaArchivos;
 strTablaNodos * tablaNodos;
 t_list * tablaDirectorios;
 t_list * listaBitmaps; // liberado
-t_list * socketsDatanode; // Solo para uso antes de format, no se puede liberar
 t_list * listaConexionesNodos; //liberado
 t_list * listaRegistroDeArchivosGuardados;//falta liberar
 pthread_t hiloConsolaFS;
 pthread_mutex_t mutex;
 
-bool estadoSeguro,sistemaFormateado,estadoAnterior,seDesconectoUnNodo,envioDeInformacionADataNode;
+bool estadoEstable,sistemaFormateado,estadoAnterior,seDesconectoUnNodo,envioDeInformacionADataNode;
 char * commandChar;
 
 //MUTEX

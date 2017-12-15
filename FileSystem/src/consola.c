@@ -25,18 +25,39 @@ void ejecutarComando(uint32_t nro, char ** param){
 					if(estadoAnterior==false){
 						uint32_t cantidadNodosSistemas=list_size(tablaNodos->listaNodos);
 						if(cantidadNodosSistemas>=2){
-							registrarNodosConectados();
+							persistirTablaNodo();
 							sistemaFormateado = true;
-							estadoSeguro=true;
+							estadoEstable=true;
 							printf("Se ha formateado correctamente el sistema \n");
 							log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
 						}else{
 							log_warning(loggerFileSystem,"No hay suficientes DataNode para dejar el FS en un estado Estable");
 						}
 					} else {
-						if(hayUnEstadoEstable()){
+
+						if(cantidadDeNodosDisponibles()){
+							limpiarNodosDesonectados();
+							destuirMetadata();
+							inicializarDirectoriosPrincipales();
+							limpiarEStructurasAdministrativas();
+
+							// Tabla de directorios
+							tablaDirectorios = list_create();
+
+							// Tabla de archivos
+							tablaArchivos = list_create();
+
+							//Registro de archivos guardados en el sistema
+							listaRegistroDeArchivosGuardados=list_create();
+
+							actualizoBitmapsNodosDisponibles();
+							tablaNodos->tamanioFSLibre=0;
+							persistirTablaNodo();
+							iniciarTablaDeDirectorios();
+
 							sistemaFormateado = true;
-							estadoSeguro=true;
+							estadoAnterior=false;
+							estadoEstable==true;
 							log_info(loggerFileSystem, "Se ha formateado correctamente el sistema");
 						} else {
 							log_warning(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
@@ -303,8 +324,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
-				estadoSeguro = true;
-				if(!estadoSeguro){
+
+				if(!estadoEstable){
 					printf("El sistema no se encuentra en un estado seguro \n");
 					log_warning(loggerFileSystem, "El sistema no se encuentra en un estado seguro  ");
 				} else {
