@@ -22,5 +22,6 @@ int asignarBloqueNodo(strNodo* );
 void registrarNodo(int);
 void enviarDatosANodo(t_list* ,FILE* ,strArchivo* );
 bool asignarEnviarANodo(void* , uint32_t , strBloqueArchivo* );
+void mostrarEstadoDelSistemaNodos();
 
 #endif /* NODOS_H_ */

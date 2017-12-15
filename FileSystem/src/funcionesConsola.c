@@ -203,6 +203,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 	log_info(loggerFileSystem,"Se ha almacenado correctamente el archivo %s.",nombreArchivo);
 	list_add(tablaArchivos,entradaArchivoAGuardar);
 
+	mostrarEstadoDelSistemaNodos();
 
 	//PERSISTO EL ARCHIVO
 	persistirArchivo(entradaArchivoAGuardar);

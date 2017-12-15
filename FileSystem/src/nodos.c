@@ -360,6 +360,8 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	copiasBloque->copia1->nroBloque=bloqueAsignado;
 	copiasBloque->copia1->nodo=string_new();
 
+	log_info(loggerFileSystem,"Bloque original: %s | %d",nodoOriginal->nombre,bloqueAsignado);
+
 	string_append(&copiasBloque->copia1->nodo,nodoOriginal->nombre);
 
 	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
@@ -408,6 +410,8 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	copiasBloque->copia2->nroBloque=bloqueAsignado;
 	copiasBloque->copia2->nodo=string_new();
 
+	log_info(loggerFileSystem,"Bloque original: %s | %d",nodoCopia->nombre,bloqueAsignado);
+
 	string_append(&copiasBloque->copia2->nodo,nodoCopia->nombre);
 
 	memcpy(mensaje,&bloqueAsignado,sizeof(uint32_t));
@@ -454,6 +458,7 @@ void enviarDatosANodo(t_list* posicionesBloquesAGuardar,FILE* archivoALeer,strAr
 			fread(contenidoAEnviar,posicion,1,archivoALeer);
 			//ASIGNO LOS BYTES QUE OCUPA EL BLOQUE
 			copiasBloque->bytes=posicion;
+			log_info(loggerFileSystem,"Bloque: %d | Bytes: %d",bloqueActual,posicion);
 			//ASIGNO LOS NODOS A DONDO QUIERO GUARDAR EL CONTENIDO
 			if(asignarEnviarANodo(contenidoAEnviar,posicion,copiasBloque)==false){
 				return;
@@ -467,6 +472,7 @@ void enviarDatosANodo(t_list* posicionesBloquesAGuardar,FILE* archivoALeer,strAr
 			fread(contenidoAEnviar,tamanioALeer,1,archivoALeer);
 			//ASIGNO LOS BYTES QUE OCUPA EL BLOQUE
 			copiasBloque->bytes=tamanioALeer;
+			log_info(loggerFileSystem,"Bloque: %d | Bytes: %d",bloqueActual,tamanioALeer);
 			//ASIGNO LOS NODOS DONDE QUIERO GUARDAR EL CONTENIDO
 			if(asignarEnviarANodo(contenidoAEnviar,tamanioALeer,copiasBloque)==false){
 				return;
@@ -493,4 +499,16 @@ int asignarBloqueNodo(strNodo* nodoOriginal){
 		}
 	}
 	return 0;//TENGO QUE CACHEAR ESTE ERROR?
+}
+
+void mostrarEstadoDelSistemaNodos(){
+	int cont=0;
+	int cantidadNodos=list_size(tablaNodos->nodos);
+	log_info(loggerFileSystem,"Mostrando informacion del sistema:\n");
+	while(cont<cantidadNodos){
+		strNodo* nodoSeleccionado=list_get(tablaNodos->nodos,cont);
+		log_info(loggerFileSystem,"-%s: \n",nodoSeleccionado->nombre);
+		log_info(loggerFileSystem,"Tamaño total: %d | Tamaño libre: %d | Porcentaje ocioso: %d\n",nodoSeleccionado->tamanioTotal,nodoSeleccionado->tamanioLibre,nodoSeleccionado->porcentajeOscioso);
+		cont++;
+	}
 }
