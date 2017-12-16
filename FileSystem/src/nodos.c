@@ -146,7 +146,7 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 		}
 
 		if(list_all_satisfy(tablaNodos->nodos,(void*)todosNodosDisponibles)){
-			estadoAnterior=false;
+			log_debug(loggerFileSystem,"Se han conectado todo los nodos del sistemaAnterior");
 		}
 		verificarCopiasNodo(nombreNodo);
 

@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
 
 			pthread_mutex_lock(&mutex);
 			bool fd_isset = FD_ISSET(socketCliente, &socketClientesAuxiliares);
-			//unlock ant
 
 			if (fd_isset) {
 				if (socketCliente == socketListener) {

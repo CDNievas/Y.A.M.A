@@ -29,9 +29,6 @@ void catArchivo(char *);
 void liberarBloque(char* , uint32_t );
 void liberarArchivoYPersistir(strArchivo* );
 int sacarCantidadbloqueLibre(strNodo* );
-char * obtenerBloque(int, uint32_t);
-int funcionCat(strBloqueArchivo *);
-void catArchivo(char *);
 void liberarBloque(char*, uint32_t );
 void liberarArchivoYPersistir(strArchivo* );
 int sacarCantidadBloquesLibres(strNodo* nodo);
@@ -39,8 +36,12 @@ void actualizarEstructurasNodos();
 void borrarBloquesArchivos(strArchivo* );
 void crearDirectorios(char* , char* );
 
-int funcionesRemasterizadaCat(strBloqueArchivo *,FILE*);
-void cpto(char *, char*);
+char * obtenerBloque(int, uint32_t);
+int funcionCat(strBloqueArchivo *);
+void catArchivo(char *);
+int catCpto(strBloqueArchivo *,FILE*);
+int cpto(char *, char*);
+void funcionLs(char* pathDirectorio);
 
 
 

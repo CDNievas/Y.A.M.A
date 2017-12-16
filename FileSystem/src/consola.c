@@ -75,7 +75,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		// RM
 		case 2:{
 
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -143,7 +143,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//RENAME
 		case 3:{
 
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -193,7 +193,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//MV
 		case 4:{
 
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -230,7 +230,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//CAT
 		case 5:{
 
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -265,7 +265,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//MKDIR
 		case 6:{
 
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -320,7 +320,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 		//CPFROM
 		case 7:{
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -379,7 +379,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 		
 		//CPTO
 		case 8:{
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -392,6 +392,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
 
+						pthread_mutex_lock(&mutex);
 						if(!existePath(param[1])){
 							printf("El path no existe \n");
 							log_warning(loggerFileSystem, "El path no existe");
@@ -399,13 +400,24 @@ void ejecutarComando(uint32_t nro, char ** param){
 							if(existePathLocal(param[2])){
 								printf("El archivo local existe \n");
 								log_warning(loggerFileSystem,"El archivo local existe");
-
 							} else {
-								pthread_mutex_lock(&mutex);
-								cpto(param[1],param[2]);
-								pthread_mutex_unlock(&mutex);
+
+								int cod = cpto(param[1],param[2]);
+								if(cod == -1){
+									printf("Path inexistente \n");
+									log_warning(loggerFileSystem,"Path inexistente");
+								} else if(cod == -2){
+									printf("No hay suficientes copias de bloques.");
+									log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
+								} else {
+									printf("Se ha guardado correctamente el archivo al filesystem local");
+									log_info(loggerFileSystem,"Se ha guardado correctamente el archivo al filesystem local");
+								}
+
 							}
 						}
+						pthread_mutex_unlock(&mutex);
+
 					}
 				}
 			}
@@ -414,7 +426,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 		//MD5
 		case 10:{
-			if(!sistemaFormateado){
+			if(!estadoEstable){
 				printf("El sistema no se encuentra formateado \n");
 				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
 			} else {
@@ -427,40 +439,65 @@ void ejecutarComando(uint32_t nro, char ** param){
 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
 					} else {
 
+						pthread_mutex_lock(&mutex);
 						if(!existePath(param[1])){
 							printf("El path no existe \n");
 							log_warning(loggerFileSystem, "El path no existe");
 						} else {
 
-							pthread_mutex_lock(&mutex);
-							char* pathFinal=string_new();
-							string_append(&pathFinal,PATH_METADATA);
-							string_append(&pathFinal,"/");
+							int cod = cpto(param[1],"./md5.dat");
+							if(cod == -1){
+								printf("Path inexistente \n");
+								log_warning(loggerFileSystem,"Path inexistente");
+							} else if(cod == -2){
+								printf("%s","No hay suficientes copias de bloques.");
+								log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
+							} else {
+								system("md5sum md5.dat");
+								system("rm -f md5.dat");
+							}
 
-							cpto(param[1],pathFinal);
-
-							//COMANDO MD5S
-							char* comandoMD5=string_new();
-							string_append(&comandoMD5,"md5sum ");
-							string_append(&comandoMD5,pathFinal);
-							string_append(&comandoMD5," | awk '{print $1}'");
-							system(comandoMD5);
-							free(comandoMD5);
-
-							char* comandoRM=string_new();
-							string_append(&comandoRM,"rm ");
-							string_append(&comandoRM,pathFinal);
-							system(comandoRM);
-
-
-							pthread_mutex_unlock(&mutex);
 
 						}
+						pthread_mutex_unlock(&mutex);
+
 					}
 				}
 			}
 		}
 		break;
+
+		//LS
+		case 11:{
+			if(!sistemaFormateado){
+				printf("El sistema no se encuentra formateado \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			} else {
+				if(!chequearParamCom(param,2,2)){
+					printf("Error en la cantidad de parametros \n");
+					log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+				} else {
+					if(!contieneYamafs(param[1])){
+						printf("El path no pertenece a yamafs \n");
+						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+					} else {
+						if(!existePath(param[1])){
+							printf("El path no existe \n");
+							log_warning(loggerFileSystem, "El path no existe");
+						} else {
+
+								pthread_mutex_lock(&mutex);
+
+								funcionLs(param[1]);
+
+								pthread_mutex_unlock(&mutex);
+
+							}
+						}
+					}
+				}
+			}
+			break;
 
 
 		//MKDIRN
@@ -484,6 +521,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 		}
 		break;
+
 
 		// PATH
 		case 14:{

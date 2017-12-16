@@ -54,7 +54,7 @@ bool contieneYamafs(char * path){
 
 	char ** pathDesc = string_split(path,"/");
 
-	int i = 0;
+	/*int i = 0;
 	while(pathDesc[i] != NULL){
 		if(strcmp(pathDesc[i],"yamafs:") == 0){
 			free(pathDesc);
@@ -63,8 +63,8 @@ bool contieneYamafs(char * path){
 			i++;
 		}
 	}
-	free(pathDesc);
-	return false;
+	free(pathDesc);*/
+	return strcmp(pathDesc[0],"yamafs:") == 0;
 }
 
 uint32_t sacarTamanioArchivo (FILE* archivo){
@@ -505,54 +505,6 @@ int funcionCat(strBloqueArchivo * bloque){
 
 }
 
-void catArchivo(char *path){
-
-	char ** pathDesc = string_split(path,"/");
-	char * nombre = obtenerNombreUltimoPath(pathDesc);
-
-	int idPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
-
-	if(idPadre == -2){
-		printf("Path inexistente \n");
-		log_warning(loggerFileSystem,"Path inexistente");
-	} else {
-
-		strArchivo * archivo = buscaArchivo(nombre,idPadre);
-
-		if(archivo == NULL){
-			printf("Path inexistente \n");
-			log_warning(loggerFileSystem,"Path inexistente");
-		} else {
-
-			//char * cat = string_new();
-
-			t_list * listaBloques = archivo->bloques;
-
-			int i=0;
-			int cod=0;
-			while(i<list_size(listaBloques)){
-
-				strBloqueArchivo * bloque = list_get(listaBloques,i);
-
-				if((cod = funcionCat(bloque)) == -1){
-					break;
-				}
-
-				i++;
-			}
-
-			if(cod == -1){
-				//free(cat);
-				printf("%s","No hay suficientes copias de bloques.");
-				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
-			}
-
-		}
-
-	}
-
-}
-
 void liberarBloque(char* nombreNodo, uint32_t nroBloque){
 	bool esElNodoBitmap(strBitmaps* nodoBitmapSeleccionado){
 		return (strcmp(nodoBitmapSeleccionado->nodo,nombreNodo)==0);
@@ -686,14 +638,13 @@ void crearDirectorios(char* raiz, char* cantDirectorios){
 }
 
 
-int funcionesRemasterizadaCat(strBloqueArchivo * bloque,FILE* archivoFSLocal){
+int catCpto(strBloqueArchivo * bloque,FILE* archivoFSLocal){
 
 	char * nombreNodo = bloque->copia1->nodo;
 
 	bool buscaNodo(strNodo * x){
 		return (strcmp(x->nombre,nombreNodo)==0);
 	}
-
 
 	strNodo * nodo = list_find(tablaNodos->nodos, (void *) buscaNodo);
 	strNodo * nodoElegido;
@@ -749,13 +700,10 @@ int funcionesRemasterizadaCat(strBloqueArchivo * bloque,FILE* archivoFSLocal){
 
 }
 
-void cpto(char * pathYamaFs, char* pathLocal){
+void catArchivo(char *path){
 
-	char ** pathDesc = string_split(pathYamaFs,"/");
+	char ** pathDesc = string_split(path,"/");
 	char * nombre = obtenerNombreUltimoPath(pathDesc);
-
-	string_append(&pathLocal,nombre);
-	FILE* archivoFSLocal=fopen(pathLocal,"w+");
 
 	int idPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
 
@@ -779,7 +727,7 @@ void cpto(char * pathYamaFs, char* pathLocal){
 
 				strBloqueArchivo * bloque = list_get(listaBloques,i);
 
-				if((cod = funcionesRemasterizadaCat(bloque,archivoFSLocal)) == -1){
+				if((cod = funcionCat(bloque)) == -1){
 					break;
 				}
 
@@ -787,16 +735,85 @@ void cpto(char * pathYamaFs, char* pathLocal){
 			}
 
 			if(cod == -1){
-				//free(cat);
 				printf("%s","No hay suficientes copias de bloques.");
 				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
-			} else {
-				//printf("%s",cat);
-				//free(cat);
 			}
 
 		}
 
 	}
 
+}
+
+int cpto(char * pathYamaFs, char* pathLocal){
+
+	char ** pathDesc = string_split(pathYamaFs,"/");
+	int idPadre = obtenerIdPadreArchivo(pathDesc,0,-1);
+
+	if(idPadre == -2){
+		printf("Path inexistente \n");
+		log_warning(loggerFileSystem,"Path inexistente");
+	} else {
+
+		char * nombre = obtenerNombreUltimoPath(pathDesc);
+
+		strArchivo * archivo = buscaArchivo(nombre,idPadre);
+
+		if(archivo == NULL){
+			return -1;
+		} else {
+
+			FILE* archivoFSLocal=fopen(pathLocal,"w+");
+
+			t_list * listaBloques = archivo->bloques;
+
+			int i=0;
+			int cod=0;
+			while(i<list_size(listaBloques)){
+
+				strBloqueArchivo * bloque = list_get(listaBloques,i);
+
+				if((cod = catCpto(bloque,archivoFSLocal)) == -1){
+					break;
+				}
+
+				i++;
+			}
+
+			if(cod == -1){
+				fclose(archivoFSLocal);
+				return -2;
+			}
+
+			fclose(archivoFSLocal);
+			return 0;
+
+		}
+
+	}
+
+}
+
+void funcionLs(char* pathDirectorio){
+    char ** pathDesc = string_split(pathDirectorio,"/");
+    uint32_t index=obtenerIdDirectorio(pathDesc,0,-1);
+    int cont=0;
+    bool esElIDPadre(strArchivo* archivoSeleccionado){
+        return (archivoSeleccionado->directorioPadre==index);
+    }
+    int cantidadArchivos=list_count_satisfying(tablaArchivos,(void*)esElIDPadre);
+    log_info(loggerFileSystem,"Lista de archivos archivos del directorio: %s",pathDirectorio);
+
+    t_list* listaConArchivos=list_filter(tablaArchivos,(void*)esElIDPadre);
+    if(cantidadArchivos>0){
+        while(cont<cantidadArchivos){
+            strArchivo* archivoElegido=list_get(listaConArchivos,cont);
+            log_info(loggerFileSystem,"Nombre: %s",archivoElegido->nombre);
+            cont++;
+        }
+    }else{
+        log_info(loggerFileSystem,"No contiene archivos");
+    }
+
+    list_destroy(listaConArchivos);
 }
