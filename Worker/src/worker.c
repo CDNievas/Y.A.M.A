@@ -518,7 +518,6 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			free(numerosParalelos);
 			close(unSocketWorker);
 			close(socketMaster);
-			list_destroy(listaInfoApareo);
 			log_info(loggerWorker, "¡¡Adios logger!! \n");
 			log_destroy(loggerWorker);
 			exit(-1);
