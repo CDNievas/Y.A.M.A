@@ -13,30 +13,37 @@ void solicitarArchivo(char* nombreArchivo){
 }
 
 t_list *recibirInfoArchivo(){
-	int tipoMsj = recvDeNotificacion(socketFS);
-	if(tipoMsj == 0){
-		log_error(loggerYAMA, "ERROR - RECIBIR INFORMACION DE ARCHIVO");
-		estaFS = false;
-		return NULL;
-	}else if(tipoMsj == PATH_FILE_INCORRECTO){
-		return NULL;
-	}else if(tipoMsj == INFO_ARCHIVO_FS){
-		t_list *listaInfoFs = list_create();
-		int cantidadDeBloques = recibirUInt(socketFS);
-		int i;
-		for(i = 0; i < cantidadDeBloques; i++){
-			infoDeFs* informacionDeBloque = generarInformacionDeBloque();
-			informacionDeBloque->nroBloque = recibirUInt(socketFS);
-			informacionDeBloque->copia1->nombreNodo = recibirString(socketFS);
-			informacionDeBloque->copia1->nroBloque = recibirUInt(socketFS);
-			informacionDeBloque->copia2->nombreNodo = recibirString(socketFS);
-			informacionDeBloque->copia2->nroBloque = recibirUInt(socketFS);
-			informacionDeBloque->bytesOcupados = recibirUInt(socketFS);
-			list_add(listaInfoFs, informacionDeBloque);
-		}
-		return listaInfoFs;
-	}else{
-		return NULL;
+	bool hayMensaje = false;
+	while(!hayMensaje){
+		int tipoMsj = peekingNotificacion(socketFS);
+			if(tipoMsj == 0){
+				hayMensaje = true;
+				log_error(loggerYAMA, "ERROR - RECIBIR INFORMACION DE ARCHIVO");
+				estaFS = false;
+				return NULL;
+			}else if(tipoMsj == PATH_FILE_INCORRECTO){
+				uint32_t noti = recvDeNotificacion(socketFS);
+				hayMensaje = true;
+				return NULL;
+			}else if(tipoMsj == INFO_ARCHIVO_FS){
+				uint32_t noti = recvDeNotificacion(socketFS);
+				hayMensaje = true;
+				t_list *listaInfoFs = list_create();
+				int cantidadDeBloques = recibirUInt(socketFS);
+				int i;
+				for(i = 0; i < cantidadDeBloques; i++){
+					infoDeFs* informacionDeBloque = generarInformacionDeBloque();
+					informacionDeBloque->nroBloque = recibirUInt(socketFS);
+					informacionDeBloque->copia1->nombreNodo = recibirString(socketFS);
+					informacionDeBloque->copia1->nroBloque = recibirUInt(socketFS);
+					informacionDeBloque->copia2->nombreNodo = recibirString(socketFS);
+					informacionDeBloque->copia2->nroBloque = recibirUInt(socketFS);
+					informacionDeBloque->bytesOcupados = recibirUInt(socketFS);
+					list_add(listaInfoFs, informacionDeBloque);
+				}
+				return listaInfoFs;
+			}
+
 	}
 
 }
@@ -283,7 +290,16 @@ int cargarReplanificacion(int socketMaster, uint32_t nroMaster, char* nodoFallid
 		return 1;
 	}else{
 		log_error(loggerYAMA,"ERROR - NO SE PUEDE REPLANIFICAR");
-		//list_destroy(listaBloquesAReplanificar);
+		uint32_t posicion;
+		t_list* listaDelNodo = filtrarTablaMaster(nroMaster);
+		uint32_t cantidad = list_size(listaDelNodo);
+		for(posicion = 0; posicion < list_size(listaDelNodo); posicion++){
+			administracionYAMA* admin = list_get(listaDelNodo, posicion);
+			if(admin->estado != FALLO || strcmp(admin->nombreNodo, nodoFallido) == 0){
+				reducirWL(admin->nombreNodo);
+			}
+		}
+		list_destroy(listaDelNodo);
 		list_destroy(listaEntradasAReplanificar);
 		list_destroy(listaBloquesAReplanificar);
 		return 0;
