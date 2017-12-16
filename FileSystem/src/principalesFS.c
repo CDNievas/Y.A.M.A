@@ -129,7 +129,7 @@ void liberarlistaConexionNodos(){
 
 
 void handlerSIGINT(){
-	printf("SIGINT enviado, cerrando el proceso");
+	printf("SIGINT enviado, cerrando el proceso\n");
 	log_warning(loggerFileSystem, "SIGINT enviado, cerrando el proceso");
 	liberarMemoria();
 }
@@ -270,7 +270,7 @@ void chequearParametrosFS(int cantPar, char * par){
 void cargarConfigFS(t_config* configuracionFS) {
 
 	if (!config_has_property(configuracionFS, "PUERTO_ESCUCHA")) {
-		printf("No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
+		printf("No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion\n");
 		log_error(loggerFileSystem,"No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
 		//liberarMemoria();
 		exit(-1);
@@ -280,7 +280,7 @@ void cargarConfigFS(t_config* configuracionFS) {
 
 
 	if (!config_has_property(configuracionFS, "PATH_METADATA")) {
-		printf("No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
+		printf("No se encuentra el parametro PATH_METADATA en el archivo de configuracion\n");
 		log_error(loggerFileSystem,"No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
 		config_destroy(configuracionFS);
 		//liberarMemoria();
@@ -374,10 +374,10 @@ void atenderNotificacion(int socket){
 			break;
 
 		case ES_WORKER:
-			printf("Se ha conectado un Worker");
+			printf("Se ha conectado un Worker\n");
 			log_info(loggerFileSystem,"Se ha conectado un Worker");
 			if(!estadoEstable){
-				printf("No se encuentra en un estado seguro. Cerrando conexion con Worker");
+				printf("No se encuentra en un estado seguro. Cerrando conexion con Worker\n");
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con Worker");
 				FD_CLR(socket, &socketClientes);
 				close(socket);
@@ -387,12 +387,12 @@ void atenderNotificacion(int socket){
 			break;
 
 		case ES_YAMA:
-			printf("Se ha conectado una YAMA");
+			printf("Se ha conectado una YAMA\n");
 			log_info(loggerFileSystem,"Se ha conectado una YAMA");
 			if (estadoEstable) {
 				enviarListaNodos(socket);
 			} else {
-				printf("No se encuentra en un estado seguro. Cerrando conexion con YAMA");
+				printf("No se encuentra en un estado seguro. Cerrando conexion con YAMA\n");
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");
 				FD_CLR(socket, &socketClientes);
 				close(socket);
@@ -400,7 +400,7 @@ void atenderNotificacion(int socket){
 			break;
 
 		case REC_INFONODO:
-			printf("Registrando Datanode");
+			printf("Registrando Datanode\n");
 			log_info(loggerFileSystem,"Registrando Datanode");
 			registrarNodo(socket);
 			break;
