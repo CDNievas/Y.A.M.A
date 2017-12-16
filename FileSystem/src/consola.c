@@ -597,6 +597,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 	}
 
 }
+}
 
 void consolaFS(){
 
@@ -623,7 +624,6 @@ void consolaFS(){
 		}
 
 	}
-}
 }
 
 
