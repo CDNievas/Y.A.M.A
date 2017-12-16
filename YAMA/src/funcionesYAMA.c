@@ -460,3 +460,11 @@ void eliminarReduccionesLocales(t_list* listaReducLTerminadas, t_list* listaTran
 	}
 }
 
+uint32_t peekingNotificacion(int socketMensajero){
+	uint32_t notificacion;
+	uint32_t resultadoRecv = recv(socketMensajero, &notificacion, sizeof(uint32_t), MSG_WAITALL | MSG_PEEK);
+	if(resultadoRecv <= 0){
+		return 0;
+	}
+	return notificacion;
+}
