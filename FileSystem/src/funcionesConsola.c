@@ -102,6 +102,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 
 	//Si existe el archivo en ese directorio
 	if(!buscarArchivo(pathDirectorio)){
+		printf("El archivo que se desea alamacenar ya existe en yamafs. \n");
 		log_warning(loggerFileSystem,"El archivo que se desea alamacenar ya existe en yamafs.");
 		return false;
 	}
@@ -147,6 +148,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 
 	t_list* posicionesBloquesAGuardar=list_create();
 
+	printf("Se procede a calcular la cantidad de bloques que ocupa el archivo %s",nombreArchivo);
 	log_trace(loggerFileSystem,"Se procede a calcular la cantidad de bloques que ocupa el archivo %s",nombreArchivo);
 	if(strcmp(tipo,"B")==0){
 		uint32_t tamAux=0;
@@ -198,9 +200,10 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 
 	entradaArchivoAGuardar->disponible=true;
 
+	printf("Se Procede almacenar el %s. \n",nombreArchivo);
 	log_trace(loggerFileSystem,"Se Procede almacenar el %s.",nombreArchivo);
 	enviarDatosANodo(posicionesBloquesAGuardar,archivoALeer,entradaArchivoAGuardar);
-	log_info(loggerFileSystem,"Se ha almacenado correctamente el archivo %s.",nombreArchivo);
+	log_info(loggerFileSystem,"Se ha almacenado correctamente el archivo %s. \n",nombreArchivo);
 	list_add(tablaArchivos,entradaArchivoAGuardar);
 
 	mostrarEstadoDelSistemaNodos();
@@ -259,39 +262,43 @@ int borrarDirectorio(char * pathDir){
 
 		int idDir = obtenerIdDirectorio(pathDesc,0,-1);
 
-		if(idDir == -2){
+		if(idDir==0){
 			return idDir;
-		} else {
-
-			bool existenArchivosEnDir(strArchivo * archivo){
-				return archivo->directorioPadre==idDir;
-			}
-
-			if(list_any_satisfy(tablaArchivos,(void *) existenArchivosEnDir)){
-
-				return -3;
-
+		}else{
+			if(idDir == -2){
+				return idDir;
 			} else {
 
-				int idPadreDir = obtenerIdPadreDirectorio(pathDesc,0,-1);
-
-				char * nombreDirectorio = obtenerNombreUltimoPath(pathDesc);
-				bool eliminarDirectorio(strDirectorio * directorio){
-					return (strcmp(directorio->nombre,nombreDirectorio)==0 && directorio->padre==idPadreDir);
+				bool existenArchivosEnDir(strArchivo * archivo){
+					return archivo->directorioPadre==idDir;
 				}
 
-				strDirectorio * directorio=list_remove_by_condition(tablaDirectorios,(void*)eliminarDirectorio);
+				if(list_any_satisfy(tablaArchivos,(void *) existenArchivosEnDir)){
 
-				if(directorio!=NULL){
-					free(directorio->nombre);
-					free(directorio);
+					return -3;
+
+				} else {
+
+					int idPadreDir = obtenerIdPadreDirectorio(pathDesc,0,-1);
+
+					char * nombreDirectorio = obtenerNombreUltimoPath(pathDesc);
+					bool eliminarDirectorio(strDirectorio * directorio){
+						return (strcmp(directorio->nombre,nombreDirectorio)==0 && directorio->padre==idPadreDir);
+					}
+
+					strDirectorio * directorio=list_remove_by_condition(tablaDirectorios,(void*)eliminarDirectorio);
+
+					if(directorio!=NULL){
+						free(directorio->nombre);
+						free(directorio);
+					}
+					persistirTablaDirectorio();
+
+					return 0;
+
 				}
-				persistirTablaDirectorio();
-
-				return 0;
 
 			}
-
 		}
 
 	}
@@ -836,6 +843,12 @@ void borrarLaEntradaViejaEnRegistroArchivosYLoMuevo(strArchivo* archPathOri, int
 	string_append(&comando,rutaVieja);
 	string_append(&comando," ");
 	string_append(&comando,directorioNuevoArchivo);
+	system(comando);
+	free(comando);
+
+	comando=string_new();
+	string_append(&comando,"rm -f ");
+	string_append(&comando,rutaVieja);
 	system(comando);
 	free(comando);
 

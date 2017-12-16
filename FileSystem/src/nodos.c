@@ -94,10 +94,12 @@ void verificarCopiasNodo(char* nombreNodo){
 
 		if(list_all_satisfy(entradaArchivos->bloques,(void*)todosBloquesDisponibles)){
 			entradaArchivos->disponible=true;
+			printf("El archivo %s ya cuenta con una copia por bloque.",entradaArchivos->nombre);
 			log_debug(loggerFileSystem,"El archivo %s ya cuenta con una copia por bloque.",entradaArchivos->nombre);
 		}
 		if(hayUnEstadoEstable()==true){
 			estadoEstable=true;
+			printf("El sistema ya se encuentra en un estado estable.");
 			log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable.");
 		}
 	}
@@ -146,11 +148,13 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 		}
 
 		if(list_all_satisfy(tablaNodos->nodos,(void*)todosNodosDisponibles)){
+			printf("Se han conectado todo los nodos del sistemaAnterior");
 			log_debug(loggerFileSystem,"Se han conectado todo los nodos del sistemaAnterior");
 		}
 		verificarCopiasNodo(nombreNodo);
 
 	}else{
+		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
@@ -190,8 +194,8 @@ void verificarSiEsUnNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,
 
 		//PERSISTO LA TABLA
 		persistirTablaNodo();
-
-		log_debug(loggerFileSystem,"%d desconectado registrado nuevamente al sistema.",nombreNodo);
+		printf("%s desconectado registrado nuevamente al sistema.",nombreNodo);
+		log_debug(loggerFileSystem,"%s desconectado registrado nuevamente al sistema.",nombreNodo);
 
 		bool todosNodosDisponibles(strNodo* entradaNodo){
 			return(entradaNodo->conectado==true);
@@ -199,10 +203,12 @@ void verificarSiEsUnNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,
 
 		if(list_all_satisfy(tablaNodos->nodos,(void*)todosNodosDisponibles)){
 			seDesconectoUnNodo=false;
+			printf("Todos los nodos del sistema se han conectado.");
 			log_debug(loggerFileSystem,"Todos los nodos del sistema se han conectado.");
 		}
 
 	}else{
+		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
@@ -262,6 +268,7 @@ void registrarNodo(int socket){
 			if((seDesconectoUnNodo && estadoAnterior)||(seDesconectoUnNodo&&sistemaFormateado)){
 				verificarSiEsUnNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
+				printf("No se puede registrar el Datanode al sistema, ya ha sido formateado");
 				log_error(loggerFileSystem,"No se puede registrar el Datanode al sistema, ya ha sido formateado");
 				//close(socket);
 				sendDeNotificacion(socket, 0);
@@ -459,10 +466,13 @@ int asignarBloqueNodo(strNodo* nodoOriginal){
 void mostrarEstadoDelSistemaNodos(){
 	int cont=0;
 	int cantidadNodos=list_size(tablaNodos->nodos);
+	printf("Mostrando informacion del sistema:\n");
 	log_info(loggerFileSystem,"Mostrando informacion del sistema:\n");
 	while(cont<cantidadNodos){
 		strNodo* nodoSeleccionado=list_get(tablaNodos->nodos,cont);
+		printf("-%s: \n",nodoSeleccionado->nombre);
 		log_info(loggerFileSystem,"-%s: \n",nodoSeleccionado->nombre);
+		printf("Tamaño total: %d | Tamaño libre: %d | Porcentaje ocioso: %d\n",nodoSeleccionado->tamanioTotal,nodoSeleccionado->tamanioLibre,nodoSeleccionado->porcentajeOscioso);
 		log_info(loggerFileSystem,"Tamaño total: %d | Tamaño libre: %d | Porcentaje ocioso: %d\n",nodoSeleccionado->tamanioTotal,nodoSeleccionado->tamanioLibre,nodoSeleccionado->porcentajeOscioso);
 		cont++;
 	}

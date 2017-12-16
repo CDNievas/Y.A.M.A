@@ -129,6 +129,7 @@ void liberarlistaConexionNodos(){
 
 
 void handlerSIGINT(){
+	printf("SIGINT enviado, cerrando el proceso");
 	log_warning(loggerFileSystem, "SIGINT enviado, cerrando el proceso");
 	liberarMemoria();
 }
@@ -373,8 +374,10 @@ void atenderNotificacion(int socket){
 			break;
 
 		case ES_WORKER:
+			printf("Se ha conectado un Worker");
 			log_info(loggerFileSystem,"Se ha conectado un Worker");
 			if(!estadoEstable){
+				printf("No se encuentra en un estado seguro. Cerrando conexion con Worker");
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con Worker");
 				FD_CLR(socket, &socketClientes);
 				close(socket);
@@ -384,10 +387,12 @@ void atenderNotificacion(int socket){
 			break;
 
 		case ES_YAMA:
+			printf("Se ha conectado una YAMA");
 			log_info(loggerFileSystem,"Se ha conectado una YAMA");
 			if (estadoEstable) {
 				enviarListaNodos(socket);
 			} else {
+				printf("No se encuentra en un estado seguro. Cerrando conexion con YAMA");
 				log_error(loggerFileSystem, "No se encuentra en un estado seguro. Cerrando conexion con YAMA");
 				FD_CLR(socket, &socketClientes);
 				close(socket);
@@ -395,7 +400,7 @@ void atenderNotificacion(int socket){
 			break;
 
 		case REC_INFONODO:
-
+			printf("Registrando Datanode");
 			log_info(loggerFileSystem,"Registrando Datanode");
 			registrarNodo(socket);
 			break;

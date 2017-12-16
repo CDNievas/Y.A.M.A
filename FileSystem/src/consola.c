@@ -76,8 +76,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		case 2:{
 
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!chequearParamCom(param,2,3)){
@@ -90,7 +90,10 @@ void ejecutarComando(uint32_t nro, char ** param){
 						pthread_mutex_lock(&mutex);
 						int cod = borrarDirectorio(param[2]);
 
-						if(cod == -1){
+						if(cod==0){
+							printf("No se puede eliminar la raiz yamafs \n");
+							log_warning(loggerFileSystem, "No se puede eliminar la raiz yamafs");
+						}else if(cod == -1){
 
 							printf("Path no pertenece a yamafs \n");
 							log_warning(loggerFileSystem, "Path no pertenece a yamafs");
@@ -144,8 +147,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		case 3:{
 
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!chequearParamCom(param,3,3)){
@@ -194,8 +197,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		case 4:{
 
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!chequearParamCom(param,3,3)){
@@ -231,8 +234,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		case 5:{
 
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+				log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!chequearParamCom(param,2,2)){
@@ -266,8 +269,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		case 6:{
 
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+								log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!chequearParamCom(param,2,2)){
@@ -321,8 +324,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//CPFROM
 		case 7:{
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+								log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 
 				if(!estadoEstable){
@@ -380,8 +383,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//CPTO
 		case 8:{
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+								log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 				if(!chequearParamCom(param,3,3)){
 					printf("Error en la cantidad de parametros \n");
@@ -427,8 +430,8 @@ void ejecutarComando(uint32_t nro, char ** param){
 		//MD5
 		case 10:{
 			if(!estadoEstable){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+				printf("El sistema no se encuentra en estado estable \n");
+								log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 				if(!chequearParamCom(param,2,2)){
 					printf("Error en la cantidad de parametros \n");
@@ -469,9 +472,9 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 		//LS
 		case 11:{
-			if(!sistemaFormateado){
-				printf("El sistema no se encuentra formateado \n");
-				log_warning(loggerFileSystem, "El sistema no se encuentra formateado ");
+			if(!estadoEstable){
+				printf("El sistema no se encuentra en estado estable \n");
+								log_warning(loggerFileSystem, "El sistema no se encuentra en estado estable ");
 			} else {
 				if(!chequearParamCom(param,2,2)){
 					printf("Error en la cantidad de parametros \n");

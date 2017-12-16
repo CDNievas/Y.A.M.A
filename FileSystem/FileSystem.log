@@ -1,0 +1,274 @@
+[INFO] 11:24:34:413 FileSystem/(4209:4209): Estructuras iniciadas
+[INFO] 11:24:34:417 FileSystem/(4209:4209): Consola iniciada
+[INFO] 11:24:34:417 FileSystem/(4209:4209): Esperando conexiones
+[INFO] 11:24:44:119 FileSystem/(4209:4209): Se ha recibido una nueva conexion
+[INFO] 11:24:44:119 FileSystem/(4209:4209): Registrando Datanode
+[INFO] 11:24:45:615 FileSystem/(4209:4209): Se ha recibido una nueva conexion
+[INFO] 11:24:45:616 FileSystem/(4209:4209): Registrando Datanode
+[INFO] 11:24:55:15 FileSystem/(4209:4209): Se ha recibido una nueva conexion
+[INFO] 11:24:55:15 FileSystem/(4209:4209): Registrando Datanode
+[INFO] 11:25:00:999 FileSystem/(4209:4209): Se ha recibido una nueva conexion
+[INFO] 11:25:00:999 FileSystem/(4209:4209): Registrando Datanode
+[INFO] 11:25:09:81 FileSystem/(4209:4220): Se ha formateado correctamente el sistema
+[TRACE] 11:25:51:616 FileSystem/(4209:4220): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 11:25:54:178 FileSystem/(4209:4220): Se Procede almacenar el nombres.csv.
+[INFO] 11:25:54:180 FileSystem/(4209:4220): Bloque: 0 | Bytes: 1048564
+[INFO] 11:25:54:180 FileSystem/(4209:4220): Bloque original: NODO3 | 0
+[INFO] 11:25:54:225 FileSystem/(4209:4220): Bloque original: NODO4 | 0
+[INFO] 11:25:54:271 FileSystem/(4209:4220): Bloque: 1 | Bytes: 1048570
+[INFO] 11:25:54:271 FileSystem/(4209:4220): Bloque original: NODO1 | 0
+[INFO] 11:25:54:330 FileSystem/(4209:4220): Bloque original: NODO2 | 0
+[INFO] 11:25:54:387 FileSystem/(4209:4220): Bloque: 2 | Bytes: 1048558
+[INFO] 11:25:54:387 FileSystem/(4209:4220): Bloque original: NODO3 | 1
+[INFO] 11:25:54:433 FileSystem/(4209:4220): Bloque original: NODO4 | 1
+[INFO] 11:25:54:456 FileSystem/(4209:4220): Bloque: 3 | Bytes: 1048574
+[INFO] 11:25:54:456 FileSystem/(4209:4220): Bloque original: NODO1 | 1
+[INFO] 11:25:54:482 FileSystem/(4209:4220): Bloque original: NODO2 | 1
+[INFO] 11:25:54:517 FileSystem/(4209:4220): Bloque: 4 | Bytes: 1048568
+[INFO] 11:25:54:517 FileSystem/(4209:4220): Bloque original: NODO3 | 2
+[INFO] 11:25:54:527 FileSystem/(4209:4220): Bloque original: NODO4 | 2
+[INFO] 11:25:54:555 FileSystem/(4209:4220): Bloque: 5 | Bytes: 1048556
+[INFO] 11:25:54:555 FileSystem/(4209:4220): Bloque original: NODO3 | 3
+[INFO] 11:25:54:565 FileSystem/(4209:4220): Bloque original: NODO4 | 3
+[INFO] 11:25:54:579 FileSystem/(4209:4220): Bloque: 6 | Bytes: 1048571
+[INFO] 11:25:54:579 FileSystem/(4209:4220): Bloque original: NODO1 | 2
+[INFO] 11:25:54:594 FileSystem/(4209:4220): Bloque original: NODO2 | 2
+[INFO] 11:25:54:654 FileSystem/(4209:4220): Bloque: 7 | Bytes: 1048564
+[INFO] 11:25:54:655 FileSystem/(4209:4220): Bloque original: NODO1 | 3
+[INFO] 11:25:54:713 FileSystem/(4209:4220): Bloque original: NODO2 | 3
+[INFO] 11:25:54:757 FileSystem/(4209:4220): Bloque: 8 | Bytes: 1048558
+[INFO] 11:25:54:757 FileSystem/(4209:4220): Bloque original: NODO3 | 4
+[INFO] 11:25:54:765 FileSystem/(4209:4220): Bloque original: NODO4 | 4
+[INFO] 11:25:54:775 FileSystem/(4209:4220): Bloque: 9 | Bytes: 1048573
+[INFO] 11:25:54:775 FileSystem/(4209:4220): Bloque original: NODO1 | 4
+[INFO] 11:25:54:810 FileSystem/(4209:4220): Bloque original: NODO2 | 4
+[INFO] 11:25:54:823 FileSystem/(4209:4220): Bloque: 10 | Bytes: 1048572
+[INFO] 11:25:54:823 FileSystem/(4209:4220): Bloque original: NODO3 | 5
+[INFO] 11:25:54:832 FileSystem/(4209:4220): Bloque original: NODO4 | 5
+[INFO] 11:25:54:842 FileSystem/(4209:4220): Bloque: 11 | Bytes: 1048560
+[INFO] 11:25:54:842 FileSystem/(4209:4220): Bloque original: NODO3 | 6
+[INFO] 11:25:54:908 FileSystem/(4209:4220): Bloque original: NODO4 | 6
+[INFO] 11:25:54:920 FileSystem/(4209:4220): Bloque: 12 | Bytes: 1048557
+[INFO] 11:25:54:920 FileSystem/(4209:4220): Bloque original: NODO1 | 5
+[INFO] 11:25:54:937 FileSystem/(4209:4220): Bloque original: NODO2 | 5
+[INFO] 11:25:54:952 FileSystem/(4209:4220): Bloque: 13 | Bytes: 1048570
+[INFO] 11:25:54:952 FileSystem/(4209:4220): Bloque original: NODO1 | 6
+[INFO] 11:25:54:970 FileSystem/(4209:4220): Bloque original: NODO2 | 6
+[INFO] 11:25:54:1 FileSystem/(4209:4220): Bloque: 14 | Bytes: 1048562
+[INFO] 11:25:54:1 FileSystem/(4209:4220): Bloque original: NODO3 | 7
+[INFO] 11:25:55:16 FileSystem/(4209:4220): Bloque original: NODO4 | 7
+[INFO] 11:25:55:26 FileSystem/(4209:4220): Bloque: 15 | Bytes: 1048571
+[INFO] 11:25:55:26 FileSystem/(4209:4220): Bloque original: NODO1 | 7
+[INFO] 11:25:55:91 FileSystem/(4209:4220): Bloque original: NODO2 | 7
+[INFO] 11:25:55:147 FileSystem/(4209:4220): Bloque: 16 | Bytes: 1048565
+[INFO] 11:25:55:147 FileSystem/(4209:4220): Bloque original: NODO3 | 8
+[INFO] 11:25:55:180 FileSystem/(4209:4220): Bloque original: NODO4 | 8
+[INFO] 11:25:55:194 FileSystem/(4209:4220): Bloque: 17 | Bytes: 1048576
+[INFO] 11:25:55:194 FileSystem/(4209:4220): Bloque original: NODO3 | 9
+[INFO] 11:25:55:207 FileSystem/(4209:4220): Bloque original: NODO4 | 9
+[INFO] 11:25:55:218 FileSystem/(4209:4220): Bloque: 18 | Bytes: 1048570
+[INFO] 11:25:55:218 FileSystem/(4209:4220): Bloque original: NODO1 | 8
+[INFO] 11:25:55:253 FileSystem/(4209:4220): Bloque original: NODO2 | 8
+[INFO] 11:25:55:352 FileSystem/(4209:4220): Bloque: 19 | Bytes: 1048558
+[INFO] 11:25:55:352 FileSystem/(4209:4220): Bloque original: NODO1 | 9
+[INFO] 11:25:55:367 FileSystem/(4209:4220): Bloque original: NODO2 | 9
+[INFO] 11:25:55:388 FileSystem/(4209:4220): Bloque: 20 | Bytes: 1048550
+[INFO] 11:25:55:388 FileSystem/(4209:4220): Bloque original: NODO3 | 10
+[INFO] 11:25:55:397 FileSystem/(4209:4220): Bloque original: NODO4 | 10
+[INFO] 11:25:55:407 FileSystem/(4209:4220): Bloque: 21 | Bytes: 1048576
+[INFO] 11:25:55:407 FileSystem/(4209:4220): Bloque original: NODO1 | 10
+[INFO] 11:25:55:421 FileSystem/(4209:4220): Bloque original: NODO2 | 10
+[INFO] 11:25:55:496 FileSystem/(4209:4220): Bloque: 22 | Bytes: 1048570
+[INFO] 11:25:55:496 FileSystem/(4209:4220): Bloque original: NODO3 | 11
+[INFO] 11:25:55:508 FileSystem/(4209:4220): Bloque original: NODO4 | 11
+[INFO] 11:25:55:579 FileSystem/(4209:4220): Bloque: 23 | Bytes: 1048560
+[INFO] 11:25:55:579 FileSystem/(4209:4220): Bloque original: NODO3 | 12
+[INFO] 11:25:55:592 FileSystem/(4209:4220): Bloque original: NODO4 | 12
+[INFO] 11:25:55:608 FileSystem/(4209:4220): Bloque: 24 | Bytes: 1048558
+[INFO] 11:25:55:608 FileSystem/(4209:4220): Bloque original: NODO1 | 11
+[INFO] 11:25:55:644 FileSystem/(4209:4220): Bloque original: NODO2 | 11
+[INFO] 11:25:55:823 FileSystem/(4209:4220): Bloque: 25 | Bytes: 1048557
+[INFO] 11:25:55:823 FileSystem/(4209:4220): Bloque original: NODO1 | 12
+[INFO] 11:25:55:854 FileSystem/(4209:4220): Bloque original: NODO2 | 12
+[INFO] 11:25:55:937 FileSystem/(4209:4220): Bloque: 26 | Bytes: 1048566
+[INFO] 11:25:55:937 FileSystem/(4209:4220): Bloque original: NODO3 | 13
+[INFO] 11:25:55:959 FileSystem/(4209:4220): Bloque original: NODO4 | 13
+[INFO] 11:25:56:4 FileSystem/(4209:4220): Bloque: 27 | Bytes: 1048572
+[INFO] 11:25:56:4 FileSystem/(4209:4220): Bloque original: NODO1 | 13
+[INFO] 11:25:56:17 FileSystem/(4209:4220): Bloque original: NODO2 | 13
+[INFO] 11:25:56:45 FileSystem/(4209:4220): Bloque: 28 | Bytes: 1048562
+[INFO] 11:25:56:45 FileSystem/(4209:4220): Bloque original: NODO3 | 14
+[INFO] 11:25:56:55 FileSystem/(4209:4220): Bloque original: NODO4 | 14
+[INFO] 11:25:56:112 FileSystem/(4209:4220): Bloque: 29 | Bytes: 1048560
+[INFO] 11:25:56:112 FileSystem/(4209:4220): Bloque original: NODO3 | 15
+[INFO] 11:25:56:124 FileSystem/(4209:4220): Bloque original: NODO4 | 15
+[INFO] 11:25:56:138 FileSystem/(4209:4220): Bloque: 30 | Bytes: 1048562
+[INFO] 11:25:56:138 FileSystem/(4209:4220): Bloque original: NODO1 | 14
+[INFO] 11:25:56:238 FileSystem/(4209:4220): Bloque original: NODO2 | 14
+[INFO] 11:25:56:406 FileSystem/(4209:4220): Bloque: 31 | Bytes: 1048576
+[INFO] 11:25:56:406 FileSystem/(4209:4220): Bloque original: NODO1 | 15
+[INFO] 11:25:56:452 FileSystem/(4209:4220): Bloque original: NODO2 | 15
+[INFO] 11:25:56:512 FileSystem/(4209:4220): Bloque: 32 | Bytes: 1048570
+[INFO] 11:25:56:512 FileSystem/(4209:4220): Bloque original: NODO3 | 16
+[INFO] 11:25:56:523 FileSystem/(4209:4220): Bloque original: NODO4 | 16
+[INFO] 11:25:56:534 FileSystem/(4209:4220): Bloque: 33 | Bytes: 37388
+[INFO] 11:25:56:534 FileSystem/(4209:4220): Bloque original: NODO1 | 16
+[INFO] 11:25:56:537 FileSystem/(4209:4220): Bloque original: NODO2 | 16
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Mostrando informacion del sistema:
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): -NODO1: 
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): -NODO2: 
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): -NODO4: 
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): -NODO3: 
+
+[INFO] 11:25:56:539 FileSystem/(4209:4220): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:26:04:22 FileSystem/(4209:4220): Se ha creado el directorio correctamente
+[WARNING] 11:26:44:40 FileSystem/(4209:4220): El path no existe
+[INFO] 11:29:14:131 FileSystem/(4399:4399): Estructuras iniciadas
+[INFO] 11:29:14:134 FileSystem/(4399:4399): Consola iniciada
+[INFO] 11:29:14:134 FileSystem/(4399:4399): Esperando conexiones
+[INFO] 11:29:17:420 FileSystem/(4399:4399): Se ha recibido una nueva conexion
+[INFO] 11:29:17:420 FileSystem/(4399:4399): Registrando Datanode
+[INFO] 11:29:18:76 FileSystem/(4399:4399): Se ha recibido una nueva conexion
+[INFO] 11:29:18:76 FileSystem/(4399:4399): Registrando Datanode
+[INFO] 11:29:18:644 FileSystem/(4399:4399): Se ha recibido una nueva conexion
+[INFO] 11:29:18:644 FileSystem/(4399:4399): Registrando Datanode
+[INFO] 11:29:19:180 FileSystem/(4399:4399): Se ha recibido una nueva conexion
+[INFO] 11:29:19:180 FileSystem/(4399:4399): Registrando Datanode
+[WARNING] 11:30:00:115 FileSystem/(4399:4411): El sistema no se encuentra formateado 
+[INFO] 11:30:03:899 FileSystem/(4399:4411): Se ha formateado correctamente el sistema
+[TRACE] 11:30:12:987 FileSystem/(4399:4411): Se procede a calcular la cantidad de bloques que ocupa el archivo nombres.csv
+[TRACE] 11:30:15:531 FileSystem/(4399:4411): Se Procede almacenar el nombres.csv.
+[INFO] 11:30:15:532 FileSystem/(4399:4411): Bloque: 0 | Bytes: 1048564
+[INFO] 11:30:15:532 FileSystem/(4399:4411): Bloque original: NODO4 | 0
+[INFO] 11:30:15:573 FileSystem/(4399:4411): Bloque original: NODO3 | 0
+[INFO] 11:30:15:614 FileSystem/(4399:4411): Bloque: 1 | Bytes: 1048570
+[INFO] 11:30:15:615 FileSystem/(4399:4411): Bloque original: NODO1 | 0
+[INFO] 11:30:15:657 FileSystem/(4399:4411): Bloque original: NODO2 | 0
+[INFO] 11:30:15:698 FileSystem/(4399:4411): Bloque: 2 | Bytes: 1048558
+[INFO] 11:30:15:698 FileSystem/(4399:4411): Bloque original: NODO4 | 1
+[INFO] 11:30:15:715 FileSystem/(4399:4411): Bloque original: NODO3 | 1
+[INFO] 11:30:15:731 FileSystem/(4399:4411): Bloque: 3 | Bytes: 1048574
+[INFO] 11:30:15:731 FileSystem/(4399:4411): Bloque original: NODO1 | 1
+[INFO] 11:30:15:746 FileSystem/(4399:4411): Bloque original: NODO2 | 1
+[INFO] 11:30:15:761 FileSystem/(4399:4411): Bloque: 4 | Bytes: 1048568
+[INFO] 11:30:15:761 FileSystem/(4399:4411): Bloque original: NODO4 | 2
+[INFO] 11:30:15:771 FileSystem/(4399:4411): Bloque original: NODO3 | 2
+[INFO] 11:30:15:782 FileSystem/(4399:4411): Bloque: 5 | Bytes: 1048556
+[INFO] 11:30:15:782 FileSystem/(4399:4411): Bloque original: NODO4 | 3
+[INFO] 11:30:15:791 FileSystem/(4399:4411): Bloque original: NODO3 | 3
+[INFO] 11:30:15:820 FileSystem/(4399:4411): Bloque: 6 | Bytes: 1048571
+[INFO] 11:30:15:820 FileSystem/(4399:4411): Bloque original: NODO1 | 2
+[INFO] 11:30:15:829 FileSystem/(4399:4411): Bloque original: NODO2 | 2
+[INFO] 11:30:15:844 FileSystem/(4399:4411): Bloque: 7 | Bytes: 1048564
+[INFO] 11:30:15:844 FileSystem/(4399:4411): Bloque original: NODO1 | 3
+[INFO] 11:30:15:853 FileSystem/(4399:4411): Bloque original: NODO2 | 3
+[INFO] 11:30:15:879 FileSystem/(4399:4411): Bloque: 8 | Bytes: 1048558
+[INFO] 11:30:15:879 FileSystem/(4399:4411): Bloque original: NODO4 | 4
+[INFO] 11:30:15:888 FileSystem/(4399:4411): Bloque original: NODO3 | 4
+[INFO] 11:30:15:903 FileSystem/(4399:4411): Bloque: 9 | Bytes: 1048573
+[INFO] 11:30:15:903 FileSystem/(4399:4411): Bloque original: NODO1 | 4
+[INFO] 11:30:15:913 FileSystem/(4399:4411): Bloque original: NODO2 | 4
+[INFO] 11:30:15:922 FileSystem/(4399:4411): Bloque: 10 | Bytes: 1048572
+[INFO] 11:30:15:922 FileSystem/(4399:4411): Bloque original: NODO4 | 5
+[INFO] 11:30:15:931 FileSystem/(4399:4411): Bloque original: NODO3 | 5
+[INFO] 11:30:15:979 FileSystem/(4399:4411): Bloque: 11 | Bytes: 1048560
+[INFO] 11:30:15:979 FileSystem/(4399:4411): Bloque original: NODO4 | 6
+[INFO] 11:30:15:997 FileSystem/(4399:4411): Bloque original: NODO3 | 6
+[INFO] 11:30:16:8 FileSystem/(4399:4411): Bloque: 12 | Bytes: 1048557
+[INFO] 11:30:16:8 FileSystem/(4399:4411): Bloque original: NODO1 | 5
+[INFO] 11:30:16:19 FileSystem/(4399:4411): Bloque original: NODO2 | 5
+[INFO] 11:30:16:56 FileSystem/(4399:4411): Bloque: 13 | Bytes: 1048570
+[INFO] 11:30:16:56 FileSystem/(4399:4411): Bloque original: NODO1 | 6
+[INFO] 11:30:16:66 FileSystem/(4399:4411): Bloque original: NODO2 | 6
+[INFO] 11:30:16:77 FileSystem/(4399:4411): Bloque: 14 | Bytes: 1048562
+[INFO] 11:30:16:77 FileSystem/(4399:4411): Bloque original: NODO4 | 7
+[INFO] 11:30:16:93 FileSystem/(4399:4411): Bloque original: NODO3 | 7
+[INFO] 11:30:16:103 FileSystem/(4399:4411): Bloque: 15 | Bytes: 1048571
+[INFO] 11:30:16:103 FileSystem/(4399:4411): Bloque original: NODO1 | 7
+[INFO] 11:30:16:112 FileSystem/(4399:4411): Bloque original: NODO2 | 7
+[INFO] 11:30:16:122 FileSystem/(4399:4411): Bloque: 16 | Bytes: 1048565
+[INFO] 11:30:16:122 FileSystem/(4399:4411): Bloque original: NODO4 | 8
+[INFO] 11:30:16:130 FileSystem/(4399:4411): Bloque original: NODO3 | 8
+[INFO] 11:30:16:140 FileSystem/(4399:4411): Bloque: 17 | Bytes: 1048576
+[INFO] 11:30:16:140 FileSystem/(4399:4411): Bloque original: NODO4 | 9
+[INFO] 11:30:16:149 FileSystem/(4399:4411): Bloque original: NODO3 | 9
+[INFO] 11:30:16:159 FileSystem/(4399:4411): Bloque: 18 | Bytes: 1048570
+[INFO] 11:30:16:160 FileSystem/(4399:4411): Bloque original: NODO1 | 8
+[INFO] 11:30:16:182 FileSystem/(4399:4411): Bloque original: NODO2 | 8
+[INFO] 11:30:16:192 FileSystem/(4399:4411): Bloque: 19 | Bytes: 1048558
+[INFO] 11:30:16:192 FileSystem/(4399:4411): Bloque original: NODO1 | 9
+[INFO] 11:30:16:202 FileSystem/(4399:4411): Bloque original: NODO2 | 9
+[INFO] 11:30:16:211 FileSystem/(4399:4411): Bloque: 20 | Bytes: 1048550
+[INFO] 11:30:16:211 FileSystem/(4399:4411): Bloque original: NODO4 | 10
+[INFO] 11:30:16:261 FileSystem/(4399:4411): Bloque original: NODO3 | 10
+[INFO] 11:30:16:272 FileSystem/(4399:4411): Bloque: 21 | Bytes: 1048576
+[INFO] 11:30:16:272 FileSystem/(4399:4411): Bloque original: NODO1 | 10
+[INFO] 11:30:16:350 FileSystem/(4399:4411): Bloque original: NODO2 | 10
+[INFO] 11:30:16:361 FileSystem/(4399:4411): Bloque: 22 | Bytes: 1048570
+[INFO] 11:30:16:361 FileSystem/(4399:4411): Bloque original: NODO4 | 11
+[INFO] 11:30:16:371 FileSystem/(4399:4411): Bloque original: NODO3 | 11
+[INFO] 11:30:16:382 FileSystem/(4399:4411): Bloque: 23 | Bytes: 1048560
+[INFO] 11:30:16:382 FileSystem/(4399:4411): Bloque original: NODO4 | 12
+[INFO] 11:30:16:393 FileSystem/(4399:4411): Bloque original: NODO3 | 12
+[INFO] 11:30:16:403 FileSystem/(4399:4411): Bloque: 24 | Bytes: 1048558
+[INFO] 11:30:16:403 FileSystem/(4399:4411): Bloque original: NODO1 | 11
+[INFO] 11:30:16:414 FileSystem/(4399:4411): Bloque original: NODO2 | 11
+[INFO] 11:30:16:425 FileSystem/(4399:4411): Bloque: 25 | Bytes: 1048557
+[INFO] 11:30:16:425 FileSystem/(4399:4411): Bloque original: NODO1 | 12
+[INFO] 11:30:16:438 FileSystem/(4399:4411): Bloque original: NODO2 | 12
+[INFO] 11:30:16:484 FileSystem/(4399:4411): Bloque: 26 | Bytes: 1048566
+[INFO] 11:30:16:484 FileSystem/(4399:4411): Bloque original: NODO4 | 13
+[INFO] 11:30:16:494 FileSystem/(4399:4411): Bloque original: NODO3 | 13
+[INFO] 11:30:16:506 FileSystem/(4399:4411): Bloque: 27 | Bytes: 1048572
+[INFO] 11:30:16:506 FileSystem/(4399:4411): Bloque original: NODO1 | 13
+[INFO] 11:30:16:518 FileSystem/(4399:4411): Bloque original: NODO2 | 13
+[INFO] 11:30:16:529 FileSystem/(4399:4411): Bloque: 28 | Bytes: 1048562
+[INFO] 11:30:16:529 FileSystem/(4399:4411): Bloque original: NODO4 | 14
+[INFO] 11:30:16:559 FileSystem/(4399:4411): Bloque original: NODO3 | 14
+[INFO] 11:30:16:569 FileSystem/(4399:4411): Bloque: 29 | Bytes: 1048560
+[INFO] 11:30:16:569 FileSystem/(4399:4411): Bloque original: NODO4 | 15
+[INFO] 11:30:16:586 FileSystem/(4399:4411): Bloque original: NODO3 | 15
+[INFO] 11:30:16:628 FileSystem/(4399:4411): Bloque: 30 | Bytes: 1048562
+[INFO] 11:30:16:628 FileSystem/(4399:4411): Bloque original: NODO1 | 14
+[INFO] 11:30:16:638 FileSystem/(4399:4411): Bloque original: NODO2 | 14
+[INFO] 11:30:16:648 FileSystem/(4399:4411): Bloque: 31 | Bytes: 1048576
+[INFO] 11:30:16:648 FileSystem/(4399:4411): Bloque original: NODO1 | 15
+[INFO] 11:30:16:661 FileSystem/(4399:4411): Bloque original: NODO2 | 15
+[INFO] 11:30:16:670 FileSystem/(4399:4411): Bloque: 32 | Bytes: 1048570
+[INFO] 11:30:16:670 FileSystem/(4399:4411): Bloque original: NODO4 | 16
+[INFO] 11:30:16:717 FileSystem/(4399:4411): Bloque original: NODO3 | 16
+[INFO] 11:30:16:751 FileSystem/(4399:4411): Bloque: 33 | Bytes: 37388
+[INFO] 11:30:16:751 FileSystem/(4399:4411): Bloque original: NODO1 | 16
+[INFO] 11:30:16:752 FileSystem/(4399:4411): Bloque original: NODO2 | 16
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Se ha almacenado correctamente el archivo nombres.csv.
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Mostrando informacion del sistema:
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): -NODO1: 
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): -NODO2: 
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): -NODO3: 
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): -NODO4: 
+
+[INFO] 11:30:16:754 FileSystem/(4399:4411): Tamaño total: 150 | Tamaño libre: 133 | Porcentaje ocioso: 88
+
+[INFO] 11:30:23:683 FileSystem/(4399:4411): Se ha creado el directorio correctamente
