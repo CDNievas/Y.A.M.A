@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	iniciarModoDebug("src/off_filesystem.ini");
 //	iniciarModoNormal(argc,argv);
 
-	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 1, 0);
+	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 0, 0);
 
 	// Genero el socket listener
 	socketListener = iniciarServidor(PUERTO_ESCUCHA);
