@@ -94,12 +94,12 @@ void verificarCopiasNodo(char* nombreNodo){
 
 		if(list_all_satisfy(entradaArchivos->bloques,(void*)todosBloquesDisponibles)){
 			entradaArchivos->disponible=true;
-			printf("El archivo %s ya cuenta con una copia por bloque.",entradaArchivos->nombre);
+			printf("El archivo %s ya cuenta con una copia por bloque. \n",entradaArchivos->nombre);
 			log_debug(loggerFileSystem,"El archivo %s ya cuenta con una copia por bloque.",entradaArchivos->nombre);
 		}
 		if(hayUnEstadoEstable()==true){
 			estadoEstable=true;
-			printf("El sistema ya se encuentra en un estado estable.");
+			printf("El sistema ya se encuentra en un estado estable. \n");
 			log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable.");
 		}
 	}
@@ -148,13 +148,13 @@ void perteneceAlSistema(char* nombreNodo, int socket, char* ip, uint32_t puerto)
 		}
 
 		if(list_all_satisfy(tablaNodos->nodos,(void*)todosNodosDisponibles)){
-			printf("Se han conectado todo los nodos del sistemaAnterior");
+			printf("Se han conectado todo los nodos del sistema Anterior. \n");
 			log_debug(loggerFileSystem,"Se han conectado todo los nodos del sistemaAnterior");
 		}
 		verificarCopiasNodo(nombreNodo);
 
 	}else{
-		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
+		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema. \n");
 		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
@@ -169,7 +169,7 @@ bool hayUnEstadoEstable(){
 
 	if(list_all_satisfy(tablaArchivos,(void*)todosArchivosDisponibles)){
 		return true;
-		log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable.");
+		log_debug(loggerFileSystem,"El sistema ya se encuentra en un estado estable. \n");
 	}else{
 		return false;
 	}
@@ -194,7 +194,7 @@ void verificarSiEsUnNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,
 
 		//PERSISTO LA TABLA
 		persistirTablaNodo();
-		printf("%s desconectado registrado nuevamente al sistema.",nombreNodo);
+		printf("%s desconectado registrado nuevamente al sistema. \n",nombreNodo);
 		log_debug(loggerFileSystem,"%s desconectado registrado nuevamente al sistema.",nombreNodo);
 
 		bool todosNodosDisponibles(strNodo* entradaNodo){
@@ -203,12 +203,12 @@ void verificarSiEsUnNodoDesconectado(char* nombreNodo, uint32_t socket,char* ip,
 
 		if(list_all_satisfy(tablaNodos->nodos,(void*)todosNodosDisponibles)){
 			seDesconectoUnNodo=false;
-			printf("Todos los nodos del sistema se han conectado.");
+			printf("Todos los nodos del sistema se han conectado. \n");
 			log_debug(loggerFileSystem,"Todos los nodos del sistema se han conectado.");
 		}
 
 	}else{
-		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
+		printf("El nodo que se intento conectar no estaba registrado en el estado anterior del sistema. \n");
 		log_error(loggerFileSystem,"El nodo que se intento conectar no estaba registrado en el estado anterior del sistema.");
 		sendDeNotificacion(socket,DESCONECTAR_NODO);
 	}
@@ -268,7 +268,7 @@ void registrarNodo(int socket){
 			if((seDesconectoUnNodo && estadoAnterior)||(seDesconectoUnNodo&&sistemaFormateado)){
 				verificarSiEsUnNodoDesconectado(nombreNodo,socket,ip,puerto);
 			}else{
-				printf("No se puede registrar el Datanode al sistema, ya ha sido formateado");
+				printf("No se puede registrar el Datanode al sistema, ya ha sido formateado. \n");
 				log_error(loggerFileSystem,"No se puede registrar el Datanode al sistema, ya ha sido formateado");
 				//close(socket);
 				sendDeNotificacion(socket, 0);
@@ -305,7 +305,7 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	strNodo* nodoOriginal=list_get(listaNodosDisponiblesEnElSistema,0);
 
 	if(nodoOriginal==NULL){
-		log_error(loggerFileSystem,"No se pudo asignar un nodo para el bloque original del archivo. No hay nodos suficientes.");
+		log_error(loggerFileSystem,"No se pudo asignar un nodo para el bloque original del archivo. No hay nodos suficientes. \n");
 		exit (-1);
 	}
 		//MODIFICO LOS DATOS DEL NODO
@@ -353,7 +353,7 @@ bool asignarEnviarANodo(void* contenidoAEnviar, uint32_t tamanioContenido, strBl
 	strNodo* nodoCopia=list_get(listaNodosDisponiblesEnElSistema,1);
 	if(nodoCopia==NULL){
 		nodoCopia=list_get(listaNodosDisponiblesEnElSistema,0);
-		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede a guardar la copia en el mismo lugar que el original.");
+		log_error(loggerFileSystem,"Por falta de nodos para almacenar la copia, se procede a guardar la copia en el mismo lugar que el original. \n");
 	}
 		//MODIFICO LOS DATOS DEL NODO
 	nodoCopia->tamanioLibre--;
