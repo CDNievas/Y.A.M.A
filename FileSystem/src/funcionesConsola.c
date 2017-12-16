@@ -148,7 +148,7 @@ bool almacenarArchivo(char* pathArchivo, char* pathDirectorio, char* tipo){
 
 	t_list* posicionesBloquesAGuardar=list_create();
 
-	printf("Se procede a calcular la cantidad de bloques que ocupa el archivo %s",nombreArchivo);
+	printf("Se procede a calcular la cantidad de bloques que ocupa el archivo %s\n",nombreArchivo);
 	log_trace(loggerFileSystem,"Se procede a calcular la cantidad de bloques que ocupa el archivo %s",nombreArchivo);
 	if(strcmp(tipo,"B")==0){
 		uint32_t tamAux=0;
@@ -742,7 +742,7 @@ void catArchivo(char *path){
 			}
 
 			if(cod == -1){
-				printf("%s","No hay suficientes copias de bloques.");
+				printf("%s","No hay suficientes copias de bloques.\n");
 				log_warning(loggerFileSystem,"No hay suficientes copias de bloques para realizar cat");
 			}
 
