@@ -556,6 +556,7 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
 		munmap(dataBinBloque,dataBinTamanio);
+		free(archivoApareado);
 		free(numerosParalelos);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
