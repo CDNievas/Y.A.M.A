@@ -22,8 +22,8 @@ int main(int argc, char **argv) {
 
 	signal(SIGINT, handlerSIGINT);
 
-	iniciarModoDebug("src/off_filesystem.ini");
-//	iniciarModoNormal(argc,argv);
+//	iniciarModoDebug("src/off_filesystem.ini");
+	iniciarModoNormal(argc,argv);
 
 	loggerFileSystem = log_create("FileSystem.log", "FileSystem", 0, 0);
 
