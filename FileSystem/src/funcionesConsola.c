@@ -892,8 +892,8 @@ int moverPath(char * pathOri, char * pathFin){
 			if(dirPathOri->index==0){
 				free(nombrePathFin);
 				free(nombrePathOri);
-				liberarChar(pathOriDesc);
-				liberarChar(pathFinDesc);
+				//liberarChar(pathOriDesc);
+				//liberarChar(pathFinDesc);
 				return -3;
 			}
 			int idNuevo = obtenerIdDirectorio(pathFinDesc,0,-1);
