@@ -61,4 +61,6 @@ t_list* armarDatosBalanceo(t_list*);
 char* buscarNodoEncargado(uint32_t);
 
 t_list* filtrarTablaMaster(uint32_t);
+
+uint32_t peekingNotificacion(int);
 #endif /* FUNCIONESYAMA_H_ */
