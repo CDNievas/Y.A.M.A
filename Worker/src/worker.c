@@ -87,13 +87,13 @@ void cargarWorker(t_config* configuracionWorker){
 }
 
 void darPermisosAScripts(char* script, int casoError, int socketMaster){
-	struct stat infoScript;
-
 	char* comandoAEjecutar = string_new();
 	string_append(&comandoAEjecutar,"chmod 0777 ");
 	string_append(&comandoAEjecutar,script);
 
 	int resultado = system(comandoAEjecutar);
+
+	free(comandoAEjecutar);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker,"Error al otorgar permisos al script.\n");
@@ -105,15 +105,6 @@ void darPermisosAScripts(char* script, int casoError, int socketMaster){
 	else{
 		log_info(loggerWorker, "System para permisos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
 	}
-
-	if(stat(script,&infoScript)!=0){
-		log_error(loggerWorker,"No se pudo obtener informacion del script.\n");
-	}
-	else{
-		log_info(loggerWorker,"Los permisos para el script son: %08x\n",infoScript.st_mode);
-	}
-
-	free(comandoAEjecutar);
 }
 
 void crearArchivoTemporal(char* nombreScript,int casoError,int socketMaster){
@@ -140,6 +131,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
 		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -153,6 +145,7 @@ long int obtenerTamanioArchivo(FILE* unArchivo){
 	if(tamanioArchivo==-1){
 		log_error(loggerWorker,"Error de ftell.\n");
 		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -171,6 +164,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 	if(retornoSeek!=0){
 		log_error(loggerWorker,"Error de fseek.\n");
 		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -185,6 +179,7 @@ char* leerArchivo(FILE* unArchivo, long int tamanioArchivo)
 		log_error(loggerWorker,"Error al asignar memoria para leer el archivo.\n");
 		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
+		free(numerosParalelos);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
@@ -203,6 +198,7 @@ char* obtenerContenido(char* unPath){
 	if(archivoALeer==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo: %s.\n",unPath);
 		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -238,16 +234,19 @@ void* dataBinMapear() {
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
+	log_info(loggerWorker, "Se pudo abrir el data.bin \n");
 	struct stat estadoArchivo;
 	if (fstat(descriptorArchivo, &estadoArchivo) == -1) {
 		log_error(loggerWorker,"Fallo el fstat \n");
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
@@ -259,44 +258,48 @@ void* dataBinMapear() {
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
-
+	log_info(loggerWorker, "Se realizo correctamente el mmap \n");
 	if(close(descriptorArchivo)==-1){
 		log_error(loggerWorker,"Fallo al cerrar el databin \n");
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
+	log_info(loggerWorker, "Se cerro correctamente el data.bin \n");
 
 	return puntero;
 }
 
 char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,int casoError){
-	char* comandoAEjecutar = string_new();
 	char* nombreBloque = string_new();
+	string_append(&nombreBloque,"temporalBloque");
 	char* numeroBloque = string_itoa(nroBloque);
+	string_append(&nombreBloque,numeroBloque);
+	free(numeroBloque);
 	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreBloque,numeroPID);
+	free(numeroPID);
 	char* numeroRandom = string_itoa(contadorRandom);
 	contadorRandom++;
-	string_append(&nombreBloque,"temporalBloque");
-	string_append(&nombreBloque,numeroBloque);
 	string_append(&nombreBloque,numeroRandom);
-	string_append(&nombreBloque,numeroPID);
-	FILE* archivoScript = fopen(nombreBloque,"w");
 	free(numeroRandom);
+	FILE* archivoScript = fopen(nombreBloque,"w");
 	if(archivoScript==NULL){
 		log_error(loggerWorker,"No se pudo abrir el archivo donde se guardara el bloque.\n");
 		sendDeNotificacion(socketMaster,casoError);
 		munmap(dataBinBloque,dataBinTamanio);
-		free(comandoAEjecutar);
-		free(numeroBloque);
-		free(numeroPID);
+		free(numerosParalelos);
+		free(nombreBloque);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
@@ -315,10 +318,9 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
+		free(nombreBloque);
 		free(NOMBRE_NODO);
-		free(comandoAEjecutar);
-		free(numeroBloque);
-		free(numeroPID);
+		free(numerosParalelos);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -334,10 +336,9 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		munmap(dataBinBloque,dataBinTamanio);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
+		free(nombreBloque);
 		free(NOMBRE_NODO);
-		free(comandoAEjecutar);
-		free(numeroBloque);
-		free(numeroPID);
+		free(numerosParalelos);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -347,9 +348,6 @@ char* obtenerBloque(uint32_t nroBloque,uint32_t bytesOcupados,int socketMaster,i
 		log_info(loggerWorker, "Se pudo cerrar el archivo donde se guarda el bloque: %s.\n",nombreBloque);
 	}
 
-	free(comandoAEjecutar);
-	free(numeroBloque);
-	free(numeroPID);
 	return nombreBloque;
 }
 
@@ -362,7 +360,7 @@ char* crearComandoScriptTransformador(char* nombreScript,char* pathDestino, uint
 	string_append(&command," | sort > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
-	log_info(loggerWorker, "Se creo correctamente el comando del script transformador\n");
+	log_debug(loggerWorker, "Se creo correctamente el comando del script transformador\n");
 	return command;
 }
 
@@ -375,8 +373,7 @@ char* crearComandoScriptReductor(char* archivoApareado,char* nombreScript,char* 
 	string_append(&command," > ");
 	string_append(&command,pathDestino);
 	free(pathDestino);
-	printf("Comando script reductor: %s",command);
-	log_info(loggerWorker, "Se creo correctamente el comando del script reductor\n");
+	log_debug(loggerWorker, "Se creo correctamente el comando del script reductor\n");
 	return command;
 }
 
@@ -410,7 +407,9 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
 		free(script);
+		free(nombreScript);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -427,13 +426,16 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
 		free(script);
+		free(nombreScript);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
 	else{
+		free(script);
 		log_info(loggerWorker, "Se pudo escribir en el archivo donde se guardara el contenido: %s.\n",nombreScript);
 	}
 
@@ -444,7 +446,8 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
-		free(script);
+		free(numerosParalelos);
+		free(nombreScript);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
@@ -454,16 +457,21 @@ void guardarScript(char* script,char* nombreScript,int casoError,int socketMaste
 		log_info(loggerWorker, "Se pudo cerrar el archivo donde se guardara el contenido: %s.\n",nombreScript);
 	}
 
-	free(script);
 }
 
-char* obtenerNombreTemporal(uint32_t posicion,char* numeroPID){
+char* obtenerNombreTemporal(uint32_t posicion){
 	char* nombreTemporal = string_new();
-	char* posicionTexto = string_itoa(posicion);
 	string_append(&nombreTemporal,"temporalGlobal");
+	char* numeroPID = string_itoa((int)getpid());
 	string_append(&nombreTemporal,numeroPID);
+	free(numeroPID);
+	char* posicionTexto = string_itoa(posicion);
 	string_append(&nombreTemporal,posicionTexto);
 	free(posicionTexto);
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
+	string_append(&nombreTemporal,numeroRandom);
+	free(numeroRandom);
 	return nombreTemporal;
 }
 
@@ -483,16 +491,16 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 	char* comandoOrdenacionArchivos = string_new();
 	string_append(&comandoOrdenacionArchivos,"sort -m ");
 	string_append(&comandoOrdenacionArchivos,temporalEncargado);
-	char* numeroPID = string_itoa((int)getpid());
+	free(temporalEncargado);
 
 	for(posicion=0;posicion<tamanioLista;posicion++){
 		int unSocketWorker = list_remove(listaInfoApareo,0);
 		int notificacion = recvDeNotificacion(unSocketWorker);
 
 		if(notificacion==ES_OTRO_WORKER){
-			log_info(loggerWorker, "Se conecto con otro worker.\n");
+			log_debug(loggerWorker, "Se conecto con otro worker.\n");
 			char* contenidoTemporal = recibirStringModificado(unSocketWorker);
-			char* nombreTemporal = obtenerNombreTemporal(posicion,numeroPID);
+			char* nombreTemporal = obtenerNombreTemporal(posicion);
 			guardarScript(contenidoTemporal,nombreTemporal,ERROR_REDUCCION_GLOBAL,socketMaster);
 			string_append(&comandoOrdenacionArchivos," ");
 			string_append(&comandoOrdenacionArchivos,nombreTemporal);
@@ -505,7 +513,11 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
 			free(NOMBRE_NODO);
+			list_destroy(listaInfoApareo);
+			munmap(dataBinBloque,dataBinTamanio);
+			free(numerosParalelos);
 			close(unSocketWorker);
+			close(socketMaster);
 			list_destroy(listaInfoApareo);
 			log_info(loggerWorker, "¡¡Adios logger!! \n");
 			log_destroy(loggerWorker);
@@ -513,16 +525,24 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		}
 	}
 
+	string_append(&comandoOrdenacionArchivos," | cat > ");
+
 	char* archivoApareado = string_new();
 	string_append(&archivoApareado,"archivoApareoGlobal");
+	char* numeroPID = string_itoa((int)getpid());
 	string_append(&archivoApareado,numeroPID);
-
-	string_append(&comandoOrdenacionArchivos," | cat > ");
+	free(numeroPID);
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
+	string_append(&archivoApareado,numeroRandom);
+	free(numeroRandom);
 	string_append(&comandoOrdenacionArchivos,archivoApareado);
 
 	log_info(loggerWorker,"Comando para realizar apareo global de archivos fue correctamente creado.\n");
 
 	int resultado = system(comandoOrdenacionArchivos);
+
+	free(comandoOrdenacionArchivos);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker, "Error al ejecutar el comando para aparear archivos con system.\n");
@@ -532,32 +552,29 @@ char* realizarApareoGlobal(t_list* listaInfoApareo, char* temporalEncargado, int
 		}
 
 		sendDeNotificacion(socketMaster,casoError);
-		free(comandoOrdenacionArchivos);
-		free(archivoApareado);
-		free(numeroPID);
 		eliminarArchivosLista(listaInfoApareo);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		close(socketMaster);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		exit(-1);
 	}
 	else{
+		eliminarArchivosLista(listaInfoApareo);
 		log_info(loggerWorker, "System para aparear archivos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
 	}
-
-	free(comandoOrdenacionArchivos);
-	free(numeroPID);
-
-	eliminarArchivosLista(listaInfoApareo);
 
 	return archivoApareado;
 }
 
 void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t casoExito,char* unArchivo,char* otroArchivo){
 	int resultado = system(command);
+
+	free(command);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker, "Error al ejecutar el script con system.\n");
@@ -575,7 +592,7 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
-		free(command);
+		free(numerosParalelos);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		close(socketMaster);
@@ -584,7 +601,6 @@ void ejecutarPrograma(char* command,int socketMaster,uint32_t casoError,uint32_t
 	else{
 		log_info(loggerWorker, "Script ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
 		sendDeNotificacion(socketMaster,casoExito);
-		free(command);
 	}
 
 }
@@ -594,19 +610,15 @@ void realizarHandshakeWorker(char* unArchivoTemporal, int unSocketWorker){
 	uint32_t tamanioArchivoTemporal = string_length(unArchivoTemporal);
 	void* datosAEnviar = malloc(tamanioArchivoTemporal+sizeof(uint32_t));
 
-	if(datosAEnviar==NULL){
-		log_error(loggerWorker,"Error al asignar memoria para realizar handshake con otro worker.\n");
-		exit(-10);
-	}
-
 	memcpy(datosAEnviar,&tamanioArchivoTemporal,sizeof(uint32_t));
 	memcpy(datosAEnviar+sizeof(uint32_t),unArchivoTemporal,tamanioArchivoTemporal);
 
-	log_info(loggerWorker, "Datos serializados para ser enviados al otro worker.\n");
+	free(unArchivoTemporal);
+
+	log_debug(loggerWorker, "Datos serializados para ser enviados al otro worker.\n");
 
 	sendRemasterizado(unSocketWorker,ES_WORKER,tamanioArchivoTemporal+sizeof(uint32_t),datosAEnviar);
 
-	free(unArchivoTemporal);
 	free(datosAEnviar);
 }
 
@@ -617,6 +629,8 @@ void realizarHandshakeFS(int socketFS, int socketAceptado){
 	if(notificacion != ES_FS){
 		log_error(loggerWorker, "La conexion efectuada no es con FileSystem.\n");
 		sendDeNotificacion(socketAceptado,ERROR_ALMACENADO_FINAL);
+		munmap(dataBinBloque,dataBinTamanio);
+		free(numerosParalelos);
 		close(socketAceptado);
 		close(socketFS);
 		free(IP_FILESYSTEM);
@@ -641,13 +655,9 @@ void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombre
 
 	void* datosAEnviar = malloc(tamanioTotalAEnviar);
 
-	if(datosAEnviar==NULL){
-		log_error(loggerWorker,"Error al asignar memoria para enviar datos al FileSystem.\n");
-		exit(-10);
-	}
-
 	memcpy(datosAEnviar,&tamanioContenidoArchivoReduccionGlobal,sizeof(uint32_t));
 	memcpy(datosAEnviar+sizeof(uint32_t),contenidoArchivoReduccionGlobal,tamanioContenidoArchivoReduccionGlobal);
+	free(contenidoArchivoReduccionGlobal);
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+sizeof(uint32_t),&tamanionombreResultante,sizeof(uint32_t));
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+sizeof(uint32_t)*2,nombreResultante,tamanionombreResultante);
 	memcpy(datosAEnviar+tamanioContenidoArchivoReduccionGlobal+tamanionombreResultante+sizeof(uint32_t)*2,&tamaniorutaResultante,sizeof(uint32_t));
@@ -657,23 +667,15 @@ void enviarDatosAFS(int socketFS,char* nombreArchivoReduccionGlobal,char* nombre
 	log_info(loggerWorker, "Datos serializados correctamente para ser enviados al FileSystem\n");
 	sendRemasterizado(socketFS,ALMACENADO_FINAL,tamanioTotalAEnviar,datosAEnviar);
 
-	free(contenidoArchivoReduccionGlobal);
 	free(datosAEnviar);
 }
 
 char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError){
-	char* nombreArchivoApareado = string_new();
-	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
-	char* numeroPID = string_itoa((int)getpid());
-	char* numeroRandom = string_itoa(contadorRandom);
-	contadorRandom++;
-	string_append(&nombreArchivoApareado,numeroRandom);
-	free(numeroRandom);
-	string_append(&nombreArchivoApareado,numeroPID);
-	char* comandoOrdenacionArchivos = string_new();
-	string_append(&comandoOrdenacionArchivos,"sort -m ");
 	int posicion;
 	int cantidad = list_size(archivosTemporales);
+
+	char* comandoOrdenacionArchivos = string_new();
+	string_append(&comandoOrdenacionArchivos,"sort -m ");
 
 	for(posicion=0;posicion<cantidad;posicion++){
 		char* unArchivoTemporal = list_remove(archivosTemporales,0);
@@ -682,12 +684,27 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 		free(unArchivoTemporal);
 	}
 
+	list_destroy(archivosTemporales);
+
 	string_append(&comandoOrdenacionArchivos,"| cat > ");
+
+	char* nombreArchivoApareado = string_new();
+	string_append(&nombreArchivoApareado,"archivoApareadoTemporal");
+	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreArchivoApareado,numeroPID);
+	free(numeroPID);
+	char* numeroRandom = string_itoa(contadorRandom);
+	contadorRandom++;
+	string_append(&nombreArchivoApareado,numeroRandom);
+	free(numeroRandom);
+
 	string_append(&comandoOrdenacionArchivos,nombreArchivoApareado);
 
-	log_info(loggerWorker,"Comando para realizar apareo local de archivos fue correctamente creado.\n");
+	log_debug(loggerWorker,"Comando para realizar apareo local de archivos fue correctamente creado.\n");
 
 	int resultado = system(comandoOrdenacionArchivos);
+
+	free(comandoOrdenacionArchivos);
 
 	if(!WIFEXITED(resultado)){
 		log_error(loggerWorker, "Error al ejecutar el comando para aparear archivos con system.\n");
@@ -697,13 +714,11 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 		}
 
 		sendDeNotificacion(socketMaster,casoError);
-		free(comandoOrdenacionArchivos);
-		free(numeroPID);
-		free(nombreArchivoApareado);
-		list_destroy(archivosTemporales);
 		free(IP_FILESYSTEM);
 		free(RUTA_DATABIN);
 		free(NOMBRE_NODO);
+		free(numerosParalelos);
+		free(nombreArchivoApareado);
 		log_info(loggerWorker, "¡¡Adios logger!! \n");
 		log_destroy(loggerWorker);
 		close(socketMaster);
@@ -711,13 +726,8 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 
 	}
 	else{
-		log_info(loggerWorker, "System para aparear archivos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
+		log_debug(loggerWorker, "System para aparear archivos ejecutado correctamente con el valor de retorno: %d\n",WEXITSTATUS(resultado));
 	}
-
-	free(comandoOrdenacionArchivos);
-	free(numeroPID);
-
-	list_destroy(archivosTemporales);
 
 	return nombreArchivoApareado;
 }
@@ -725,28 +735,29 @@ char* aparearArchivos(t_list* archivosTemporales,int socketMaster, int casoError
 char* obtenerNombreScriptTransformador(char* nombreScript,uint32_t nroBloque){
 	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
 	char* numeroBloque = string_itoa(nroBloque);
+	string_append(&nombreScriptSinExtension,numeroBloque);
+	free(numeroBloque);
 	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreScriptSinExtension,numeroPID);
+	free(numeroPID);
 	char* numeroRandom = string_itoa(contadorRandom);
 	contadorRandom++;
-	string_append(&nombreScriptSinExtension,numeroBloque);
-	string_append(&nombreScriptSinExtension,numeroPID);
 	string_append(&nombreScriptSinExtension,numeroRandom);
+	free(numeroRandom);
 	char* extensionScript = obtenerParteScript(nombreScript,1);
 	string_append(&nombreScriptSinExtension,extensionScript);
 	free(nombreScript);
 	free(extensionScript);
-	free(numeroBloque);
-	free(numeroRandom);
-	free(numeroPID);
 	return nombreScriptSinExtension;
 }
 
 char* obtenerNombreScriptReductor(char* nombreScript,char* archivoApareado){
 	char* nombreScriptSinExtension = obtenerParteScript(nombreScript,0);
 	char* numeroPID = string_itoa((int)getpid());
+	string_append(&nombreScriptSinExtension,numeroPID);
+	free(numeroPID);
 	char* numeroRandom = string_itoa(contadorRandom);
 	contadorRandom++;
-	string_append(&nombreScriptSinExtension,numeroPID);
 	string_append(&nombreScriptSinExtension,numeroRandom);
 	free(numeroRandom);
 	string_append(&nombreScriptSinExtension,archivoApareado);
@@ -754,7 +765,6 @@ char* obtenerNombreScriptReductor(char* nombreScript,char* archivoApareado){
 	string_append(&nombreScriptSinExtension,extensionScript);
 	free(nombreScript);
 	free(extensionScript);
-	free(numeroPID);
 	return nombreScriptSinExtension;
 }
 
@@ -765,13 +775,13 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 		(*numerosParalelos)++;
 		close(socketEscuchaWorker);
 
-		log_debug(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
+		log_info(loggerWorker,"Soy el hijo con el pid %d y mi padre tiene el pid: %d \n",getpid(),getppid());
 
 		int notificacion = recvDeNotificacion(socketAceptado);
 
 		switch(notificacion){
 		case ES_MASTER:{
-			log_info(loggerWorker, "Se recibio una conexion de master.\n");
+			log_debug(loggerWorker, "Se recibio una conexion de master.\n");
 			sendDeNotificacion(socketAceptado, ES_WORKER);
 
 			int tipoEtapa = recvDeNotificacion(socketAceptado);
@@ -786,7 +796,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 				char* nombreScript = recibirString(socketAceptado);
 				char* pathDestino = recibirString(socketAceptado);
 
-				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
+				log_debug(loggerWorker, "Todos los datos fueron recibidos de master para realizar la transformacion");
 
 				char* nombreScriptRemasterizado = obtenerNombreScriptTransformador(nombreScript,nroBloque);
 
@@ -818,7 +828,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 					list_add(archivosTemporales,unArchivoTemporal);
 				}
 
-				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
+				log_debug(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion local");
 
 				char* archivoApareado = aparearArchivos(archivosTemporales,socketAceptado,ERROR_REDUCCION_LOCAL);
 
@@ -854,23 +864,26 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 					int unSocketWorker = conectarWorker(ipWorker, puertoWorker);
 					if(unSocketWorker!=-1){
 						log_info(loggerWorker,"Se ha conectado con otro worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
+						free(ipWorker);
 						realizarHandshakeWorker(archivoTemporal,unSocketWorker);
 						list_add(listaSocketsApareo, unSocketWorker);
 					}
 					else{
 						log_error(loggerWorker,"Error al conectarse al worker. IP: %s - PUERTO: %d \n",ipWorker,puertoWorker);
+						free(ipWorker);
 						sendDeNotificacion(socketAceptado,ERROR_REDUCCION_GLOBAL);
 						free(IP_FILESYSTEM);
 						free(RUTA_DATABIN);
 						free(NOMBRE_NODO);
+						munmap(dataBinBloque,dataBinTamanio);
+						free(numerosParalelos);
 						log_info(loggerWorker, "¡¡Adios logger!! \n");
 						log_destroy(loggerWorker);
 						exit(-1);
 					}
-					free(ipWorker);
 				}
 
-				log_info(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
+				log_debug(loggerWorker, "Todos los datos fueron recibidos de master para realizar la reduccion global");
 
 				char* archivoApareado = realizarApareoGlobal(listaSocketsApareo,temporalEncargado,ERROR_REDUCCION_GLOBAL,socketAceptado);
 
@@ -904,6 +917,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 					int notificacion = recvDeNotificacion(socketFS);
 
 					if(notificacion==ALMACENADO_FINAL_TERMINADO){
+						log_debug(loggerWorker,"Se almaceno correctamente en el filesystem. \n");
 						sendDeNotificacion(socketAceptado,ALMACENADO_FINAL_TERMINADO);
 					} else{
 						log_error(loggerWorker, "Hubo un error en el FileSystem al almacenar el archivo.\n");
@@ -916,6 +930,8 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 					log_error(loggerWorker, "No se pudo conectar con el FileSystem.\n");
 					sendDeNotificacion(socketAceptado,ERROR_ALMACENADO_FINAL);
 					close(socketAceptado);
+					munmap(dataBinBloque,dataBinTamanio);
+					free(numerosParalelos);
 					free(IP_FILESYSTEM);
 					free(RUTA_DATABIN);
 					free(NOMBRE_NODO);
@@ -929,6 +945,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 			default:{
 				log_error(loggerWorker, "Error al recibir el tipo de etapa de Master\n");
 				munmap(dataBinBloque,dataBinTamanio);
+				free(numerosParalelos);
 				close(socketAceptado);
 				free(IP_FILESYSTEM);
 				free(RUTA_DATABIN);
@@ -944,23 +961,20 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 		case ES_WORKER:{
 			log_info(loggerWorker, "Se recibio una conexion de otro worker.\n");
 			char* nombreArchivoTemporal = recibirString(socketAceptado);
-			FILE* archivoTemporal = fopen(nombreArchivoTemporal,"r");
 			char* contenidoTemporal = obtenerContenido(nombreArchivoTemporal);
+			free(nombreArchivoTemporal);
 			uint32_t tamanioTemporal = string_length(contenidoTemporal);
 			void* datosAEnviar = malloc(sizeof(uint32_t)+tamanioTemporal);
 			memcpy(datosAEnviar,&tamanioTemporal,sizeof(uint32_t));
 			memcpy(datosAEnviar+sizeof(uint32_t),contenidoTemporal,tamanioTemporal);
 
+			free(contenidoTemporal);
+
 			sendRemasterizado(socketAceptado,ES_OTRO_WORKER,tamanioTemporal+sizeof(uint32_t),datosAEnviar);
 
-			free(contenidoTemporal);
 			free(datosAEnviar);
 
 			log_info(loggerWorker, "El archivo temporal reducido del worker fue exitosamente enviado al worker encargado\n");
-
-			if(fclose(archivoTemporal)==EOF){
-				log_error(loggerWorker,"No se pudo cerrar el archivo global apareado.\n");
-			}
 
 			break;
 		}
@@ -972,6 +986,7 @@ void crearProcesoHijo(int socketAceptado, int socketEscuchaWorker){
 			log_error(loggerWorker, "La conexion recibida es erronea.\n");
 			close(socketAceptado);
 			munmap(dataBinBloque,dataBinTamanio);
+			free(numerosParalelos);
 			free(IP_FILESYSTEM);
 			free(RUTA_DATABIN);
 			free(NOMBRE_NODO);
@@ -995,13 +1010,27 @@ void laMardita(int signal){
 	free(IP_FILESYSTEM);
 	free(RUTA_DATABIN);
 	free(NOMBRE_NODO);
+	free(numerosParalelos);
 	log_info(loggerWorker, "¡¡Adios logger!! \n");
 	log_destroy(loggerWorker);
 	exit(0);
 }
 
+void generarCarpetaTemporal(){
+	char* comandoReseteo=string_new();
+	string_append(&comandoReseteo,"rm -r ");
+	string_append(&comandoReseteo,"../../../tmp");
+	system(comandoReseteo);
+	log_info(loggerWorker,"Se borro correctamente la carpeta temporal anterior. \n");
+	free(comandoReseteo);
+	mkdir("../../../tmp",0777);
+	log_info(loggerWorker,"Se creo una nueva carpeta para almacenar los temporales. \n");
+}
+
 int main(int argc, char **argv) {
 	loggerWorker = log_create("Worker.log", "Worker", 1, 0);
+	numerosParalelos = malloc(sizeof(int));
+	*numerosParalelos = 0;
 	signal(SIGINT, laMardita);
 	chequearParametros(argc,2);
 	t_config* configuracionWorker = generarTConfig(argv[1], 5);
@@ -1011,12 +1040,10 @@ int main(int argc, char **argv) {
 	int socketAceptado, socketEscuchaWorker;
 	socketEscuchaWorker = ponerseAEscucharClientes(PUERTO_WORKER, 0);
 	//eliminarProcesosMuertos();
-	log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
+	//log_debug(loggerWorker, "Se empezo a ejecutar correctamente el sigaction con el sigchild handler para eliminar procesos zombies del sitema.\n");
 	dataBinBloque = dataBinMapear();
 	contadorRandom = 0;
-	numerosParalelos = malloc(sizeof(int));
-	*numerosParalelos = 0;
-	mkdir("../../../tmp",0777);
+	generarCarpetaTemporal();
 	while(1){
 		socketAceptado = aceptarConexionDeCliente(socketEscuchaWorker);
 		log_info(loggerWorker, "Se ha recibido una nueva conexion.\n");
