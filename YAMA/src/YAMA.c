@@ -120,7 +120,7 @@ void manejadorMaster(void* socketMasterCliente){
 				break;
 			case FINALIZO:
 				reestablecerWLGlobal(nroMaster, FINALIZO);
-				imprimirWLs();
+				//imprimirWLs();
 				log_debug(loggerYAMA, "FINALIZACION DE JOB - MASTER %d", nroMaster);
 				sigueProcesando = 0;
 				break;
