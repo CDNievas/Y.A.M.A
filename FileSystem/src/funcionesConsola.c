@@ -817,3 +817,128 @@ void funcionLs(char* pathDirectorio){
 
     list_destroy(listaConArchivos);
 }
+
+void borrarLaEntradaViejaEnRegistroArchivosYLoMuevo(strArchivo* archPathOri, int idNuevo){
+	//OBTENGO LA RUTA EN YAMA FS QUE GUARDO EN MI LISTA DE REGISTRO
+	char* directorioArchivo=obtenerPathArchivo(archPathOri->directorioPadre);
+	string_append(&directorioArchivo,archPathOri->nombre);
+	bool esElRegistro(char* rutaArchivoSeleccionada){
+		return(strcmp(rutaArchivoSeleccionada,directorioArchivo)==0);
+	}
+	char* rutaVieja=list_remove_by_condition(listaRegistroDeArchivosGuardados,(void*)esElRegistro);
+
+	//RUTA NUEVA
+	char* directorioNuevoArchivo=obtenerPathArchivo(idNuevo);
+	string_append(&directorioNuevoArchivo,archPathOri->nombre);
+
+	char* comando=string_new();
+	string_append(&comando,"mv ");
+	string_append(&comando,rutaVieja);
+	string_append(&comando," ");
+	string_append(&comando,directorioNuevoArchivo);
+	system(comando);
+	free(comando);
+
+	free(rutaVieja);
+	free(directorioArchivo);
+}
+
+int moverPath(char * pathOri, char * pathFin){
+
+	char ** pathFinDesc = string_split(pathFin,"/");
+
+	int idPadrePathFin = obtenerIdPadreDirectorio(pathFinDesc,0,-1);
+	char * nombrePathFin = obtenerNombreUltimoPath(pathFinDesc);
+
+	strDirectorio * dirPathFin = buscaDirectorio(nombrePathFin,idPadrePathFin);
+
+	if(dirPathFin == NULL){
+		free(nombrePathFin);
+		//liberarChar(pathFinDesc);
+		return -1;
+	} else {
+
+		char ** pathOriDesc = string_split(pathOri,"/");
+
+		int idPadrePathOri = obtenerIdPadreDirectorio(pathOriDesc,0,-1);
+		char * nombrePathOri = obtenerNombreUltimoPath(pathOriDesc);
+
+		strDirectorio * dirPathOri = buscaDirectorio(nombrePathOri,idPadrePathOri);
+
+		if(dirPathOri == NULL){
+
+			idPadrePathOri = obtenerIdPadreArchivo(pathOriDesc,0,-1);
+			strArchivo * archPathOri = buscaArchivo(nombrePathOri,idPadrePathOri);
+
+			if(archPathOri == NULL){
+				free(nombrePathFin);
+				free(nombrePathOri);
+				//liberarChar(pathOriDesc);
+				//liberarChar(pathFinDesc);
+				return -2;
+			} else {
+
+				int idNuevo = obtenerIdDirectorio(pathFinDesc,0,-1);
+				borrarLaEntradaViejaEnRegistroArchivosYLoMuevo(archPathOri,idNuevo);
+				archPathOri->directorioPadre=idNuevo;
+				persistirArchivo(archPathOri);
+				//liberarChar(pathFinDesc);
+				//liberarChar(pathOriDesc);
+				free(nombrePathOri);
+
+			}
+
+		} else {
+			if(dirPathOri->index==0){
+				free(nombrePathFin);
+				free(nombrePathOri);
+				liberarChar(pathOriDesc);
+				liberarChar(pathFinDesc);
+				return -3;
+			}
+			int idNuevo = obtenerIdDirectorio(pathFinDesc,0,-1);
+			dirPathOri->padre=idNuevo;
+			persistirTablaDirectorio();
+			//liberarChar(pathOriDesc);
+			//liberarChar(pathFinDesc);
+			free(nombrePathOri);
+		}
+
+		//liberarChar(pathFinDesc);
+
+	}
+
+	//liberarChar(pathFinDesc);
+	free(nombrePathFin);
+
+}
+
+void mostrarContenido(char* nombreArchivo,uint32_t idPadre){
+ 	bool esElArchivo(strArchivo* archivoSeleccionado){
+ 		return (strcmp(archivoSeleccionado->nombre,nombreArchivo)==0) && archivoSeleccionado->directorioPadre==idPadre;
+ 	}
+ 	strArchivo* archivoBuscado=list_find(tablaArchivos,(void*)esElArchivo);
+
+ 	if(archivoBuscado==NULL){
+ 		printf("EL archivo %s que se quiere burcas no existe.\n",nombreArchivo);
+ 		log_error(loggerFileSystem,"EL archivo %s que se quiere burcas no existe",nombreArchivo);
+ }
+
+ 	printf("Nombre: %s\n", archivoBuscado->nombre);
+ 	printf("Tamanio: %i\n", archivoBuscado->tamanio);
+ 	printf("Tipo: %s\n", archivoBuscado->tipo);
+ 	printf("Directorio Padre: %i\n", archivoBuscado->directorioPadre);
+
+ 	uint32_t cantidadDebloques=list_size(archivoBuscado->bloques);
+ 	uint32_t contador=0;
+  	while(contador<cantidadDebloques){
+ 		strBloqueArchivo* bloqueSeleccionado=list_get(archivoBuscado->bloques,contador);
+ 		printf("Bloque: %i\n", bloqueSeleccionado->nro);
+ 		printf("Copia 0: Nodo: %s | Bloque: %i \n", bloqueSeleccionado->copia1->nodo,bloqueSeleccionado->copia1->nroBloque);
+ 		printf("Copia 1: Nodo: %s | Bloque: %i \n", bloqueSeleccionado->copia2->nodo,bloqueSeleccionado->copia2->nroBloque);
+ 		printf("Bytes: %i\n", bloqueSeleccionado->bytes);
+ 		contador++;
+ 	}
+
+
+ }

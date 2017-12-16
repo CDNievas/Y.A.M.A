@@ -43,6 +43,12 @@ int catCpto(strBloqueArchivo *,FILE*);
 int cpto(char *, char*);
 void funcionLs(char* pathDirectorio);
 
+void borrarLaEntradaViejaEnRegistroArchivosYLoMuevo(strArchivo* , int );
+
+int moverPath(char * , char * );
+
+void mostrarContenido(char* ,uint32_t );
+
 
 
 #endif /* FUNCIONESCONSOLA_H_ */

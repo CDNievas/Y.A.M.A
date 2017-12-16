@@ -235,8 +235,8 @@ void chequearParametrosFS(int cantPar, char * par){
 
 	if(cantPar < 2 || cantPar > 3){
 		printf("Error con la cantidad de parametros\n");
-		log_error(loggerFileSystem,"Cantidad de parametros incorrecta al iniciar el proceso");
-		liberarMemoria();
+		//log_error(loggerFileSystem,"Cantidad de parametros incorrecta al iniciar el proceso");
+		//liberarMemoria();
 		exit(-1);
 	} else {
 
@@ -253,8 +253,8 @@ void chequearParametrosFS(int cantPar, char * par){
 			} else {
 
 				printf("Flag inexistente\n");
-				log_error(loggerFileSystem,"Flag inexistente");
-				liberarMemoria();
+				//log_error(loggerFileSystem,"Flag inexistente");
+				//liberarMemoria();
 				exit(-1);
 
 			}
@@ -271,7 +271,7 @@ void cargarConfigFS(t_config* configuracionFS) {
 	if (!config_has_property(configuracionFS, "PUERTO_ESCUCHA")) {
 		printf("No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
 		log_error(loggerFileSystem,"No se encuentra el parametro PUERTO_ESCUCHA en el archivo de configuracion");
-		liberarMemoria();
+		//liberarMemoria();
 		exit(-1);
 	}
 
@@ -282,7 +282,7 @@ void cargarConfigFS(t_config* configuracionFS) {
 		printf("No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
 		log_error(loggerFileSystem,"No se encuentra el parametro PATH_METADATA en el archivo de configuracion");
 		config_destroy(configuracionFS);
-		liberarMemoria();
+		//liberarMemoria();
 		exit(-1);
 	}
 

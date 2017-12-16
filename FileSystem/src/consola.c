@@ -14,13 +14,13 @@ void ejecutarComando(uint32_t nro, char ** param){
 
 		// FORMAT
 		case 1:{
-			if(!chequearParamCom(param,1,1)){
-				printf("Error en la cantidad de parametros \n");
-				log_warning(loggerFileSystem, "Error con los parametros al ejecutar format");
-			} else {
-				if(sistemaFormateado==true){
-					log_warning(loggerFileSystem,"El sistema ya esta formateado");
-				}else{
+//			if(!chequearParamCom(param,1,1)){
+//				printf("Error en la cantidad de parametros \n");
+//				log_warning(loggerFileSystem, "Error con los parametros al ejecutar format");
+//			} else {
+//				if(sistemaFormateado==true){
+//					log_warning(loggerFileSystem,"El sistema ya esta formateado");
+//				}else{
 
 					if(estadoAnterior==false){
 						uint32_t cantidadNodosSistemas=list_size(tablaNodos->listaNodos);
@@ -62,9 +62,9 @@ void ejecutarComando(uint32_t nro, char ** param){
 						} else {
 							log_warning(loggerFileSystem,"No hay al menos una copia de cada archivo. Estado no estable.");
 						}
-					}
-				}
-			}
+//					}
+//				}
+//			}
 
 
 
@@ -214,7 +214,7 @@ void ejecutarComando(uint32_t nro, char ** param){
 							log_warning(loggerFileSystem, "El path no existe");
 						} else {
 
-							//int cod = moverPath(param[1],param[2]);
+							int cod = moverPath(param[1],param[2]);
 
 						}
 						pthread_mutex_unlock(&mutex);
@@ -499,6 +499,43 @@ void ejecutarComando(uint32_t nro, char ** param){
 			}
 			break;
 
+		case 12:{
+		 			if(!estadoEstable){
+		 				printf("El sistema no se encuentra en un estado estable \n");
+		 				log_warning(loggerFileSystem, "El sistema no se encuentra en un estado estable");
+		 			} else {
+
+		 				if(!chequearParamCom(param,2,2)){
+		 					printf("Error en la cantidad de parametros \n");
+		 				log_warning(loggerFileSystem, "Error con los parametros al ejecutar mkdir");
+		 				} else {
+		 					if(!contieneYamafs(param[1])){
+		 						printf("El path no pertenece a yamafs \n");
+		 						log_warning(loggerFileSystem, "El path no pertenece a yamafs");
+		 					} else {
+		 						if(!existePath(param[1])){
+		 						printf("El path no existe \n");
+		 							log_warning(loggerFileSystem, "El path no existe");
+		 						} else {
+		 							char * path = string_new();
+
+		 						char ** pathDesc = string_split(param[1],"/");
+		 							char * nombreArchivo = obtenerNombreUltimoPath(pathDesc);
+		 							uint32_t idPadre=obtenerIdPadreArchivo(pathDesc,0,-1);
+
+		 							mostrarContenido(nombreArchivo,idPadre);
+
+		 						free(nombreArchivo);
+		 							free(path);
+
+		 							//liberarChar(pathDesc);
+		 		 						}
+
+		 					}
+		 				}
+		 			}
+		 		}
+		 		break;
 
 		//MKDIRN
 		case 13:{
@@ -586,6 +623,7 @@ void consolaFS(){
 		}
 
 	}
+}
 }
 
 
